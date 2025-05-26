@@ -9,3 +9,5 @@ CREATE TABLE Accounts (
     LastLogin DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '最終ログイン日時',
     Prefecture VARCHAR(50) COMMENT 'ユーザーの都道府県'
 );
+
+SHOW COLUMNS FROM Accounts;
