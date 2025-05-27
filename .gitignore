@@ -1,13 +1,4 @@
-# 環境設定ファイル
-.env
-
-# ビルド成果物
-build/
-dist/
-
-# 依存関係
-node_modules/
-venv/# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
 /node_modules
@@ -30,18 +21,3 @@ venv/# See https://help.github.com/articles/ignoring-files/ for more about ignor
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-
-# IDE設定
-.vscode/
-.idea/
-
-# ログファイル
-*.log
-
-# キャッシュファイル
-__pycache__/
-
-# OS生成ファイル
-.DS_Store
-Thumbs.db
