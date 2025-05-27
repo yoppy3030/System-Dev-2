@@ -1,0 +1,27 @@
+{
+  "name": "system-dev-2",
+  "version": "1.0.0",
+  "description": "System Development: Second Session　システム開発2回目",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoppy3030/System-Dev-2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yoppy3030/System-Dev-2/issues"
+  },
+  "homepage": "https://github.com/yoppy3030/System-Dev-2#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
