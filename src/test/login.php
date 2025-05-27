@@ -1,25 +1,3 @@
-<?php
-session_start();
-header('Content-Type: application/json');
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // ユーザー名とパスワードを取得
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    // データベース接続
-    include 'db.php'; // db.phpでデータベース接続を行う
-
-    // ユーザー認証のロジック
-    // ここでは簡単な例として、固定のユーザー名とパスワードを使用
-    if ($username === 'test' && $password === 'password') {
-        $_SESSION['user'] = $username;
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,8 +8,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="form-container">
         <h1>Login</h1>
+
+        <?php
+        session_start();
+        if (isset($_SESSION['error'])) {
+            echo '<p style="color: red;">' . $_SESSION['error'] . '</p>';
+            unset($_SESSION['error']);
+        }
+        ?>
+
         <form action="login_process.php" method="post">
-            <label>Email:<input type="email" name="email" required></label>
+            <label>Username:<input type="text" name="username" required></label>
             <label>Password:<input type="password" name="password" required></label>
             <button type="submit">Login</button>
         </form>
