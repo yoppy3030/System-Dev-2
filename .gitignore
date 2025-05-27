@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 環境設定ファイル
 .env
 
@@ -8,6 +9,9 @@ dist/
 # 依存関係
 node_modules/
 venv/# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+=======
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+>>>>>>> 96fe7ee749d15dfe9f81cb3447f787cf93445448
 
 # dependencies
 /node_modules
@@ -30,6 +34,7 @@ venv/# See https://help.github.com/articles/ignoring-files/ for more about ignor
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+<<<<<<< HEAD
 
 
 # IDE設定
@@ -45,3 +50,5 @@ __pycache__/
 # OS生成ファイル
 .DS_Store
 Thumbs.db
+=======
+>>>>>>> 96fe7ee749d15dfe9f81cb3447f787cf93445448

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Multi-language Login</title>
+  <link rel="stylesheet" href="./css/login.css">
+</head>
+<body>
+
+<div class="login-box">
+  <h2 id="title">Login</h2>
+  <input type="text" placeholder="Username" id="username">
+  <input type="password" placeholder="Password" id="password">
+  <button onclick="login()">Login</button>
+  <br><br>
+
+  <div class="lang-selector">
+    <button onclick="togglePopup()">Language</button>
+    <div class="lang-popup" id="lang-popup">
+      <div onclick="setLang('en')">English</div>
+      <div onclick="setLang('ja')">日本語</div>
+      <div onclick="setLang('my')">မြန်မာ</div>
+      <div onclick="setLang('zh')">中文</div>
+      <div onclick="setLang('vi')">Tiếng Việt</div>
+      <div onclick="setLang('id')">Bahasa Indonesia</div>
+      <div onclick="setLang('ko')">한국어</div>
+      <div onclick="setLang('th')">ภาษาไทย</div>
+      <div onclick="setLang('es')">Español</div>
+      <div onclick="setLang('fr')">Français</div>
+      <div onclick="setLang('de')">Deutsch</div>
+      <div onclick="setLang('ru')">Русский</div>
+      <div onclick="setLang('ar')">العربية</div>
+      <div onclick="setLang('hi')">हिन्दी</div>
+      <div onclick="setLang('ms')">Bahasa Melayu</div>
+      <div onclick="setLang('pt')">Português</div>
+    </div>
+  </div>
+</div>
+
+<script src="./js/login.js"></script>
+</body>
+</html>
