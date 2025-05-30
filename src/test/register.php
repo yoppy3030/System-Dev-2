@@ -23,13 +23,13 @@
 </head>
 <body>
     <div class="form-container">
-        <h1>User Registration</h1>
+        <h1>Registration</h1>
         <form name="registerForm" action="register_process.php" method="post" onsubmit="return validateForm()">
-            <label>Username:<input type="text" name="username" required></label>
-            <label>Email:<input type="email" name="email" required></label>
+            <label>Username:<input type="text" name="username" placeholder="ECC 太郎" required></label>
+            <label>Email:<input type="email" name="email" placeholder="example@gmail.com"  required></label>
             <label>Password:<input type="password" name="password" required></label>
             <label>Country:<input type="text" name="country" required></label>
-            <label>Current Location:<input type="text" name="location" required></label>
+            <label>Current Location:<input type="text" name="location" required placeholder="Osaka" ></label>
             <label>What are you doing in Japan?
                 <select name="activity" required>
                     <option value="Worker">Worker</option>
