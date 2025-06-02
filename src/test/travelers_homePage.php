@@ -147,5 +147,6 @@
 
     <!-- JavaScriptファイルの読み込み -->
     <script src="./js/travelers_homePage.js"></script>
+    <script src="./js/translate.js"></script>
 </body>
 </html>
