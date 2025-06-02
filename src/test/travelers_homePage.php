@@ -44,6 +44,7 @@
 
     <!-- メインコンテンツ -->
     <main>
+        
         <!-- サイドバーナビゲーション -->
         <div class="sidebar" id="sidebar">
             <a href="#">友達を家に行く時</a>
