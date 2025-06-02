@@ -31,8 +31,7 @@
                     <div class="language-dropdown">
                         <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
                         <button class="language-option" data-lang="en">🇺🇸 English</button>
-                        <button class="language-option" data-lang="zh">🇨🇳 中文
-                        </button>
+                        <button class="language-option" data-lang="zh">🇨🇳 中文</button>
                         <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
                     </div>
                 </div>
