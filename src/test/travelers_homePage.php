@@ -21,7 +21,7 @@
         <div class="navbar">
             <!-- メインナビゲーション -->
             <nav class="nav-links">
-                <a href="#">Home</a>
+                <a href="index.php">Home</a>
                 <a href="#">Region</a>
                 <a href="#">Transports</a>
                 <a href="#">Food</a>
