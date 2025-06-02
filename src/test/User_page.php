@@ -150,6 +150,6 @@
     </div>
 </div>
     </main>
-    <script src="user_script.js"></script>
+    <script src="User_page.js"></script>
 </body>
 </html>
