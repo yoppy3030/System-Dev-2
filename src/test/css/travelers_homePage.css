@@ -90,14 +90,14 @@ header h1 {
 
 /* メニューボタン */
 .menu-button {
-  position: absolute;
-  top: 155px;
+  position: fixed;
+  top: 15px;
   left: 15px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  z-index: 1100;
+  z-index: 2000; /* サイドバーより前面に表示 */
 }
 
 .menu-button span {

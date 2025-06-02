@@ -8,6 +8,13 @@
     <title>JAPAN Life Manual</title>
 </head>
 <body>
+    <!-- サイドバー切り替えボタン -->
+    <div class="menu-button" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
     <!-- ヘッダーセクション -->
     <header>
         <h1>JAPAN Life Manual</h1>
@@ -37,13 +44,6 @@
 
     <!-- メインコンテンツ -->
     <main>
-        <!-- サイドバー切り替えボタン -->
-        <div class="menu-button" onclick="toggleSidebar()">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-
         <!-- サイドバーナビゲーション -->
         <div class="sidebar" id="sidebar">
             <a href="#">友達を家に行く時</a>
