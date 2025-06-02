@@ -14,7 +14,6 @@
     <ul class="nav-links">
       <li><a href="index.php">Home</a></li>
       <li><a href="#">Culture</a></li>
-      <li><a href="#">Professional</a></li>
       <li><a href="studenthome.php">Student</a></li>
       <li><a href="travelers_homePage.php">Traveler</a></li>
       <li><a href="#">About</a></li>
