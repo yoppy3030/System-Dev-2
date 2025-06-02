@@ -34,9 +34,8 @@ body {
 }
 
 .hero {
-  background-image: url('https://images.unsplash.com/photo-1587502537745-76f3c0ba7945');
-  background-size: cover;
-  background-position: center;
+  /*background-image: url('https://images.unsplash.com/photo-1587502537745-76f3c0ba7945');*/
+  background-position:  center;
   height: 300px;
   display: flex;
   align-items: center;
@@ -54,6 +53,7 @@ body {
 
 .hero p {
   font-size: 1.25rem;
+  color: black;
 }
 
 .main-content {

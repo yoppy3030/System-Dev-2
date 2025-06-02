@@ -49,6 +49,26 @@
       <h2><i class="fas fa-balance-scale"></i> Labor Rights</h2>
       <p>Know your rights: work contracts, overtime limits, and paid leave.</p>
     </div>
+    <div class="info-block">
+  <h2><i class="fas fa-file-contract"></i> Understanding Your Contract</h2>
+  <p>Japanese work contracts often include detailed clauses about working hours, holidays, overtime, and termination. Always request a translated version if needed, and consult a legal advisor if any terms are unclear.</p>
+</div>
+
+<div class="info-block">
+  <h2><i class="fas fa-train"></i> Commuting in Japan</h2>
+  <p>Most employees commute via public transportation. Trains are punctual and clean. Employers often reimburse commuting costs, so remember to save your IC card receipts or travel logs.</p>
+</div>
+
+<div class="info-block">
+  <h2><i class="fas fa-calendar-alt"></i> National Holidays and Paid Leave</h2>
+  <p>Japan has 16 national holidays. Employees are typically entitled to a minimum of 10 paid leave days per year. Long vacations should be requested well in advance.</p>
+</div>
+
+<div class="info-block">
+  <h2><i class="fas fa-coins"></i> Saving and Taxes</h2>
+  <p>All working residents must pay income and local taxes, and contribute to the pension system. Annual tax returns may be required. It's helpful to keep all salary slips and expense documents.</p>
+</div>
+
   </main>
 
   <!-- Footer -->
