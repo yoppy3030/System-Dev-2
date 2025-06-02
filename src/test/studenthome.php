@@ -10,6 +10,7 @@
   <header class="site-header">
     <div class="logo">STUDY in JAPAN</div>
     <nav class="main-nav">
+      <a href="./professional.php">Professional</a>
       <a href="./lifeinjapan.php">Life in Japan</a>
       <a href="./workingjapan.php">Jobs & Careers in Japan</a>
       <a href="./events.php">Events</a>
