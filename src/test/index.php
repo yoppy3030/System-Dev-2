@@ -41,7 +41,7 @@
     </div>
 
     <div class="menu-item">
-      <a href="profession.php">
+      <a href="professional.php">
           <i class="fas fa-briefcase icon"></i> <!-- professionnal -->
           <p>Professional</p>
       </a>
