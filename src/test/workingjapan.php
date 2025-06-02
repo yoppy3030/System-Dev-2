@@ -11,6 +11,7 @@
     <div class="logo">STUDY in JAPAN</div>
     <nav class="main-nav">
       <a href="index.php">Home</a>
+      <a href="studenthome.php">StudentHome</a>
       <a href="travelers_homePage.php">Travelers</a>
       <a href="professional.php">Professional</a>
       <a href="lifeinjapan.php">Life in Japan</a>
