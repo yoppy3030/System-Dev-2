@@ -1,78 +1,73 @@
-<!-- professional.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Professional Life in Japan</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/professional.css" />
-  <script src="https://unpkg.com/feather-icons"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="./css/professional.css">
 </head>
-<body class="font-noto bg-[#e6f0fa] text-[#1f2937]">
-  <header class="header p-6 text-center bg-white shadow-md">
-    <h1 class="text-3xl font-bold">Professional Life in Japan</h1>
-    <p class="text-lg mt-2">Your guide to working and living in Japan as a foreign professional</p>
-  </header>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="logo">JAPAN Life Manual</div>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Culture</a></li>
+      <li><a href="#">Professional</a></li>
+      <li><a href="#">Student</a></li>
+      <li><a href="#">Traveler</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+  </nav>
 
-  <main class="main-content p-6 space-y-10">
-    <section class="section hover:shadow-lg transition-shadow rounded-xl bg-white p-6">
-      <h2 class="text-2xl font-bold flex items-center gap-2"><i data-feather="briefcase"></i> Business Etiquette</h2>
-      <img src="../test/img/Name Card Etiquette #businesscardetiquettefullname….jpg" alt="Business Etiquette" class="rounded-md mt-4">
-      <p class="mt-2">In Japanese workplaces, bowing is a common greeting. Business cards should be given and received with both hands. Punctuality is highly valued.</p>
-    </section>
+  <!-- Hero Section -->
+  <section class="hero" style="background-image: url(./img/namba.jpg);">
+    <div class="hero-content">
+      <h1>Professional Life in Japan</h1>
+      <p>Your trusted guide for working professionally in Japan.</p>
+    </div>
+  </section>
 
-    <section class="section hover:shadow-lg transition-shadow rounded-xl bg-white p-6">
-      <h2 class="text-2xl font-bold flex items-center gap-2"><i data-feather="clock"></i> Work Hours and Holidays</h2>
-      <img src="../test/img/As stress levels and karoshi – deaths through….jpg" alt="Work Hours" class="rounded-md mt-4">
-      <p class="mt-2">Typical work hours are from 9 AM to 6 PM. National holidays include New Year's, Golden Week, and Obon. Paid leave varies by company.</p>
-    </section>
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="info-block">
+      <h2><i class="fas fa-briefcase"></i> Business Etiquette</h2>
+      <p>Bowing is a common greeting. Exchange business cards with both hands. Be punctual.</p>
+    </div>
 
-    <section class="section hover:shadow-lg transition-shadow rounded-xl bg-white p-6">
-      <h2 class="text-2xl font-bold flex items-center gap-2"><i data-feather="map"></i> Visa and Residency</h2>
-      <img src="../test/img/☆ (2).jpg" alt="Visa and Residency" class="rounded-md mt-4">
-      <p class="mt-2">Most foreign workers need a working visa such as Engineer/Specialist in Humanities/International Services. Register at your city office within 14 days of moving to a new residence.</p>
-      <div class="mt-4">
-        <p class="font-semibold">Example of Resident Card:</p>
-        <img src="../test/img/Relm Shironeko Project Cards Japan Japanese Not….jpg" alt="Resident Card Sample" class="rounded-md mt-2">
-      </div>
-    </section>
+    <div class="info-block">
+      <h2><i class="fas fa-clock"></i> Work Hours and Holidays</h2>
+      <p>Standard hours are 9 AM–6 PM. Key holidays: New Year, Golden Week, Obon.</p>
+    </div>
 
-    <section class="section hover:shadow-lg transition-shadow rounded-xl bg-white p-6">
-      <h2 class="text-2xl font-bold flex items-center gap-2"><i data-feather="message-circle"></i> Workplace Communication</h2>
-      <img src="../test/img/868c0ebe-14c8-443a-ab9b-25250543585e.jpg" alt="Workplace Communication" class="rounded-md mt-4">
-      <p class="mt-2">Politeness and indirect communication are key. Be prepared to participate in group meetings and company events.</p>
-    </section>
+    <div class="info-block">
+      <h2><i class="fas fa-language"></i> Language Expectations</h2>
+      <p>Basic Japanese is expected. English is useful in multinational companies.</p>
+    </div>
 
-    <section class="section hover:shadow-lg transition-shadow rounded-xl bg-white p-6">
-      <h2 class="text-2xl font-bold flex items-center gap-2"><i data-feather="heart"></i> Health Insurance and Pension</h2>
-      <img src="../test/img/If you're over 50 and thinking of retiring and….jpg" alt="Health Insurance and Pension" class="rounded-md mt-4">
-      <p class="mt-2">Enroll in either national or employee-based health insurance. Pension payments are usually deducted from your salary.</p>
-    </section>
-
-    <section class="section hover:shadow-lg transition-shadow rounded-xl bg-white p-6">
-      <h2 class="text-2xl font-bold flex items-center gap-2"><i data-feather="book"></i> Useful Japanese Phrases</h2>
-      <ul class="list-disc list-inside mt-2">
-        <li>おはようございます (Good morning)</li>
-        <li>よろしくお願いします (Nice to meet/work with you)</li>
-        <li>お疲れ様です (Thank you for your hard work)</li>
-      </ul>
-    </section>
-
-    <section class="section hover:shadow-lg transition-shadow rounded-xl bg-white p-6">
-      <h2 class="text-2xl font-bold flex items-center gap-2"><i data-feather="message-square"></i> Comments</h2>
-      <div id="comment-section">
-        <form id="comment-form" class="space-y-4 mt-4">
-          <input type="text" id="username" placeholder="Your name" required class="w-full p-2 border rounded-md" />
-          <textarea id="comment" placeholder="Write your comment here..." required class="w-full p-2 border rounded-md"></textarea>
-          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Post Comment</button>
-        </form>
-        <div id="comments" class="mt-6 space-y-4"></div>
-      </div>
-    </section>
+    <div class="info-block">
+      <h2><i class="fas fa-balance-scale"></i> Labor Rights</h2>
+      <p>Know your rights: work contracts, overtime limits, and paid leave.</p>
+    </div>
   </main>
 
-  <script src="./js/comments.js"></script>
-  <script>feather.replace()</script>
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <h2>Contact Us</h2>
+      <p><a href="mailto:22200797@ecc.ac.jp">Email: 22200797@ecc.ac.jp</a></p>
+      <p>Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan</p>
+      <p>Phone: +81 3-1234-5678</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+      </div>
+      <h2>Japan life Manual</h2>
+      <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
+    </div>
+  </footer>
 </body>
 </html>
