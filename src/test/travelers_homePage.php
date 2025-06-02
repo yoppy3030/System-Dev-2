@@ -20,6 +20,7 @@
         <h1>JAPAN Life Manual</h1>
         <div class="navbar">
 <<<<<<< HEAD
+<<<<<<< HEAD
             <!-- メインナビゲーション -->
             <nav class="nav-links">
                 <a href="#">Region</a>
@@ -41,6 +42,8 @@
             <input type="text" class="search-box" placeholder="search"/>
         </div>
 =======
+=======
+>>>>>>> development
   <ul class="menu">
     <li class="dropdown">
       <a href="#">Region(地方)</a>
