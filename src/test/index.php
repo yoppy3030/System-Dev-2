@@ -17,7 +17,7 @@
     
     <!-- mask content-->
     <div class="dropdown-content" id="dropdown-content">
-        <a href="#">My page</a>
+        <a href="User_page.php">My page</a>
         <a href="#">contact</a>
         <a href="#">Blog</a>
     </div>
