@@ -20,7 +20,7 @@
                 <a href="#">Other</a>
                 <!-- 言語選択ドロップダウン -->
                 <div class="language-selector">
-                    <button id="translateBtn" class="translate-btn">🌐 翻訳</button>
+                    <button id="translateBtn" class="translate-btn">🌐 Translate</button>
                     <div class="language-dropdown">
                         <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
                         <button class="language-option" data-lang="en">🇺🇸 English</button>
