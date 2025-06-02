@@ -13,10 +13,10 @@
     <div class="logo">JAPAN Life Manual</div>
     <ul class="nav-links">
       <li><a href="index.php">Home</a></li>
-      <li><a href="#">Culture</a></li>
+      <li><a href="culture.html">Culture</a></li>
       <li><a href="studenthome.php">Student</a></li>
       <li><a href="travelers_homePage.php">Traveler</a></li>
-      <li><a href="#">About</a></li>
+      <li><a href="about.html">About</a></li>
     </ul>
   </nav>
 
