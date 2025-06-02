@@ -7,7 +7,7 @@ body {
   align-items: center;
 
   /* ✅ Your custom background image */
-  background: url('../img/fuji.jpg') no-repeat center center fixed;
+  background: url('../image/fuji.jpg') no-repeat center center fixed;
   background-size: cover;
 }
 
@@ -59,7 +59,7 @@ button {
   top: 40px;
   left: 50%;
   transform: translateX(-50%);
-  background: gray;
+  background: #fff;
   border: 1px solid #ccc;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   border-radius: 5px;
@@ -78,7 +78,7 @@ button {
 }
 
 .lang-popup div:hover {
-  background:#f0f0f0;
+  background: #f0f0f0;
 }
 
 .lang-popup::-webkit-scrollbar {

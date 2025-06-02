@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Register - JAPAN Life Manual</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./css/style.css">
     <script>
         function validateForm() {
             const email = document.forms["registerForm"]["email"].value;

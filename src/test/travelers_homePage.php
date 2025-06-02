@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./style/travelers_homePage.css">
+    <link rel="stylesheet" href="./css/travelers_homePage.css">
     <title>JAPAN Life Manual</title>
 </head>
 <body>
@@ -42,9 +42,9 @@
 
         <!--slideshow-->
         <div class="slideshow">
-            <img src="./image/springs.jpg" class="slide active">
-            <img src="./image/Inari-Shrine-Path.jpg" class="slide">
-            <img src="./image/namba.jpg" class="slide">
+            <img src="./img/springs.jpg" class="slide active">
+            <img src="./img/Inari-Shrine-Path.jpg" class="slide">
+            <img src="./img/namba.jpg" class="slide">
         </div>
         <h2>Do's And Don'ts In Japan- Things You Should Knows Before Going To Japan</h2>
         <ol>
@@ -99,6 +99,6 @@
   
     </main>
     <footer></footer>
-    <script src="./scripts/travelers_homePage.js"></script>
+    <script src="./js/travelers_homePage.js"></script>
 </body>
 </html>

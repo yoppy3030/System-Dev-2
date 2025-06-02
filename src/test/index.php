@@ -34,7 +34,7 @@
     </div>
 
     <div class="menu-item">
-      <a href="">
+      <a href="studenthome.php">
           <i class="fas fa-user-graduate icon"></i> <!-- student -->
           <p>Student</p>
       </a>
