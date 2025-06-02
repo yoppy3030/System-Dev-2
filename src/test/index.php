@@ -48,9 +48,9 @@
     </div>
 
     <div class="menu-item">
-      <a href="">
-          <i class="fas fa-blog icon"></i> <!-- blog -->
-          <p>Blog</p>
+      <a href="travelers_homePage.php">
+          <i class="fa-solid fa-person-walking-luggage" style="font-size:25px;"></i> <!-- blog -->
+          <p>Travellers</p>
       </a>
     </div>
 
