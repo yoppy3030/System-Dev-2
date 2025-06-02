@@ -41,16 +41,20 @@
     </div>
 
     <div class="menu-item">
+<<<<<<< HEAD
       <a href="professional.html">
+=======
+      <a href="professional.php">
+>>>>>>> f5b1a13de08612654115cf5ce963d83f90491511
           <i class="fas fa-briefcase icon"></i> <!-- professionnal -->
           <p>Professional</p>
       </a>
     </div>
 
     <div class="menu-item">
-      <a href="">
-          <i class="fas fa-blog icon"></i> <!-- blog -->
-          <p>Blog</p>
+      <a href="travelers_homePage.php">
+          <i class="fa-solid fa-person-walking-luggage" style="font-size:25px;"></i> <!-- blog -->
+          <p>Travellers</p>
       </a>
     </div>
 
