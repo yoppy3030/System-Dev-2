@@ -19,6 +19,7 @@
     <header>
         <h1>JAPAN Life Manual</h1>
         <div class="navbar">
+<<<<<<< HEAD
             <!-- メインナビゲーション -->
             <nav class="nav-links">
                 <a href="#">Region</a>
@@ -39,6 +40,54 @@
             <!-- 検索ボックス -->
             <input type="text" class="search-box" placeholder="search"/>
         </div>
+=======
+  <ul class="menu">
+    <li class="dropdown">
+      <a href="#">Region(地方)</a>
+      <ul class="dropdown-content">
+        <li><a href="#">Hokkaido</a></li>
+        <li><a href="#">Tohoku</a></li>
+        <li><a href="#">Kanto</a></li>
+        <li><a href="#">Chubu</a></li>
+        <li><a href="#">Kansai</a></li>
+        <li><a href="#">Chugoku</a></li>
+        <li><a href="#">Shikoku</a></li>
+        <li><a href="#">Kyushu</a></li>
+        <li><a href="#">Okinawa</a></li>
+      </ul>
+    </li>
+    <li><a href="#">Transports(輸送)</a></li>
+    <li><a href="#">Food(食事)</a></li>
+    <li><a href="#">Other(その他)</a></li>
+  </ul>
+</div>
+
+             <input type="text" class="search-box" placeholder="search"/>
+        </div>
+        <div class="regions">
+  <div class="region">
+    <img src="hokkaido-map.png" alt="Hokkaido">
+    <div class="region-name">Hokkaido</div>
+  </div>
+  <div class="region">
+    <img src="tohoku-map.png" alt="Tohoku">
+    <div class="region-name">Tohoku</div>
+  </div>
+  <div class="region">
+    <img src="kanto-map.png" alt="Kanto">
+    <div class="region-name">Kanto</div>
+  </div>
+  <div class="region">
+    <img src="kansai-map.png" alt="Kansai">
+    <div class="region-name">Kansai</div>
+  </div>
+  <!-- Add more if needed -->
+</div>
+
+        
+        
+
+>>>>>>> 47c0fd2 (無視して)
     </header>
 
     <!-- メインコンテンツ -->
