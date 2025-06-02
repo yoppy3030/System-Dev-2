@@ -10,9 +10,11 @@
   <header class="site-header">
     <div class="logo">STUDY in JAPAN</div>
     <nav class="main-nav">
-      <a href="./studenthome.php">Home</a>
-      <a href="./lifeinjapan.php">Life in Japan</a>
-      <a href="#">Events</a>
+      <a href="index.php">Home</a>
+      <a href="travelers_homePage.php">Travelers</a>
+      <a href="professional.php">Professional</a>
+      <a href="lifeinjapan.php">Life in Japan</a>
+      <a href="event.php">Events</a>
     </nav>
   </header>
 
