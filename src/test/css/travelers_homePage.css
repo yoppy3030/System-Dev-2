@@ -47,8 +47,8 @@ header h1 {
 .nav-links a {
   margin: 0 10px;
   text-decoration: none;
-  color: var(--light-text);
-  font-weight: bold;
+  color: white;
+  font-weight: 500;
   position: relative;
 }
 
@@ -59,7 +59,7 @@ header h1 {
   height: 2px;
   bottom: -5px;
   left: 0;
-  background-color: var(--light-text);
+  background-color: white;
   transition: width 0.3s ease;
 }
 
@@ -221,7 +221,7 @@ main {
 
 .language-option:hover,
 .language-option.active {
-  background-color: var(--primary-color);
+  background-color: #b2b3b1;
   color: var(--light-text);
 }
 

@@ -24,16 +24,31 @@ body {
   font-weight: bold;
 }
 
+
 .main-nav a {
-  color: white;
-  margin: 0 12px;
+  margin: 0 10px;
   text-decoration: none;
+  color: white;
   font-weight: 500;
+  position: relative;
 }
 
-.main-nav a:hover {
-  text-decoration: underline;
+
+.main-nav a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background-color: white;
+  transition: width 0.3s ease;
 }
+
+.main-nav a:hover::after {
+  width: 100%;
+}
+
 
 /* Hero Section */
 .hero {
@@ -272,7 +287,7 @@ body {
   
   .language-option:hover,
   .language-option.active {
-    background-color: #676B56;
+    background-color: #b2b3b1;
   }
   
   .language-overlay {
