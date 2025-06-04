@@ -9,16 +9,25 @@
 </head>
 <body>
   <!-- Navigation Bar -->
-  <nav class="navbar">
+  <header class="site-header">
     <div class="logo">JAPAN Life Manual</div>
-    <ul class="nav-links">
-      <li><a href="index.php">Home</a></li>
-      <li><a href="culture.html">Culture</a></li>
-      <li><a href="studenthome.php">Student</a></li>
-      <li><a href="travelers_homePage.php">Traveler</a></li>
-      <li><a href="about.html">About</a></li>
-    </ul>
-  </nav>
+    <nav class="main-nav">
+        <a href="index.php">Home</a>
+        <a href="culture.html">Culture</a>
+        <a href="studenthome.php">Student</a>
+        <a href="travelers_homePage.php">Traveler</a>
+        <a href="about.html">About</a>
+        <!-- 言語選択ドロップダウン -->
+        <div class="language-selector">
+            <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+            <div class="language-dropdown">
+                <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+                <button class="language-option" data-lang="en">🇺🇸 English</button>
+                <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+            </div>
+        </div>
+    </nav>
+  </header>
 
   <!-- Hero Section -->
   <section class="hero" style="background-image: url(./img/namba.jpg);">
@@ -68,5 +77,6 @@
       <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
     </div>
   </footer>
+  <script src="./js/professional_comment_sec.js"></script>
 </body>
 </html>
