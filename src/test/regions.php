@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/regions.css">
+<<<<<<< HEAD
     <link rel="stylesheet" href="./css/travelers_homePage.css">
+=======
+>>>>>>> 7ddc13a6a2e7b2a37f5e1cf96ca72a45cdf71aeb
     <title>Japan life Manual</title>
 </head>
 <body>
@@ -12,8 +15,14 @@
         <h1>JAPAN Life Manual</h1>
         <div class="navbar">
             <nav class="nav-links">
+<<<<<<< HEAD
                 <div class="dropdown">
                 <a class="#">Region(地方)</a>
+=======
+                <a href="index.php">Home</a>
+                <div class="dropdown">
+                <a class="#">Region</a>
+>>>>>>> 7ddc13a6a2e7b2a37f5e1cf96ca72a45cdf71aeb
                 <div class="dropdown-content">
                     <a href="#">Hokkaido</a>
                     <a href="#">Tohoku</a>
@@ -21,9 +30,15 @@
                     <a href="#">Chubu</a>
                 </div>
                 </div>
+<<<<<<< HEAD
                 <a class="#">Transports(輸送)</a>
                 <a class="#">Food(食事)</a>
                 <a class="#">Other(その他)</a>
+=======
+                <a class="#">Transports</a>
+                <a class="#">Food</a>
+                <a class="#">Other</a>
+>>>>>>> 7ddc13a6a2e7b2a37f5e1cf96ca72a45cdf71aeb
             </nav>
              <input type="text" class="search-box" placeholder="search"/>
         </div>
@@ -58,6 +73,7 @@
 
         </div>
         <div>
+<<<<<<< HEAD
             <ol>
                 <h3><li>Kensai region</li></h3>
                 <ul><li><h3>Nara</h3></li>
@@ -81,4 +97,43 @@
             </ol>
         </div>
 </body>
+=======
+             <section class="submenu-grid">
+            <a class="submenu-item" href="#">
+                <strong>Kensai Region</strong><br>
+                <small>Osaka,Kyoto,Nara,etc</small>
+            </a>
+            <a class="submenu-item" href="#">
+                <strong>Kento Region</strong><br>
+                <small>Tokyo,Chiba,Saitama,etc</small>
+            </a>
+            <a class="submenu-item" href="#">
+                <strong>Tohoku Region</strong><br>
+                <small>Iwate,Akita,Miyagi,etc</small>
+            </a>
+            <a class="submenu-item" href="#">
+                <strong>Chugoku Region</strong><br>
+                <small>Tottori,Okayama,Hiroshima,etc</small>
+            </a>
+            <a class="submenu-item" href="#">
+                <strong>Shikoku Region</strong><br>
+                <small>Tokushima,Ehime,Koichi,etc</small>
+            </a>
+            <a class="submenu-item" href="#">
+                <strong>Chubu Region</strong><br>
+                <small>Toyama,Gifu,Aichi,etc</small>
+            </a>
+            <a class="submenu-item" href="#">
+                <strong>Hokkaido</strong><br>
+                <small>Toyama,Gifu,Aichi,etc</small>
+            </a>
+            <a class="submenu-item" href="#">
+                <strong>Kyusyu & Okinawa</strong><br>
+                <small>Oita,Okinawa,Fukuoka,etc</small>
+            </a>
+             </section>
+        </div>
+        
+        
+>>>>>>> 7ddc13a6a2e7b2a37f5e1cf96ca72a45cdf71aeb
 </html>

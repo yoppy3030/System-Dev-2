@@ -1,60 +1,3 @@
-// =========================================
-// グローバル変数の初期化
-// =========================================
-let likeCount = 0;
-let dislikeCount = 0;
-let viewCount = 0;
-let currentLanguage = 'en';
-let originalTexts = new Map();
-let translations = null;
-let translationsZh = null;
-
-// =========================================
-// DOM要素の取得
-// =========================================
-const likeBtn = document.getElementById("like-btn");
-const dislikeBtn = document.getElementById("dislike-btn");
-const likeCountElement = document.getElementById("like-count");
-const dislikeCountElement = document.getElementById("dislike-count");
-const viewCountElement = document.getElementById("view-count");
-const translateBtn = document.getElementById('translateBtn');
-const languageDropdown = document.querySelector('.language-dropdown');
-const dropdownBtn = document.getElementById("dropdown-btn");
-const dropdownContent = document.getElementById("dropdown-content");
-
-// =========================================
-// ページ読み込み時の処理
-// =========================================
-window.onload = function() {
-    viewCount++;
-    viewCountElement.textContent = viewCount;
-};
-
-// =========================================
-// いいね/いいね解除の処理
-// =========================================
-likeBtn.addEventListener("click", () => {
-    likeCount++;
-    likeCountElement.textContent = likeCount;
-});
-
-dislikeBtn.addEventListener("click", () => {
-    dislikeCount++;
-    dislikeCountElement.textContent = dislikeCount;
-});
-
-// =========================================
-// ドロップダウンメニューの処理
-// =========================================
-dropdownBtn.addEventListener("click", () => {
-    dropdownContent.classList.toggle("show");
-});
-
-window.addEventListener("click", (e) => {
-    if (!e.target.matches('.dropdown-btn')) {
-        dropdownContent.classList.remove("show");
-    }
-});
 
 // =========================================
 // 翻訳機能の初期設定
@@ -99,8 +42,8 @@ function normalizeText(text) {
 // 翻訳データの読み込み
 // =========================================
 Promise.all([
-    fetch('./js/translations/index-ja.json').then(response => response.json()),
-    fetch('./js/translations/index-zh.json').then(response => response.json())
+    fetch('./js/translations/User_page-ja.json').then(response => response.json()),
+    fetch('./js/translations/User_page-zh.json').then(response => response.json())
 ])
 .then(([jaData, zhData]) => {
     translations = jaData.translations;

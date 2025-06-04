@@ -31,19 +31,19 @@
   </div>
 
     <div class="menu-item">
-     <a href=""><i class="fas fa-house icon"></i> <!-- Home -->
+     <a href="index.php"><i class="fas fa-house icon"></i> <!-- Home -->
       <p>HOME</p></a> 
     </div>
 
     <div class="menu-item">
-      <a href="">
+      <a href="studenthome.php">
           <i class="fas fa-user-graduate icon"></i> <!-- student -->
           <p>Student</p>
       </a>
     </div>
 
     <div class="menu-item">
-      <a href="">
+      <a href="professional.php">
           <i class="fas fa-briefcase icon"></i> <!-- professionnal -->
           <p>Professional</p>
       </a>
@@ -61,6 +61,17 @@
           <i class="fas fa-user-plus icon"></i> <!-- resgistration -->
           <p>Sign Up</p>
       </a>
+    </div>
+
+    <!-- 言語選択ドロップダウン -->
+    <div class="language-selector">
+        <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+        <div class="language-dropdown">
+            <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+            <button class="language-option" data-lang="en">🇺🇸 English</button>
+            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+            <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+        </div>
     </div>
 </header>
     
@@ -139,6 +150,6 @@
     </div>
 </div>
     </main>
-    <script src="user_script.js"></script>
+    <script src="./js/User_page.js"></script>
 </body>
 </html>

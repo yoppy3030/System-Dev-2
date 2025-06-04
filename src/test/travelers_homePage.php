@@ -23,7 +23,8 @@
 <<<<<<< HEAD
             <!-- メインナビゲーション -->
             <nav class="nav-links">
-                <a href="#">Region</a>
+                <a href="index.php">Home</a>
+                <a href="./regions.php">Region</a>
                 <a href="#">Transports</a>
                 <a href="#">Food</a>
                 <a href="#">Other</a>
@@ -98,10 +99,10 @@
         
         <!-- サイドバーナビゲーション -->
         <div class="sidebar" id="sidebar">
-            <a href="#">友達を家に行く時</a>
-            <a href="#">お店の中にいる時</a>
-            <a href="#">道の中で歩いている時</a>
-            <a href="#">公共施設にいる時</a>
+            <a href="#">When visiting a friend's house</a>
+            <a href="#">When in a store</a>
+            <a href="#">When walking on the street</a>
+            <a href="#">When in public facilities</a>
             <a href="./login.php">Login</a>
         </div>
 
@@ -201,3 +202,4 @@
     <script src="./js/translate.js"></script>
 </body>
 </html>
+

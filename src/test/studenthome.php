@@ -16,6 +16,16 @@
       <a href="lifeinjapan.php">Life in Japan</a>
       <a href="workingjapan.php">Jobs & Careers in Japan</a>
       <a href="events.php">Events</a>
+      <!-- 言語選択ドロップダウン -->
+      <div class="language-selector">
+        <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+        <div class="language-dropdown">
+            <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+            <button class="language-option" data-lang="en">🇺🇸 English</button>
+            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+            <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+        </div>
+       </div>
     </nav>
   </header>
 
@@ -46,8 +56,24 @@
 </section>
 
   <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">↑</button>
-  <footer class="footer">
-    <p>&copy; 2025 Japan Life Manual | All rights reserved</p>
-  </footer>
+  <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">
+    <h2>Contact Us</h2>
+    <p>Email: 22200797@ecc.ac.jp</p>
+    <p>Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan</p>
+    <p>Phone: +81 3-1234-5678</p>
+
+    <div style="margin: 1.5rem 0;">
+      <a href="#"><i class="fab fa-facebook-f" style="margin: 0 10px; font-size: 1.5rem;"></i></a>
+      <a href="#"><i class="fab fa-twitter" style="margin: 0 10px; font-size: 1.5rem;"></i></a>
+      <a href="#"><i class="fab fa-instagram" style="margin: 0 10px; font-size: 1.5rem;"></i></a>
+      <a href="#"><i class="fab fa-linkedin-in" style="margin: 0 10px; font-size: 1.5rem;"></i></a>
+    </div>
+
+    <h2>Japan life Manual</h2>
+  <p>&copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.</p>
+</footer>
+
+<script src="./js/studenthome.js"></script>
+
 </body>
 </html>

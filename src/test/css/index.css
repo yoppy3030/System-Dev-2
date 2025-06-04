@@ -86,6 +86,11 @@ header > div:nth-child(2) h3 {
 /* Style pour les icônes du menu principal */
 .menu-item {
     margin-left: 20px;
+    transition: transform 0.3s ease;
+}
+
+.menu-item:hover {
+    transform: translateY(-5px);
 }
 
 .menu-item a {
@@ -95,10 +100,21 @@ header > div:nth-child(2) h3 {
     text-decoration: none;
     color: #676B56;
     font-weight: 500;
+    transition: color 0.3s ease;
 }
+
+.menu-item:hover a {
+    color: #9B3328;
+}
+
 .menu-item .icon {
     font-size: 1.2rem;
     margin-bottom: 5px;
+    transition: transform 0.3s ease;
+}
+
+.menu-item:hover .icon {
+    transform: scale(1.2);
 }
 
 .menu-item p {
