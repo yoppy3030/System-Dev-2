@@ -21,30 +21,23 @@ body {
 /* =========================================
    ヘッダー
    ========================================= */
-header h1 {
-  text-align: center;
-  font-size: 50px;
+.site-header {
+  background: #b71c1c; /* ヘッダーの背景色 */
+  color: white; /* テキストの色 */
+  display: flex; /* フレックスボックスを使用 */
+  justify-content: space-between; /* スペースを均等に配置 */
+  align-items: center; /* 中央揃え */
+  padding: 16px 32px; /* パディング */
 }
 
 /* ナビゲーションバー */
-.navbar {
-  display: flex;
-  
-  align-items: center;
-  justify-content: space-evenly;
-  background-color: var(--primary-color);
-  padding: 25px 30px;
-}
-
 .logo {
-  background-color: #ddd;
-  border-radius: 50px;
-  padding: 10px 20px;
-  text-align: center;
-  font-weight: bold;
+  font-size: 20px; /* フォントサイズ */
+  font-weight: bold; /* 太字 */
+  margin-left: 22px; /* 右側に寄せる */
 }
 
-.nav-links a {
+.main-nav a {
   margin: 0 10px;
   text-decoration: none;
   color: white;
@@ -52,7 +45,7 @@ header h1 {
   position: relative;
 }
 
-.nav-links a::after {
+.main-nav a::after {
   content: '';
   position: absolute;
   width: 0;
@@ -63,7 +56,7 @@ header h1 {
   transition: width 0.3s ease;
 }
 
-.nav-links a:hover::after {
+.main-nav a:hover::after {
   width: 100%;
 }
 
@@ -328,3 +321,4 @@ footer {
   color: var(--secondary-color);
   transform: translateY(-3px);
 }
+

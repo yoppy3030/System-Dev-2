@@ -24,7 +24,6 @@ body {
   font-weight: bold;
 }
 
-
 .main-nav a {
   margin: 0 10px;
   text-decoration: none;
@@ -32,7 +31,6 @@ body {
   font-weight: 500;
   position: relative;
 }
-
 
 .main-nav a::after {
   content: '';
