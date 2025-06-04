@@ -1,38 +1,129 @@
-/* professional.css */
+/* =========================================
+   変数定義
+   ========================================= */
+:root {
+  --primary-color: #b71c1c;    /* メインカラー（赤） */
+  --secondary-color: #654a4a;  /* セカンダリカラー（茶色） */
+  --light-text: #ffffff;       /* 明るいテキスト色 */
+  --dark-text: #333333;        /* 暗いテキスト色 */
+  --border-color: #eeeeee;     /* ボーダーカラー */
+  --hover-color: #8b8b8b;      /* ホバー時の色 */
+}
 
+/* =========================================
+   基本スタイル
+   ========================================= */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f8f9fa;
-  color: #333;
+  color: var(--dark-text);
 }
 
-.navbar {
-  background-color: red;
-  padding: 1rem 2rem;
+/* =========================================
+   ヘッダーとナビゲーション
+   ========================================= */
+.site-header {
+  background: var(--primary-color);
+  color: var(--light-text);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: white;
+  padding: 16px 32px;
 }
 
-.navbar .logo {
-  font-size: 1.5rem;
+.logo {
+  font-size: 20px;
   font-weight: bold;
+  margin-left: 22px;
 }
 
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
-}
-
-.nav-links a {
+.main-nav a {
+  margin: 0 10px;
   text-decoration: none;
   color: white;
   font-weight: 500;
+  position: relative;
 }
 
+.main-nav a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background-color: white;
+  transition: width 0.3s ease;
+}
+
+.main-nav a:hover::after {
+  width: 100%;
+}
+
+/* =========================================
+   言語選択ドロップダウン
+   ========================================= */
+.language-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.translate-btn {
+  background-color: var(--light-text);
+  color: var(--dark-text);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.translate-btn:hover {
+  background-color: var(--hover-color);
+}
+
+.language-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--light-text);
+  min-width: 160px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  border-radius: 4px;
+  z-index: 1000;
+  margin-top: 5px;
+}
+
+.language-dropdown.show {
+  display: block;
+}
+
+.language-option {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--dark-text);
+}
+
+.language-option:hover,
+.language-option.active {
+  background-color: var(--hover-color);
+  color: var(--light-text);
+}
+
+/* =========================================
+   メインコンテンツ
+   ========================================= */
 .hero {
   background-image: url('https://images.unsplash.com/photo-1587502537745-76f3c0ba7945');
   background-size: cover;
@@ -42,14 +133,14 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: white;
+  color: var(--light-text);
   padding: 1rem;
 }
 
 .hero h1 {
   font-size: 3rem;
   margin-bottom: 0.5rem;
-  color: black;
+  color: var(--dark-text);
 }
 
 .hero p {
@@ -64,7 +155,7 @@ body {
 }
 
 .info-block {
-  background-color: #ffffff;
+  background-color: var(--light-text);
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -76,19 +167,30 @@ body {
 }
 
 .info-block h2 {
-  color: red;
+  color: var(--primary-color);
   margin-bottom: 0.5rem;
 }
 
+.section {
+  background: var(--light-text);
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* =========================================
+   フッター
+   ========================================= */
 footer {
-  background-color: #343a40;
-  color: white;
+  background-color: var(--secondary-color);
+  color: var(--light-text);
   padding: 2rem;
   text-align: center;
 }
 
 .footer-content a {
-  color: #17a2b8;
+  color: var(--light-text);
   text-decoration: none;
 }
 
@@ -101,19 +203,12 @@ footer {
 }
 
 .social-icons a {
-  color: white;
+  color: var(--light-text);
   margin: 0 0.5rem;
   font-size: 1.5rem;
 }
 
 .social-icons a:hover {
-  color: red;
-}
-.section {
-  background: white;
-  margin-bottom: 1.5rem;
-  padding: 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  color: var(--primary-color);
 }
 

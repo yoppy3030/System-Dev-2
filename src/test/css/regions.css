@@ -292,33 +292,3 @@ main {
     background-color: #b2b3b1;
     color: var(--light-text);
   }
-
-.submenu-item {
-  display: block;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  padding: 30px 20px;
-  color: #333;
-  text-decoration: none;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.submenu-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-  background: #fafafa;
-}
-
-.submenu-item h3 {
-  margin-bottom: 10px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #000;
-}
-
-.submenu-item p {
-  margin: 0;
-  font-size: 14px;
-  color: #555;
-}
