@@ -244,6 +244,7 @@ main {
   margin: auto;
 }
 
+
 .submenu-item {
   display: block;
   background: #ffffff;
@@ -257,11 +258,7 @@ main {
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.submenu-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-  background: #fafafa;
-}
+
 
 /* Footer */
 
@@ -318,6 +315,7 @@ footer {
   color: var(--secondary-color);
   transform: translateY(-3px);
 }
+
 
 
 

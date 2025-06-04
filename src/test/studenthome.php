@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study in Japan - Custom Clone</title>
+  <title>JAPAN Life Manual - Custom Clone</title>
   <link rel="stylesheet" href="./css/studenthome.css">
 </head>
 <body>
   <header class="site-header">
-    <div class="logo">STUDY in JAPAN</div>
+    <div class="logo">JAPAN Life Manual</div>
     <nav class="main-nav">
       <a href="index.php">Home</a>
       <a href="travelers_homePage.php">Travelers</a>

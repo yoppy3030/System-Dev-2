@@ -65,6 +65,7 @@
             
 
         </div>
+<<<<<<< HEAD
         
             <section class="submenu-grid">
             <a class="submenu-item" href="kensai.php">
@@ -129,4 +130,30 @@
     </footer>
 
     <!-- JavaScriptファイルの読み込み -->
+=======
+        <div>
+            <ol>
+                <h3><li>Kensai region</li></h3>
+                <ul><li><h3>Nara</h3></li>
+                        <h4>Don't Tease or Harass the Deer</h4>
+                            <p>Nara's deer are sacred and protected, but they can be aggressive if provoked. Do not pull their antlers, ride them, or offer food 
+                            in a teasing manner. Respect their space to avoid bites or headbutts.</p>
+            
+                        <h4>Don't Feed the Deer Unauthorized Food</h4>
+                            <p>Only feed deer the official "shika senbei" crackers sold at stalls in Nara Park. Other snacks like bread, fruit,
+                                 or chips can harm their health and are strictly discouraged.</p>
+                                
+                        <h4>Don't Litter in the Park or Temple Areas</h4>
+                            <p>Nara is very clean and environmentally conscious. Dispose of trash properly or take it with you if no bins are available. Littering not
+                                 only spoils the beauty but can also harm the deer.</p>
+                                
+                        <h4> Don't Touch or Damage Religious Sites</h4>
+                            <p>Nara is home to many historical temples and shrines. Don't touch statues, climb sacred areas, or behave loudly. Respect the spiritual 
+                                atmosphere of places like Todai-ji and Kasuga Taisha.</p>
+                    </ul>
+               
+            </ol>
+        </div>
+</body>
+>>>>>>> 94509b71e311ed696bfcfc22edd34423846e6057
 </html>
