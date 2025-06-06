@@ -59,10 +59,10 @@
   </section>
 
   <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">
-  <h2>Contact Us</h2>
-  <p>Email: 22200797@ecc.ac.jp</p>
-  <p>Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan</p>
-  <p>Phone: +81 3-1234-5678</p>
+    <h2>Contact Us</h2>
+    <p>Email: 22200797@ecc.ac.jp</p>
+    <p>Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan</p>
+    <p>Phone: +81 3-1234-5678</p>
 
   <div style="margin: 1.5rem 0;">
     <a href="#"><i class="fab fa-facebook-f" style="margin: 0 10px; font-size: 1.5rem;"></i></a>
