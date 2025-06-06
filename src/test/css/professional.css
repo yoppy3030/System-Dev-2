@@ -125,6 +125,7 @@ body {
    メインコンテンツ
    ========================================= */
 .hero {
+  position: relative;
   background-image: url('https://images.unsplash.com/photo-1587502537745-76f3c0ba7945');
   background-size: cover;
   background-position: center;
@@ -132,18 +133,35 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
   text-align: center;
   color: var(--light-text);
   padding: 1rem;
 }
 
-.hero h1 {
+.hero-content h1 {
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
   font-size: 3rem;
   margin-bottom: 0.5rem;
-  color: var(--dark-text);
 }
 
-.hero p {
+.hero-content p {
+  color: white;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
   font-size: 1.25rem;
 }
 

@@ -31,6 +31,7 @@
 
   <!-- Hero Section -->
   <section class="hero" style="background-image: url(./img/namba.jpg);">
+    <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1>Professional Life in Japan</h1>
       <p>Your trusted guide for working professionally in Japan.</p>
