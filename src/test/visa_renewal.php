@@ -38,11 +38,13 @@
     <h2>Steps to Renew Your Student Visa</h2>
     <div class="step-box">
       <h3>1. Prepare Your Documents</h3>
-      <p>- Application Form<br>
-         - Passport & Residence Card<br>
-         - Certificate of Enrollment<br>
-         - Transcript of Records<br>
-         - Proof of Funds (bank balance, scholarship, etc.)</p>
+      <p>
+        <span class="doc-item">- Application Form</span><br>
+        <span class="doc-item">- Passport &amp; Residence Card</span><br>
+        <span class="doc-item">- Certificate of Enrollment</span><br>
+        <span class="doc-item">- Transcript of Records</span><br>
+        <span class="doc-item">- Proof of Funds (bank balance, scholarship, etc.)</span>
+      </p>
     </div>
 
     <div class="step-box">
