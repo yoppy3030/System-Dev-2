@@ -165,12 +165,16 @@ body {
   font-size: 1.25rem;
 }
 
+/* Add this to your existing CSS or replace the .main-content and related section */
+
 .main-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
   padding: 2rem;
 }
+
+/* Optional: You can keep .info-block as-is, or enhance it slightly for visual variation */
 
 .info-block {
   background-color: var(--light-text);
@@ -189,13 +193,18 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.section {
-  background: var(--light-text);
-  margin-bottom: 1.5rem;
-  padding: 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+/* Optional improvement for better spacing on smaller screens */
+@media screen and (max-width: 600px) {
+  .main-content {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .info-block {
+    padding: 1rem;
+  }
 }
+
 
 /* =========================================
    フッター
