@@ -128,3 +128,23 @@ function translatePage(targetLang) {
     
     currentLanguage = targetLang;
 }
+// ドロップダウンメニュー表示制御
+document.querySelectorAll('.main-nav ul li > a').forEach(anchor => {
+  anchor.addEventListener('click', e => {
+    const submenu = anchor.nextElementSibling;
+    if (submenu && submenu.classList.contains('dropdown-menu')) {
+      e.preventDefault();
+      submenu.classList.toggle('show');
+    }
+  });
+});
+
+// Optional: close dropdown on click outside
+document.addEventListener('click', e => {
+  document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+    if (!menu.parentElement.contains(e.target)) {
+      menu.classList.remove('show');
+    }
+  });
+});
+
