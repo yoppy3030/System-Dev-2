@@ -54,7 +54,7 @@
   <section class="links-section">
     <h2>Useful Links</h2>
     <a href="https://www.moj.go.jp/isa/" target="_blank" class="btn">Immigration Services Agency (Japan)</a>
-    <a href="https://www.studyinjapan.go.jp/en/life/life06/" target="_blank" class="btn">Visa Info @ Study in Japan</a>
+    <a href="https://www.studyinjapan.go.jp/en/planning/immigration-procedures/" target="_blank" class="btn">Visa Info @ Study in Japan</a>
   </section>
 
   <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">
