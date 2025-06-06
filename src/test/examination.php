@@ -25,32 +25,32 @@
   </section>
 
   <section class="submenu-grid">
-    <a class="submenu-item" href="#">Overview</a>
-    <a class="submenu-item" href="#">Test Schedule</a>
-    <a class="submenu-item" href="#">Registration Info</a>
-    <a class="submenu-item" href="#">Study Resources</a>
+    <a class="submenu-item" href="https://www.jlpt.jp/sp/e/about/levelsummary.html">Overview</a>
+    <a class="submenu-item" href="https://info.jees-jlpt.jp/other/2025%E5%9B%BD%E5%86%85%E8%A9%A6%E9%A8%93%E3%81%AE%E5%AE%9F%E6%96%BD%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html#">Test Schedule</a>
+    <a class="submenu-item" href="https://www.jlpt.jp/sp/e/application/domestic_index.html">Registration Info</a>
+    <a class="submenu-item" href="https://www.tofugu.com/japanese-learning-resources-database/">Study Resources</a>
   </section>
 
   <section class="jlpt-levels">
   <h2>Explore JLPT Levels</h2>
   <div class="jlpt-level-grid">
-    <a href="https://www.jlpt.jp/e/about/leveln5.html" target="_blank" class="jlpt-level-card">
+    <a href="https://www.jlpt.jp/e/samples/n5/index.html" target="_blank" class="jlpt-level-card">
       <h3>N5</h3>
       <p>Basic phrases & kanji for daily conversation</p>
     </a>
-    <a href="https://www.jlpt.jp/e/about/leveln4.html" target="_blank" class="jlpt-level-card">
+    <a href="https://www.jlpt.jp/e/samples/n4/index.html" target="_blank" class="jlpt-level-card">
       <h3>N4</h3>
       <p>Grammar and vocabulary for simple communication</p>
     </a>
-    <a href="https://www.jlpt.jp/e/about/leveln3.html" target="_blank" class="jlpt-level-card">
+    <a href="https://www.jlpt.jp/e/samples/n3/index.html" target="_blank" class="jlpt-level-card">
       <h3>N3</h3>
       <p>Intermediate Japanese for workplace & society</p>
     </a>
-    <a href="https://www.jlpt.jp/e/about/leveln2.html" target="_blank" class="jlpt-level-card">
+    <a href="https://www.jlpt.jp/e/samples/n2/index.html" target="_blank" class="jlpt-level-card">
       <h3>N2</h3>
       <p>Advanced reading, writing & listening fluency</p>
     </a>
-    <a href="https://www.jlpt.jp/e/about/leveln1.html" target="_blank" class="jlpt-level-card">
+    <a href="https://www.jlpt.jp/e/samples/n1/index.html" target="_blank" class="jlpt-level-card">
       <h3>N1</h3>
       <p>Native-level fluency and academic Japanese</p>
     </a>

@@ -41,11 +41,11 @@
     <strong>Examinations JLPT</strong><br>
     <small>Prepare for N5–N1 Japanese tests</small>
   </a>
-  <a class="submenu-item" href="#">
+  <a class="submenu-item" href="scholarships.php">
     <strong>Scholarships</strong><br>
     <small>Find funding for your education in Japan</small>
   </a>
-  <a class="submenu-item" href="#">
+  <a class="submenu-item" href="visa_renewal.php">
     <strong>Visa Renewal</strong><br>
     <small>Learn how to extend your stay legally</small>
   </a>

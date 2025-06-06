@@ -15,7 +15,7 @@
       <a href="travelers_homePage.php">Travelers</a>
       <a href="professional.php">Professional</a>
       <a href="lifeinjapan.php">Life in Japan</a>
-      <a href="event.php">Events</a>
+      <a href="events.php">Events</a>
     </nav>
   </header>
 

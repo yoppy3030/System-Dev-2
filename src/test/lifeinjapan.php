@@ -16,7 +16,7 @@
       <a href="professional.php">Professional</a>
       <a href="lifeinjapan.php">Life in Japan</a>
       <a href="workingjapan.php">Jobs & Careers</a>
-      <a href="#">Events</a>
+      <a href="events.php">Events</a>
     </nav>
   </header>
 
