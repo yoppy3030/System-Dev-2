@@ -3,47 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Student Events in Japan</title>
+  <title data-translate>Student Events in Japan</title>
   <link rel="stylesheet" href="./css/events.css" />
 </head>
 <body>
   <header class="site-header">
-    <div class="logo">JAPAN Life Manual</div>
+    <div class="logo" data-no-translate>JAPAN Life Manual</div>
     <nav class="main-nav">
-      <a href="index.php">Home</a>
-      <a href="lifeinjapan.php">Life in Japan</a>
-      <a href="workingjapan.php">Jobs in Japan</a>
-      <a href="events.php" class="active">Events</a>
+      <a href="index.php" data-translate>Home</a>
+      <a href="lifeinjapan.php" data-translate>Life in Japan</a>
+      <a href="workingjapan.php" data-translate>Jobs in Japan</a>
+        <!-- 言語選択ドロップダウン -->
+        <div class="language-selector">
+          <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+            <div class="language-dropdown">
+            <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+            <button class="language-option" data-lang="en">🇺🇸 English</button>
+            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+            <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+          </div>
+      </div>
     </nav>
   </header>
 
   <section class="hero">
     <div class="hero-content">
-      <h1>Upcoming Student Events</h1>
-      <p>Stay updated with student-focused events in Japan</p>
+      <h1 data-translate>Upcoming Student Events</h1>
+      <p data-translate>Stay updated with student-focused events in Japan</p>
     </div>
   </section>
 
   <section class="event-list">
     <a href="https://comp.ecc.ac.jp/opencampus/" class="event-card">
-      <h2>ECC Open Campus Day</h2>
-      <p><strong>Date:</strong> Upcoming</p>
-      <p><strong>Location:</strong> Osaka ECC College</p>
-      <p>Explore the campus, meet faculty, and experience demo classes!</p>
-  </a>
+      <h2 data-translate>ECC Open Campus Day</h2>
+      <p>
+        <span class="doc-item" data-translate>Date: Upcoming</span><br>
+        <span class="doc-item" data-translate>Location: Osaka ECC College</span><br>
+        <span class="doc-item" data-translate>Description: Explore the campus, meet faculty, and experience demo classes!</span>
+      </p>
+    </a>
 
     <a href="https://inter-jobfair.jp/" class="event-card">
       <h2>Tokyo International Student Job Fair</h2>
-      <p><strong>Date:</strong> Upcoming</p>
-      <p><strong>Location:</strong> Tokyo Big Sight</p>
-      <p>Networking opportunity for students looking for part-time or full-time jobs.</p>
+      <p>
+        <span class="doc-item">Date: Upcoming</span><br>
+        <span class="doc-item">Location: Tokyo Big Sight</span><br>
+        <span class="doc-item">Description: Networking opportunity for students looking for part-time or full-time jobs.</span>
+      </p>
     </a>
 
     <a href="https://en.japantravel.com/events/osaka?q=Osaka+City" class="event-card">
       <h2>Japanese Culture Day for Foreign Students</h2>
-      <p><strong>Date:</strong> Upcoming</p>
-      <p><strong>Location:</strong>unknown</p>
-      <p>Experience tea ceremony, calligraphy, and yukata wearing.</p>
+      <p>
+        <span class="doc-item">Date: Upcoming</span><br>
+        <span class="doc-item">Location: unknown</span><br>
+        <span class="doc-item">Description: Experience tea ceremony, calligraphy, and yukata wearing.</span>
+      </p>
     </a>
   </section>
 
@@ -63,5 +78,6 @@
     <h2>Japan life Manual</h2>
   <p>&copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.</p>
 </footer>
+<script src="./js/events.js"></script>
 </body>
 </html>
