@@ -25,26 +25,26 @@
   </section>
 
   <section class="event-list">
-    <div class="event-card">
+    <a href="https://comp.ecc.ac.jp/opencampus/" class="event-card">
       <h2>ECC Open Campus Day</h2>
-      <p><strong>Date:</strong> June 15, 2025</p>
+      <p><strong>Date:</strong> Upcoming</p>
       <p><strong>Location:</strong> Osaka ECC College</p>
       <p>Explore the campus, meet faculty, and experience demo classes!</p>
-    </div>
+  </a>
 
-    <div class="event-card">
+    <a href="https://inter-jobfair.jp/" class="event-card">
       <h2>Tokyo International Student Job Fair</h2>
-      <p><strong>Date:</strong> June 29, 2025</p>
+      <p><strong>Date:</strong> Upcoming</p>
       <p><strong>Location:</strong> Tokyo Big Sight</p>
       <p>Networking opportunity for students looking for part-time or full-time jobs.</p>
-    </div>
+    </a>
 
-    <div class="event-card">
+    <a href="https://en.japantravel.com/events/osaka?q=Osaka+City" class="event-card">
       <h2>Japanese Culture Day for Foreign Students</h2>
-      <p><strong>Date:</strong> July 7, 2025</p>
-      <p><strong>Location:</strong> Kyoto International Center</p>
+      <p><strong>Date:</strong> Upcoming</p>
+      <p><strong>Location:</strong>unknown</p>
       <p>Experience tea ceremony, calligraphy, and yukata wearing.</p>
-    </div>
+    </a>
   </section>
 
   <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">

@@ -76,16 +76,20 @@ body {
 }
 
 .event-card {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  background-color: #fafafa;
+  transition: background-color 0.3s;
+}
+.event-card:hover {
+  background-color: #ffe9e9;
 }
 
-.event-card:hover {
-  transform: scale(1.01);
-}
 
 .event-card h2 {
   margin-top: 0;
