@@ -232,7 +232,6 @@ main {
 }
 
 
-
 /* Submenu Grid */
 .submenu-grid {
   display: grid;
@@ -243,7 +242,6 @@ main {
   max-width: 1200px;
   margin: auto;
 }
-
 
 .submenu-item {
   display: block;
@@ -256,6 +254,12 @@ main {
   font-weight: 600;
   font-size: 18px;
   transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.submenu-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  background: #fafafa;
 }
 
 
