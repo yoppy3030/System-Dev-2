@@ -49,9 +49,9 @@
     <strong>Visa Renewal</strong><br>
     <small>Learn how to extend your stay legally</small>
   </a>
-  <a class="submenu-item" href="#">
+  <a class="submenu-item" href="useful_materials.php">
     <strong>Useful Materials</strong><br>
-    <small>Download guides, apps, and checklists</small>
+    <small>Garbage rules,Rental and etc</small>
   </a>
 </section>
   <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">↑</button>
