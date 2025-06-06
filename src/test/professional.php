@@ -46,7 +46,7 @@
 
     <div class="info-block">
       <h2><i class="fas fa-clock"></i> Work Hours and Holidays</h2>
-      <p>Standard hours are 9 AM–6 PM. Key holidays: New Year, Golden Week, Obon.</p>
+      <p>Standard hours are 9 AM-6 PM. Key holidays: New Year, Golden Week, Obon.</p>
     </div>
 
     <div class="info-block">
