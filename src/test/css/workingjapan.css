@@ -1,3 +1,15 @@
+/* =========================================
+   変数定義
+   ========================================= */
+   :root {
+    --primary-color: #b71c1c;    /* メインカラー（赤） */
+    --secondary-color: #654a4a;  /* セカンダリカラー（茶色） */
+    --light-text: #ffffff;       /* 明るいテキスト色 */
+    --dark-text: #333333;        /* 暗いテキスト色 */
+    --border-color: #eeeeee;     /* ボーダーカラー */
+    --hover-color: #8b8b8b;      /* ホバー時の色 */
+  }
+
 /* Base Styles */
 body {
   margin: 0;
@@ -24,14 +36,26 @@ body {
 }
 
 .main-nav a {
-  color: white;
+  margin: 0 10px;
   text-decoration: none;
-  margin-left: 20px;
+  color: white;
   font-weight: 500;
+  position: relative;
 }
 
-.main-nav a:hover {
-  text-decoration: underline;
+.main-nav a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background-color: white;
+  transition: width 0.3s ease;
+}
+
+.main-nav a:hover::after {
+  width: 100%;
 }
 
 .hero {

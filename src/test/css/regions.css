@@ -1,4 +1,14 @@
-
+/* =========================================
+   変数定義
+   ========================================= */
+:root {
+  --primary-color: #b71c1c;    /* メインカラー（赤） */
+  --secondary-color: #654a4a;  /* セカンダリカラー（茶色） */
+  --light-text: #ffffff;       /* 明るいテキスト色 */
+  --dark-text: #333333;        /* 暗いテキスト色 */
+  --border-color: #eeeeee;     /* ボーダーカラー */
+  --hover-color: #8b8b8b;      /* ホバー時の色 */
+}
 
 .hero-img{
     background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("../img/sakura.jpg");
@@ -23,35 +33,66 @@
     font-weight: bold;
 }
 
+/* =========================================
+    基本スタイル
+    ========================================= */
 body {
   margin: 0;
   font-family: sans-serif;
 }
-header h1{
-  text-align: center;
-  font-size: 50px;
-}
-.navbar {
-  
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  background-color:#d71c1c; /* red color */
-  color: white;
-  padding: 25px 30px;
+
+/* =========================================
+    ヘッダー
+    ========================================= */
+.site-header {
+  background: #b71c1c; /* ヘッダーの背景色 */
+  color: white; /* テキストの色 */
+  display: flex; /* フレックスボックスを使用 */
+  justify-content: space-between; /* スペースを均等に配置 */
+  align-items: center; /* 中央揃え */
+  padding: 16px 32px; /* パディング */
 }
 
+/* ナビゲーションバー */
+.logo {
+  font-size: 20px; /* フォントサイズ */
+  font-weight: bold; /* 太字 */
+  margin-left: 22px; /* 右側に寄せる */
+}
 
-.nav-links a {
+.main-nav a {
   margin: 0 10px;
   text-decoration: none;
   color: white;
-  font-weight: bold;
+  font-weight: 500;
+  position: relative;
+}
+
+/* 下線アニメーション用のスタイル */
+.main-nav a.with-underline::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background-color: white;
+  transition: width 0.3s ease;
+}
+
+.main-nav a.with-underline:hover::after {
+  width: 100%;
+}
+
+/* 「Region」だけ下線が出ないように */
+.main-nav a.no-underline:hover::after {
+  width: 0;
 }
 
 .search input {
   padding: 5px 10px;
 }
+
 
 /* Sidebar default (hidden) */
 .sidebar {
@@ -88,7 +129,7 @@ header h1{
 /* Menu Button styling */
 .menu-button {
   position: absolute;
-  top: 155px;
+  top: 20px;
   left: 15px;
   cursor: pointer;
   display: flex;
@@ -150,33 +191,193 @@ header h1{
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #f1f1f1;
+  background-color: white;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 1000;
+  top: 100%;  /* 親要素の直下に配置 */
+  left: 0;
 }
 
 /* Links inside the dropdown */
 .dropdown-content a {
-  color: black;
+  color: var(--dark-text);
   padding: 12px 16px;
   text-decoration: none;
   display: block;
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #4c4545;}
+.dropdown-content a:hover {
+  background-color: var(--hover-color);
+  color: var(--light-text);
+}
 
 /* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: #3e8e41;}
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
 
 main {
-    max-width: 1200px; /* Set a max-width to keep content from stretching too wide */
-    margin: 0 auto; /* Center the main content */
-    padding: 20px;
+    /*max-width: 1200px; /* Set a max-width to keep content from stretching too wide */
+    margin: 0 ; /* Center the main content */
+    padding: 0;
     background-color: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+   /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);*/
 }
+
+
+
+/* Submenu Grid */
+.submenu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 60px 20px;
+  background: #fff;
+  max-width: 1200px;
+  margin: auto;
+}
+
+
+.submenu-item {
+  display: block;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 30px 20px;
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 18px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+
+
+/* Footer */
+
+footer {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  padding: 3rem 0;
+  margin-top: 4rem;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+}
+
+.footer-content h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.footer-content p {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.footer-content a {
+  color: var(--light-text);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-content a:hover {
+  color: var(--secondary-color);
+}
+
+/* ソーシャルアイコン */
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.social-icons a {
+  font-size: 1.5rem;
+  color: var(--light-text);
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: var(--secondary-color);
+  transform: translateY(-3px);
+}
+
+
+
+
+
+
+
+/* =========================================
+   言語選択機能
+   ========================================= */
+   .language-selector {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .translate-btn {
+    background-color: var(--light-text);
+    color: var(--dark-text);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .translate-btn:hover {
+    background-color: var(--hover-color);
+  }
+  
+  .language-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--light-text);
+    min-width: 160px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    z-index: 1000;
+    margin-top: 5px;
+  }
+  
+  .language-dropdown.show {
+    display: block;
+  }
+  
+  .language-option {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--dark-text);
+  }
+  
+  .language-option:hover,
+  .language-option.active {
+    background-color: #b2b3b1;
+    color: var(--light-text);
+  }
