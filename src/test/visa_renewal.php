@@ -14,6 +14,16 @@
       <a href="studenthome.php">StudentHome</a>
       <a href="lifeinjapan.php">Life in Japan</a>
       <a href="scholarships.php">Scholarships</a>
+      <!-- 言語選択ドロップダウン -->
+      <div class="language-selector">
+        <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+        <div class="language-dropdown">
+            <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+            <button class="language-option" data-lang="en">🇺🇸 English</button>
+            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+            <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+        </div>
+      </div>
     </nav>
   </header>
 
@@ -28,11 +38,13 @@
     <h2>Steps to Renew Your Student Visa</h2>
     <div class="step-box">
       <h3>1. Prepare Your Documents</h3>
-      <p>- Application Form<br>
-         - Passport & Residence Card<br>
-         - Certificate of Enrollment<br>
-         - Transcript of Records<br>
-         - Proof of Funds (bank balance, scholarship, etc.)</p>
+      <p>
+        <span class="doc-item">- Application Form</span><br>
+        <span class="doc-item">- Passport &amp; Residence Card</span><br>
+        <span class="doc-item">- Certificate of Enrollment</span><br>
+        <span class="doc-item">- Transcript of Records</span><br>
+        <span class="doc-item">- Proof of Funds (bank balance, scholarship, etc.)</span>
+      </p>
     </div>
 
     <div class="step-box">
@@ -73,5 +85,6 @@
   <h2>Japan life Manual</h2>
   <p>&copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.</p>
 </footer>
+<script src="./js/visa_renewal.js"></script>
 </body>
 </html>
