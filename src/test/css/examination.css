@@ -1,0 +1,59 @@
+/* =========================================
+    言語選択機能
+    ========================================= */
+    .language-selector {
+    position: relative;
+    display: inline-block;
+    }
+
+    .translate-btn {
+    background-color: var(--light-text);
+    color: var(--dark-text);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    }
+
+    .translate-btn:hover {
+    background-color: var(--hover-color);
+    }
+
+    .language-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--light-text);
+    min-width: 160px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    z-index: 1000;
+    margin-top: 5px;
+    }
+
+    .language-dropdown.show {
+    display: block;
+    }
+
+    .language-option {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--dark-text);
+    }
+
+    .language-option:hover,
+    .language-option.active {
+    background-color: #b2b3b1;
+    color: var(--light-text);
+    }
