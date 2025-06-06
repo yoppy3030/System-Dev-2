@@ -8,7 +8,8 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="logo">STUDY in JAPAN</div>
+    <div class="logo">    <div class="logo">JAPAN Life Manual</div>
+    </div>
     <nav class="main-nav">
       <a href="index.php">Home</a>
       <a href="studenthome.php">StudentHome</a>
