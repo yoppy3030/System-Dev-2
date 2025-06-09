@@ -64,7 +64,7 @@ function translatePage(targetLang) {
     }
 
     const elements = document.querySelectorAll(
-        'p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, .submenu-item strong, .submenu-item small'
+        'p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, .submenu-item strong, .submenu-item small, section .submenu-item'
     );
 
     
