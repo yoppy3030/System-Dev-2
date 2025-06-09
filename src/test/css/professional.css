@@ -7,7 +7,7 @@
   --light-text: #ffffff;       /* 明るいテキスト色 */
   --dark-text: #333333;        /* 暗いテキスト色 */
   --border-color: #eeeeee;     /* ボーダーカラー */
-  --hover-color: #8b8b8b;      /* ホバー時の色 */
+  --hover-color: #8e1414;      /* ホバー時の赤色 */
 }
 
 /* =========================================
@@ -29,7 +29,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 32px;
+  padding: 16px 24px;
+  flex-wrap: wrap;
+  row-gap: 10px;
 }
 
 .logo {
@@ -38,12 +40,26 @@ body {
   margin-left: 22px;
 }
 
-.main-nav a {
-  margin: 0 10px;
-  text-decoration: none;
-  color: white;
-  font-weight: 500;
+.main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.main-nav ul li {
   position: relative;
+}
+
+.main-nav a {
+  margin: 0 12px;
+  text-decoration: none;
+  color: var(--light-text);
+  font-weight: 600;
+  position: relative;
+  transition: color 0.3s ease;
 }
 
 .main-nav a::after {
@@ -53,8 +69,13 @@ body {
   height: 2px;
   bottom: -5px;
   left: 0;
-  background-color: white;
+  background-color: var(--hover-color);
   transition: width 0.3s ease;
+}
+
+.main-nav a:hover,
+.main-nav a:focus {
+  color: var(--hover-color);
 }
 
 .main-nav a:hover::after {
@@ -70,20 +91,23 @@ body {
 }
 
 .translate-btn {
-  background-color: var(--light-text);
-  color: var(--dark-text);
+  background-color: var(--primary-color);
+  color: var(--light-text);
   border: none;
-  padding: 5px 10px;
+  padding: 6px 14px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   display: flex;
   align-items: center;
   gap: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
 .translate-btn:hover {
   background-color: var(--hover-color);
+  color: var(--light-text);
 }
 
 .language-dropdown {
@@ -113,11 +137,12 @@ body {
   cursor: pointer;
   font-size: 14px;
   color: var(--dark-text);
+  transition: background-color 0.2s ease;
 }
 
 .language-option:hover,
 .language-option.active {
-  background-color: var(--hover-color);
+  background-color: var(--primary-color);
   color: var(--light-text);
 }
 
@@ -129,7 +154,7 @@ body {
   background-image: url('https://images.unsplash.com/photo-1587502537745-76f3c0ba7945');
   background-size: cover;
   background-position: center;
-  height: 300px;
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,17 +180,15 @@ body {
 .hero-content h1 {
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-  font-size: 3rem;
+  font-size: 2.5rem;
   margin-bottom: 0.5rem;
 }
 
 .hero-content p {
   color: white;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
 }
-
-/* Add this to your existing CSS or replace the .main-content and related section */
 
 .main-content {
   display: grid;
@@ -174,18 +197,18 @@ body {
   padding: 2rem;
 }
 
-/* Optional: You can keep .info-block as-is, or enhance it slightly for visual variation */
-
 .info-block {
   background-color: var(--light-text);
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+  border-left: 4px solid var(--primary-color);
 }
 
 .info-block:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
 .info-block h2 {
@@ -193,7 +216,6 @@ body {
   margin-bottom: 0.5rem;
 }
 
-/* Optional improvement for better spacing on smaller screens */
 @media screen and (max-width: 600px) {
   .main-content {
     padding: 1rem;
@@ -204,7 +226,6 @@ body {
     padding: 1rem;
   }
 }
-
 
 /* =========================================
    フッター
@@ -219,9 +240,11 @@ footer {
 .footer-content a {
   color: var(--light-text);
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .footer-content a:hover {
+  color: var(--primary-color);
   text-decoration: underline;
 }
 
@@ -233,29 +256,16 @@ footer {
   color: var(--light-text);
   margin: 0 0.5rem;
   font-size: 1.5rem;
+  transition: color 0.3s ease;
 }
 
 .social-icons a:hover {
-  color: var(--primary-color);
+  color: var(--hover-color);
 }
 
 /* =========================================
    ドロップダウンメニュー
    ========================================= */
-.main-nav ul li {
-  position: relative;
-}
-
-.main-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;           /* Makes list items line up horizontally */
-  align-items: center;     /* Vertically center items */
-  gap: 15px;               /* Space between items */
-}
-
-
 .dropdown-menu {
   display: none;
   position: absolute;
@@ -269,7 +279,7 @@ footer {
   border-radius: 4px;
   overflow: hidden;
   z-index: 1000;
-  white-space: nowrap; /* Prevent horizontal wrapping */
+  white-space: nowrap;
   transition: opacity 0.3s ease;
   opacity: 0;
   pointer-events: none;
@@ -286,15 +296,18 @@ footer {
   padding: 12px 16px;
   color: var(--light-text);
   text-decoration: none;
+  transition: background-color 0.3s ease;
 }
 
 .dropdown-menu li a:hover {
   background-color: var(--hover-color);
 }
 
-/* Hero Section for Daily Life Page */
+/* =========================================
+   Hero Section for Daily Life Page
+   ========================================= */
 .hero.daily-hero {
-  background-image: url('../img/train_jpn_1.jpg'); /* Make sure the image exists in this path */
+  background-image: url('../img/train_jpn_1.jpg');
   background-size: cover;
   background-position: center;
   height: 300px;
@@ -313,7 +326,7 @@ footer {
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.5); /* dark overlay for text readability */
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .hero.daily-hero .hero-text {
@@ -329,4 +342,25 @@ footer {
 .hero.daily-hero p {
   font-size: 1.2rem;
 }
+/* =========================================
+   詳細ボタン (Details Button)
+   ========================================= */
+.details-button {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  border: none;
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: inline-block;
+  text-decoration: none;
+}
 
+.details-button:hover {
+  background-color: var(--hover-color);
+  transform: translateY(-2px);
+}
