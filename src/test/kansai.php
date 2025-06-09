@@ -7,27 +7,33 @@
     <title>Life in Japan</title>
 </head>
 <body>
-    <header>
-        <h1>JAPAN Life Manual</h1>
-        <div class="navbar">
-            <nav class="nav-links">
-                <a href="index.php">Home</a>
-                
-                <a class="#">Region</a>
-                <!-- <div class="dropdown-content">
-                    <a href="#">Hokkaido</a>
-                    <a href="#">Tohoku</a>
-                    <a href="#">Kanto</a>
-                    <a href="#">Chubu</a>
-                </div> -->
-                
-                <a class="#">Transports</a>
-                <a class="#">Food</a>
-                <a class="#">Other</a>
-            </nav>
-             <input type="text" class="search-box" placeholder="search"/>
-        </div>
-        
+    <header class="site-header">
+        <div class="logo">JAPAN Life Manual</div>
+        <nav class="main-nav">
+            <a href="index.php">Home</a>
+            <a href="./regions.php">Region</a>
+            <!-- <div class="dropdown-content">
+                <a href="#">Hokkaido</a>
+                <a href="#">Tohoku</a>
+                <a href="#">Kanto</a>
+                <a href="#">Chubu</a>
+            </div> -->
+            <a class="#">Transports</a>
+            <a class="#">Food</a>
+            <a class="#">Other</a>
+            <!-- 言語選択ドロップダウン -->
+            <div class="language-selector">
+                <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+                <div class="language-dropdown">
+                    <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+                    <button class="language-option" data-lang="en">🇺🇸 English</button>
+                    <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+                    <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+                </div>
+            </div>
+            <!-- 検索ボックス -->
+            <input type="text" class="search-box" placeholder="search"/>
+        </nav>
     </header>
     <main>
 
@@ -58,7 +64,7 @@
          <!-- Main Content -->
          <h1>Introduction to the Kansai Region</h1>
          <img src="./img/kensai.jpg" alt="Kansai Region" class="kansai-image">
-         <p><sThe Kansai Region, also known as Kinki, is one of Japan’s most historically and culturally significant areas. Located in the 
+         <p><sThe Kansai Region, also known as Kinki, is one of Japan's most historically and culturally significant areas. Located in the 
             southern-central part of Honshu, Kansai is home to ancient capitals like Kyoto and Nara, the vibrant city of Osaka, and the 
              international port of Kobe. Rich in tradition, cuisine, and architecture, Kansai offers a unique blend of old and new Japan, 
              making it a must-visit for anyone seeking to experience the heart of Japanese culture.</p><br>
@@ -68,39 +74,39 @@
              <ol>
                 <h2><li>Nara</li></h2>
                 <ul>
-                        <h3><li>Don’t Tease or Harass the Deer</li></h3>
+                        <h3><li>Don't Tease or Harass the Deer</li></h3>
                             <p>Nara's deer are sacred and protected, but they can be aggressive if provoked. Do not pull their antlers, ride them, or offer food 
                             in a teasing manner. Respect their space to avoid bites or headbutts.</p>
             
-                        <h3><li>Don’t Feed the Deer Unauthorized Food</li></h3>
-                            <p>Only feed deer the official “shika senbei” crackers sold at stalls in Nara Park. Other snacks like bread, fruit,
+                        <h3><li>Don't Feed the Deer Unauthorized Food</li></h3>
+                            <p>Only feed deer the official "shika senbei" crackers sold at stalls in Nara Park. Other snacks like bread, fruit,
                                  or chips can harm their health and are strictly discouraged.</p>
                                 
-                        <h3><li>Don’t Litter in the Park or Temple Areas</li></h3>
+                        <h3><li>Don't Litter in the Park or Temple Areas</li></h3>
                             <p>Nara is very clean and environmentally conscious. Dispose of trash properly or take it with you if no bins are available. Littering not
                                  only spoils the beauty but can also harm the deer.</p>
                                 
-                       <h3> <li> Don’t Touch or Damage Religious Sites</li></h3>
-                            <p>Nara is home to many historical temples and shrines. Don’t touch statues, climb sacred areas, or behave loudly. Respect the spiritual 
+                       <h3> <li> Don't Touch or Damage Religious Sites</li></h3>
+                            <p>Nara is home to many historical temples and shrines. Don't touch statues, climb sacred areas, or behave loudly. Respect the spiritual 
                                 atmosphere of places like Todai-ji and Kasuga Taisha.</p>
                     </ul>
                     
                 <h2><li>Osaka</li></h2>
                     <ul>
-                        <h3><li>Don’t Block the Escalator</li></h3>
+                        <h3><li>Don't Block the Escalator</li></h3>
                         <p>In Osaka, people stand on the right side of the escalator, leaving the left side open for walking. Blocking both sides is considered rude and disrupts flow in busy stations.</p>
                     
-                        <h3><li>Don’t Make Loud Phone Calls on Trains</li></h3>
+                        <h3><li>Don't Make Loud Phone Calls on Trains</li></h3>
                         <p>Even though Osaka locals are friendly and casual, talking on the phone inside trains is frowned upon. Keep phones on silent mode and avoid long or loud calls in public transport.</p>
                     
-                        <h3><li>Don’t Litter in Public Areas</li></h3>
-                        <p>Areas like Dotonbori and Namba are very clean despite the crowds. Dispose of trash properly, or take it with you if you can’t find a bin.</p>
+                        <h3><li>Don't Litter in Public Areas</li></h3>
+                        <p>Areas like Dotonbori and Namba are very clean despite the crowds. Dispose of trash properly, or take it with you if you can't find a bin.</p>
                     
-                        <h3><li>Don’t Mock the Kansai Dialect</li></h3>
-                        <p>Osaka people proudly speak Kansai-ben, which is cheerful and unique. Don’t imitate it in a mocking way—respect the local language and culture.</p>
+                        <h3><li>Don't Mock the Kansai Dialect</li></h3>
+                        <p>Osaka people proudly speak Kansai-ben, which is cheerful and unique. Don't imitate it in a mocking way—respect the local language and culture.</p>
                     
-                        <h3><li>Don’t Ignore Local Manners in Temples and Shrines</li></h3>
-                        <p>Even in a lively city like Osaka, temples like Shitenno-ji require quiet and respectful behavior. Don’t shout, take selfies during rituals, or touch sacred objects.</p>
+                        <h3><li>Don't Ignore Local Manners in Temples and Shrines</li></h3>
+                        <p>Even in a lively city like Osaka, temples like Shitenno-ji require quiet and respectful behavior. Don't shout, take selfies during rituals, or touch sacred objects.</p>
                     </ul>   
             </ol>
             

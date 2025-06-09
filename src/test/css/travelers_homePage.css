@@ -13,10 +13,12 @@
 /* =========================================
    基本スタイル
    ========================================= */
-body {
-  margin: 0;
-  font-family: sans-serif;
-}
+   body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: var(--dark-text);
+  }
 
 /* =========================================
    ヘッダー
@@ -32,9 +34,9 @@ body {
 
 /* ナビゲーションバー */
 .logo {
-  font-size: 20px; /* フォントサイズ */
-  font-weight: bold; /* 太字 */
-  margin-left: 22px; /* 右側に寄せる */
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 22px;
 }
 
 .main-nav a {
