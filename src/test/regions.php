@@ -128,5 +128,6 @@
             <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
         </div>
     </footer>
+    <script src="./js/regions.js"></script>
 </html>
     
