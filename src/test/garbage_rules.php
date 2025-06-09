@@ -77,9 +77,22 @@
     </ul>
   </section>
 
-  <footer>
-    <p>Contact your ward office or landlord for more details.</p>
-  </footer>
+  <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">
+    <h2>Contact Us</h2>
+    <p>Email: 22200797@ecc.ac.jp</p>
+    <p>Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan</p>
+    <p>Phone: +81 3-1234-5678</p>
+
+    <div style="margin: 1.5rem 0;">
+      <a href="#"><i class="fab fa-facebook-f" style="margin: 0 10px; font-size: 1.5rem;"></i></a>
+      <a href="#"><i class="fab fa-twitter" style="margin: 0 10px; font-size: 1.5rem;"></i></a>
+      <a href="#"><i class="fab fa-instagram" style="margin: 0 10px; font-size: 1.5rem;"></i></a>
+      <a href="#"><i class="fab fa-linkedin-in" style="margin: 0 10px; font-size: 1.5rem;"></i></a>
+    </div>
+
+    <h2>Japan life Manual</h2>
+  <p>&copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.</p>
+</footer>
 
 </body>
 </html>
