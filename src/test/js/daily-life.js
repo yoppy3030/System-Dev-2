@@ -62,7 +62,8 @@ document.querySelectorAll('.language-option').forEach(option => {
 
 // テキストの正規化（余分な空白を削除）
 function normalizeText(text) {
-    return text.replace(/\s+/g, ' ').trim();
+    // 特殊文字を削除してから正規化
+    return text.replace(/[▾]/g, '').replace(/\s+/g, ' ').trim();
 }
 
 // 翻訳データの読み込み
@@ -110,12 +111,22 @@ function translatePage(targetLang) {
 
         // 言語に応じた翻訳の適用
         if (targetLang === 'ja') {
-            if (translations[normalizedText]) {
-                element.textContent = translations[normalizedText];
+            // 大文字小文字を区別せずに翻訳を探す
+            const translation = Object.entries(translations).find(([key]) => 
+                normalizeText(key).toLowerCase() === normalizedText.toLowerCase()
+            );
+            if (translation) {
+                // 元のテキストに特殊文字が含まれている場合は、翻訳後に追加
+                const hasSpecialChar = originalTexts.get(element).includes('▾');
+                element.textContent = translation[1] + (hasSpecialChar ? ' ▾' : '');
             }
         } else if (targetLang === 'zh') {
-            if (translationsZh[normalizedText]) {
-                element.textContent = translationsZh[normalizedText];
+            const translation = Object.entries(translationsZh).find(([key]) => 
+                normalizeText(key).toLowerCase() === normalizedText.toLowerCase()
+            );
+            if (translation) {
+                const hasSpecialChar = originalTexts.get(element).includes('▾');
+                element.textContent = translation[1] + (hasSpecialChar ? ' ▾' : '');
             }
         }
     }
