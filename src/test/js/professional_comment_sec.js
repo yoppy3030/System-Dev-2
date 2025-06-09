@@ -62,7 +62,8 @@ document.querySelectorAll('.language-option').forEach(option => {
 
 // テキストの正規化（余分な空白を削除）
 function normalizeText(text) {
-    return text.replace(/\s+/g, ' ').trim();
+    // ハイフンの正規化と空白の正規化
+    return text.replace(/[-–—]/g, '-').replace(/\s+/g, ' ').trim();
 }
 
 // 翻訳データの読み込み
@@ -72,12 +73,45 @@ Promise.all([
 ])
 .then(([jaData, zhData]) => {
     translations = jaData.translations;
-    translationsZh = zhData.translations;  // .zhを削除
+    translationsZh = zhData.translations;
     console.log('翻訳データの読み込みが完了しました');
+    console.log('日本語翻訳データ:', translations); // デバッグ用
+    console.log('中国語翻訳データ:', translationsZh); // デバッグ用
 })
 .catch(error => {
     console.error('翻訳データの読み込みに失敗しました:', error);
 });
+
+function findTranslation(text, translations) {
+    // 特殊文字「▾」の有無を確認
+    const hasSpecialChar = text.includes('▾');
+    const textWithoutSpecialChar = text.replace('▾', '').trim();
+
+    // 完全一致を試みる
+    if (translations[text]) {
+        return translations[text] + (hasSpecialChar ? ' ▾' : '');
+    }
+
+    // 特殊文字なしで試みる
+    if (translations[textWithoutSpecialChar]) {
+        return translations[textWithoutSpecialChar] + (hasSpecialChar ? ' ▾' : '');
+    }
+
+    // 正規化したテキストで試みる
+    const normalizedText = normalizeText(textWithoutSpecialChar);
+    if (translations[normalizedText]) {
+        return translations[normalizedText] + (hasSpecialChar ? ' ▾' : '');
+    }
+
+    // キーを正規化して比較
+    for (const [key, value] of Object.entries(translations)) {
+        if (normalizeText(key.replace('▾', '').trim()) === normalizedText) {
+            return value + (hasSpecialChar ? ' ▾' : '');
+        }
+    }
+
+    return null;
+}
 
 // ページ翻訳の実行
 function translatePage(targetLang) {
@@ -86,7 +120,7 @@ function translatePage(targetLang) {
         return;
     }
 
-    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, button');
+    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, button, section');
     
     for (const element of elements) {
         const originalText = element.textContent;
@@ -106,17 +140,17 @@ function translatePage(targetLang) {
             continue;
         }
 
-        const normalizedText = normalizeText(originalTexts.get(element));
-
-        // 言語に応じた翻訳の適用
+        let translation = null;
         if (targetLang === 'ja') {
-            if (translations[normalizedText]) {
-                element.textContent = translations[normalizedText];
-            }
+            translation = findTranslation(originalTexts.get(element), translations);
         } else if (targetLang === 'zh') {
-            if (translationsZh[normalizedText]) {
-                element.textContent = translationsZh[normalizedText];
-            }
+            translation = findTranslation(originalTexts.get(element), translationsZh);
+        }
+
+        if (translation) {
+            element.textContent = translation;
+        } else {
+            console.log('翻訳が見つかりませんでした:', originalTexts.get(element));
         }
     }
     
@@ -148,3 +182,4 @@ document.addEventListener('click', e => {
   });
 });
 
+ 

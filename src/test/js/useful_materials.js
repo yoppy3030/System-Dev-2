@@ -44,8 +44,8 @@ function normalizeText(text) {
 
 // 翻訳データの読み込み
 Promise.all([
-    fetch('./js/translations/regions-ja.json').then(response => response.json()),
-    fetch('./js/translations/regions-zh.json').then(response => response.json())
+    fetch('./js/translations/useful_materials-ja.json').then(response => response.json()),
+    fetch('./js/translations/useful_materials-zh.json').then(response => response.json())
 ])
 .then(([jaData, zhData]) => {
     translations = jaData.translations;
@@ -63,10 +63,7 @@ function translatePage(targetLang) {
         return;
     }
 
-    const elements = document.querySelectorAll(
-        'p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, .submenu-item strong, .submenu-item small'
-    );
-
+    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn');
     
     for (const element of elements) {
         const originalText = element.textContent;
