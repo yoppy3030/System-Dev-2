@@ -10,7 +10,6 @@
   <header class="site-header">
     <div class="logo">JAPAN Life Manual</div>
     <nav class="main-nav">
-      <a href="index.php">Home</a>
       <a href="studenthome.php">StudentHome</a>
       <a href="lifeinjapan.php">Life in Japan</a>
       <a href="events.php">Events</a>
