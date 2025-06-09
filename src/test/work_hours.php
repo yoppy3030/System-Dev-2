@@ -111,6 +111,6 @@
     </div>
   </footer>
 
-  <script src="./js/professional_comment_sec.js"></script>
+  <script src="./js/work_hours.js"></script>
 </body>
 </html>
