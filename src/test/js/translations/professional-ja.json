@@ -2,7 +2,7 @@
     "translations": {
         "🌐 Translate": "🌐 翻訳",
         "Home": "ホーム",
-        "Culture": "文化",
+        "Culture ▾": "文化",
         "Student": "学生",
         "Traveler": "旅行者",
         "About": "概要",
@@ -29,5 +29,5 @@
         "Email": "メール",
         "Address": "住所",
         "Phone": "電話番号"
-    }
+    }      
 }
