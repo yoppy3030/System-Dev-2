@@ -129,7 +129,7 @@ body {
 /* Menu Button styling */
 .menu-button {
   position: absolute;
-  top: 155px;
+  top: 20px;
   left: 15px;
   cursor: pointer;
   display: flex;
@@ -224,12 +224,105 @@ body {
 }
 
 main {
-    max-width: 1200px; /* Set a max-width to keep content from stretching too wide */
-    margin: 0 auto; /* Center the main content */
-    padding: 20px;
+    /*max-width: 1200px; /* Set a max-width to keep content from stretching too wide */
+    margin: 0 ; /* Center the main content */
+    padding: 0;
     background-color: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+   /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);*/
 }
+
+
+/* Submenu Grid */
+.submenu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 60px 20px;
+  background: #fff;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.submenu-item {
+  display: block;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 30px 20px;
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 18px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.submenu-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  background: #fafafa;
+}
+
+
+
+/* Footer */
+
+footer {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  padding: 3rem 0;
+  margin-top: 4rem;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+}
+
+.footer-content h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.footer-content p {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.footer-content a {
+  color: var(--light-text);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-content a:hover {
+  color: var(--secondary-color);
+}
+
+/* ソーシャルアイコン */
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.social-icons a {
+  font-size: 1.5rem;
+  color: var(--light-text);
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: var(--secondary-color);
+  transform: translateY(-3px);
+}
+
+
+
+
 
 
 

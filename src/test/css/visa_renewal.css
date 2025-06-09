@@ -10,7 +10,7 @@
     --hover-color: #8b8b8b;      /* ホバー時の色 */
   }
 
-/* Base Styles */
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -18,10 +18,11 @@ body {
   color: #333;
 }
 
+/* Header */
 .site-header {
   background: #b71c1c;
   color: white;
-  padding: 16px 32px;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -30,9 +31,11 @@ body {
   z-index: 1000;
 }
 
+/* ナビゲーションバー */
 .logo {
-  font-weight: bold;
-  font-size: 20px;
+  font-size: 20px; /* フォントサイズ */
+  font-weight: bold; /* 太字 */
+  margin-left: 22px; /* 右側に寄せる */
 }
 
 .main-nav a {
@@ -58,19 +61,20 @@ body {
   width: 100%;
 }
 
+/* Hero */
 .hero {
-  background: url('../img/work.jpg') center/cover no-repeat;
-  padding: 100px 20px;
-  text-align: center;
+  background: url('../img/visaimage.jpg') center/cover no-repeat;
   color: white;
+  text-align: center;
+  padding: 120px 40px;
   position: relative;
 }
 
 .hero::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .hero-content {
@@ -85,7 +89,6 @@ body {
 
 .hero p {
   font-size: 18px;
-  color: #ddd;
 }
 
 /* =========================================
@@ -148,41 +151,60 @@ body {
     color: var(--light-text);
   }
 
-.topics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 60px 20px;
-  max-width: 1200px;
-  margin: auto;
+/* Steps Section */
+.visa-steps {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
 }
 
-.topic-card {
-  background: white;
-  padding: 24px;
-  border-radius: 10px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease;
-}
-
-.topic-card:hover {
-  transform: translateY(-4px);
-}
-
-.topic-card h2 {
-  font-size: 20px;
-  margin-bottom: 10px;
-}
-
-.topic-card p {
-  font-size: 14px;
-  color: #666;
-}
-
-.footer {
-  background: #222;
-  color: #aaa;
+.visa-steps h2 {
   text-align: center;
-  padding: 20px;
-  font-size: 14px;
+  margin-bottom: 30px;
+  font-size: 26px;
+  color: #b71c1c;
+}
+
+.step-box {
+  background: #fff;
+  padding: 24px;
+  margin-bottom: 20px;
+  border-left: 4px solid #b71c1c;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border-radius: 8px;
+}
+
+.step-box h3 {
+  margin-top: 0;
+  color: #b71c1c;
+}
+
+/* Links */
+.links-section {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.links-section h2 {
+  margin-bottom: 20px;
+  color: #1a237e;
+}
+
+.btn {
+  display: inline-block;
+  margin: 10px;
+  padding: 12px 20px;
+  background: #b71c1c;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+/* Footer */
+.footer {
+  background: #b71c1c;
+  color: white;
+  text-align: center;
+  padding: 2rem;
 }

@@ -66,6 +66,7 @@
             
 
              <ol>
+
                 <h3><li>Kensai region</li></h3>
                 <ul><li><h3>Nara</h3></li>
                         <h4>Don’t Tease or Harass the Deer</h4>
@@ -103,4 +104,22 @@
             </ol>
             
 </body>
+
+<footer>
+    <div class="footer-content">
+            <h2>Contact Us</h2>
+            <p><a href="mailto:22200797@ecc.ac.jp">Email: 22200797@ecc.ac.jp</a></p>
+            <p>Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan</p>
+            <p>Phone: +81 3-1234-5678</p>
+            <!-- ソーシャルメディアリンク -->
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+            <h2>Japan life Manual</h2>
+            <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
+        </div>
+</footer>
 </html>

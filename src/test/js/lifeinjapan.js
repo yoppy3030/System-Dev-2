@@ -1,26 +1,3 @@
-// comments.js
-const form = document.getElementById('comment-form');
-const commentsContainer = document.getElementById('comments');
-
-// フォームが存在する場合のみイベントリスナーを追加
-if (form && commentsContainer) {
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value.trim();
-        const comment = document.getElementById('comment').value.trim();
-
-        if (username && comment) {
-            const commentDiv = document.createElement('div');
-            commentDiv.classList.add('comment');
-            commentDiv.innerHTML = `<strong>${username}</strong><p>${comment}</p>`;
-            commentsContainer.prepend(commentDiv);
-            form.reset();
-        }
-    });
-}
-
-
-
 /* =========================================
    翻訳機能
    ========================================= */
@@ -67,12 +44,12 @@ function normalizeText(text) {
 
 // 翻訳データの読み込み
 Promise.all([
-    fetch('./js/translations/professional-ja.json').then(response => response.json()),
-    fetch('./js/translations/professional-zh.json').then(response => response.json())
+    fetch('./js/translations/lifeinjapan-ja.json').then(response => response.json()),
+    fetch('./js/translations/lifeinjapan-zh.json').then(response => response.json())
 ])
 .then(([jaData, zhData]) => {
     translations = jaData.translations;
-    translationsZh = zhData.translations;  // .zhを削除
+    translationsZh = zhData.translations;
     console.log('翻訳データの読み込みが完了しました');
 })
 .catch(error => {
@@ -86,7 +63,7 @@ function translatePage(targetLang) {
         return;
     }
 
-    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, button');
+    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn');
     
     for (const element of elements) {
         const originalText = element.textContent;
@@ -128,23 +105,3 @@ function translatePage(targetLang) {
     
     currentLanguage = targetLang;
 }
-// ドロップダウンメニュー表示制御
-document.querySelectorAll('.main-nav ul li > a').forEach(anchor => {
-  anchor.addEventListener('click', e => {
-    const submenu = anchor.nextElementSibling;
-    if (submenu && submenu.classList.contains('dropdown-menu')) {
-      e.preventDefault();
-      submenu.classList.toggle('show');
-    }
-  });
-});
-
-// Optional: close dropdown on click outside
-document.addEventListener('click', e => {
-  document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-    if (!menu.parentElement.contains(e.target)) {
-      menu.classList.remove('show');
-    }
-  });
-});
-

@@ -315,3 +315,47 @@ body {
     display: block;
   }
   
+/* for examination.php design  */
+
+  .jlpt-levels {
+  padding: 60px 20px;
+  background: #fffdfd;
+  text-align: center;
+}
+
+.jlpt-levels h2 {
+  font-size: 28px;
+  color: #b71c1c;
+  margin-bottom: 30px;
+}
+
+.jlpt-level-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  justify-content: center;
+}
+
+.jlpt-level-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-left: 5px solid #b71c1c;
+  border-radius: 8px;
+  padding: 20px;
+  text-decoration: none;
+  color: #333;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.jlpt-level-card:hover {
+  background: #fce4ec;
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.jlpt-level-card h3 {
+  color: #1a237e;
+  font-size: 22px;
+  margin-bottom: 10px;
+}

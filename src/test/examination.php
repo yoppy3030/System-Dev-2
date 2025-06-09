@@ -3,17 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JAPAN Life Manual - Custom Clone</title>
+  <title>JLPT Levels - Study in Japan</title>
   <link rel="stylesheet" href="./css/studenthome.css">
 </head>
 <body>
   <header class="site-header">
     <div class="logo">JAPAN Life Manual</div>
     <nav class="main-nav">
-      <a href="index.php">Home</a>
-      <a href="lifeinjapan.php">Life in Japan</a>
-      <a href="workingjapan.php">Jobs & Careers in Japan</a>
-      <a href="events.php">Events</a>
+      <a href="studenthome.php">StudentHome</a>
       <!-- 言語選択ドロップダウン -->
       <div class="language-selector">
         <button id="translateBtn" class="translate-btn">🌐 Translate</button>
@@ -23,35 +20,50 @@
             <button class="language-option" data-lang="zh">🇨🇳 中文</button>
             <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
         </div>
-       </div>
+      </div>
     </nav>
   </header>
 
   <section class="hero">
     <div class="hero-content">
-      <h1>Lets Learn Student Life in Japan.</h1>
-      <p>The future is what you create.</p>
+      <h1>Japanese Language Proficiency Test (JLPT)</h1>
+      <p>Choose your level and explore test details.</p>
     </div>
   </section>
 
   <section class="submenu-grid">
-  <a class="submenu-item" href="examination.php">
-    <strong>Examinations JLPT</strong><br>
-    <small>Prepare for N5–N1 Japanese tests</small>
-  </a>
-  <a class="submenu-item" href="scholarships.php">
-    <strong>Scholarships</strong><br>
-    <small>Find funding for your education in Japan</small>
-  </a>
-  <a class="submenu-item" href="visa_renewal.php">
-    <strong>Visa Renewal</strong><br>
-    <small>Learn how to extend your stay legally</small>
-  </a>
-  <a class="submenu-item" href="useful_materials.php">
-    <strong>Useful Materials</strong><br>
-    <small>Garbage rules,Rental and etc</small>
-  </a>
+    <a class="submenu-item" href="https://www.jlpt.jp/sp/e/about/levelsummary.html">Overview</a>
+    <a class="submenu-item" href="https://info.jees-jlpt.jp/other/2025%E5%9B%BD%E5%86%85%E8%A9%A6%E9%A8%93%E3%81%AE%E5%AE%9F%E6%96%BD%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html#">Test Schedule</a>
+    <a class="submenu-item" href="https://www.jlpt.jp/sp/e/application/domestic_index.html">Registration Info</a>
+    <a class="submenu-item" href="https://www.tofugu.com/japanese-learning-resources-database/">Study Resources</a>
+  </section>
+
+  <section class="jlpt-levels">
+  <h2>Explore JLPT Levels</h2>
+  <div class="jlpt-level-grid">
+    <a href="https://www.jlpt.jp/e/samples/n5/index.html" target="_blank" class="jlpt-level-card">
+      <h3>N5</h3>
+      <p>Basic phrases & kanji for daily conversation</p>
+    </a>
+    <a href="https://www.jlpt.jp/e/samples/n4/index.html" target="_blank" class="jlpt-level-card">
+      <h3>N4</h3>
+      <p>Grammar and vocabulary for simple communication</p>
+    </a>
+    <a href="https://www.jlpt.jp/e/samples/n3/index.html" target="_blank" class="jlpt-level-card">
+      <h3>N3</h3>
+      <p>Intermediate Japanese for workplace & society</p>
+    </a>
+    <a href="https://www.jlpt.jp/e/samples/n2/index.html" target="_blank" class="jlpt-level-card">
+      <h3>N2</h3>
+      <p>Advanced reading, writing & listening fluency</p>
+    </a>
+    <a href="https://www.jlpt.jp/e/samples/n1/index.html" target="_blank" class="jlpt-level-card">
+      <h3>N1</h3>
+      <p>Native-level fluency and academic Japanese</p>
+    </a>
+  </div>
 </section>
+
   <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">↑</button>
   <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">
     <h2>Contact Us</h2>
@@ -69,8 +81,6 @@
     <h2>Japan life Manual</h2>
   <p>&copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.</p>
 </footer>
-
-<script src="./js/studenthome.js"></script>
-
+<script src="./js/examination.js"></script>
 </body>
 </html>
