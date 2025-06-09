@@ -68,8 +68,8 @@
 
         
             <section class="submenu-grid">
-            <a class="submenu-item" href="kensai.php">
-                <strong>Kensai Region</strong><br>
+            <a class="submenu-item" href="kansai.php">
+                <strong>Kansai Region</strong><br>
                 <small>Osaka,Kyoto,Nara,etc</small>
             </a>
             <a class="submenu-item" href="#">
