@@ -10,8 +10,10 @@
 
   <header class="site-header">
     <div class="logo">JAPAN Life Manual</div>
-    <h1>Garbage Disposal Rules in Japan</h1>
-    <p>For Foreign Residents</p>
+    <div class="header-title">
+        <h1>Garbage Disposal Rules in Japan</h1>
+        <p>For Foreign Residents</p>
+    </div>
     <nav class="main-nav">
       <a href="studenthome.php">StudentHome</a>
       <!-- 言語選択ドロップダウン -->

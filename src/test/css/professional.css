@@ -221,19 +221,6 @@ footer {
   text-decoration: underline;
 }
 
-.social-icons {
-  margin: 1rem 0;
-}
-
-.social-icons a {
-  color: var(--light-text);
-  margin: 0 0.5rem;
-  font-size: 1.5rem;
-}
-
-.social-icons a:hover {
-  color: var(--primary-color);
-}
 
 /* =========================================
    ドロップダウンメニュー
