@@ -100,7 +100,7 @@ function translatePage(targetLang) {
     });
 
     // その他の要素の処理
-    const elements = document.querySelectorAll('p:not(.menu-item p), h1, h2, h3, h4, h5, h6, span, a:not(.menu-item a), .sidebar a, .translate-btn, button');
+    const elements = document.querySelectorAll('p:not(.menu-item p), h1, h2, h3, h4, h5, h6, span, a:not(.menu-item a), .sidebar a, .translate-btn, button, section, section *');
     
     for (const element of elements) {
         // いいねボタン、閲覧数などの特殊な要素は翻訳対象外

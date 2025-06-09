@@ -10,9 +10,17 @@
   <header class="site-header">
     <div class="logo">STUDY in JAPAN</div>
     <nav class="main-nav">
-      <a href="index.php">Home</a>
-      <a href="lifeinjapan.php">Life in Japan</a>
-      <a href="examination.php">Examinations</a>
+      <a href="studenthome.php">StudentHome</a>
+      <!-- 言語選択ドロップダウン -->
+      <div class="language-selector">
+      <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+      <div class="language-dropdown">
+            <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+            <button class="language-option" data-lang="en">🇺🇸 English</button>
+            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+            <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+        </div>
+      </div>
     </nav>
   </header>
 
@@ -60,5 +68,6 @@
     <h2>Japan life Manual</h2>
   <p>&copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.</p>
 </footer>
+<script src="./js/useful_materials.js"></script>
 </body>
 </html>

@@ -1,3 +1,15 @@
+/* =========================================
+   変数定義
+   ========================================= */
+   :root {
+    --primary-color: #b71c1c;    /* メインカラー（赤） */
+    --secondary-color: #654a4a;  /* セカンダリカラー（茶色） */
+    --light-text: #ffffff;       /* 明るいテキスト色 */
+    --dark-text: #333333;        /* 暗いテキスト色 */
+    --border-color: #eeeeee;     /* ボーダーカラー */
+    --hover-color: #8b8b8b;      /* ホバー時の色 */
+  }
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -15,29 +27,41 @@ body {
   align-items: center;
 }
 
+
 .logo {
-  font-size: 20px;
   font-weight: bold;
+  font-size: 20px;
 }
 
 .main-nav a {
-  color: white;
+  margin: 0 10px;
   text-decoration: none;
-  margin-left: 20px;
-  font-weight: bold;
+  color: white;
+  font-weight: 500;
+  position: relative;
 }
 
-.main-nav a:hover,
-.main-nav a.active {
-  text-decoration: underline;
+.main-nav a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background-color: white;
+  transition: width 0.3s ease;
+}
+
+.main-nav a:hover::after {
+  width: 100%;
 }
 
 /* Hero */
 .hero {
-  background: url('../img/garbage.png') center/cover no-repeat;
+  background: url('../img/useful_materials.png') center/cover no-repeat;
   color: white;
   text-align: center;
-  padding: 160px 40px;
+  padding: 120px 40px;
   position: relative;
 }
 
@@ -61,6 +85,68 @@ body {
 .hero p {
   font-size: 18px;
 }
+
+
+/* =========================================
+   言語選択機能
+   ========================================= */
+   .language-selector {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .translate-btn {
+    background-color: var(--light-text);
+    color: var(--dark-text);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .translate-btn:hover {
+    background-color: var(--hover-color);
+  }
+  
+  .language-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--light-text);
+    min-width: 160px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    z-index: 1000;
+    margin-top: 5px;
+  }
+  
+  .language-dropdown.show {
+    display: block;
+  }
+  
+  .language-option {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--dark-text);
+  }
+  
+  .language-option:hover,
+  .language-option.active {
+    background-color: #b2b3b1;
+    color: var(--light-text);
+  }
+
 
 /* Materials Grid */
 .materials-grid {

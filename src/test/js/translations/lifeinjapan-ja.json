@@ -1,6 +1,7 @@
 {
     "translations": {
         "🌐 Translate": "🌐 翻訳",
+        "Home": "ホーム",
         "StudentHome": "学生ホーム",
         "Travelers": "旅行者",
         "Professional": "専門家",
@@ -21,12 +22,12 @@
         "Mobile & Internet": "携帯電話とインターネット",
         "Set up a phone contract, find prepaid SIM cards, and choose a Wi-Fi plan.": "携帯電話契約の設定、プリペイドSIMカードの入手、Wi-Fiプランの選択。",
         "Emergency Contacts": "緊急連絡先",
-        "Know how to call police (110), ambulance/fire (119), and support centers.": "警察（110）、救急車/消防（119）、サポートセンターへの連絡方法。",
+        "Know how to call police (110), ambulance/fire (119), and support centers.": "警察（110）、救急車・消防（119）、サポートセンターへの連絡方法。",
         "Contact Us": "お問い合わせ",
         "Email: 22200797@ecc.ac.jp": "メール: 22200797@ecc.ac.jp",
         "Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan": "住所: 〒123-0006 東京都文京区後楽1-2-61",
         "Phone: +81 3-1234-5678": "電話: +81 3-1234-5678",
         "Japan life Manual": "日本生活マニュアル",
         "All rights reserved.": "All rights reserved."
-    }
+    }      
 }

@@ -11,10 +11,7 @@
     <div class="logo">    <div class="logo">JAPAN Life Manual</div>
     </div>
     <nav class="main-nav">
-      <a href="index.php">Home</a>
       <a href="studenthome.php">StudentHome</a>
-      <a href="lifeinjapan.php">Life in Japan</a>
-      <a href="scholarships.php">Scholarships</a>
       <!-- 言語選択ドロップダウン -->
       <div class="language-selector">
         <button id="translateBtn" class="translate-btn">🌐 Translate</button>

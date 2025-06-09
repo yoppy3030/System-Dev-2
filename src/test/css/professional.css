@@ -192,7 +192,7 @@ body {
 
 .main-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: 1fr 1fr;
   gap: 2rem;
   padding: 2rem;
 }
@@ -216,6 +216,7 @@ body {
   margin-bottom: 0.5rem;
 }
 
+<<<<<<< HEAD
 @media screen and (max-width: 600px) {
   .main-content {
     padding: 1rem;
@@ -225,13 +226,21 @@ body {
   .info-block {
     padding: 1rem;
   }
+=======
+.section {
+  background: var(--light-text);
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+>>>>>>> 4d98ac967e8c93697621ac4022f7e050c80cc010
 }
 
 /* =========================================
    フッター
    ========================================= */
 footer {
-  background-color: var(--secondary-color);
+  background-color: #b71c1c;
   color: var(--light-text);
   padding: 2rem;
   text-align: center;

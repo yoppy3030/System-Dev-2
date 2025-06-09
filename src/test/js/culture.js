@@ -68,8 +68,8 @@ function normalizeText(text) {
 
 // 翻訳データの読み込み
 Promise.all([
-    fetch('./js/translations/professional-ja.json').then(response => response.json()),
-    fetch('./js/translations/professional-zh.json').then(response => response.json())
+    fetch('./js/translations/culture-ja.json').then(response => response.json()),
+    fetch('./js/translations/culture-zh.json').then(response => response.json())
 ])
 .then(([jaData, zhData]) => {
     translations = jaData.translations;
