@@ -41,12 +41,18 @@ document.querySelectorAll('.language-option').forEach(option => {
 // ユーティリティ関数
 // =========================================
 /**
- * テキストの正規化（余分な空白を削除）
+ * テキストの正規化（HTMLエンティティをデコードし、余分な空白を削除）
  * @param {string} text - 正規化するテキスト
  * @returns {string} 正規化されたテキスト
  */
 function normalizeText(text) {
-    return text.replace(/\s+/g, ' ').trim();
+    // 一時的なDOM要素を作成してHTMLエンティティをデコード
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = text;
+    const decodedText = tempDiv.textContent || tempDiv.innerText || "";
+    
+    // 次に余分な空白を削除
+    return decodedText.replace(/\s+/g, ' ').trim();
 }
 
 // =========================================
