@@ -81,7 +81,7 @@
                     <small>Tottori,Okayama,Hiroshima,etc</small>
                 </a>
                 <a class="submenu-item" href="kansai.php">
-                    <strong>Kinki Region</strong><br>
+                    <strong>kansai Region</strong><br>
                     <small>Osaka,Kyoto,Nara,etc</small>
                 </a>
                 <a class="submenu-item" href="#">
