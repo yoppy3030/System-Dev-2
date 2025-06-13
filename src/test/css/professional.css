@@ -313,3 +313,26 @@ footer {
   font-size: 1.2rem;
 }
 
+/* =========================================
+   詳細ボタン (Details Button)
+   ========================================= */
+.details-button {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  border: none;
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: inline-block;
+  text-decoration: none;
+}
+
+.details-button:hover {
+  background-color: var(--hover-color);
+  transform: translateY(-2px);
+}
+
