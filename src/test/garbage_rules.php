@@ -85,9 +85,7 @@
   <section class="rules">
     <h2>🧾 General Rules</h2>
     <ul>
-        <li onclick="getLocation()" style="cursor: pointer;">
-          Check your city's garbage schedule
-        </li>
+        <li>Check your city's garbage schedule</li>
         <li>Use official trash bags from stores</li>
         <li> Clean bottles/cans before recycling</li>
         <li> Use the right disposal spot</li>
