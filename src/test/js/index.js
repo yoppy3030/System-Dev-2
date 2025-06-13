@@ -147,10 +147,7 @@ function translatePage(targetLang) {
 
     // その他の要素の処理
     const elements = document.querySelectorAll('p:not(.menu-item p), h1, h2, h3, h4, h5, h6, span, a:not(.menu-item a), .sidebar a, .translate-btn, button');
-      if (el.hasAttribute('data-no-translate')) {
-        return; // 翻訳しない
-     }
-
+    
     for (const element of elements) {
         // いいねボタン、閲覧数などの特殊な要素は翻訳対象外
         if (element.id === 'like-count' || element.id === 'dislike-count' || element.id === 'view-count') {
