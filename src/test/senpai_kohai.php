@@ -27,14 +27,16 @@
         <li><a href="travelers_homePage.php">Traveler</a></li>
         <li><a href="about.html">About</a></li>
         
-        <li class="language-selector">
+        <!-- 言語選択ドロップダウン -->
+        <div class="language-selector">
           <button id="translateBtn" class="translate-btn">🌐 Translate</button>
           <div class="language-dropdown">
             <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
             <button class="language-option" data-lang="en">🇺🇸 English</button>
             <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+            <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
           </div>
-        </li>
+        </div>
       </ul>
     </nav>
   </header>
@@ -100,6 +102,6 @@
     </div>
   </footer>
 
-  <script src="./js/culture.js"></script>
+  <script src="./js/senpai_kohai.js"></script>
 </body>
 </html>
