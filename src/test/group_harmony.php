@@ -37,7 +37,7 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="culture-hero" style="background-image: url('./img/group_harmony.jpg');">
+  <section class="culture-hero" style="background-image: url('./img/Bottom view of diverse multiracial people stand in….jpg');">
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1>Group Harmony in Japanese Culture</h1>

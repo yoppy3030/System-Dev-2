@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Senpai-Kohai Relationship | JAPAN Life Manual</title>
+   <title>Nomikai - JAPAN Life Manual</title>
   <link rel="stylesheet" href="./css/culture.css"/>
 </head>
 <body>
@@ -37,51 +37,63 @@
       </ul>
     </nav>
   </header>
-
   <!-- Hero Section -->
-  <section class="culture-hero" style="background-image: url(./img/e93c54da-97f6-4db4-8f96-3d2e9b227b80.jpg">
+  <section class="culture-hero" style="background-image: url('./img/b4eb360b-e659-4913-a620-9fc908316cfd.jpg');">
+    <div class="hero-overlay"></div>
     <div class="hero-content">
-      <h1>Senpai-Kohai Relationship</h1>
-      <p>The traditional hierarchy that shapes professional behavior in Japan.</p>
+      <h1>Nomikai (Drinking Parties)</h1>
+      <p>Understanding after-work drinking culture in Japan</p>
     </div>
   </section>
 
-  <!-- Main Content Section -->
-  <main class="custom-content">
-    <div class="content-card">
-      <h2>What is the Senpai-Kohai Relationship?</h2>
+  <!-- Main Content -->
+  <main class="culture-content">
+    <div class="card-style-section">
+      <h2>What is a Nomikai?</h2>
       <p>
-        The <strong>Senpai-Kohai (先輩・後輩)</strong> system is deeply rooted in Japanese culture, extending far beyond schools and into workplaces. A <em>senpai</em> is someone with more experience—typically older or with longer tenure—while a <em>kohai</em> is a junior member. This relationship promotes mutual respect, loyalty, and learning.
+        A <strong>nomikai</strong> (飲み会) is a traditional Japanese drinking party, commonly held after work among coworkers. It's considered a way to relax, deepen relationships, and communicate more openly outside the formal office setting.
       </p>
     </div>
 
-    <div class="content-card">
-      <h2>Respect and Communication</h2>
-      <p>
-        In Japanese companies, <strong>kohai are expected to show deference</strong> through language (using polite forms), behavior (bowing, offering seats), and decision-making. Kohai often seek permission or advice from their senpai before acting. In return, <strong>senpai take responsibility for guiding and mentoring</strong> their juniors.
-      </p>
+    <div class="card-style-section">
+      <h2>Purpose and Culture</h2>
+      <ul>
+        <li>Improves workplace harmony and team bonding.</li>
+        <li>Offers junior employees a chance to interact with seniors more casually.</li>
+        <li>Typically held in izakayas (Japanese pubs) after work hours.</li>
+      </ul>
+      <p>There may be multiple rounds (二次会, 三次会), but participation becomes more optional in later rounds.</p>
     </div>
 
-    <div class="content-card">
-      <h2>Hierarchy and Harmony</h2>
-      <p>
-        The senpai-kohai dynamic reinforces the broader emphasis on <strong>group harmony (和 – wa)</strong>. By understanding one's position and acting accordingly, disruptions are minimized. Promotions and trust are often built through loyalty and respect, not just performance.
-      </p>
+    <div class="card-style-section">
+      <h2>Nomikai Manners</h2>
+      <ul>
+        <li>Pour drinks for others before your own, especially for seniors.</li>
+        <li>Use both hands when receiving a drink as a sign of respect.</li>
+        <li>Wait for the group toast (乾杯 – *kanpai*) before drinking.</li>
+      </ul>
     </div>
 
-    <div class="content-card">
-      <h2>Modern Challenges</h2>
+    <div class="card-style-section">
+      <h2>You Can Say No</h2>
       <p>
-        While the system has benefits, it can also create pressure. Younger workers may feel reluctant to question older colleagues, even when innovation is needed. Some modern workplaces are adapting, encouraging more balanced communication while still honoring tradition.
+        While drinking is common at nomikai, <strong>no one is obligated to drink</strong>. Choosing a non-alcoholic beverage is perfectly acceptable and becoming more common.
+      </p>
+      <p>
+        You can politely decline by saying:<br>
+        <em>“今日はお酒は控えています。”</em><br>
+        (<strong>“Kyō wa osake wa hikaeteimasu.”</strong> — “I’m not drinking today.”)
+      </p>
+      <p>
+        Respect for personal choice is valued, and no one should pressure you to drink.
       </p>
     </div>
-
     <div class="back-button-container">
       <a href="culture.html" class="back-button">← Back to Culture</a>
     </div>
   </main>
 
-  <!-- Footer -->
+<!-- Footer -->
   <footer>
     <div class="footer-content">
       <h2>Contact Us</h2>
@@ -98,7 +110,5 @@
       <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
     </div>
   </footer>
-
-  <script src="./js/culture.js"></script>
 </body>
 </html>
