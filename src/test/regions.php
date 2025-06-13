@@ -81,14 +81,14 @@
                     <small>Tottori,Okayama,Hiroshima,etc</small>
                 </a>
                 <a class="submenu-item" href="kansai.php">
-                    <strong>kansai Region</strong><br>
+                    <strong>Kansai Region</strong><br>
                     <small>Osaka,Kyoto,Nara,etc</small>
                 </a>
                 <a class="submenu-item" href="#">
                     <strong>Chubu Region</strong><br>
                     <small>Toyama,Fukui,Gifu,etc</small>
                 </a>
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="kanto.php">
                     <strong>Kanto Region</strong><br>
                     <small>Tokyo,Chiba,Saitama,etc</small>
                 </a>

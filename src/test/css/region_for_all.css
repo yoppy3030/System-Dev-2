@@ -151,8 +151,14 @@ section.nara {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 } 
 
+main img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
 
-
+/* the img in side li*/
 .rules-list li img {
   max-width: 100%;
   margin-top: 1rem;
@@ -270,8 +276,17 @@ h1, h2 {
    フッター
    ========================================= */
   footer {
-  background: #ddd;
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
-}
+    background-color: #b71c1c;
+    color: var(--light-text);
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .footer-content a {
+    color: var(--light-text);
+    text-decoration: none;
+  }
+  
+  .footer-content a:hover {
+    text-decoration: underline;
+  }
