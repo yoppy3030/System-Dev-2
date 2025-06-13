@@ -1,4 +1,12 @@
 /* General Reset */
+
+:root {
+  --primary-color: #1e40af;
+  --light-text: #fff;
+  --hover-color: #2563eb;
+}
+
+
 * {
   margin: 0;
   padding: 0;
@@ -75,6 +83,18 @@ body {
 }
 
 /* Hero Section */
+
+.hero {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 .culture-hero {
   position: relative;
   background-size: cover;
@@ -144,6 +164,23 @@ body {
 .card-style-section p {
   margin: 1rem 0;
 }
+
+.custom-content {
+  padding: 2rem 5%;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.content-card {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+
+
 
 /* Footer */
 footer {
@@ -232,4 +269,10 @@ footer a:hover {
 
 .dropdown-menu li a:hover {
   background-color: var(--hover-color);
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
 }

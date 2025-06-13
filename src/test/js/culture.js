@@ -150,6 +150,14 @@ document.querySelectorAll('.main-nav ul li > a').forEach(anchor => {
   });
 });
 
+document.querySelector('.dropdown').addEventListener('mouseenter', () => {
+  document.querySelector('.dropdown-menu').classList.add('show');
+});
+document.querySelector('.dropdown').addEventListener('mouseleave', () => {
+  document.querySelector('.dropdown-menu').classList.remove('show');
+});
+
+
 // Optional: close dropdown on click outside
 document.addEventListener('click', e => {
   document.querySelectorAll('.dropdown-menu.show').forEach(menu => {

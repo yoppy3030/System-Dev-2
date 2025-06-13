@@ -71,6 +71,9 @@
         <li>Apologize even for small inconveniences—it shows consideration for others’ feelings.</li>
       </ul>
     </section>
+    <div class="back-button-container">
+      <a href="culture.html" class="back-button">← Back to Culture</a>
+    </div>
   </main>
 
   <!-- Footer -->
