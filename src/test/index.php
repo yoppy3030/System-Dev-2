@@ -25,7 +25,7 @@
    
   <div class="logo">
     <i class="fas fa-book icon"></i>
-    <h3>Japan life Manual</h3>
+    <h3 data-no-translate>Japan life Manual</h3>
   </div>
 
     <div class="menu-item">
