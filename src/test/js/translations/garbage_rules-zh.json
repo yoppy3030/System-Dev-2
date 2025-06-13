@@ -1,8 +1,15 @@
 {
     "translations": {
+      "🌐 Translate": "🌐 翻译",
+      "Home": "首页",
+      "Culture ▾": "文化",
+      "Japanese Culture": "日本文化",
+      "Daily Life": "日常生活",
+      "Student": "学生",
+      "Traveler": "旅行者",
+      "About": "关于我们",
       "Garbage Disposal Rules in Japan": "日本垃圾分类指南",
       "For Foreign Residents": "面向外国居民",
-      "🌐 Translate": "🌐 翻译",
       "🗑️ Garbage Categories": "🗑️ 垃圾类别",
       "1. Burnable Garbage (燃えるゴミ)": "1. 可燃垃圾",
       "✔ Food waste, paper, cloth": "✔ 食品残渣、纸类、布料",
@@ -30,7 +37,7 @@
       "Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan": "地址：日本东京都文京区后乐1-2-61，邮编123-0006",
       "Phone: +81 3-1234-5678": "电话：+81 3-1234-5678",
       "JAPAN Life Manual": "日本生活指南",
-      "All rights reserved.": "版权所有"
+      "All rights reserved.": "All rights reserved."
     }
   }
   
