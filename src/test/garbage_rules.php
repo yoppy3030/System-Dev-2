@@ -69,12 +69,15 @@
   <section class="rules">
     <h2>🧾 General Rules</h2>
     <ul>
-      <li>🗓️ Check your city's garbage schedule</li>
-      <li>📦 Use official trash bags from stores</li>
-      <li>🧼 Clean bottles/cans before recycling</li>
-      <li>📍 Use the right disposal spot</li>
-      <li>🕗 Dispose garbage at the right time</li>
+        <li onclick="getLocation()" style="cursor: pointer;">
+          Check your city's garbage schedule
+        </li>
+        <li>Use official trash bags from stores</li>
+        <li> Clean bottles/cans before recycling</li>
+        <li> Use the right disposal spot</li>
+        <li> Dispose garbage at the right time</li>
     </ul>
+
   </section>
 
   <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">
@@ -92,7 +95,6 @@
 
     <h2>Japan life Manual</h2>
   <p>&copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.</p>
-</footer>
-
+  </footer>
 </body>
 </html>

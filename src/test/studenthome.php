@@ -37,7 +37,7 @@
   <section class="submenu-grid">
   <a class="submenu-item" href="examination.php">
     <strong>Examinations JLPT</strong><br>
-    <small>Prepare for N5–N1 Japanese tests</small>
+    <small>Prepare for N5-N1 Japanese tests</small>
   </a>
   <a class="submenu-item" href="scholarships.php">
     <strong>Scholarships</strong><br>

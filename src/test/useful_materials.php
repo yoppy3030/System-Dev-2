@@ -31,7 +31,7 @@
     <div class="material-card">
       <h3>🧭 Navigation & Transportation</h3>
       <p>How to use trains, IC cards, and navigate cities with ease.</p>
-      <a href="./downloads/navigation_guide.pdf" target="_blank" class="btn">Details</a>
+      <a href="navigations.php" target="_blank" class="btn">Details</a>
     </div>
 
     <div class="material-card">
