@@ -165,16 +165,12 @@ body {
   font-size: 1.25rem;
 }
 
-/* Add this to your existing CSS or replace the .main-content and related section */
-
 .main-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: 1fr 1fr;
   gap: 2rem;
   padding: 2rem;
 }
-
-/* Optional: You can keep .info-block as-is, or enhance it slightly for visual variation */
 
 .info-block {
   background-color: var(--light-text);
@@ -193,24 +189,24 @@ body {
   margin-bottom: 0.5rem;
 }
 
-/* Optional improvement for better spacing on smaller screens */
-@media screen and (max-width: 600px) {
-  .main-content {
-    padding: 1rem;
-    gap: 1rem;
-  }
-
-  .info-block {
-    padding: 1rem;
-  }
+.section {
+  background: var(--light-text);
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease-in-out;
 }
 
+.section:hover {
+  transform: translateY(-5px);
+}
 
 /* =========================================
    フッター
    ========================================= */
 footer {
-  background-color: var(--secondary-color);
+  background-color: #b71c1c;
   color: var(--light-text);
   padding: 2rem;
   text-align: center;
@@ -225,19 +221,6 @@ footer {
   text-decoration: underline;
 }
 
-.social-icons {
-  margin: 1rem 0;
-}
-
-.social-icons a {
-  color: var(--light-text);
-  margin: 0 0.5rem;
-  font-size: 1.5rem;
-}
-
-.social-icons a:hover {
-  color: var(--primary-color);
-}
 
 /* =========================================
    ドロップダウンメニュー
@@ -328,5 +311,28 @@ footer {
 
 .hero.daily-hero p {
   font-size: 1.2rem;
+}
+
+/* =========================================
+   詳細ボタン (Details Button)
+   ========================================= */
+.details-button {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  border: none;
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: inline-block;
+  text-decoration: none;
+}
+
+.details-button:hover {
+  background-color: var(--hover-color);
+  transform: translateY(-2px);
 }
 

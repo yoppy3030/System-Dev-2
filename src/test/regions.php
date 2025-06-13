@@ -68,46 +68,38 @@
 
         
             <section class="submenu-grid">
-            <a class="submenu-item" href="kensai.php">
-                <strong>Kensai Region</strong><br>
-                <small>Osaka,Kyoto,Nara,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Kento Region</strong><br>
-                <small>Tokyo,Chiba,Saitama,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Tohoku Region</strong><br>
-                <small>Iwate,Akita,Fukushima,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Chugoku Region</strong><br>
-                <small>Tottori,Okayama,Hiroshima,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Chugoku Region</strong><br>
-                <small>Tottori,Okayama,Hiroshima,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Chugoku Region</strong><br>
-                <small>Tottori,Okayama,Hiroshima,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Shikoku Region</strong><br>
-                <small>Tokushima,Kochi,Kagawa,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Chubu Region</strong><br>
-                <small>Toyama,Fukui,Gifu,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Kyusyu & Okinawa Region</strong><br>
-                <small>Okinawa,Fukuoka,Oita,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Hokkaido Region</strong><br>
-                <small>Hokkaido</small>
-            </a>
+                <a class="submenu-item" href="#">
+                    <strong>Kyusyu & Okinawa Region</strong><br>
+                    <small>Okinawa,Fukuoka,Oita,etc</small>
+                </a>
+                <a class="submenu-item" href="#">
+                    <strong>Shikoku Region</strong><br>
+                    <small>Tokushima,Kochi,Kagawa,etc</small>
+                </a>
+                <a class="submenu-item" href="#">
+                    <strong>Chugoku Region</strong><br>
+                    <small>Tottori,Okayama,Hiroshima,etc</small>
+                </a>
+                <a class="submenu-item" href="kansai.php">
+                    <strong>kansai Region</strong><br>
+                    <small>Osaka,Kyoto,Nara,etc</small>
+                </a>
+                <a class="submenu-item" href="#">
+                    <strong>Chubu Region</strong><br>
+                    <small>Toyama,Fukui,Gifu,etc</small>
+                </a>
+                <a class="submenu-item" href="#">
+                    <strong>Kanto Region</strong><br>
+                    <small>Tokyo,Chiba,Saitama,etc</small>
+                </a>
+                <a class="submenu-item" href="#">
+                    <strong>Tohoku Region</strong><br>
+                    <small>Iwate,Akita,Fukushima,etc</small>
+                </a>
+                <a class="submenu-item" href="#">
+                    <strong>Hokkaido Region</strong><br>
+                    <small>Hokkaido</small>
+                </a>
             </section>
 </body>
 <!-- フッターセクション -->
@@ -128,5 +120,6 @@
             <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
         </div>
     </footer>
+    <script src="./js/regions.js"></script>
 </html>
     

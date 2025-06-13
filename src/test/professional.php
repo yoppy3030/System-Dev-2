@@ -49,27 +49,32 @@
   </section>
 
   <!-- Main Content -->
-  <main class="main-content">
-    <div class="info-block">
-      <h2><i class="fas fa-briefcase"></i> Business Etiquette</h2>
-      <p>Bowing is a common greeting. Exchange business cards with both hands. Be punctual.</p>
-    </div>
+<main class="main-content">
+  <div class="info-block">
+    <h2><i class="fas fa-briefcase"></i> Business Etiquette</h2>
+    <p>Bowing is a common greeting. Exchange business cards with both hands. Be punctual.</p>
+    <a href="business_etiquette.php" class="details-button">Details</a>
+  </div>
 
-    <div class="info-block">
-      <h2><i class="fas fa-clock"></i> Work Hours and Holidays</h2>
-      <p>Standard hours are 9 AM-6 PM. Key holidays: New Year, Golden Week, Obon.</p>
-    </div>
+  <div class="info-block">
+    <h2><i class="fas fa-clock"></i> Work Hours and Holidays</h2>
+    <p>Standard hours are 9 AM-6 PM. Key holidays: New Year, Golden Week, Obon.</p>
+    <a href="work_hours.php" class="details-button">Details</a>
+  </div>
 
-    <div class="info-block">
-      <h2><i class="fas fa-language"></i> Language Expectations</h2>
-      <p>Basic Japanese is expected. English is useful in multinational companies.</p>
-    </div>
+  <div class="info-block">
+    <h2><i class="fas fa-language"></i> Language Expectations</h2>
+    <p>Basic Japanese is expected. English is useful in multinational companies.</p>
+    <a href="language_expectations.php" class="details-button">Details</a>
+  </div>
 
-    <div class="info-block">
-      <h2><i class="fas fa-balance-scale"></i> Labor Rights</h2>
-      <p>Know your rights: work contracts, overtime limits, and paid leave.</p>
-    </div>
-  </main>
+  <div class="info-block">
+    <h2><i class="fas fa-balance-scale"></i> Labor Rights</h2>
+    <p>Know your rights: work contracts, overtime limits, and paid leave.</p>
+    <a href="labor_rights.php" class="details-button">Details</a>
+  </div>
+</main>
+
 
   <!-- Footer -->
   <footer>

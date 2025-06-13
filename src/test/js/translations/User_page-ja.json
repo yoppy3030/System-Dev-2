@@ -1,23 +1,22 @@
 {
     "translations": {
         "🌐 Translate": "🌐 翻訳",
-        "HOME": "ホーム",
+        "HOME": "ホームページ",
         "Student": "学生",
         "Professional": "社会人",
         "Blog": "ブログ",
         "Sign Up": "新規登録",
-        "Translate": "翻訳",
         "Menu": "メニュー",
         "My page": "マイページ",
         "contact": "お問い合わせ",
         "Japan life Manual": "日本生活マニュアル",
-        "Edit profile": "プロフィール編集",
+        "Edit profile": "プロフィールを編集",
         "save": "保存",
-        "Partagez quelque chose...": "何か共有しましょう...",
+        "Partagez quelque chose...": "何かを共有しましょう...",
         "send": "送信",
         "Comment": "コメント",
-        "Ajouter un commentaire...": "コメントを追加...",
+        "Ajouter un commentaire...": "コメントを追加する...",
         "Nom d'utilisateur": "ユーザー名",
-        "Votre bio...": "自己紹介..."
-    }
+        "Votre bio...": "自己紹介を入力..."
+      }      
 }

@@ -62,56 +62,23 @@ document.querySelectorAll('.language-option').forEach(option => {
 
 // テキストの正規化（余分な空白を削除）
 function normalizeText(text) {
-    // ハイフンの正規化と空白の正規化
-    return text.replace(/[-–—]/g, '-').replace(/\s+/g, ' ').trim();
+    // 特殊文字を削除してから正規化
+    return text.replace(/[▾]/g, '').replace(/\s+/g, ' ').trim();
 }
 
 // 翻訳データの読み込み
 Promise.all([
-    fetch('./js/translations/professional-ja.json').then(response => response.json()),
-    fetch('./js/translations/professional-zh.json').then(response => response.json())
+    fetch('./js/translations/work_hours-ja.json').then(response => response.json()),
+    fetch('./js/translations/work_hours-zh.json').then(response => response.json())
 ])
 .then(([jaData, zhData]) => {
     translations = jaData.translations;
     translationsZh = zhData.translations;
     console.log('翻訳データの読み込みが完了しました');
-    console.log('日本語翻訳データ:', translations); // デバッグ用
-    console.log('中国語翻訳データ:', translationsZh); // デバッグ用
 })
 .catch(error => {
     console.error('翻訳データの読み込みに失敗しました:', error);
 });
-
-function findTranslation(text, translations) {
-    // 特殊文字「▾」の有無を確認
-    const hasSpecialChar = text.includes('▾');
-    const textWithoutSpecialChar = text.replace('▾', '').trim();
-
-    // 完全一致を試みる
-    if (translations[text]) {
-        return translations[text] + (hasSpecialChar ? ' ▾' : '');
-    }
-
-    // 特殊文字なしで試みる
-    if (translations[textWithoutSpecialChar]) {
-        return translations[textWithoutSpecialChar] + (hasSpecialChar ? ' ▾' : '');
-    }
-
-    // 正規化したテキストで試みる
-    const normalizedText = normalizeText(textWithoutSpecialChar);
-    if (translations[normalizedText]) {
-        return translations[normalizedText] + (hasSpecialChar ? ' ▾' : '');
-    }
-
-    // キーを正規化して比較
-    for (const [key, value] of Object.entries(translations)) {
-        if (normalizeText(key.replace('▾', '').trim()) === normalizedText) {
-            return value + (hasSpecialChar ? ' ▾' : '');
-        }
-    }
-
-    return null;
-}
 
 // ページ翻訳の実行
 function translatePage(targetLang) {
@@ -140,17 +107,27 @@ function translatePage(targetLang) {
             continue;
         }
 
-        let translation = null;
-        if (targetLang === 'ja') {
-            translation = findTranslation(originalTexts.get(element), translations);
-        } else if (targetLang === 'zh') {
-            translation = findTranslation(originalTexts.get(element), translationsZh);
-        }
+        const normalizedText = normalizeText(originalTexts.get(element));
 
-        if (translation) {
-            element.textContent = translation;
-        } else {
-            console.log('翻訳が見つかりませんでした:', originalTexts.get(element));
+        // 言語に応じた翻訳の適用
+        if (targetLang === 'ja') {
+            // 大文字小文字を区別せずに翻訳を探す
+            const translation = Object.entries(translations).find(([key]) => 
+                normalizeText(key).toLowerCase() === normalizedText.toLowerCase()
+            );
+            if (translation) {
+                // 元のテキストに特殊文字が含まれている場合は、翻訳後に追加
+                const hasSpecialChar = originalTexts.get(element).includes('▾');
+                element.textContent = translation[1] + (hasSpecialChar ? ' ▾' : '');
+            }
+        } else if (targetLang === 'zh') {
+            const translation = Object.entries(translationsZh).find(([key]) => 
+                normalizeText(key).toLowerCase() === normalizedText.toLowerCase()
+            );
+            if (translation) {
+                const hasSpecialChar = originalTexts.get(element).includes('▾');
+                element.textContent = translation[1] + (hasSpecialChar ? ' ▾' : '');
+            }
         }
     }
     

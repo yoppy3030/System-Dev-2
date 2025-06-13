@@ -8,9 +8,25 @@
 </head>
 <body>
 
-  <header>
-    <h1>Garbage Disposal Rules in Japan</h1>
-    <p>For Foreign Residents</p>
+  <header class="site-header">
+    <div class="logo">JAPAN Life Manual</div>
+    <div class="header-title">
+        <h1>Garbage Disposal Rules in Japan</h1>
+        <p>For Foreign Residents</p>
+    </div>
+    <nav class="main-nav">
+      <a href="studenthome.php">StudentHome</a>
+      <!-- 言語選択ドロップダウン -->
+      <div class="language-selector">
+        <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+        <div class="language-dropdown">
+            <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+            <button class="language-option" data-lang="en">🇺🇸 English</button>
+            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+            <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+        </div>
+      </div>
+    </nav>
   </header>
 
   <section class="category">

@@ -10,19 +10,16 @@
   --hover-color: #8b8b8b;      /* ホバー時の色 */
 }
 
-/* =========================================
-   基本スタイル
-   ========================================= */
-   body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
-    color: var(--dark-text);
-  }
+   /* =========================================
+    基本スタイル ========================================= */
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
 
 /* =========================================
-   ヘッダー
-   ========================================= */
+    ヘッダー
+    ========================================= */
 .site-header {
   background: #b71c1c; /* ヘッダーの背景色 */
   color: white; /* テキストの色 */
@@ -34,9 +31,9 @@
 
 /* ナビゲーションバー */
 .logo {
-  font-size: 20px;
-  font-weight: bold;
-  margin-left: 22px;
+  font-size: 20px; /* フォントサイズ */
+  font-weight: bold; /* 太字 */
+  margin-left: 22px; /* 右側に寄せる */
 }
 
 .main-nav a {
@@ -47,7 +44,8 @@
   position: relative;
 }
 
-.main-nav a::after {
+/* 下線アニメーション用のスタイル */
+.main-nav a.with-underline::after {
   content: '';
   position: absolute;
   width: 0;
@@ -58,25 +56,29 @@
   transition: width 0.3s ease;
 }
 
-.main-nav a:hover::after {
+.main-nav a.with-underline:hover::after {
   width: 100%;
+}
+
+/* 「Region」だけ下線が出ないように */
+.main-nav a.no-underline:hover::after {
+  width: 0;
 }
 
 .search input {
   padding: 5px 10px;
 }
 
-/* =========================================
-   サイドバー
-   ========================================= */
+
+/* Sidebar default (hidden) */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -250px;  /* 初期状態では非表示 */
+  left: -250px; /* hide it off-screen */
   width: 250px;
   height: 100%;
-  background-color: var(--secondary-color);
-  color: var(--light-text);
+  background-color: #654a4a;
+  color: white;
   display: flex;
   flex-direction: column;
   padding-top: 60px;
@@ -85,7 +87,7 @@
 }
 
 .sidebar a {
-  color: var(--light-text);
+  color: white;
   padding: 15px 20px;
   text-decoration: none;
   border-bottom: 1px solid #777;
@@ -95,71 +97,70 @@
   background-color: #444;
 }
 
-/* サイドバー表示状態 */
+/* Active class to show the sidebar */
 .sidebar.active {
   left: 0;
 }
 
-/* メニューボタン */
+/* Menu Button styling */
 .menu-button {
-  position: fixed;
+  position: absolute;
   top: 20px;
   left: 15px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  z-index: 2000; /* サイドバーより前面に表示 */
+  z-index: 1100;
 }
 
 .menu-button span {
   display: block;
   width: 30px;
   height: 4px;
-  background-color: var( --light-text);
+  background-color: white;
 }
-
-/* =========================================
-   スライドショー
-   ========================================= */
-.slideshow {
-  width: 100%;
-  max-width: 1600px;
-  height: 500px;
-  margin: 0 auto;
-  position: relative;
-  overflow: hidden;
-  border-radius: 10px;
-  margin-bottom: 3rem;
+/* Optional: Highlight Kyoto section
+section.kyoto {
+  background-color: #ebe9ef;
+  padding: 2rem;
+  border-radius: 12px;
 }
-
-.slide {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
+section.kobe {
+  background-color: #ebe9ef;
+  padding: 2rem;
+  border-radius: 12px;
 }
-
-.slide.active {
-  opacity: 1;
-  z-index: 1;
+section.osaka {
+  background-color: #ebe9ef;
+  padding: 2rem;
+  border-radius: 12px;
 }
+section.nara {
+  background-color: #ebe9ef;
+  padding: 2rem;
+  border-radius: 12px;
+} */
 
-/* =========================================
-   メインコンテンツ
-   ========================================= */
-main {
+
+ main {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background-color: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
+} 
 
+
+
+.rules-list li img {
+  max-width: 100%;
+  margin-top: 1rem;
+  border-radius: 10px;
+  display: block;
+  width: 70%;
+  margin: 1rem auto;
+}
 /* =========================================
    言語選択機能
    ========================================= */
@@ -219,7 +220,6 @@ main {
   background-color: #b2b3b1;
   color: var(--light-text);
 }
-
 /* =========================================
    ルールリスト
    ========================================= */
@@ -266,24 +266,12 @@ main section {
 h1, h2 {
   margin-bottom: 2rem;
 }
-
-
 /* =========================================
    フッター
    ========================================= */
-   footer {
-    background-color: #b71c1c;
-    color: var(--light-text);
-    padding: 2rem;
-    text-align: center;
-  }
-  
-  .footer-content a {
-    color: var(--light-text);
-    text-decoration: none;
-  }
-  
-  .footer-content a:hover {
-    text-decoration: underline;
-  }
-
+  footer {
+  background: #ddd;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+}

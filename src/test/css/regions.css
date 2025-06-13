@@ -301,30 +301,6 @@ footer {
   color: var(--secondary-color);
 }
 
-/* ソーシャルアイコン */
-.social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  margin: 1.5rem 0;
-}
-
-.social-icons a {
-  font-size: 1.5rem;
-  color: var(--light-text);
-  transition: all 0.3s ease;
-}
-
-.social-icons a:hover {
-  color: var(--secondary-color);
-  transform: translateY(-3px);
-}
-
-
-
-
-
-
 
 /* =========================================
    言語選択機能

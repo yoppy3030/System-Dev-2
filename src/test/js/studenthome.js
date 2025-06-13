@@ -82,25 +82,25 @@ function translatePage(targetLang) {
     document.querySelectorAll('.menu-item').forEach(menuItem => {
         const pElement = menuItem.querySelector('p');
         if (pElement) {
-            const originalText = pElement.textContent;
+            const originalText = pElement.innerHTML;
             if (!originalTexts.has(pElement)) {
                 originalTexts.set(pElement, originalText);
             }
 
             if (targetLang === 'en') {
-                pElement.textContent = originalTexts.get(pElement);
+                pElement.innerHTML = originalTexts.get(pElement);
             } else {
                 const normalizedText = normalizeText(originalTexts.get(pElement));
                 const translation = targetLang === 'ja' ? translations[normalizedText] : translationsZh[normalizedText];
                 if (translation) {
-                    pElement.textContent = translation;
+                    pElement.innerHTML = translation;
                 }
             }
         }
     });
 
     // その他の要素の処理
-    const elements = document.querySelectorAll('p:not(.menu-item p), h1, h2, h3, h4, h5, h6, span, a:not(.menu-item a), .sidebar a, .translate-btn, button');
+    const elements = document.querySelectorAll('p:not(.menu-item p), h1, h2, h3, h4, h5, h6, span, a:not(.menu-item a), .sidebar a, .translate-btn, button, section, section *');
     
     for (const element of elements) {
         // いいねボタン、閲覧数などの特殊な要素は翻訳対象外
@@ -140,7 +140,7 @@ function translatePage(targetLang) {
             continue;
         }
 
-        const originalText = element.textContent;
+        const originalText = element.innerHTML;
         
         if (!originalText || !originalText.trim()) {
             continue;
@@ -153,7 +153,7 @@ function translatePage(targetLang) {
         
         // 英語の場合は元のテキストに戻す
         if (targetLang === 'en') {
-            element.textContent = originalTexts.get(element);
+            element.innerHTML = originalTexts.get(element);
             continue;
         }
 
@@ -162,11 +162,11 @@ function translatePage(targetLang) {
         // 言語に応じた翻訳の適用
         if (targetLang === 'ja') {
             if (translations[normalizedText]) {
-                element.textContent = translations[normalizedText];
+                element.innerHTML = translations[normalizedText];
             }
         } else if (targetLang === 'zh') {
             if (translationsZh[normalizedText]) {
-                element.textContent = translationsZh[normalizedText];
+                element.innerHTML = translationsZh[normalizedText];
             }
         }
     }
