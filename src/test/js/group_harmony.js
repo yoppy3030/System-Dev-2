@@ -98,9 +98,9 @@ function translatePage(targetLang) {
 
         // 初回のみoriginalTextsに保存
         if (!originalTexts.has(element)) {
-            originalTexts.set(element, element.innerHTML);
+        originalTexts.set(element, element.textContent);
         }
-        
+            
         // 英語の場合は元のテキストに戻す
         if (targetLang === 'en') {
             element.innerHTML = originalTexts.get(element);
