@@ -23,34 +23,24 @@
 </section>
 
 <section class="info-section">
-  <div class="info-card">
+  <a href="route_planner.php" class="info-card">
     <h2>🚆 Train Systems</h2>
     <p>Use JR, Metro, and private lines like Hankyu and Kintetsu. Check real-time routes with Google Maps or NAVITIME.</p>
-  </div>
-
-  <div class="info-card">
-    <h2>💳 IC Cards</h2>
-    <p>Use Suica, Pasmo, ICOCA and others on transport and in stores. Rechargeable and region-compatible!</p>
-  </div>
-
-  <div class="info-card">
+  </a>
+  <a href="how_to_ride.php" class="info-card">
     <h2>🚉 How to Ride</h2>
     <p>Tap in at the gate, transfer platforms if needed, tap out to auto-pay. Easy and fast!</p>
-  </div>
+  </a>
 
-  <div class="info-card">
+  <a href="useful_apps.php" class="info-card">
     <h2>📱 Useful Apps</h2>
     <p>Google Maps, NAVITIME Japan Travel, Yahoo! Norikae Annai help you travel easily.</p>
-  </div>
+  </a>
 
-  <div class="info-card">
+  <a href="extra_tips.php" class="info-card">
     <h2>📝 Extra Tips</h2>
     <p>Avoid rush hours, use women-only cars in the morning, and avoid eating on local trains.</p>
-  </div>
-</section>
-
-<section class="download-section">
-  <a href="./downloads/navigation_guide.pdf" class="btn" target="_blank">📥 Download Full Navigation Guide</a>
+  </a>
 </section>
 
 <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">

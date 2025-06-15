@@ -38,34 +38,34 @@
   </section>
 
   <section class="topics-grid">
-    <div class="topic-card">
+    <a href="apartment_rental.php" class="topic-card">
       <h2>Housing & Rent</h2>
       <p>Find apartments, understand key money, and explore shared housing options.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="navigations.php" class="topic-card">
       <h2>Transportation</h2>
       <p>How to use trains, buses, and IC cards like Suica and PASMO in Japan.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="shopping_life.php" class="topic-card">
       <h2>Shopping & Daily Life</h2>
       <p>Learn where to shop for groceries, electronics, and daily essentials.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="part_time_jobs.php" class="topic-card">
       <h2>Part-Time Jobs</h2>
       <p>How to apply for work permits and find legal part-time job opportunities.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="health_insurance.php" class="topic-card">
       <h2>Health & Insurance</h2>
       <p>Join Japan's health insurance, visit hospitals, and use translation support.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="mobile_internet.php" class="topic-card">
       <h2>Mobile & Internet</h2>
       <p>Set up a phone contract, find prepaid SIM cards, and choose a Wi-Fi plan.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="emergency_contacts.php" class="topic-card">
       <h2>Emergency Contacts</h2>
       <p>Know how to call police (110), ambulance/fire (119), and support centers.</p>
-    </div>
+    </a>
   </section>
 
   <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">

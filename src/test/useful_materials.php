@@ -47,8 +47,7 @@
     <div class="material-card">
       <h3>🏠 Apartment & Rental Guide</h3>
       <p>Step-by-step instructions for finding and renting a room in Japan.</p>
-      <a href="https://en.uhomes.com/jp/osaka?semcode=Japan-Google&gad_source=1&gad_campaignid=22236057572&gbraid=0AAAAA-CTC4bBL9WO6O3HSymfVVJo4TWCL&gclid=Cj0KCQjwgIXCBhDBARIsAELC9ZhZgkAdmVT-_Izo09o8ASHIM8EzxzxPAIvjvL6Re6EYEsm_WPF15-AaAuKOEALw_wcB"
-       target="_blank" class="btn">Details</a>
+      <a href="apartment_rental.php" target="_blank" class="btn">Details</a>
     </div>
   </section>
 
