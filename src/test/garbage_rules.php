@@ -28,8 +28,7 @@
       </div>
     </nav>
   </header>
-
-  <section class="category">
+  <section class="card-style-section">
     <h2>🗑️ Garbage Categories</h2>
 
     <?php
@@ -82,7 +81,7 @@
     ?>
   </section>
 
-  <section class="rules">
+  <section class="card-style-section">
     <h2>🧾 General Rules</h2>
     <ul>
         <li>Check your city's garbage schedule</li>
