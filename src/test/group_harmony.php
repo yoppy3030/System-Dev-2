@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Group Harmony in Japanese Culture</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="./css/garbage_styles.css">
+  <link rel="stylesheet" href="./css/culture.css">
 </head>
 <body>
   <!-- Navigation Bar (Same as other pages) -->
@@ -24,16 +24,14 @@
         <li><a href="studenthome.php">Student</a></li>
         <li><a href="travelers_homePage.php">Traveler</a></li>
         <li><a href="about.html">About</a></li>
-        <!-- 言語選択ドロップダウン -->
-        <div class="language-selector">
+        <li class="language-selector">
           <button id="translateBtn" class="translate-btn">🌐 Translate</button>
           <div class="language-dropdown">
             <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
             <button class="language-option" data-lang="en">🇺🇸 English</button>
             <button class="language-option" data-lang="zh">🇨🇳 中文</button>
-            <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
           </div>
-        </div>
+        </li>
       </ul>
     </nav>
   </header>
@@ -95,6 +93,5 @@
       <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
     </div>
   </footer>
-  <script src="./js/group_harmony.js"></script>
 </body>
 </html>
