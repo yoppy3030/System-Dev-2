@@ -32,7 +32,7 @@
         <li><a href="https://suumo.jp/" target="_blank">SUUMO (Japanese)</a></li>
         <li><a href="https://www.homes.co.jp/" target="_blank">Homes.co.jp (Japanese)</a></li>
         <li><a href="https://www.apamanshop.com/" target="_blank">Apamanshop (Japanese/English)</a></li>
-        <li><a href="https://www.gaijinpot.com/housing/" target="_blank">GaijinPot Housing (English-friendly)</a></li>
+        <li><a href="https://apartments.gaijinpot.com/en/rent" target="_blank">GaijinPot Housing (English-friendly)</a></li>
       </ul>
     </div>
     <div class="step">

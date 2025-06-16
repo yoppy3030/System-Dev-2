@@ -10,9 +10,9 @@
   <header class="site-header">
     <div class="logo" data-no-translate>JAPAN Life Manual</div>
     <nav class="main-nav">
-      <a href="index.php" data-translate>Home</a>
+      <a href="studenthome.php" data-translate>StudentHome</a>
       <a href="lifeinjapan.php" data-translate>Life in Japan</a>
-      <a href="workingjapan.php" data-translate>Jobs in Japan</a>
+      <a href="workingjapan.php" data-translate>Jobs & Careers</a>
         <!-- 言語選択ドロップダウン -->
         <div class="language-selector">
           <button id="translateBtn" class="translate-btn">🌐 Translate</button>
