@@ -66,10 +66,10 @@
       <h2>4. National Holidays</h2>
       <p>Japan has 16 national holidays. Major ones include:</p>
       <ul>
-        <li><strong>New Year’s Holiday:</strong> January 1–3</li>
-        <li><strong>Golden Week:</strong> April 29 to early May</li>
-        <li><strong>Obon Festival:</strong> Mid-August (unofficial holiday but widely observed)</li>
-        <li><strong>Respect for the Aged Day:</strong> 3rd Monday of September</li>
+      <li><strong>New Year's Holiday:</strong> January 1-3</li>
+      <li><strong>Golden Week:</strong> April 29 to early May</li>
+      <li><strong>Obon Festival:</strong> Mid-August (unofficial holiday but widely observed)</li>
+      <li><strong>Respect for the Aged Day:</strong> 3rd Monday of September</li>
       </ul>
     </div>
 
