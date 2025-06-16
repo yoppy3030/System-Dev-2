@@ -37,30 +37,30 @@
   </section>
 
   <section class="topics-grid">
-    <div class="topic-card">
+    <a href="job_hunting.php" class="topic-card">
       <h2>Job Hunting Process</h2>
       <p>Understand the job-hunting schedule, required documents, and how to prepare for interviews.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="visa_renewal.php" class="topic-card">
       <h2>Changing Visa Status</h2>
       <p>Learn how to switch from student visa to a work visa and what documents you need.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="japanese_language.php" class="topic-card">
       <h2>Japanese Language Skills</h2>
       <p>Discover how language proficiency impacts job opportunities and working environments.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="types_of_jobs.php" class="topic-card">
       <h2>Types of Jobs</h2>
       <p>Explore job options suitable for international students, from global companies to startups.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="job_search_support.php" class="topic-card">
       <h2>Job Search Support</h2>
       <p>Find support from career centers, job fairs, and online platforms to boost your chances.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="work_conditions.php" class="topic-card">
       <h2>Work Conditions</h2>
       <p>Learn about work hours, salaries, and employee rights under Japanese labor law.</p>
-    </div>
+    </a>
   </section>
 
   <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">

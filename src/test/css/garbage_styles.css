@@ -2,7 +2,7 @@
    変数定義
    ========================================= */
    :root {
-    --primary-color: #b71c1c;    /* メインカラー（赤） */
+    --primary-color: #0f172a;    /* メインカラー（紺） */
     --secondary-color: #654a4a;  /* セカンダリカラー（茶色） */
     --light-text: #ffffff;       /* 明るいテキスト色 */
     --dark-text: #333333;        /* 暗いテキスト色 */
@@ -10,38 +10,25 @@
     --hover-color: #8b8b8b;      /* ホバー時の色 */
   }
 
-
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f3f3f3;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
   color: #333;
+  line-height: 1.6;
 }
 
 /* Header */
 .site-header {
-  background: #b71c1c;
+  background-color: #0f172a;
   color: white;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 32px;
-  z-index: 1000;
 }
 
-.header-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.header-title h1 {
-  margin-right: 10px;
-}
-
-.logo {
-  font-size: 20px;
+.site-header .logo {
+  font-size: 1.8rem;
   font-weight: bold;
 }
 
@@ -127,47 +114,162 @@ body {
     background-color: #b2b3b1;
     color: var(--light-text);
   }
-
-.category, .rules {
-  padding: 2rem;
+/* Hero Section */
+.culture-hero {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.card {
-  background: white;
-  border-left: 6px solid #66bb6a;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.hero-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 23, 42, 0.6);
+  top: 0;
+  left: 0;
 }
 
-.card h3 {
-  margin-top: 0;
-  color: #388e3c;
-}
-
-ul {
-  padding-left: 1.5rem;
-}
-
-.rules ul li {
-  margin-bottom: 1rem;
-  padding: 0.5rem;
-  background: #f9f9f9;
-  border-radius: 6px;
-  transition: background 0.3s;
-}
-
-.rules ul li:hover {
-  background: #e0f7fa;
-}
-
-
-footer {
-  background: #ddd;
+.hero-content {
+  position: relative;
+  z-index: 1;
+  color: #fff;
   text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+}
+
+/* Main Content */
+.culture-content {
+  padding: 2rem 5%;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* Card Style Section */
+.card-style-section {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.card-style-section h2,
+.card-style-section h3 {
+  color: #1e40af;
+  margin-bottom: 1rem;
+}
+
+.card-style-section ul {
+  padding-left: 1.5rem;
+  margin-top: 1rem;
+}
+
+.card-style-section ul li {
+  margin-bottom: 0.75rem;
+}
+
+.card-style-section p {
+  margin: 1rem 0;
+}
+
+/* Footer */
+footer {
+  background-color: #1f2937;
+  color: #eee;
+  padding: 2rem 5%;
+  text-align: center;
+}
+
+footer h2 {
+  margin-bottom: 0.5rem;
+}
+
+footer a {
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+.social-icons {
+  margin: 1rem 0;
+}
+
+.social-icons a {
+  color: #ccc;
+  margin: 0 0.5rem;
+  font-size: 1.5rem;
+  transition: color 0.3s;
+}
+
+.social-icons a:hover {
+  color: #60a5fa;
+}
+
+/* =========================================
+   ドロップダウンメニュー
+   ========================================= */
+.main-nav ul li {
+  position: relative;
+}
+
+.main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;           /* Makes list items line up horizontally */
+  align-items: center;     /* Vertically center items */
+  gap: 40px;               /* Space between items */
 }
 
 
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--primary-color);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: 160px;
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 1000;
+  white-space: nowrap; /* Prevent horizontal wrapping */
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dropdown-menu.show {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dropdown-menu li a {
+  display: block;
+  padding: 12px 16px;
+  color: var(--light-text);
+  text-decoration: none;
+}
+
+.dropdown-menu li a:hover {
+  background-color: var(--hover-color);
+}
