@@ -11,11 +11,11 @@
     <header class="site-header">
         <div class="logo">JAPAN Life Manual</div>
         <nav class="main-nav">
-            <a href="index.php">Home</a>
-            <a href="./regions.php">Region</a>
-            <a href="#">Transports</a>
-            <a href="#">Food</a>
-            <a href="#">Other</a>
+            <a class="with-underline" href="index.php">Home</a>
+            <a class="no-underline" href="./regions.php">Region</a>
+            <a class="with-underline" href="#">Transports</a>
+            <a class="with-underline" href="#">Food</a>
+            <a class="with-underline" href="#">Other</a>
             <!-- 言語選択ドロップダウン -->
             <div class="language-selector">
                 <button id="translateBtn" class="translate-btn">🌐 Translate</button>
@@ -200,7 +200,7 @@
             <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
         </div>
 </footer>
-<script src="./js/travelers_homePage.js"></script>
+<script src="./js/kanto.js"></script>
 <script src="./js/translations/"></script>
 </body>
 </html>

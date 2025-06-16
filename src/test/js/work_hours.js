@@ -87,7 +87,7 @@ function translatePage(targetLang) {
         return;
     }
 
-    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, button, section');
+    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, button, section, strong, ');
     
     for (const element of elements) {
         const originalText = element.textContent;
@@ -149,6 +149,14 @@ document.querySelectorAll('.main-nav ul li > a').forEach(anchor => {
     }
   });
 });
+
+document.querySelector('.dropdown').addEventListener('mouseenter', () => {
+  document.querySelector('.dropdown-menu').classList.add('show');
+});
+document.querySelector('.dropdown').addEventListener('mouseleave', () => {
+  document.querySelector('.dropdown-menu').classList.remove('show');
+});
+
 
 // Optional: close dropdown on click outside
 document.addEventListener('click', e => {

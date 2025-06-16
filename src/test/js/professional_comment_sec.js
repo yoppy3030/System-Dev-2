@@ -1,53 +1,30 @@
-// comments.js
-const form = document.getElementById('comment-form');
-const commentsContainer = document.getElementById('comments');
-
-// フォームが存在する場合のみイベントリスナーを追加
-if (form && commentsContainer) {
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value.trim();
-        const comment = document.getElementById('comment').value.trim();
-
-        if (username && comment) {
-            const commentDiv = document.createElement('div');
-            commentDiv.classList.add('comment');
-            commentDiv.innerHTML = `<strong>${username}</strong><p>${comment}</p>`;
-            commentsContainer.prepend(commentDiv);
-            form.reset();
-        }
-    });
-}
-
-
-
-/* =========================================
-   翻訳機能
-   ========================================= */
-// 翻訳関連の変数
+// =========================================
+// グローバル変数の初期化
+// =========================================
 let currentLanguage = 'en';
 let originalTexts = new Map();
 let translations = null;
 let translationsZh = null;
 
-// 翻訳ボタンとドロップダウンの制御
+// DOM要素の取得
 const translateBtn = document.getElementById('translateBtn');
 const languageDropdown = document.querySelector('.language-dropdown');
 
-// 翻訳ボタンクリック時の処理
+// =========================================
+// 翻訳機能の初期設定
+// =========================================
 translateBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     languageDropdown.classList.toggle('show');
 });
 
-// ドロップダウン外クリックで閉じる
 document.addEventListener('click', (e) => {
     if (!languageDropdown.contains(e.target) && !translateBtn.contains(e.target)) {
         languageDropdown.classList.remove('show');
     }
 });
 
-// 言語選択オプションのイベントリスナー
+// 言語選択オプションのイベントリスナー設定
 document.querySelectorAll('.language-option').forEach(option => {
     option.addEventListener('click', () => {
         const targetLang = option.dataset.lang;
@@ -60,13 +37,27 @@ document.querySelectorAll('.language-option').forEach(option => {
     });
 });
 
-// テキストの正規化（余分な空白を削除）
+// =========================================
+// ユーティリティ関数
+// =========================================
+/**
+ * テキストの正規化（HTMLエンティティをデコードし、余分な空白を削除）
+ * @param {string} text - 正規化するテキスト
+ * @returns {string} 正規化されたテキスト
+ */
 function normalizeText(text) {
-    // ハイフンの正規化と空白の正規化
-    return text.replace(/[-–—]/g, '-').replace(/\s+/g, ' ').trim();
+    // 一時的なDOM要素を作成してHTMLエンティティをデコード
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = text;
+    const decodedText = tempDiv.textContent || tempDiv.innerText || "";
+    
+    // 次に余分な空白を削除
+    return decodedText.replace(/\s+/g, ' ').trim();
 }
 
+// =========================================
 // 翻訳データの読み込み
+// =========================================
 Promise.all([
     fetch('./js/translations/professional-ja.json').then(response => response.json()),
     fetch('./js/translations/professional-zh.json').then(response => response.json())
@@ -75,55 +66,87 @@ Promise.all([
     translations = jaData.translations;
     translationsZh = zhData.translations;
     console.log('翻訳データの読み込みが完了しました');
-    console.log('日本語翻訳データ:', translations); // デバッグ用
-    console.log('中国語翻訳データ:', translationsZh); // デバッグ用
 })
 .catch(error => {
     console.error('翻訳データの読み込みに失敗しました:', error);
 });
 
-function findTranslation(text, translations) {
-    // 特殊文字「▾」の有無を確認
-    const hasSpecialChar = text.includes('▾');
-    const textWithoutSpecialChar = text.replace('▾', '').trim();
-
-    // 完全一致を試みる
-    if (translations[text]) {
-        return translations[text] + (hasSpecialChar ? ' ▾' : '');
-    }
-
-    // 特殊文字なしで試みる
-    if (translations[textWithoutSpecialChar]) {
-        return translations[textWithoutSpecialChar] + (hasSpecialChar ? ' ▾' : '');
-    }
-
-    // 正規化したテキストで試みる
-    const normalizedText = normalizeText(textWithoutSpecialChar);
-    if (translations[normalizedText]) {
-        return translations[normalizedText] + (hasSpecialChar ? ' ▾' : '');
-    }
-
-    // キーを正規化して比較
-    for (const [key, value] of Object.entries(translations)) {
-        if (normalizeText(key.replace('▾', '').trim()) === normalizedText) {
-            return value + (hasSpecialChar ? ' ▾' : '');
-        }
-    }
-
-    return null;
-}
-
+// =========================================
 // ページ翻訳の実行
+// =========================================
+/**
+ * ページ全体の翻訳を実行
+ * @param {string} targetLang - 翻訳先の言語（'en', 'ja', 'zh'）
+ */
 function translatePage(targetLang) {
     if (!translations || !translationsZh) {
         console.error('翻訳データが読み込まれていません');
         return;
     }
 
-    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, button, section');
+    // メニューアイテムの特別な処理
+    document.querySelectorAll('.menu-item').forEach(menuItem => {
+        const pElement = menuItem.querySelector('p');
+        if (pElement) {
+            const originalText = pElement.innerHTML;
+            if (!originalTexts.has(pElement)) {
+                originalTexts.set(pElement, originalText);
+            }
+
+            if (targetLang === 'en') {
+                pElement.innerHTML = originalTexts.get(pElement);
+            } else {
+                const normalizedText = normalizeText(originalTexts.get(pElement));
+                const translation = targetLang === 'ja' ? translations[normalizedText] : translationsZh[normalizedText];
+                if (translation) {
+                    pElement.innerHTML = translation;
+                }
+            }
+        }
+    });
+
+    // その他の要素の処理
+    const elements = document.querySelectorAll('p:not(.menu-item p), h1, h2, h3, h4, h5, h6, span, a:not(.menu-item a), .sidebar a, .translate-btn, button, section, section *');
     
     for (const element of elements) {
-        const originalText = element.textContent;
+        // いいねボタン、閲覧数などの特殊な要素は翻訳対象外
+        if (element.id === 'like-count' || element.id === 'dislike-count' || element.id === 'view-count') {
+            continue;
+        }
+
+        // ボタン要素の特別な処理
+        if (element.tagName === 'BUTTON') {
+            // アイコン要素を保存
+            const icon = element.querySelector('i');
+            const iconHTML = icon ? icon.outerHTML : '';
+            
+            // テキストノードのみを取得
+            const textNodes = Array.from(element.childNodes)
+                .filter(node => node.nodeType === Node.TEXT_NODE)
+                .map(node => node.textContent.trim())
+                .join('')
+                .trim();
+
+            if (!textNodes) continue;
+
+            if (!originalTexts.has(element)) {
+                originalTexts.set(element, textNodes);
+            }
+
+            if (targetLang === 'en') {
+                element.innerHTML = iconHTML + ' ' + originalTexts.get(element);
+            } else {
+                const normalizedText = normalizeText(originalTexts.get(element));
+                const translation = targetLang === 'ja' ? translations[normalizedText] : translationsZh[normalizedText];
+                
+                if (translation) {
+                    element.innerHTML = iconHTML + ' ' + translation;
+                }
+            }
+            continue;
+        }
+
+        const originalText = element.innerHTML;
         
         if (!originalText || !originalText.trim()) {
             continue;
@@ -136,21 +159,21 @@ function translatePage(targetLang) {
         
         // 英語の場合は元のテキストに戻す
         if (targetLang === 'en') {
-            element.textContent = originalTexts.get(element);
+            element.innerHTML = originalTexts.get(element);
             continue;
         }
 
-        let translation = null;
-        if (targetLang === 'ja') {
-            translation = findTranslation(originalTexts.get(element), translations);
-        } else if (targetLang === 'zh') {
-            translation = findTranslation(originalTexts.get(element), translationsZh);
-        }
+        const normalizedText = normalizeText(originalTexts.get(element));
 
-        if (translation) {
-            element.textContent = translation;
-        } else {
-            console.log('翻訳が見つかりませんでした:', originalTexts.get(element));
+        // 言語に応じた翻訳の適用
+        if (targetLang === 'ja') {
+            if (translations[normalizedText]) {
+                element.innerHTML = translations[normalizedText];
+            }
+        } else if (targetLang === 'zh') {
+            if (translationsZh[normalizedText]) {
+                element.innerHTML = translationsZh[normalizedText];
+            }
         }
     }
     
@@ -162,24 +185,3 @@ function translatePage(targetLang) {
     
     currentLanguage = targetLang;
 }
-// ドロップダウンメニュー表示制御
-document.querySelectorAll('.main-nav ul li > a').forEach(anchor => {
-  anchor.addEventListener('click', e => {
-    const submenu = anchor.nextElementSibling;
-    if (submenu && submenu.classList.contains('dropdown-menu')) {
-      e.preventDefault();
-      submenu.classList.toggle('show');
-    }
-  });
-});
-
-// Optional: close dropdown on click outside
-document.addEventListener('click', e => {
-  document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-    if (!menu.parentElement.contains(e.target)) {
-      menu.classList.remove('show');
-    }
-  });
-});
-
- 
