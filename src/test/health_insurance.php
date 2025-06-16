@@ -59,6 +59,7 @@
 <footer class="footer">
   &copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.
 </footer>
+<script src="./js/health_insurance.js"></script>
 
 </body>
 </html>

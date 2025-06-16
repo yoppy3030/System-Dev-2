@@ -63,6 +63,6 @@
 <footer class="footer">
   &copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.
 </footer>
-
+<script src="./js/mobile_internet.js"></script>
 </body>
 </html>

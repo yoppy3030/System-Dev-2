@@ -65,6 +65,7 @@
 <footer class="footer">
   &copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.
 </footer>
+<script src="./js/emergency_contacts.js"></script>
 
 </body>
 </html>
