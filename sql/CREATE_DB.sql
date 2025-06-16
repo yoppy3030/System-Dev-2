@@ -30,7 +30,7 @@ CREATE TABLE posts (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- TABLE : comments （サポートする回答のネスト）)
+-- TABLE : comments （サポートする回答のネスト）
 CREATE TABLE comments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     post_id INT NOT NULL,
