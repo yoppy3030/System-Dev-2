@@ -13,6 +13,16 @@
   <nav class="main-nav">
     <a href="studenthome.php">StudentHome</a>
     <a href="lifeinjapan.php">Back to Life in Japan</a>
+      <!-- 言語選択ドロップダウン -->
+      <div class="language-selector">
+        <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+        <div class="language-dropdown">
+          <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+          <button class="language-option" data-lang="en">🇺🇸 English</button>
+          <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+          <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+      </div>
+    </div>
   </nav>
 </header>
 
