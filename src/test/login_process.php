@@ -1,7 +1,6 @@
 <?php
 session_start();
-require 'db.php';
-
+require __DIR__ . '/../backend/config.php';
 $email = $_POST['email'];
 $password = $_POST['password'];
 
