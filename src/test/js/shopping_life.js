@@ -24,7 +24,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// 言語選択オプションのイベントリスナー設定
+// 言語選択オプションのイベ々ン設定
 document.querySelectorAll('.language-option').forEach(option => {
     option.addEventListener('click', () => {
         const targetLang = option.dataset.lang;
@@ -40,10 +40,16 @@ document.querySelectorAll('.language-option').forEach(option => {
 // =========================================
 // ユーティリティ関数
 // =========================================
+/**
+ * テキストの正規化（HTMLエンティ티をデコードし、余分な空白を削除）
+ * @param {string} text - 正規化するテキスト
+ * @returns {string} 正規化されたテキスト
+ */
 function normalizeText(text) {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = text;
-    const decodedText = tempDiv.textContent || tempDiv.innerText || "";
+    const decodedText = tempDiv.textContent || tempDiv.innerHTML || "";
+    
     return decodedText.replace(/\s+/g, ' ').trim();
 }
 
@@ -64,78 +70,116 @@ Promise.all([
 });
 
 // =========================================
-// ページ翻訳の実行 (改善版)
+// ページ翻訳の実行
 // =========================================
-
-/**
- * 指定されたノードを再帰的に翻訳する
- * @param {Node} node - 処理対象のDOMノード
- * @param {string} targetLang - 翻訳先の言語
- */
-function translateNodeRecursively(node, targetLang) {
-    // 翻訳対象外のタグはスキップ
-    const skipTags = ['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEXTAREA', 'INPUT', 'SELECT'];
-    if (node.nodeType === Node.ELEMENT_NODE && skipTags.includes(node.tagName)) {
-        return;
-    }
-
-    // 子ノードをループ処理
-    for (const child of Array.from(node.childNodes)) {
-        if (child.nodeType === Node.TEXT_NODE) {
-            const originalText = child.textContent;
-            const trimmedText = originalText.trim();
-
-            if (trimmedText) {
-                // 初回のみ元のテキストを保存
-                if (!originalTexts.has(child)) {
-                    originalTexts.set(child, originalText);
-                }
-
-                // 英語の場合は元のテキストに戻す
-                if (targetLang === 'en') {
-                    child.textContent = originalTexts.get(child);
-                    continue;
-                }
-
-                const normalizedText = normalizeText(originalTexts.get(child));
-                const translationData = targetLang === 'ja' ? translations : translationsZh;
-
-                if (translationData && translationData[normalizedText]) {
-                    // 元のテキストの前後の空白を維持
-                    const leadingSpace = originalTexts.get(child).match(/^\s*/)[0];
-                    const trailingSpace = originalTexts.get(child).match(/\s*$/)[0];
-                    child.textContent = leadingSpace + translationData[normalizedText] + trailingSpace;
-                }
-            }
-        } else if (child.nodeType === Node.ELEMENT_NODE) {
-            // 要素ノードの場合は再帰的に処理
-            translateNodeRecursively(child, targetLang);
-        }
-    }
-}
-
 /**
  * ページ全体の翻訳を実行
  * @param {string} targetLang - 翻訳先の言語（'en', 'ja', 'zh'）
  */
 function translatePage(targetLang) {
-    if ((targetLang === 'ja' && !translations) || (targetLang === 'zh' && !translationsZh)) {
+    if (!translations || !translationsZh) {
         console.error('翻訳データが読み込まれていません');
         return;
     }
 
-    // body全体を翻訳の起点とする
-    const translatableContent = document.body;
-    translateNodeRecursively(translatableContent, targetLang);
+    // メニューアイテムの特別な処理
+    document.querySelectorAll('.menu-item').forEach(menuItem => {
+        const pElement = menuItem.querySelector('p');
+        if (pElement) {
+            const originalText = pElement.innerHTML;
+            if (!originalTexts.has(pElement)) {
+                originalTexts.set(pElement, originalText);
+            }
+
+            if (targetLang === 'en') {
+                pElement.innerHTML = originalTexts.get(pElement);
+            } else {
+                const normalizedText = normalizeText(originalTexts.get(pElement));
+                const translation = targetLang === 'ja' ? translations[normalizedText] : translationsZh[normalizedText];
+                if (translation) {
+                    pElement.innerHTML = translation;
+                }
+            }
+        }
+    });
+
+    // その他の要素の処理
+    const elements = document.querySelectorAll('p:not(.menu-item p), h1, h2, h3, h4, h5, h6, span, a:not(.menu-item a), .sidebar a, .translate-btn, button, section, section *');
+    
+    for (const element of elements) {
+        // いいねボタン、閲覧数などの特殊な要素は翻訳対象外
+        if (element.id === 'like-count' || element.id === 'dislike-count' || element.id === 'view-count') {
+            continue;
+        }
+
+        // ボタン要素の特別な処理
+        if (element.tagName === 'BUTTON') {
+            // アイコン要素を保存
+            const icon = element.querySelector('i');
+            const iconHTML = icon ? icon.outerHTML : '';
+            
+            // テキストノードのみを取得
+            const textNodes = Array.from(element.childNodes)
+                .filter(node => node.nodeType === Node.TEXT_NODE)
+                .map(node => node.textContent.trim())
+                .join('')
+                .trim();
+
+            if (!textNodes) continue;
+
+            if (!originalTexts.has(element)) {
+                originalTexts.set(element, textNodes);
+            }
+
+            if (targetLang === 'en') {
+                element.innerHTML = iconHTML + ' ' + originalTexts.get(element);
+            } else {
+                const normalizedText = normalizeText(originalTexts.get(element));
+                const translation = targetLang === 'ja' ? translations[normalizedText] : translationsZh[normalizedText];
+                
+                if (translation) {
+                    element.innerHTML = iconHTML + ' ' + translation;
+                }
+            }
+            continue;
+        }
+
+        const originalText = element.innerHTML;
+        
+        if (!originalText || !originalText.trim()) {
+            continue;
+        }
+
+        // 初回のみoriginalTextsに保存
+        if (!originalTexts.has(element)) {
+            originalTexts.set(element, originalText);
+        }
+        
+        // 英語の場合は元のテキストに戻す
+        if (targetLang === 'en') {
+            element.innerHTML = originalTexts.get(element);
+            continue;
+        }
+
+        const normalizedText = normalizeText(originalTexts.get(element));
+
+        // 言語に応じた翻訳の適用
+        if (targetLang === 'ja') {
+            if (translations[normalizedText]) {
+                element.innerHTML = translations[normalizedText];
+            }
+        } else if (targetLang === 'zh') {
+            if (translationsZh[normalizedText]) {
+                element.innerHTML = translationsZh[normalizedText];
+            }
+        }
+    }
     
     // アクティブな言語ボタンの更新
     document.querySelectorAll('.language-option').forEach(btn => {
         btn.classList.remove('active');
     });
-    const activeBtn = document.querySelector(`.language-option[data-lang="${targetLang}"]`);
-    if (activeBtn) {
-        activeBtn.classList.add('active');
-    }
+    document.querySelector('.language-option[data-lang="' + targetLang + '"]').classList.add('active');
     
     currentLanguage = targetLang;
 }
