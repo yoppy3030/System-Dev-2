@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . '/backend/config.php';
+require __DIR__ . '/../backend/config.php';
 // Fonction pour définir un message flash
 function set_flash_message($message, $type = 'success') {
     $_SESSION['flash_message'] = ['message' => $message, 'type' => $type];
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Générer un nom unique sécurisé
             $ext = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
             $avatar_name = uniqid('avatar_') . '.' . $ext;
-            $avatar_dir = __DIR__ . 'uploads/'; // Chemin de sauvegarde cohérent avec user_script.js
+            $avatar_dir = __DIR__ . '../uploads/'; // Chemin de sauvegarde cohérent avec user_script.js
             if (!is_dir($avatar_dir)) {
                 mkdir($avatar_dir, 0755, true);
             }
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     unlink(__DIR__ . '/' . $user['avatar']);
                 }
                 // Chemin relatif pour la DB
-                $avatar_path = 'uploads/' . $avatar_name;
+                $avatar_path = './uploads/' . $avatar_name;
             } else {
                 $errors[] = 'Erreur lors de l\'upload de l\'avatar.';
             }
@@ -188,16 +188,16 @@ if (isset($_SESSION['flash_message'])) {
 <head>
     <meta charset="UTF-8">
     <title>Modifier mon profil - Japan Life Manual</title>
-    <link rel="stylesheet" href="css/edit_profil.css">
+    <link rel="stylesheet" href="../assets/css/edit_profil.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
-        <a href="User_page.php" class="back-button"><i class="fas fa-arrow-left"></i>Go back to profile</a>
+        <a href="User_page.php" class="back-button"><i class="fas fa-arrow-left"></i> Retour au profil</a>
     </header>
 
     <main class="edit-profile-container">
-        <h1><i class="fas fa-user-edit"></i> Edit Profile</h1>
+        <h1><i class="fas fa-user-edit"></i> Modifier le profil</h1>
 
         <?php if ($flash_message): ?>
             <div class="flash-message flash-message-<?= htmlspecialchars($flash_message['type']) ?>">
@@ -211,13 +211,13 @@ if (isset($_SESSION['flash_message'])) {
                     <img id="avatarPreview" src="<?= htmlspecialchars($user['avatar'] ? $user['avatar'] : 'images/default-avatar.png') ?>" alt="avatar" width="100">
                 </div>
                 <label for="avatarInput" class="upload-button">
-                    <i class="fas fa-camera"></i> Change photo
+                    <i class="fas fa-camera"></i> Changer la photo
                 </label>
                 <input type="file" id="avatarInput" name="avatar" accept="image/*" style="display: none;">
             </div>
 
             <div class="form-group">
-                <label for="username">Username</label>
+                <label for="username">Nom d'utilisateur</label>
                 <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username'] ?? '') ?>" required>
             </div>
 
@@ -227,18 +227,18 @@ if (isset($_SESSION['flash_message'])) {
             </div>
 
             <div class="form-group">
-                <label for="bio">Short Bio</label>
+                <label for="bio">Bio courte</label>
                 <textarea id="bio" name="bio" rows="4"><?= htmlspecialchars($user['bio'] ?? '') ?></textarea>
             </div>
 
             <div class="form-group">
-                <label>City</label>
+                <label>Ville</label>
                 <select id="location" name="location">
-                    <option value="">Select your city</option>
+                    <option value="">Sélectionnez votre ville</option>
                     <option value="tokyo" <?= ($user['location'] ?? '') === 'tokyo' ? 'selected' : '' ?>>Tokyo</option>
                     <option value="osaka" <?= ($user['location'] ?? '') === 'osaka' ? 'selected' : '' ?>>Osaka</option>
                     <option value="kyoto" <?= ($user['location'] ?? '') === 'kyoto' ? 'selected' : '' ?>>Kyoto</option>
-                    <option value="other" <?= ($user['location'] ?? '') === 'other' ? 'selected' : '' ?>>Other</option>
+                    <option value="other" <?= ($user['location'] ?? '') === 'other' ? 'selected' : '' ?>>Autre</option>
                 </select>
             </div>
 
@@ -246,7 +246,7 @@ if (isset($_SESSION['flash_message'])) {
                 <label>Statut</label>
                 <div class="status-options">
                     <?php
-                    $options = ['Tourist', 'International Student', 'Professional', 'Other'];
+                    $options = ['Tourist', 'International Student', 'Professional', 'other'];
                     $current_activity = $user['activity'] ?? ''; // Correction: utilise 'activity'
                     foreach ($options as $opt) {
                         $checked = (strtolower($opt) === strtolower($current_activity)) ? 'checked' : ''; // Comparaison insensible à la casse

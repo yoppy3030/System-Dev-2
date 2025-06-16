@@ -24,7 +24,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// 言語選択オプションのイベ々ン設定
+// 言語選択オプションの設定
 document.querySelectorAll('.language-option').forEach(option => {
     option.addEventListener('click', () => {
         const targetLang = option.dataset.lang;

@@ -4,7 +4,7 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
-require __DIR__ . '/backend/config.php';
+require __DIR__ . '/../backend/config.php';
 
 // Flash message functions
 function set_flash_message($message, $type = 'success') {
@@ -61,7 +61,7 @@ $flash_message = get_flash_message();
 // Function to render comments recursively
 function renderComments($comments_array) {
     foreach ($comments_array as $comment) {
-        $comment_avatar_path = $comment['avatar'] ? $comment['avatar'] : 'uploads/default-avatar.png';
+        $comment_avatar_path = $comment['avatar'] ? $comment['avatar'] : 'images/default-avatar.png';
         echo '<div class="comment" data-comment-id="' . htmlspecialchars($comment['id']) . '">';
         echo '<img src="' . htmlspecialchars($comment_avatar_path) . '" alt="Commenter Avatar" class="comment-avatar">';
         echo '<div class="comment-content">';
@@ -92,7 +92,7 @@ function renderComments($comments_array) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile</title>
-    <link rel="stylesheet" href="css/user_page.css">
+    <link rel="stylesheet" href="../assets/css/user_page.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
@@ -102,7 +102,7 @@ function renderComments($comments_array) {
                 <i class="fas fa-bars"></i> Menu
             </button>
             <div class="dropdown-content" id="dropdown-content">
-                <a href="explore.php"><i class="fas fa-blog"></i> Blog</a>
+                <a href="blog.php"><i class="fas fa-blog"></i> Blog</a>
                 <a href="#"><i class="fas fa-envelope"></i> Contact</a>
                 <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log Out</a>
             </div>
@@ -210,7 +210,7 @@ function renderComments($comments_array) {
                         <div class="post" data-post-id="<?= $post['id'] ?>">
                             <!-- En-tête du post -->
                             <div class="post-header">
-                                <img src="<?= htmlspecialchars($post['avatar'] ?? 'uploads/default_avatar.jpg') ?>" class="post-avatar">
+                                <img src="<?= htmlspecialchars($post['avatar'] ?? 'assets/default_avatar.jpg') ?>" class="post-avatar">
                                 <span class="post-author"><?= htmlspecialchars($post['username']) ?></span>
                                 <span class="post-date"><?= date('F j, Y, g:i a', strtotime($post['created_at'])) ?></span>
                             </div>
@@ -244,7 +244,7 @@ function renderComments($comments_array) {
                                         <?php if (!empty($post['comments'])): ?>
                                             <?php foreach ($post['comments'] as $comment): ?>
                                                 <div class="comment" data-comment-id="<?= $comment['id'] ?>">
-                                                    <img src="<?= htmlspecialchars($comment['avatar'] ?? 'uploads/default-avatar.png') ?>" class="comment-avatar">
+                                                    <img src="<?= htmlspecialchars($comment['avatar'] ?? 'images/default-avatar.png') ?>" class="comment-avatar">
                                                     <div class="comment-content">
                                                         <div class="comment-author"><?= htmlspecialchars($comment['username']) ?></div>
                                                         <div class="comment-text"><?= nl2br(htmlspecialchars($comment['content'])) ?></div>
@@ -264,7 +264,7 @@ function renderComments($comments_array) {
                                                             <div class="replies">
                                                                 <?php foreach ($comment['replies'] as $reply): ?>
                                                                     <div class="comment" data-comment-id="<?= $reply['id'] ?>">
-                                                                        <img src="<?= htmlspecialchars($reply['avatar'] ?? 'uploads/default-avatar.png') ?>" class="comment-avatar">
+                                                                        <img src="<?= htmlspecialchars($reply['avatar'] ?? 'images/default-avatar.png') ?>" class="comment-avatar">
                                                                         <div class="comment-content">
                                                                             <div class="comment-author"><?= htmlspecialchars($reply['username']) ?></div>
                                                                             <div class="comment-text"><?= nl2br(htmlspecialchars($reply['content'])) ?></div>
@@ -387,7 +387,7 @@ function renderComments(comments, parentId = null) {
     comments.filter(c => c.parent_comment_id == parentId).forEach(comment => {
         html += `
             <div class="comment" data-comment-id="${comment.id}">
-                <img src="${comment.avatar || 'uploads/default-avatar.png'}" class="comment-avatar">
+                <img src="${comment.avatar || 'images/default-avatar.png'}" class="comment-avatar">
                 <div class="comment-content">
                     <strong>${comment.username}</strong>
                     <p>${comment.content.replace(/\n/g, '<br>')}</p>
@@ -405,7 +405,7 @@ function renderComments(comments, parentId = null) {
     }
 
     function loadComments(postId) {
-        fetch(`backend/get_comments.php?post_id=${postId}`)
+        fetch(`../backend/get_comments.php?post_id=${postId}`)
             .then(res => res.json())
             .then(data => {
                 document.getElementById(`comments-${postId}`).innerHTML = renderComments(data);
@@ -423,7 +423,7 @@ function renderComments(comments, parentId = null) {
         formData.append('content', content);
         if (parentCommentId) formData.append('parent_comment_id', parentCommentId);
 
-        fetch('backend/add_comment.php', {
+        fetch('../backend/add_comment.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: formData.toString()

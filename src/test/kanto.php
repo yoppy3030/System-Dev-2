@@ -60,7 +60,7 @@
          <h1>Introduction to the Kanto Region</h1>
          <p>The Kanto region lies in eastern Honshu, Japan’s main island, and is home to the country’s political, economic, and cultural core. This area includes Tokyo, the bustling capital,
              as well as other major prefectures like Kanagawa, Chiba, Saitama, Ibaraki, Tochigi, and Gunma. Known for its dense urban centers, cutting-edge technology, and historical landmarks, Kanto offers a dynamic mix of modern skyscrapers and traditional temples.</p>
-            <img src="./img/kanto.jpg" alt="Kanto Region" class="kanto-image">
+            <img src="./img/fujiyama.jpg" alt="Kanto Region" class="kanto-image">
             <p>From the neon-lit streets of Shibuya and Shinjuku to the serene beauty of Nikko’s shrines and Hakone’s hot springs, Kanto blends old and new seamlessly. It’s also a major transport hub with access to the Shinkansen (bullet train), international airports, and extensive rail networks, making it 
                 a popular destination for both locals and travelers.</p>
 
