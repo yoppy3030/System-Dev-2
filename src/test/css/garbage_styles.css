@@ -2,7 +2,7 @@
    変数定義
    ========================================= */
    :root {
-    --primary-color: #0f172a;    /* メインカラー（紺） */
+    --primary-color: #b71c1c;    /* メインカラー（赤） */
     --secondary-color: #654a4a;  /* セカンダリカラー（茶色） */
     --light-text: #ffffff;       /* 明るいテキスト色 */
     --dark-text: #333333;        /* 暗いテキスト色 */
@@ -19,7 +19,7 @@ body {
 
 /* Header */
 .site-header {
-  background-color: #0f172a;
+  background-color: #b71c1c;
   color: white;
   padding: 1rem 2rem;
   display: flex;
