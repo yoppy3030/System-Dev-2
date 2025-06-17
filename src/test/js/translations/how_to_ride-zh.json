@@ -1,0 +1,16 @@
+{
+    "translations": {
+      "StudentHome": "学生主页",
+      "Back to Navigation": "返回导航",
+      "🚉 How to Ride": "🚉 如何乘坐",
+      "Riding trains in Japan is simple and efficient. Here’s what you need to do:": "在日本乘坐列车既简单又高效。以下是您需要做的：",
+      "1️⃣ Get a Ticket or IC Card": "1️⃣ 获取车票或IC卡",
+      "Purchase a paper ticket at a machine, or use an IC card (e.g., Suica, Pasmo). IC cards are reusable and convenient.": "在售票机购买纸制票或使用IC卡（例如：Suica、Pasmo）。IC卡可重复使用且非常方便。",
+      "2️⃣ Tap In": "2️⃣ 刷卡入站",
+      "At the station entrance, tap your IC card on the gate reader. For paper tickets, insert the ticket into the gate.": "在车站入口，将你的IC卡在读卡器上刷卡。如果是纸质票，将票插入闸机。",
+      "3️⃣ Transfer if Needed": "3️⃣ 如果需要换乘",
+      "Follow signs for platform changes or line transfers. Transfers between companies (JR, Metro, etc.) may require exiting and re-entering gates.": "跟随标识找到换乘的站台或线路。JR、地铁等不同公司间的换乘可能需要出站并重新进站。",
+      "4️⃣ Tap Out": "4️⃣ 刷卡出站",
+      "At your destination, tap your IC card again to pay. Paper tickets will be collected by the exit gate.": "在目的地再次刷卡以完成支付。纸质票将在出口闸机被回收。"
+    }
+  }

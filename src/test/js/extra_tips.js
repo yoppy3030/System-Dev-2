@@ -59,8 +59,8 @@ function normalizeText(text) {
 // 翻訳データの読み込み
 // =========================================
 Promise.all([
-    fetch('./js/translations/how_to_ride-ja.json').then(response => response.json()),
-    fetch('./js/translations/how_to_ride-zh.json').then(response => response.json())
+    fetch('./js/translations/extra_tips-ja.json').then(response => response.json()),
+    fetch('./js/translations/extra_tips-zh.json').then(response => response.json())
 ])
 .then(([jaData, zhData]) => {
     translations = jaData.translations;
