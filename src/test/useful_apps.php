@@ -9,7 +9,7 @@
 <body>
 
 <header class="site-header">
-  <div class="logo">Japan life Manual</div>
+  <div class="logo">JAPAN Life Manual</div>
   <nav class="main-nav">
     <a href="studenthome.php">StudentHome</a>
     <a href="navigations.php">Back to Navigation</a>

@@ -9,15 +9,15 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="logo" data-key="Japan life Manual">Japan life Manual</div>
+    <div class="logo" data-key="Japan life Manual">JAPAN Life Manual</div>
     <nav class="main-nav">
       <a href="studenthome.php" data-key="StudentHome">StudentHome</a>
       <div class="language-selector">
         <button id="translateBtn" class="translate-btn" data-key="🌐 Translate">🌐 Translate</button>
         <div class="language-dropdown">
             <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
-            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
             <button class="language-option" data-lang="en">🇺🇸 English</button>
+            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
         </div>
       </div>
     </nav>
