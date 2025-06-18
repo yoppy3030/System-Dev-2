@@ -62,8 +62,16 @@ document.querySelectorAll('.language-option').forEach(option => {
 
 // テキストの正規化（余分な空白を削除）
 function normalizeText(text) {
-    // 特殊文字を削除してから正規化
-    return text.replace(/[▾]/g, '').replace(/\s+/g, ' ').trim();
+    // HTMLタグを一時的に保存
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = text;
+    const iconElements = tempDiv.getElementsByTagName('i');
+    const icons = Array.from(iconElements).map(icon => icon.outerHTML);
+    
+    // テキストのみを抽出して正規化
+    let normalizedText = text.replace(/<[^>]*>/g, '').replace(/[▾]/g, '').replace(/\s+/g, ' ').trim();
+    
+    return { normalizedText, icons };
 }
 
 // 翻訳データの読み込み
@@ -87,7 +95,7 @@ function translatePage(targetLang) {
         return;
     }
 
-    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, button, section');
+    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, button, section, .section');
     
     for (const element of elements) {
         const originalText = element.textContent;
@@ -98,35 +106,35 @@ function translatePage(targetLang) {
 
         // 初回のみoriginalTextsに保存
         if (!originalTexts.has(element)) {
-            originalTexts.set(element, originalText);
+            originalTexts.set(element, element.innerHTML);
         }
         
         // 英語の場合は元のテキストに戻す
         if (targetLang === 'en') {
-            element.textContent = originalTexts.get(element);
+            element.innerHTML = originalTexts.get(element);
             continue;
         }
 
-        const normalizedText = normalizeText(originalTexts.get(element));
+        const { normalizedText, icons } = normalizeText(originalTexts.get(element));
 
         // 言語に応じた翻訳の適用
         if (targetLang === 'ja') {
-            // 大文字小文字を区別せずに翻訳を探す
             const translation = Object.entries(translations).find(([key]) => 
-                normalizeText(key).toLowerCase() === normalizedText.toLowerCase()
+                normalizeText(key).normalizedText.toLowerCase() === normalizedText.toLowerCase()
             );
             if (translation) {
-                // 元のテキストに特殊文字が含まれている場合は、翻訳後に追加
+                // 翻訳テキストにアイコンを追加
                 const hasSpecialChar = originalTexts.get(element).includes('▾');
-                element.textContent = translation[1] + (hasSpecialChar ? ' ▾' : '');
+                element.innerHTML = icons.join('') + translation[1] + (hasSpecialChar ? ' ▾' : '');
             }
         } else if (targetLang === 'zh') {
             const translation = Object.entries(translationsZh).find(([key]) => 
-                normalizeText(key).toLowerCase() === normalizedText.toLowerCase()
+                normalizeText(key).normalizedText.toLowerCase() === normalizedText.toLowerCase()
             );
             if (translation) {
+                // 翻訳テキストにアイコンを追加
                 const hasSpecialChar = originalTexts.get(element).includes('▾');
-                element.textContent = translation[1] + (hasSpecialChar ? ' ▾' : '');
+                element.innerHTML = icons.join('') + translation[1] + (hasSpecialChar ? ' ▾' : '');
             }
         }
     }
@@ -149,14 +157,6 @@ document.querySelectorAll('.main-nav ul li > a').forEach(anchor => {
     }
   });
 });
-
-document.querySelector('.dropdown').addEventListener('mouseenter', () => {
-  document.querySelector('.dropdown-menu').classList.add('show');
-});
-document.querySelector('.dropdown').addEventListener('mouseleave', () => {
-  document.querySelector('.dropdown-menu').classList.remove('show');
-});
-
 
 // Optional: close dropdown on click outside
 document.addEventListener('click', e => {
