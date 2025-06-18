@@ -228,14 +228,14 @@ function translatePage(targetLang) {
                     originalTexts.set(element, {
                         strong: strongText,
                         date: dateText,
-                        originalStrong: strongElement.textContent,  // 元のテキストを保存
-                        originalDate: dateText                      // 元の日付を保存
+                        originalStrong: strongText,  // 英語の元テキストを保存
+                        originalDate: dateText       // 英語の元テキストを保存
                     });
                 }
                 
                 if (targetLang === 'en') {
                     // 英語に戻す場合は、保存された元のテキストを使用
-                    element.innerHTML = `<strong>${originalTexts.get(element).originalStrong}</strong> ${originalTexts.get(element).originalDate}`;
+                    element.innerHTML = `<strong>${originalTexts.get(element).originalStrong}:</strong> ${originalTexts.get(element).originalDate}`;
                 } else {
                     const strongTranslation = targetLang === 'ja'
                         ? translations[originalTexts.get(element).strong]
