@@ -1,3 +1,4 @@
+/*  */
 :root {
     --primary-color: #676B56;
     --secondary-color: #E8C07D;
@@ -6,46 +7,6 @@
     --dark-text: #333333;
     --light-text: #f8f8f8;
     --border-color: #ddd;
-    --error-color: #e74c3c;
-    --success-color: #2ecc71;
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Noto Sans JP', sans-serif;
-    background-color: var(--light-bg);
-    color: var(--dark-text);
-    line-height: 1.6;
-    padding: 0;
-}
-
-header {
-    background-color: white;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-.back-button:hover {
-    color: var(--accent-color);
-}
-
-.back-button i {
-    font-size: 1rem;
 }
 
 .edit-profile-container {
@@ -68,32 +29,35 @@ header {
     gap: 10px;
 }
 
-.edit-profile-container h1 i {
-    font-size: 1.5rem;
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-color);
+    text-decoration: none;
+    margin-right: auto;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
 }
 
-#editProfileForm {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+.back-button:hover {
+    background-color: var(--light-bg);
 }
 
 .avatar-upload {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
 .avatar-preview {
     width: 150px;
     height: 150px;
+    margin: 0 auto 1rem;
     border-radius: 50%;
     overflow: hidden;
     border: 3px solid var(--secondary-color);
     position: relative;
-    background-color: #f5f5f5;
 }
 
 .avatar-preview img {
@@ -103,17 +67,14 @@ header {
 }
 
 .upload-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    display: inline-block;
+    padding: 8px 16px;
     background-color: var(--primary-color);
     color: white;
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.9rem;
-    border: none;
 }
 
 .upload-button:hover {
@@ -125,12 +86,12 @@ header {
 }
 
 .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
     color: var(--primary-color);
     font-weight: 500;
     display: flex;
@@ -141,12 +102,12 @@ header {
 .form-group input,
 .form-group select,
 .form-group textarea {
+    width: 100%;
     padding: 12px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     font-family: 'Noto Sans JP', sans-serif;
     transition: all 0.3s ease;
-    width: 100%;
 }
 
 .form-group input:focus,
@@ -164,7 +125,6 @@ header {
 
 .status-options {
     display: flex;
-    flex-wrap: wrap;
     gap: 1.5rem;
     margin-top: 0.5rem;
 }
@@ -206,7 +166,7 @@ header {
     transition: transform 0.2s;
 }
 
-.status-options input[type="radio"]:checked ~ .radio-custom::after {
+input[type="radio"]:checked ~ .radio-custom::after {
     transform: scale(1);
 }
 
@@ -224,8 +184,6 @@ header {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-decoration: none;
-    text-align: center;
 }
 
 .cancel-btn {
@@ -248,11 +206,6 @@ header {
     background-color: var(--accent-color);
 }
 
-/* Style spécifique pour le champ social media */
-.form-group > select + input[type="url"] {
-    margin-top: 0.5rem;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
     .edit-profile-container {
@@ -266,74 +219,6 @@ header {
     }
     
     .form-actions {
-        flex-direction: column;
-        gap: 0.5rem;
+        justify-content: center;
     }
-    
-    .cancel-btn,
-    .save-btn {
-        width: 100%;
-    }
-}
-/* Styles spécifiques pour les boutons radio */
-.status-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    margin-top: 0.5rem;
-}
-
-.status-options label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-weight: normal;
-    position: relative;
-    padding-left: 28px; /* Espace pour notre bouton radio personnalisé */
-    margin: 0.3rem 0;
-}
-
-/* Cache le bouton radio natif */
-.status-options input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-/* Style du bouton radio personnalisé */
-.status-options input[type="radio"] + span {
-    position: absolute;
-    left: 0;
-    top: 2px;
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--primary-color);
-    border-radius: 50%;
-    background-color: white;
-    transition: all 0.3s ease;
-}
-
-/* Style du point central quand sélectionné */
-.status-options input[type="radio"]:checked + span::after {
-    content: "";
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 10px;
-    height: 10px;
-    background-color: var(--primary-color);
-    border-radius: 50%;
-    transform: scale(1);
-}
-
-/* Effet au survol */
-.status-options label:hover input[type="radio"] + span {
-    border-color: var(--accent-color);
-}
-
-/* Effet quand le bouton a le focus (accessibilité) */
-.status-options input[type="radio"]:focus + span {
-    box-shadow: 0 0 0 3px rgba(232, 192, 125, 0.4);
 }

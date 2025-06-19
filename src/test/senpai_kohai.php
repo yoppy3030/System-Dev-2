@@ -13,7 +13,6 @@
     <nav class="main-nav">
       <ul>
         <li><a href="index.php">Home</a></li>
-        
         <li class="dropdown">
           <a href="#">Culture ▾</a>
           <ul class="dropdown-menu">
@@ -21,27 +20,27 @@
             <li><a href="daily-life.html">Daily Life</a></li>
           </ul>
         </li>
-        
         <li><a href="studenthome.php">Student</a></li>
         <li><a href="travelers_homePage.php">Traveler</a></li>
         <li><a href="about.html">About</a></li>
-        
-        <!-- 言語選択ドロップダウン -->
-        <div class="language-selector">
-          <button id="translateBtn" class="translate-btn">🌐 Translate</button>
-          <div class="language-dropdown">
-            <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
-            <button class="language-option" data-lang="en">🇺🇸 English</button>
-            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
-            <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+        <!-- 言語選択ドロップダウンを<li>で囲む -->
+        <li>
+          <div class="language-selector">
+            <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+            <div class="language-dropdown">
+              <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+              <button class="language-option" data-lang="en">🇺🇸 English</button>
+              <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+              <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+            </div>
           </div>
-        </div>
+        </li>
       </ul>
     </nav>
   </header>
 
   <!-- Hero Section -->
-  <section class="culture-hero" style="background-image: url(./img/e93c54da-97f6-4db4-8f96-3d2e9b227b80.jpg">
+  <section class="culture-hero" style="background-image: url(./img/e93c54da-97f6-4db4-8f96-3d2e9b227b80.jpg)">
     <div class="hero-content">
       <h1>Senpai-Kohai Relationship</h1>
       <p>The traditional hierarchy that shapes professional behavior in Japan.</p>
