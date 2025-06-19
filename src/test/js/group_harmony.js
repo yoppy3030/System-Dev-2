@@ -19,8 +19,6 @@ if (form && commentsContainer) {
     });
 }
 
-
-
 /* =========================================
    翻訳機能
    ========================================= */
@@ -62,16 +60,10 @@ document.querySelectorAll('.language-option').forEach(option => {
 
 // テキストの正規化（余分な空白を削除）
 function normalizeText(text) {
-    // HTMLタグを一時的に保存
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = text;
-    const iconElements = tempDiv.getElementsByTagName('i');
-    const icons = Array.from(iconElements).map(icon => icon.outerHTML);
-    
-    // テキストのみを抽出して正規化
-    let normalizedText = text.replace(/<[^>]*>/g, '').replace(/[▾]/g, '').replace(/\s+/g, ' ').trim();
-    
-    return { normalizedText, icons };
+    return text
+        .replace(/\s+/g, ' ') // 複数空白を1つに
+        .replace(/^\s+|\s+$/g, '') // 前後空白除去
+        .toLowerCase();
 }
 
 // 翻訳データの読み込み
@@ -88,65 +80,74 @@ Promise.all([
     console.error('翻訳データの読み込みに失敗しました:', error);
 });
 
-// ページ翻訳の実行
+function extractAndReplaceStrong(html) {
+    // <strong>...</strong> を __STRONG__ に置換し、元のHTMLを返す
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    let strongHtml = '';
+    tempDiv.querySelectorAll('strong').forEach(strong => {
+        strongHtml = strong.outerHTML;
+        strong.replaceWith('__STRONG__');
+    });
+    return { replaced: tempDiv.textContent, strongHtml };
+}
+
+function getTranslation(targetLang, normalized) {
+    let dict = targetLang === 'ja' ? translations : translationsZh;
+    for (const [key, value] of Object.entries(dict)) {
+        // デバッグ出力
+        console.log('比較:', normalizeText(key), 'vs', normalized);
+        if (normalizeText(key) === normalized) return value;
+    }
+    return null;
+}
+
+// テキストノードだけを翻訳する再帰関数
+function translateTextNodes(node, targetLang) {
+    for (let child of node.childNodes) {
+        if (child.nodeType === Node.TEXT_NODE) {
+            const original = child.textContent.trim();
+            if (!original) continue;
+            // 英語状態のoriginalTextsを使う
+            let baseText = child.__originalText || original;
+            if (!child.__originalText) child.__originalText = baseText;
+
+            if (targetLang === 'en') {
+                child.textContent = child.__originalText;
+            } else {
+                let translated = getTranslation(targetLang, normalizeText(baseText));
+                if (translated) {
+                    // テキストノードにはHTMLタグは入れられないので、親がpやliならinnerHTMLで置換
+                    if (/<strong>/.test(translated) && child.parentNode.childNodes.length === 1) {
+                        child.parentNode.innerHTML = translated;
+                    } else {
+                        child.textContent = translated;
+                    }
+                }
+            }
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+            translateTextNodes(child, targetLang);
+        }
+    }
+}
+
 function translatePage(targetLang) {
     if (!translations || !translationsZh) {
         console.error('翻訳データが読み込まれていません');
         return;
     }
-
     const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, button, section, .section, li');
-    
-    for (const element of elements) {
-        const originalText = element.textContent;
-        
-        if (!originalText || !originalText.trim()) {
-            continue;
-        }
+    elements.forEach(element => {
+        translateTextNodes(element, targetLang);
+    });
 
-        // 初回のみoriginalTextsに保存
-        if (!originalTexts.has(element)) {
-            originalTexts.set(element, element.innerHTML);
-        }
-        
-        // 英語の場合は元のテキストに戻す
-        if (targetLang === 'en') {
-            element.innerHTML = originalTexts.get(element);
-            continue;
-        }
-
-        const { normalizedText, icons } = normalizeText(originalTexts.get(element));
-
-        // 言語に応じた翻訳の適用
-        if (targetLang === 'ja') {
-            const translation = Object.entries(translations).find(([key]) => 
-                normalizeText(key).normalizedText.toLowerCase() === normalizedText.toLowerCase()
-            );
-            if (translation) {
-                // 翻訳テキストにアイコンを追加
-                const hasSpecialChar = originalTexts.get(element).includes('▾');
-                element.innerHTML = icons.join('') + translation[1] + (hasSpecialChar ? ' ▾' : '');
-            }
-        } else if (targetLang === 'zh') {
-            const translation = Object.entries(translationsZh).find(([key]) => 
-                normalizeText(key).normalizedText.toLowerCase() === normalizedText.toLowerCase()
-            );
-            if (translation) {
-                // 翻訳テキストにアイコンを追加
-                const hasSpecialChar = originalTexts.get(element).includes('▾');
-                element.innerHTML = icons.join('') + translation[1] + (hasSpecialChar ? ' ▾' : '');
-            }
-        }
-    }
-    
-    // アクティブな言語ボタンの更新
     document.querySelectorAll('.language-option').forEach(btn => {
         btn.classList.remove('active');
     });
     document.querySelector('.language-option[data-lang="' + targetLang + '"]').classList.add('active');
-    
     currentLanguage = targetLang;
 }
+
 // ドロップダウンメニュー表示制御
 document.querySelectorAll('.main-nav ul li > a').forEach(anchor => {
   anchor.addEventListener('click', e => {

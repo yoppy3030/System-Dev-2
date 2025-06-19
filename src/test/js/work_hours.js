@@ -78,9 +78,8 @@ Promise.all([
     translationsZh = zhData.translations;
     console.log('翻訳データの読み込みが完了しました');
     
-    // 初期言語を設定
-    const savedLanguage = localStorage.getItem('preferredLanguage') || 'en';
-    translatePage(savedLanguage);
+    // 常に英語で初期化（リロード時に英語に戻る）
+    translatePage('en');
 })
 .catch(error => {
     console.error('翻訳データの読み込みに失敗しました:', error);
@@ -93,8 +92,13 @@ function translatePage(targetLang) {
         return;
     }
 
-    // 言語設定を保存
-    localStorage.setItem('preferredLanguage', targetLang);
+    // 言語設定を保存（ただし、リロード時は英語に戻る）
+    if (targetLang !== 'en') {
+        localStorage.setItem('preferredLanguage', targetLang);
+    } else {
+        // 英語の場合はローカルストレージから削除
+        localStorage.removeItem('preferredLanguage');
+    }
 
     // タイトルの翻訳
     const title = document.querySelector('title');
