@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['error' => 'Méthode non autorisée']);
+    echo json_encode(['error' => 'Method not allowed']);
     exit;
 }
 
@@ -23,7 +23,7 @@ $user_id = $_SESSION['user_id'];
 
 if (!$post_id || !$content) {
     http_response_code(400);
-    echo json_encode(['error' => 'Données manquantes']);
+    echo json_encode(['error' => 'Missing post_id or content']);
     exit;
 }
 
@@ -36,4 +36,5 @@ if ($parent_comment_id !== null) {
 $stmt = $pdo->prepare("INSERT INTO comments (post_id, user_id, content, parent_comment_id) VALUES (?, ?, ?, ?)");
 $stmt->execute([$post_id, $user_id, $content, $parent_comment_id]);
 
-echo json_encode(['success' => 'Commentaire ajouté']);
+echo json_encode(['success' => 'Comment created successfully for post ID ' . $post_id]);
+?>

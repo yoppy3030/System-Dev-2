@@ -1,15 +1,40 @@
+:root {
+    --primary-color: #676B56;
+    --secondary-color: #E8C07D;
+    --accent-color: #9B3328;
+    --light-bg: #F9F5EB;
+    --dark-text: #333333;
+    --light-text: #f8f8f8;
+}
+
 /* ============================================= */
 /*              EXPLORE PAGE STYLES              */
 /* ============================================= */
 
-/* Main Container */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.back-button:hover {
+    color: var(--accent-color);
+}
+
+.back-button i {
+    font-size: 1rem;
+}
+
 .blog-feed-container {
     max-width: 1200px;
     margin: 2rem auto;
     padding: 0 1.5rem;
 }
 
-/* Section Header */
 .posts-section h2 {
     font-size: 2rem;
     color: var(--primary-color);
@@ -19,7 +44,6 @@
     padding-bottom: 0.5rem;
 }
 
-/* Search Container */
 .search-container {
     display: flex;
     gap: 1rem;
@@ -80,20 +104,20 @@
     color: #d32f2f;
 }
 
-/* Posts Feed */
 .posts-feed {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
-/* Individual Post */
 .post {
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 1.5rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 40%;
+    max-width: 800px;
 }
 
 .post:hover {
@@ -141,7 +165,7 @@
 }
 
 .post-image {
-    width: 100%;
+    width: 80%;
     max-height: 500px;
     object-fit: contain;
     border-radius: 8px;
@@ -220,7 +244,6 @@
 /*              COMMENT SECTION STYLES           */
 /* ============================================= */
 
-/* Container des commentaires (caché par défaut) */
 .comments {
     display: none;
     margin-top: 1.5rem;
@@ -229,12 +252,10 @@
     animation: fadeIn 0.3s ease-out;
 }
 
-/* Classe pour afficher les commentaires */
 .comments.visible {
     display: block;
 }
 
-/* Bouton toggle comments */
 .toggle-comments-btn {
     background: none;
     border: none;
@@ -258,7 +279,6 @@
     transition: transform 0.3s ease;
 }
 
-/* Zone d'ajout de commentaire (cachée par défaut) */
 .add-comment {
     display: none;
     margin-top: 1rem;
@@ -270,18 +290,49 @@
     gap: 0.8rem;
 }
 
-/* Commentaires individuels */
+.add-comment textarea {
+    padding: 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+.add-comment button {
+    align-self: flex-start;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.add-comment button:hover {
+    background-color: var(--accent-color);
+}
+
 .comment {
     display: flex;
     gap: 1rem;
     padding: 1rem;
     margin-bottom: 1rem;
-    background-color: rgba(232, 192, 125, 0.05); /* var(--secondary-color) with opacity */
+    background-color: rgba(232, 192, 125, 0.05);
     border-radius: 8px;
     border-left: 3px solid var(--secondary-color);
+    margin-left: 0.5rem;
 }
 
-/* Bouton Reply (masqué par défaut) */
+.comment b {
+    color: var(--primary-color);
+}
+
+.comment .comment {
+    margin-left: 2rem;
+}
+
 .reply-btn {
     display: none;
     background: none;
@@ -302,22 +353,45 @@
     color: var(--accent-color);
 }
 
-/* Formulaire de réponse (masqué par défaut) */
-.reply-form {
-    display: none;
+.reply {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     margin-top: 0.8rem;
-    padding-left: 1rem;
-    border-left: 2px solid var(--secondary-color);
 }
 
-/* Réponses imbriquées */
-.replies {
-    margin-top: 1rem;
-    padding-left: 1.5rem;
-    border-left: 2px solid rgba(232, 192, 125, 0.3); /* Lighter secondary color */
+.reply textarea {
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    font-size: 0.95rem;
 }
 
-/* Animation */
+.reply button {
+    align-self: flex-start;
+    padding: 0.4rem 0.8rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.3s ease;
+}
+
+.reply button:hover {
+    background: var(--accent-color);
+}
+
+.avatar-mini {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--secondary-color);
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }

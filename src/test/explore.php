@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . '/../backend/config.php';
+require __DIR__ . '/backend/config.php';
 
 $user_id = $_SESSION['user_id'] ?? null;
 $user_username = $_SESSION['username'] ?? 'Guest';
@@ -53,12 +53,12 @@ try {
 <head>
     <meta charset="UTF-8">
     <title>Explore Posts - Japan Life Manual</title>
-    <link rel="stylesheet" href="../assets/css/explorer.css">
+    <link rel="stylesheet" href="css/explorer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 <header>
-    <!-- (Je garde ton header inchangé ici) -->
+    <a href="User_page.php" class="back-button"><i class="fas fa-arrow-left"></i>Go back to profile</a>
 </header>
 
 <main>
@@ -101,7 +101,7 @@ try {
                                 <?php endif; ?>
                             </div>
 
-                            <div class="post-interactions">
+                            <!-- <div class="post-interactions">
                                 <div class="actions" data-post-id="<?php echo $post['id']; ?>">
                                     <button class="like-btn"><i class="fas fa-thumbs-up"></i> Like</button>
                                     <span class="like-count"><?php echo $post['likes_count']; ?></span>
@@ -109,7 +109,7 @@ try {
                                     <span class="dislike-count"><?php echo $post['dislikes_count']; ?></span>
                                     <span><i class="fas fa-comments"></i> <?php echo $post['comment_count']; ?></span>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="add-comment">
                                 <textarea id="comment-input-<?php echo $post['id']; ?>" placeholder="Add a comment..."></textarea>

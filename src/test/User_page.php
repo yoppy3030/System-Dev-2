@@ -4,7 +4,7 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
-require __DIR__ . '/../backend/config.php';
+require __DIR__ . '/backend/config.php';
 
 // Flash message functions
 function set_flash_message($message, $type = 'success') {
@@ -92,7 +92,7 @@ function renderComments($comments_array) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile</title>
-    <link rel="stylesheet" href="../assets/css/user_page.css">
+    <link rel="stylesheet" href="css/user_page.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
@@ -134,7 +134,7 @@ function renderComments($comments_array) {
         </div>
 
         <div class="menu-item">
-            <a href="">
+            <a href="explore.php">
                 <i class="fas fa-blog icon"></i>
                 <p>Blog</p>
             </a>
@@ -167,7 +167,7 @@ function renderComments($comments_array) {
                     <p id="user_location">City: <span><?= htmlspecialchars($user_location) ?></span></p>
                     <p id="user_country">Country: <span><?= htmlspecialchars($user_country) ?></span></p>
                     <?php if (!empty($user_activity)): ?>
-                        <p id="user_status">Status: <span><?= htmlspecialchars($user_activity) ?></span></p>
+                        <p id="user_status">Statut: <span><?= htmlspecialchars($user_activity) ?></span></p>
                     <?php endif; ?>
                     <p id="user-bio"><span>Bio:</span> <?= nl2br(htmlspecialchars($user_bio)) ?></p>
 
@@ -188,7 +188,7 @@ function renderComments($comments_array) {
             <div class="posts-section">
                 <div class="create-post">
                     <h3>Create New Post</h3>
-                    <form id="create-post-form" method="POST" enctype="multipart/form-data">
+                    <form id="create-post-form" method="POST" action="backend/create_post.php" enctype="multipart/form-data">
                         <textarea name="content" placeholder="What's on your mind, <?= htmlspecialchars($user_username) ?>?" required></textarea>
                         <div class="post-actions">
                             <label for="post-image" class="file-upload-btn">
@@ -207,36 +207,30 @@ function renderComments($comments_array) {
                 <div class="posts">
                     <h3>My Posts</h3>
                     <?php foreach ($posts as $post): ?>
-                        <div class="post" data-post-id="<?= $post['id'] ?>">
-                            <!-- En-tête du post -->
+                            <div class="post" data-post-id="<?= $post['id'] ?>">
                             <div class="post-header">
-                                <img src="<?= htmlspecialchars($post['avatar'] ?? 'assets/default_avatar.jpg') ?>" class="post-avatar">
+                                <img src="<?= htmlspecialchars($post['avatar'] ?? '/uploads/default_avatar.jpg') ?>" class="post-avatar">
                                 <span class="post-author"><?= htmlspecialchars($post['username']) ?></span>
                                 <span class="post-date"><?= date('F j, Y, g:i a', strtotime($post['created_at'])) ?></span>
                             </div>
-                            
-                            <!-- Contenu du post -->
+                        
                             <div class="post-content">
                                 <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
                                 <?php if ($post['image']): ?>
-                                    <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image">
+                                    <img src="<?= htmlspecialchars($post['image']) ?>" alt="Image du post" style="border:1px solid red;" class="post-image">
                                 <?php endif; ?>
                             </div>
-                            
-                            <!-- Interactions du post -->
+                        
                             <div class="post-interactions">
-                                <!-- Bouton pour afficher/masquer les commentaires -->
                                 <button class="toggle-comments-btn">
-                                    <i class="fas fa-comments"></i>
+                                    <i class="fas fa-comments fa-chevron-down"></i>
                                     <span>Show Comments</span>
                                 </button>
-                                
-                                <!-- Container des commentaires (caché par défaut) -->
+                        
                                 <div class="comments-container">
-                                    <!-- Zone d'ajout de commentaire -->
                                     <div class="add-comment">
-                                        <textarea placeholder="Add a comment..."></textarea>
-                                        <button onclick="addComment(<?= $post['id'] ?>)">Post Comment</button>
+                                        <textarea id="comment-input-<?= $post['id'] ?>" placeholder="Add a comment..."></textarea>
+                                        <button class="post-comment-btn" data-post-id="<?= $post['id'] ?>">Post Comment</button>
                                     </div>
                                     
                                     <!-- Liste des commentaires -->
@@ -244,7 +238,7 @@ function renderComments($comments_array) {
                                         <?php if (!empty($post['comments'])): ?>
                                             <?php foreach ($post['comments'] as $comment): ?>
                                                 <div class="comment" data-comment-id="<?= $comment['id'] ?>">
-                                                    <img src="<?= htmlspecialchars($comment['avatar'] ?? 'images/default-avatar.png') ?>" class="comment-avatar">
+                                                    <img src="<?= htmlspecialchars($comment['avatar'] ?? '/uploads/default-avatar.png') ?>" class="comment-avatar">
                                                     <div class="comment-content">
                                                         <div class="comment-author"><?= htmlspecialchars($comment['username']) ?></div>
                                                         <div class="comment-text"><?= nl2br(htmlspecialchars($comment['content'])) ?></div>
@@ -264,7 +258,7 @@ function renderComments($comments_array) {
                                                             <div class="replies">
                                                                 <?php foreach ($comment['replies'] as $reply): ?>
                                                                     <div class="comment" data-comment-id="<?= $reply['id'] ?>">
-                                                                        <img src="<?= htmlspecialchars($reply['avatar'] ?? 'images/default-avatar.png') ?>" class="comment-avatar">
+                                                                        <img src="<?= htmlspecialchars($reply['avatar'] ?? '/uploads/default-avatar.png') ?>" class="comment-avatar">
                                                                         <div class="comment-content">
                                                                             <div class="comment-author"><?= htmlspecialchars($reply['username']) ?></div>
                                                                             <div class="comment-text"><?= nl2br(htmlspecialchars($reply['content'])) ?></div>
@@ -405,7 +399,7 @@ function renderComments(comments, parentId = null) {
     }
 
     function loadComments(postId) {
-        fetch(`../backend/get_comments.php?post_id=${postId}`)
+        fetch(`backend/get_comments.php?post_id=${postId}`)
             .then(res => res.json())
             .then(data => {
                 document.getElementById(`comments-${postId}`).innerHTML = renderComments(data);
@@ -423,7 +417,7 @@ function renderComments(comments, parentId = null) {
         formData.append('content', content);
         if (parentCommentId) formData.append('parent_comment_id', parentCommentId);
 
-        fetch('../backend/add_comment.php', {
+        fetch('backend/add_comment.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: formData.toString()
@@ -454,6 +448,140 @@ function renderComments(comments, parentId = null) {
             loadComments(postId);
         });
     });
+    document.addEventListener('DOMContentLoaded', () => {
+    // Toggle comments container visibility
+    document.querySelectorAll('.toggle-comments-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const postInteractions = btn.parentElement;
+            const commentsContainer = postInteractions.querySelector('.comments-container');
+            if (!commentsContainer) return;
+
+            if (commentsContainer.style.display === 'none' || commentsContainer.style.display === '') {
+                commentsContainer.style.display = 'block';
+                btn.querySelector('span').textContent = 'Hide Comments';
+                btn.querySelector('i').classList.remove('fa-chevron-down');
+                btn.querySelector('i').classList.add('fa-chevron-up');
+
+                // Load comments via AJAX when shown
+                const postId = btn.closest('.post').dataset.postId;
+                loadComments(postId);
+            } else {
+                commentsContainer.style.display = 'none';
+                btn.querySelector('span').textContent = 'Show Comments';
+                btn.querySelector('i').classList.remove('fa-chevron-up');
+                btn.querySelector('i').classList.add('fa-chevron-down');
+            }
+        });
+    });
+
+    // Handle post comment button clicks
+    document.querySelectorAll('.post-comment-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const postId = btn.dataset.postId;
+            const textarea = document.getElementById(`comment-input-${postId}`);
+            const content = textarea.value.trim();
+            if (!content) return alert("Please write a comment.");
+
+            addComment(postId, null, content, () => {
+                textarea.value = '';
+                loadComments(postId);
+            });
+        });
+    });
+
+    // Delegate reply button and reply form toggle and submit using event delegation
+    document.body.addEventListener('click', event => {
+        // Reply button toggle form
+        if (event.target.classList.contains('reply-btn')) {
+            const replyForm = event.target.nextElementSibling;
+            if (replyForm) {
+                replyForm.style.display = replyForm.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+
+        // Reply form post button
+        if (event.target.classList.contains('post-reply-btn')) {
+            const commentId = event.target.dataset.commentId;
+            const postId = event.target.dataset.postId;
+            const textarea = document.getElementById(`reply-input-${commentId}`);
+            const content = textarea.value.trim();
+            if (!content) return alert("Please write a reply.");
+
+            addComment(postId, commentId, content, () => {
+                textarea.value = '';
+                // Optionally hide the reply form
+                const form = document.getElementById(`reply-form-${commentId}`);
+                if (form) form.style.display = 'none';
+
+                loadComments(postId);
+            });
+        }
+    });
+});
+
+// AJAX function to load comments and render them
+function loadComments(postId) {
+    fetch(`backend/get_comments.php?post_id=${postId}`)
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById(`comments-${postId}`);
+            container.innerHTML = renderComments(data);
+        })
+        .catch(err => console.error('Error loading comments:', err));
+}
+
+// Render comments recursively as HTML string
+function renderComments(comments, parentId = null) {
+    let html = '';
+    comments.filter(c => c.parent_comment_id == parentId).forEach(comment => {
+        html += `
+            <div class="comment" data-comment-id="${comment.id}">
+                <img src="${comment.avatar || 'images/default-avatar.png'}" class="comment-avatar">
+                <div class="comment-content">
+                    <strong>${comment.username}</strong>
+                    <p>${comment.content.replace(/\n/g, '<br>')}</p>
+                    <button class="reply-btn">Reply</button>
+                    <div class="reply-form" id="reply-form-${comment.id}" style="display:none; margin-top: 10px;">
+                        <textarea id="reply-input-${comment.id}" placeholder="Write a reply..."></textarea>
+                        <button class="post-reply-btn" data-comment-id="${comment.id}" data-post-id="${comment.post_id}">Post Reply</button>
+                    </div>
+                    ${renderComments(comments, comment.id)}
+                </div>
+            </div>
+        `;
+    });
+    return html;
+}
+
+// AJAX function to add a comment or reply
+function addComment(postId, parentCommentId, content, callback) {
+    const formData = new URLSearchParams();
+    formData.append('post_id', postId);
+    formData.append('content', content);
+    if (parentCommentId) formData.append('parent_comment_id', parentCommentId);
+
+    fetch('backend/add_comment.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+    })
+    .then(data => {
+        if (data.success) {
+            if (callback) callback();
+        } else {
+            alert('Failed to post comment.');
+        }
+    })
+    .catch(err => {
+        console.error('Error adding comment:', err);
+        alert('Error adding comment. See console.');
+    });
+}
+
     </script>
 </body>
 </html> 

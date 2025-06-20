@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . 'config.php';
+require __DIR__ . '/config.php';
 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
@@ -36,3 +36,4 @@ if ($existing) {
 }
 
 echo json_encode(['success' => 'Action enregistrée']);
+?>

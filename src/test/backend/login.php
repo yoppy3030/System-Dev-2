@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . 'config.php';
+require __DIR__ . '/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
@@ -30,3 +30,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Méthode non autorisée']);
 }
+?>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . 'config.php';
+require __DIR__ . '/config.php';
 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
@@ -21,3 +21,4 @@ $stmt = $pdo->query("
 $posts = $stmt->fetchAll();
 
 echo json_encode($posts);
+?>

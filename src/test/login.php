@@ -1,12 +1,12 @@
 <?php
 session_start();
 
-// Afficher les erreurs (utile pour debug)
+//エラー表示を有効にする
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // Inclure la base de données
-require __DIR__ . '/../backend/config.php';
+require __DIR__ . '/backend/config.php';
 // Initialiser les variables
 $error = '';
 $username = '';
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Login - JAPAN Life Manual</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="form-container">

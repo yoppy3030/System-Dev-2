@@ -27,3 +27,4 @@ $stmt->execute([$post_id]);
 $comments = $stmt->fetchAll();
 
 echo json_encode($comments);
+?>

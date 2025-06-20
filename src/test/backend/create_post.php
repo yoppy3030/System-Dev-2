@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . 'config.php';
+require __DIR__ . '/config.php';
 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $imagePath = null;
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = './uploads/';
+        $uploadDir = '../uploads/';
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
         $filename = uniqid() . '-' . basename($_FILES['image']['name']);
         $targetFile = $uploadDir . $filename;
@@ -31,8 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("INSERT INTO posts (user_id, content, image) VALUES (?, ?, ?)");
     $stmt->execute([$userId, $content, $imagePath]);
 
-    echo json_encode(['success' => 'Post créé']);
+    echo json_encode(['success' => 'post created successfully', 'post_id' => $pdo->lastInsertId()]);
 } else {
     http_response_code(405);
-    echo json_encode(['error' => 'Méthode non autorisée']);
+    echo json_encode(['error' => 'MMethod not allowed']);
 }
+?>
