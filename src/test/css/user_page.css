@@ -202,13 +202,24 @@ main {
 
 /* Profile Section */
 .profile-section {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     gap: 1.5rem;
     padding: 2rem;
     border-radius: 12px;
     background-color: var(--light-bg);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); */
+     flex: 1;
+    max-width: 500px;
+    position: sticky;
+    top: 1rem;
+    width: 100%;
+    height: fit-content;
+    align-self: flex-start;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .profile-section {
@@ -356,20 +367,39 @@ main {
     font-size: 1.2rem;
     color: white;
 }
-
+.explorer-layout {
+    display: flex;
+    height: calc(100vh - 100px); /* ajuste selon ta hauteur de header */
+    max-width: 1200px;
+    margin: 2rem auto;
+    gap: 2rem;
+    padding: 0 1rem;
+    overflow: hidden;
+}
 /* Posts Section */
 .posts-section {
-    flex: 2;
+    /* flex: 2;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.5rem; */
+     flex: 3;
+    overflow-y: auto;
+    height: 100%;
+    padding-right: 1rem;
 }
-
+.posts{
+    padding: 1.5rem;
+}
 .post {
     background: white;
     padding: 1.5rem;
+    margin: 1rem 0;
+    max-width: 800px;
+    width: 80%;
+    height: fit-content;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    
 }
 
 .post-header {
@@ -401,7 +431,7 @@ main {
     line-height: 1.6;
 }
 .post-content img {
-    max-width: 50%;
+    max-width: 100%;
     border-radius: 8px;
     margin-top: 0.5rem;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);

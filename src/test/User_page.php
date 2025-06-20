@@ -156,7 +156,7 @@ function renderComments($comments_array) {
                 </div>
             <?php endif; ?>
         </div>
-
+<div class="explorer-layout">
         <div class="user-profile-container">
             <div class="profile-section">
                 <div class="profile-avatar">
@@ -282,7 +282,7 @@ function renderComments($comments_array) {
                 </div>
             </div>
         </div>
-    
+    </div>
     </main>
 
     <script>
