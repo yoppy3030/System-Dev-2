@@ -1,0 +1,18 @@
+{
+    "translations": {
+      "StudentHome": "学生主页",
+      "Back to Train Guide": "返回火车指南",
+      "🌐 Translate": "🌐 翻译",
+      "🚆 Major Lines": "🚆 主要线路",
+      "Understand the key train operators and their networks in Japan. These rail systems connect cities, towns, and regions efficiently.": "了解日本主要铁路运营商及其网络。这些铁路系统高效地连接城市、城镇和地区。",
+      "Japan Railways (JR)": "日本铁路（JR）",
+      "JR is the largest network, covering the entire country with local, rapid, express, and Shinkansen (bullet train) services. JR Pass holders can use most JR trains nationwide.": "JR是最大的铁路网络，覆盖全国，提供本地、快速、特快和新干线（子弹列车）服务。JR Pass 持有者可以在全国范围内使用大多数JR列车。",
+      "Metro Systems": "地铁系统",
+      "Major cities like Tokyo, Osaka, Kyoto, and Nagoya have subway (Metro) systems that provide quick transport within urban areas.": "东京、大阪、京都和名古屋等主要城市的地铁系统在城市范围内提供快速交通。",
+      "Private Railways": "民营铁路",
+      "Private companies like Hankyu, Kintetsu, Keio, and Tokyu operate regional lines, often providing direct services to suburbs and tourist destinations.": "阪急、近铁、京王和东急等私营公司运营着区域线路，经常提供直达郊区和旅游目的地的服务。",
+      "Map & Route Tools": "地图和路线工具",
+      "Japan Guide Train Info": "<a href='https://www.japan-guide.com/e/e2019.html' target='_blank'>日本导游列车信息</a>",
+      "NAVITIME Route Search": "<a href='https://www.navitime.co.jp/' target='_blank'>NAVITIME 路线搜索</a>"
+    }
+  }

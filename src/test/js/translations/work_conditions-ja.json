@@ -1,0 +1,18 @@
+{
+  "translations": {
+    "🌐 Translate": "🌐 翻訳",
+    "StudentHome": "学生ホームページ",
+    "Back to Life in Japan": "日本での生活に戻る",
+    "⚖️ Work Conditions": "労働条件",
+    "Learn about work hours, salaries, and employee rights under Japanese labor law to ensure a fair and safe working environment.": "日本の労働法に基づく労働時間、給与、従業員の権利について学び、公平で安全な労働環境を確保しましょう。",
+    "Work Hours": "労働時間",
+    "The standard workweek in Japan is 40 hours (8 hours per day). Overtime work should be compensated according to labor regulations.": "日本の標準的な労働時間は週40時間（1日8時間）です。残業は労働基準法に基づいて適切に補償される必要があります。",
+    "Salaries": "給与",
+    "Entry-level salaries vary by industry, but many companies provide standard monthly salaries with additional bonuses (often twice a year). Minimum wage differs by region.": "初任給は業界によって異なりますが、多くの企業では基本給に加えて賞与（通常年2回）が支給されます。最低賃金は地域によって異なります。",
+    "Employee Rights": "従業員の権利",
+    "Employees are entitled to paid leave, social insurance, and a safe work environment. It's illegal for employers to discriminate or harass workers. You can seek help from labor consultation offices if issues arise.": "従業員には有給休暇、社会保険、安全な労働環境が保障されています。雇用主による差別やハラスメントは違法です。問題が発生した場合は、労働相談窓口に相談することができます。",
+    "Helpful Links": "役立つリンク",
+    "Ministry of Health, Labour and Welfare (MHLW)": "<a href='https://www.mhlw.go.jp/english/' target='_blank' rel='noopener'>厚生労働省（英語版）</a>",
+    "Tokyo Labor Bureau (English)": "<a href='https://jsite.mhlw.go.jp/tokyo-foreigner/english.html' target='_blank' rel='noopener'>東京労働局（英語版）</a>"
+  }
+}
