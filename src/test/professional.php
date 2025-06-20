@@ -20,6 +20,7 @@
         <ul class="dropdown-menu">
           <li><a href="culture.html">Japanese Culture</a></li>
           <li><a href="daily-life.html">Daily Life</a></li>
+          <li><a href="cultural_etiquette_japan.html">Culture Etiquette Japan</a></li>
         </ul>
       </li>
 
