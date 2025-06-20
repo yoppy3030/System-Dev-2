@@ -46,13 +46,18 @@ document.querySelectorAll('.language-option').forEach(option => {
  * @returns {string} 正規化されたテキスト
  */
 function normalizeText(text) {
-    // 一時的なDOM要素を作成してHTMLエンティティをデコード
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = text;
-    const decodedText = tempDiv.textContent || tempDiv.innerText || "";
-    
-    // 次に余分な空白を削除
-    return decodedText.replace(/\s+/g, ' ').trim();
+    let decodedText = tempDiv.textContent || tempDiv.innerText || "";
+    // 全角アポストロフィ・クォートを半角に
+    decodedText = decodedText.replace(/[’‘]/g, "'").replace(/[""]/g, '"');
+    // enダッシュをemダッシュに
+    decodedText = decodedText.replace(/–/g, '—');
+    // 全角スペースを半角に
+    decodedText = decodedText.replace(/\u3000/g, ' ');
+    // 余分な空白を1つに
+    decodedText = decodedText.replace(/\s+/g, ' ').trim();
+    return decodedText;
 }
 
 // =========================================
@@ -175,6 +180,9 @@ function translatePage(targetLang) {
                 element.innerHTML = translationsZh[normalizedText];
             }
         }
+
+        console.log('normalized:', normalizeText(originalText));
+        console.log('json key:', Object.keys(translations).find(k => k === normalizeText(originalText)));
     }
     
     // アクティブな言語ボタンの更新
