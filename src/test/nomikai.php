@@ -51,7 +51,7 @@
     <div class="card-style-section">
       <h2>What is a Nomikai?</h2>
       <p>
-        A <strong>nomikai</strong> (飲み会) is a traditional Japanese drinking party, commonly held after work among coworkers. It's considered a way to relax, deepen relationships, and communicate more openly outside the formal office setting.
+        A nomikai (飲み会) is a traditional Japanese drinking party, commonly held after work among coworkers. It's considered a way to relax, deepen relationships, and communicate more openly outside the formal office setting.
       </p>
     </div>
 
@@ -77,12 +77,12 @@
     <div class="card-style-section">
       <h2>You Can Say No</h2>
       <p>
-        While drinking is common at nomikai, <strong>no one is obligated to drink</strong>. Choosing a non-alcoholic beverage is perfectly acceptable and becoming more common.
+        While drinking is common at nomikai, no one is obligated to drink. Choosing a non-alcoholic beverage is perfectly acceptable and becoming more common.
       </p>
       <p>
         You can politely decline by saying:<br>
         <em>“今日はお酒は控えています。”</em><br>
-        (<strong>“Kyō wa osake wa hikaeteimasu.”</strong> — “I’m not drinking today.”)
+        (“Kyō wa osake wa hikaeteimasu. — “I’m not drinking today.”)
       </p>
       <p>
         Respect for personal choice is valued, and no one should pressure you to drink.
@@ -110,5 +110,6 @@
       <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
     </div>
   </footer>
+<script src="./js/nomikai.js"></script>
 </body>
 </html>

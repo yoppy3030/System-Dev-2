@@ -38,7 +38,7 @@
 
     <div class="step">
       <h2>Job Fairs</h2>
-      <p>Attend job fairs like <a href="https://www.careercross.com/en/jobfair" target="_blank">CareerCross Job Fairs</a> or <a href="https://www.disc.co.jp/en/" target="_blank">DISCO’s Career Forums</a>. These events connect you directly with hiring companies.</p>
+      <p>Attend job fairs like <a href="https://www.careercross.com/en/job-search" target="_blank">CareerCross Job Fairs</a> or <a href="https://www.disc.co.jp/en/" target="_blank">DISCO’s Career Forums</a>. These events connect you directly with hiring companies.</p>
     </div>
 
     <div class="step">
