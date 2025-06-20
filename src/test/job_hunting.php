@@ -40,10 +40,10 @@
       <h2>Required Documents</h2>
       <p>Prepare essential documents:
         <ul>
-          <li><strong>履歴書 (rirekisho):</strong> <span class="translatable">Japanese-style resume</span></li>
-          <li><strong>自己PR:</strong> <span class="translatable">Self-promotion statement</span></li>
-          <li><strong>成績証明書:</strong> <span class="translatable">Academic transcript</span></li>
-          <li><strong>推薦状:</strong> <span class="translatable">(if applicable) Letter of recommendation</span></li>
+          <li>履歴書 (rirekisho): <span class="translatable">Japanese-style resume</span></li>
+          <li>自己PR: <span class="translatable">Self-promotion statement</span></li>
+          <li>成績証明書: <span class="translatable">Academic transcript</span></li>
+          <li>推薦状: <span class="translatable">(if applicable) Letter of recommendation</span></li>
         </ul>
       </p>
     </div>
