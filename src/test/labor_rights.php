@@ -53,7 +53,7 @@
     </div>
 
     <div class="info-block">
-      <h2>2. Working Hours & Overtime</h2>
+      <h2>2. Working Hours &amp; Overtime</h2>
       <p>Standard hours are 8 hours/day and 40 hours/week. Overtime is limited by law and must be compensated with extra pay (usually 125% or more of base wage).</p>
     </div>
 
@@ -64,17 +64,17 @@
 
     <div class="info-block">
       <h2>4. Social Insurance</h2>
-      <p>Most employees are enrolled in Japan’s four main insurance systems: health, pension, unemployment, and workers’ compensation. Contributions are shared by employer and employee.</p>
+      <p>Most employees are enrolled in Japan's four main insurance systems: health, pension, unemployment, and workers' compensation. Contributions are shared by employer and employee.</p>
     </div>
 
     <div class="info-block">
       <h2>5. Workplace Harassment</h2>
-      <p>Power harassment and sexual harassment are prohibited by law. If you experience this, report to your company’s compliance officer or contact the Labor Standards Inspection Office.</p>
+      <p>Power harassment and sexual harassment are prohibited by law. If you experience this, report to your company's compliance officer or contact the Labor Standards Inspection Office.</p>
     </div>
 
     <div class="info-block">
-      <h2>6. Resignation & Termination</h2>
-      <p>You must give at least 2 weeks’ notice when resigning. Employers must provide a valid reason for termination and typically must give 30 days' notice or 30 days’ pay in lieu.</p>
+      <h2>6. Resignation &amp; Termination</h2>
+      <p>You must give at least 2 weeks' notice when resigning. Employers must provide a valid reason for termination and typically must give 30 days' notice or 30 days' pay in lieu.</p>
     </div>
 
     <div class="info-block">
@@ -105,6 +105,6 @@
     </div>
   </footer>
 
-  <script src="./js/professional_comment_sec.js"></script>
+  <script src="./js/labor_rights.js"></script>
 </body>
 </html>

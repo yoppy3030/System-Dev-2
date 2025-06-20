@@ -2,7 +2,7 @@
   "translations": {
     "🌐 Translate": "🌐 翻译",
     "Home": "首页",
-    "Culture ▾": "文化",
+    "Culture ▾": "文化 ▾",
     "Japanese Culture": "日本文化",
     "Daily Life": "日常生活",
     "Student": "学生",
@@ -11,11 +11,15 @@
     "Group Harmony in Japanese Culture": "日本文化中的集体和谐",
     "Understanding the unspoken rules of teamwork in Japan": "了解日本团队协作的潜规则",
     "What is Group Harmony?": "什么是集体和谐？",
-    "In Japan, the concept of “Wa” (和)—meaning harmony—is deeply embedded in all aspects of life, especially in group settings such as school, work, and society. Japanese people place strong emphasis on avoiding conflict, maintaining peace, and prioritizing the needs of the group over individual opinions.": "在日本，“和（Wa）”的理念——即和谐——深深融入了生活的方方面面，尤其是在学校、职场和社会等集体环境中。日本人非常重视避免冲突、保持和睦，并将集体利益置于个人意见之上。",
+    "In Japan, the concept of \"Wa\" (和)—meaning harmony—is deeply embedded in all aspects of life, especially in group settings such as school, work, and society. Japanese people place strong emphasis on avoiding conflict, maintaining peace, and prioritizing the needs of the group over individual opinions.": "在日本，\"和（Wa）\"的理念——即和谐——深深融入了生活的方方面面，尤其是在学校、职场和社会等集体环境中。日本人非常重视避免冲突、保持和睦，并将集体利益置于个人意见之上。",
     "Key Elements of Group Harmony": "集体和谐的核心要素",
+    "Avoiding Direct Confrontation": "避免直接冲突",
     "Avoiding Direct Confrontation: Criticism or disagreement is rarely expressed openly. Indirect communication and subtle suggestions are preferred.": "避免直接冲突：批评或异议很少公开表达，更倾向于间接沟通和委婉建议。",
+    "Consensus Building": "共识建立",
     "Consensus Building: Decisions are often made through long discussions to ensure everyone feels included—even if they disagree internally.": "共识建立：通常通过充分讨论达成决策，确保每个人都能参与其中，即使内心有不同意见。",
+    "Role Awareness": "角色意识",
     "Role Awareness: Everyone is expected to understand their role in the group and act accordingly, without disrupting the overall flow.": "角色意识：每个人都应明确自身在集体中的角色，并据此行事，避免影响整体进程。",
+    "Nonverbal Communication": "非语言沟通",
     "Nonverbal Communication: Much is conveyed through facial expressions, silences, and body language. Paying attention to these cues is crucial.": "非语言沟通：表情、沉默和肢体语言都能传递重要信息，注意这些细节非常关键。",
     "Tips for Foreigners": "给外国人的建议",
     "If you're a non-Japanese person working or studying in Japan, here are some tips to navigate group harmony:": "如果你是在日本工作或学习的外国人，以下是适应集体和谐的实用建议：",
@@ -23,12 +27,11 @@
     "Show humility—boasting or dominating conversations can be frowned upon.": "保持谦逊——自夸或主导对话会被视为不礼貌。",
     "Use polite and indirect language when disagreeing.": "表达异议时请使用礼貌、委婉的表达方式。",
     "Support team decisions even if you would prefer another approach.": "即使有不同想法，也要尊重并支持团队决策。",
-    "Apologize even for small inconveniences—it shows consideration for others’ feelings.": "即使是小小的不便也要道歉，这体现了对他人的关心和体贴。",
+    "Apologize even for small inconveniences—it shows consideration for others' feelings.": "即使是小小的不便也要道歉，这体现了对他人的关心和体贴。",
     "← Back to Culture": "← 返回文化",
     "Contact Us": "联系我们",
     "Email: 22200797@ecc.ac.jp": "邮箱：22200797@ecc.ac.jp",
     "Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan": "地址：日本东京都文京区后乐1-2-61，邮编123-0006",
-    "Phone: +81 3-1234-5678": "电话：+81 3-1234-5678",
-    "Japan life Manual": "日本生活手册"
+    "Phone: +81 3-1234-5678": "电话：+81 3-1234-5678"
   }
 }

@@ -23,7 +23,7 @@
       "Tokushima,Kochi,Kagawa,etc": "徳島、高知、香川など",
       "Chugoku Region": "中国地方",
       "Tottori,Okayama,Hiroshima,etc": "鳥取、岡山、広島など",
-      "kansai Region": "関西地方",
+      "Kansai Region": "関西地方",
       "Osaka,Kyoto,Nara,etc": "大阪、京都、奈良など",
       "Chubu Region": "中部地方",
       "Toyama,Fukui,Gifu,etc": "富山、福井、岐阜など",
@@ -37,7 +37,6 @@
       "Contact Us": "お問い合わせ",
       "Email": "メール",
       "Address": "住所",
-      "Phone": "電話番号",
-      "Japan life Manual": "日本生活マニュアル"
-  }        
+      "Phone": "電話番号"
+    }        
 }

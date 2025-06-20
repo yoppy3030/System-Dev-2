@@ -1,0 +1,22 @@
+{
+  "translations": {
+    "🌐 Translate": "🌐 翻訳",
+    "StudentHome": "学生ホームページ",
+    "Back to Life in Japan": "日本での生活に戻る",
+    "JAPAN Life Manual": "日本生活マニュアル",
+    "🔎 Job Search Support": "🔎 就職活動サポート",
+    "Find support from career centers, job fairs, and online platforms to boost your chances of securing a job in Japan.": "キャリアセンター、就職フェア、オンラインプラットフォームから、日本での就職成功の可能性を高めるサポートを見つけましょう。",
+    "Career Centers": "キャリアセンター",
+    "Most universities have career centers that provide job listings, resume checks, interview practice, and consultation in Japanese or English.": "ほとんどの大学には、求人情報の提供、履歴書のチェック、面接練習、日本語または英語での相談サービスを提供するキャリアセンターがあります。",
+    "Job Fairs": "就職フェア",
+    "Attend job fairs like CareerCross Job Fairs or DISCO’s Career Forums. These events connect you directly with hiring companies.": "就職フェアには<a href='https://www.careercross.com/en/jobfair' target='_blank' rel='noopener'>CareerCross就職フェア</a>や<a href='https://www.disc.co.jp/en/' target='_blank' rel='noopener'>DISCOキャリアフォーラム</a>などがあります。これらのイベントでは、採用企業と直接つながることができます。",
+    "Online Platforms": "オンラインプラットフォーム",
+    "Use online job search sites:": "オンライン求人サイトを活用しましょう：",
+    "GaijinPot Jobs": "<a href='https://www.gaijinpot.com/jobs/' target='_blank' rel='noopener'>GaijinPot求人</a>",
+    "Japan Times Jobs": "<a href='https://job.japantimes.com/' target='_blank' rel='noopener'>ジャパンタイムズ求人</a>",
+    "CareerCross": "<a href='https://www.careercross.com/en/' target='_blank' rel='noopener'>CareerCross</a>",
+    "Helpful Links": "役立つリンク",
+    "JASSO: Job Hunting Guide": "<a href='https://www.jasso.go.jp/en/study_j/job/index.html' target='_blank' rel='noopener'>JASSO：就職活動ガイド</a>",
+    "DISCO Career Forum": "<a href='https://www.disc.co.jp/en/' target='_blank' rel='noopener'>DISCOキャリアフォーラム</a>"
+  }
+}

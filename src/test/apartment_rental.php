@@ -9,10 +9,20 @@
 <body>
 
 <header class="site-header">
-  <div class="logo">STUDY in JAPAN</div>
+  <div class="logo">JAPAN Life Manual</div>
   <nav class="main-nav">
     <a href="studenthome.php">StudentHome</a>
     <a href="useful_materials.php">Back to useful_materials</a>
+    <!-- 言語選択ドロップダウン -->
+    <div class="language-selector">
+      <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+      <div class="language-dropdown">
+        <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+        <button class="language-option" data-lang="en">🇺🇸 English</button>
+        <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+        <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+      </div>
+    </div>
   </nav>
 </header>
 
@@ -32,7 +42,7 @@
         <li><a href="https://suumo.jp/" target="_blank">SUUMO (Japanese)</a></li>
         <li><a href="https://www.homes.co.jp/" target="_blank">Homes.co.jp (Japanese)</a></li>
         <li><a href="https://www.apamanshop.com/" target="_blank">Apamanshop (Japanese/English)</a></li>
-        <li><a href="https://apartments.gaijinpot.com/en/rent" target="_blank">GaijinPot Housing (English-friendly)</a></li>
+        <li><a href="https://www.gaijinpot.com/housing/" target="_blank">GaijinPot Housing (English-friendly)</a></li>
       </ul>
     </div>
     <div class="step">
@@ -57,6 +67,6 @@
 <footer class="footer">
   &copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.
 </footer>
-
+<script src="./js/apartment_rental.js"></script>
 </body>
 </html>

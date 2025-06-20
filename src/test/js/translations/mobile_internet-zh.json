@@ -1,0 +1,16 @@
+{
+    "translations": {
+      "StudentHome": "学生主页",
+      "Back to Life in Japan": "返回日本生活",
+      "🌐 Translate": "🌐 翻译",
+      "📱 Mobile & Internet": "📱 移动电话与互联网",
+      "Learn how to set up a phone contract, find prepaid SIM cards, and choose the best Wi-Fi plan for your stay in Japan.": "了解如何在日本设置电话合同、寻找预付SIM卡,并选择最适合您在日本停留期间的Wi-Fi计划。",
+      "Set Up a Phone Contract": "设置电话合同",
+      "Major carriers like Docomo, au, and SoftBank offer contracts with monthly plans. You’ll need ID, residence card, and possibly a bank account.": "主要运营商如<a href=\"https://www.nttdocomo.co.jp/english/\" target=\"_blank\">Docomo</a>、<a href=\"https://www.au.com/english/\" target=\"_blank\">au</a>和<a href=\"https://www.softbank.jp/en/\" target=\"_blank\">SoftBank</a>提供月费合同。您需要身份证明、在留卡，可能还需要一个银行账户。",
+      "Prepaid SIM Cards": "预付SIM卡",
+      "For flexibility, consider prepaid SIMs from providers like Mobal or Sakura Mobile. Available at airports or online.": "为了更灵活的选择，可以考虑来自如<a href=\"https://www.mobal.com/japan-sim-card/\" target=\"_blank\">Mobal</a>或<a href=\"https://www.sakuramobile.jp/\" target=\"_blank\">Sakura Mobile</a>等供应商的预付SIM卡。可以从机场或在线购买。",
+      "Choose a Wi-Fi Plan": "选择Wi-Fi计划",
+      "You can choose home broadband from NTT, SoftBank, or au, or rent portable Wi-Fi routers (pocket Wi-Fi) from companies like Japan Wireless.": "您可以选择来自NTT、SoftBank或au的家庭宽带,或者租用类似<a href=\"https://www.japan-wireless.com/\" target=\"_blank\">Japan Wireless</a>的公司的便携式Wi-Fi路由器（口袋Wi-Fi）。",
+      "Helpful Links": "有用链接"
+    }
+  }

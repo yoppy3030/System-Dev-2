@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Group Harmony in Japanese Culture</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<<<<<<< HEAD
   <link rel="stylesheet" href="./css/culture.css">
+=======
+  <link rel="stylesheet" href="./css/group_harmony.css">
+>>>>>>> 052c4b4a8904f7de3a987bd7c9f8254b4757c8f5
 </head>
 <body>
   <!-- Navigation Bar (Same as other pages) -->
@@ -49,14 +53,16 @@
   <main class="culture-content">
     <section class="card-style-section">
       <h2><i class="fas fa-users"></i> What is Group Harmony?</h2>
-      <p>In Japan, the concept of <strong>“Wa” (和)</strong>—meaning harmony—is deeply embedded in all aspects of life, especially in group settings such as school, work, and society. Japanese people place strong emphasis on avoiding conflict, maintaining peace, and prioritizing the needs of the group over individual opinions.</p>
+      <p>
+        In Japan, the concept of "Wa" (和)—meaning harmony—is deeply embedded in all aspects of life, especially in group settings such as school, work, and society. Japanese people place strong emphasis on avoiding conflict, maintaining peace, and prioritizing the needs of the group over individual opinions.
+      </p>
 
       <h3><i class="fas fa-handshake"></i> Key Elements of Group Harmony</h3>
       <ul>
-        <li><strong>Avoiding Direct Confrontation:</strong> Criticism or disagreement is rarely expressed openly. Indirect communication and subtle suggestions are preferred.</li>
-        <li><strong>Consensus Building:</strong> Decisions are often made through long discussions to ensure everyone feels included—even if they disagree internally.</li>
-        <li><strong>Role Awareness:</strong> Everyone is expected to understand their role in the group and act accordingly, without disrupting the overall flow.</li>
-        <li><strong>Nonverbal Communication:</strong> Much is conveyed through facial expressions, silences, and body language. Paying attention to these cues is crucial.</li>
+        <li>Avoiding Direct Confrontation: Criticism or disagreement is rarely expressed openly. Indirect communication and subtle suggestions are preferred.</li>
+        <li>Consensus Building: Decisions are often made through long discussions to ensure everyone feels included—even if they disagree internally.</li>
+        <li>Role Awareness: Everyone is expected to understand their role in the group and act accordingly, without disrupting the overall flow.</li>
+        <li>Nonverbal Communication: Much is conveyed through facial expressions, silences, and body language. Paying attention to these cues is crucial.</li>
       </ul>
 
       <h3><i class="fas fa-lightbulb"></i> Tips for Foreigners</h3>
@@ -68,7 +74,7 @@
         <li>Show humility—boasting or dominating conversations can be frowned upon.</li>
         <li>Use polite and indirect language when disagreeing.</li>
         <li>Support team decisions even if you would prefer another approach.</li>
-        <li>Apologize even for small inconveniences—it shows consideration for others’ feelings.</li>
+        <li>Apologize even for small inconveniences—it shows consideration for others' feelings.</li>
       </ul>
     </section>
     <div class="back-button-container">

@@ -9,10 +9,20 @@
 <body>
 
 <header class="site-header">
-  <div class="logo">STUDY in JAPAN</div>
+  <div class="logo">JAPAN Life Manual</div>
   <nav class="main-nav">
     <a href="studenthome.php">StudentHome</a>
     <a href="lifeinjapan.php">Back to Life in Japan</a>
+    <!-- 言語選択ドロップダウン -->
+    <div class="language-selector">
+      <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+      <div class="language-dropdown">
+        <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+        <button class="language-option" data-lang="en">🇺🇸 English</button>
+        <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+        <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+      </div>
+    </div>
   </nav>
 </header>
 
@@ -30,10 +40,10 @@
       <h2>Required Documents</h2>
       <p>Prepare essential documents:
         <ul>
-          <li><strong>履歴書 (rirekisho):</strong> Japanese-style resume</li>
-          <li><strong>自己PR:</strong> Self-promotion statement</li>
-          <li><strong>成績証明書:</strong> Academic transcript</li>
-          <li><strong>推薦状:</strong> (if applicable) Letter of recommendation</li>
+          <li>履歴書 (rirekisho): <span class="translatable">Japanese-style resume</span></li>
+          <li>自己PR: <span class="translatable">Self-promotion statement</span></li>
+          <li>成績証明書: <span class="translatable">Academic transcript</span></li>
+          <li>推薦状: <span class="translatable">(if applicable) Letter of recommendation</span></li>
         </ul>
       </p>
     </div>
@@ -56,6 +66,6 @@
 <footer class="footer">
   &copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.
 </footer>
-
+<script src="./js/job_hunting.js"></script>
 </body>
 </html>

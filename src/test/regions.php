@@ -38,23 +38,6 @@
     </header>
     <main>
 
-                <!-- Menu Button -->
-        <div class="menu-button" onclick="toggleSidebar()">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        
-        <!-- サイドバーナビゲーション -->
-        <div class="sidebar" id="sidebar">
-            <a href="#">When visiting a friend's house</a>
-            <a href="#">When in a store</a>
-            <a href="#">When walking on the street</a>
-            <a href="#">When in public facilities</a>
-            <a href="./login.php">Login</a>
-        </div>
-
-
         <div class="hero-img">
             <div class="hero-text">
                 <p>Japan is a country known for its strong sense of etiquette, but what many people may not realize is that these social rules aren't always the same

@@ -120,6 +120,6 @@
     </div>
   </footer>
 
-  <script src="./js/professional_comment_sec.js"></script>
+  <script src="./js/business_etiquette.js"></script>
 </body>
 </html>
