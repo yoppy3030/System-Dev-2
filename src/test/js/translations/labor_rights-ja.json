@@ -1,0 +1,33 @@
+{
+  "translations": {
+    "Home": "ホームページ",
+    "Culture ▾": "文化",
+    "Japanese Culture": "日本文化",
+    "Daily Life": "日常生活",
+    "Student": "学生",
+    "Traveler": "旅行者",
+    "About": "概要",
+    "🌐 Translate": "🌐 翻訳",
+    "Labor Rights in Japan": "日本の労働者の権利",
+    "Understand your rights and protections as a worker in Japan.": "日本で働く労働者としてのあなたの権利と保護について理解しましょう。",
+    "1. Employment Contracts": "1. 雇用契約",
+    "All workers must receive a written contract outlining job duties, salary, working hours, and other conditions. Always keep a copy and verify all terms before signing.": "すべての労働者は、職務内容、給与、労働時間、その他の条件を概説した書面による契約書を受け取らなければなりません。署名する前に必ずコピーを保管し、すべての条件を確認してください。",
+    "2. Working Hours &amp; Overtime": "2. 労働時間と残業",
+    "Standard hours are 8 hours/day and 40 hours/week. Overtime is limited by law and must be compensated with extra pay (usually 125% or more of base wage).": "標準労働時間は1日8時間、週40時間です。残業は法律で制限されており、割増賃金（通常は基本給の125％以上）で補償されなければなりません。",
+    "3. Paid Leave": "3. 有給休暇",
+    "Employees are entitled to a minimum of 10 days of paid leave per year after 6 months of continuous work. Sick leave is not separate and usually taken as part of paid leave.": "従業員は、6ヶ月間の継続勤務の後、年間最低10日間の有給休暇を取得する権利があります。病気休暇は別途設けられておらず、通常は有給休暇の一部として取得されます。",
+    "4. Social Insurance": "4. 社会保険",
+    "Most employees are enrolled in Japan's four main insurance systems: health, pension, unemployment, and workers' compensation. Contributions are shared by employer and employee.": "ほとんどの従業員は、日本の4つの主要な保険制度（健康保険、年金保険、雇用保険、労働者災害補償保険）に加入しています。保険料は雇用主と従業員で折半します。",
+    "5. Workplace Harassment": "5. 職場でのハラスメント",
+    "Power harassment and sexual harassment are prohibited by law. If you experience this, report to your company's compliance officer or contact the Labor Standards Inspection Office.": "パワーハラスメントやセクシュアルハラスメントは法律で禁止されています。このような経験をした場合は、社のコンプライアンス担当者に報告するか、労働基準監督署に連絡してください。",
+    "6. Resignation &amp; Termination": "6. 退職と解雇",
+    "You must give at least 2 weeks' notice when resigning. Employers must provide a valid reason for termination and typically must give 30 days' notice or 30 days' pay in lieu.": "退職する際には、少なくとも2週間前に通知する必要があります。雇用主は解雇に正当な理由を提示しなければならず、通常は30日前の通知またはそれに代わる30日分の賃金を支払う必要があります。",
+    "7. Where to Get Help": "7. 相談窓口",
+    "You can consult the nearest Labor Standards Office (労働基準監督署) or call hotlines such as the Tokyo Foreign Workers Support Center. Legal support is available in multiple languages.": "最寄りの労働基準監督署に相談するか、東京外国人労働者支援センターなどのホットラインに電話することができます。法的支援は多言語で利用可能です。",
+    "Back to Professional": "専門家向け情報に戻る",
+    "Contact Us": "お問い合わせ",
+    "Email: 22200797@ecc.ac.jp": "メール: 22200797@ecc.ac.jp",
+    "Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan": "住所: 〒123-0006 東京都文京区後楽1-2-61",
+    "Phone: +81 3-1234-5678": "電話: +81 3-1234-5678"
+  }
+}
