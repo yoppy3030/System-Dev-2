@@ -76,8 +76,6 @@
           <img class="jlpt-image" src="./img/N1.png" alt="N1 example image">
         </div>
       </div>
-
-
   </section>
 
    <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">
