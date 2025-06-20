@@ -100,6 +100,6 @@
     </div>
   </footer>
 
-  <script src="./js/professional_comment_sec.js"></script>
+  <script src="./js/language_expectations.js"></script>
 </body>
 </html>
