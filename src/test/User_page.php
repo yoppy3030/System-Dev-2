@@ -234,6 +234,7 @@ function renderComments($comments_array) {
                                         <button class="post-comment-btn" data-post-id="<?= $post['id'] ?>">Post Comment</button>
                                     </div>
                                     
+                                    
                                     <!-- Liste des commentaires -->
                                     <div class="comments-list" id="comments-<?= $post['id'] ?>">
                                         <?php if (!empty($post['comments'])): ?>
