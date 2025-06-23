@@ -3,9 +3,9 @@
 // 1. Démarrer la session et générer un token CSRF
 session_start();
 
-// if (empty($_SESSION['csrf_token'])) {
-//     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-// }
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
 // 2. Debug (à désactiver en production)
 ini_set('display_errors', 1);
@@ -21,10 +21,10 @@ function validateInput($data) {
 
 // 5. Si le formulaire est soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Vérification CSRF
-    // if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-    //     die('Invalid CSRF token');
-    // }
+    //Vérification CSRF
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('Invalid CSRF token');
+    }
 
     $errors = [];
     
@@ -106,11 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - JAPAN Life Manual</title>
-<<<<<<< HEAD
     <link rel="stylesheet" href="./css/style.css">
-=======
-    <link rel="stylesheet" href="css/style.css">
->>>>>>> 7d9e3320407981d29cd973a2353ca7f0714f67cc
+
 </head>
 <body>
 <div class="form-container">
@@ -186,6 +183,6 @@ function validateForm() {
 <?php
 // Nettoyage de la session après affichage
 unset($_SESSION['form_data']);
-unset($_SESSION['csrf_token']);
+// unset($_SESSION['csrf_token']);
 // Fin du script
 ?>
