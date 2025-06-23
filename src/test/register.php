@@ -1,4 +1,5 @@
 <?php
+
 // 1. Démarrer la session et générer un token CSRF
 session_start();
 
@@ -12,6 +13,7 @@ error_reporting(E_ALL);
 
 // 3. Connexion à la base de données
 require(__DIR__ . '/backend/config.php');
+
 // 4. Fonction de validation
 function validateInput($data) {
     return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
@@ -19,7 +21,7 @@ function validateInput($data) {
 
 // 5. Si le formulaire est soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Vérification CSRF
+    //Vérification CSRF
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         die('Invalid CSRF token');
     }
@@ -104,7 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - JAPAN Life Manual</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./css/style.css">
+
 </head>
 <body>
 <div class="form-container">

@@ -4,6 +4,7 @@
   --primary-color: #1e40af;
   --light-text: #fff;
   --hover-color: #2563eb;
+  --dropdown-color:grey;
 }
 
 
@@ -22,7 +23,7 @@ body {
 
 /* Header */
 .site-header {
-  background-color: #0f172a;
+  background-color: #b71c1c;
   color: white;
   padding: 1rem 2rem;
   display: flex;
@@ -88,7 +89,7 @@ body {
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: #92bfff;
+    background-color: #bdbdbd;
     min-width: 160px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     border-radius: 4px;
@@ -220,7 +221,7 @@ body {
 
 /* Footer */
 footer {
-  background-color: #1f2937;
+  background-color: #b71c1c;
   color: #eee;
   padding: 2rem 5%;
   text-align: center;
@@ -276,7 +277,7 @@ footer a:hover {
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: var(--primary-color);
+  background-color: var(--dropdown-color);
   list-style: none;
   padding: 0;
   margin: 0;

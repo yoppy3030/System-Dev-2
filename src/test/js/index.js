@@ -230,3 +230,31 @@ function translatePage(targetLang) {
     
     currentLanguage = targetLang;
 }
+/*
+// depends on user
+
+document.addEventListener("DOMContentLoaded", () => {
+  const startBtn = document.getElementById("start-btn");
+  if (startBtn) {
+    startBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const activityInput = document.getElementById("user-activity");
+      if (!activityInput) {
+        alert("User activity not found.");
+        return;
+      }
+      const activity = activityInput.value;
+
+      if (activity === "International Student") {
+        window.location.href = "studenthome.php";
+      } else if (activity === "Professional") {
+        window.location.href = "professional.php";
+      } else if (activity === "Tourist") {
+        window.location.href = "travelers_homePage.php";
+      } else {
+        alert("Please sign up or log in to continue.");
+      }
+    });
+  }
+});
+*/
