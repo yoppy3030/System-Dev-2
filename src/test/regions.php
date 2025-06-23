@@ -14,15 +14,16 @@
             <div class="dropdown">
             <a class="no-underline" href="#">Region</a>
             <div class="dropdown-content">
-                    <a href="#">Hokkaido</a>
-                    <a href="#">Tohoku</a>
-                    <a href="#">Kanto</a>
-                    <a href="#">Chubu</a>
+                    <a href="hokkaido.php">Hokkaido</a>
+                    <a href="tohoku.php">Tohoku</a>
+                    <a href="kanto.php">Kanto</a>
+                    <a href="Kansai.php">Kansai</a>
+                    <a href="chubu.php">Chubu</a>
                 </div>
             </div>
-            <a class="with-underline" href="#">Transports</a>
-            <a class="with-underline" href="#">Food</a>
-            <a class="with-underline" href="#">Other</a>
+            <a class="with-underline" href="">Transports</a>
+            <a class="with-underline" href="">Food</a>
+            <a class="with-underline" href="">Other</a>
             <!-- 言語選択ドロップダウン -->
             <div class="language-selector">
                 <button id="translateBtn" class="translate-btn">🌐 Translate</button>
