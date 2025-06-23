@@ -8,6 +8,15 @@
         "Other": "其他",
         "search": "搜索",
         
+        "Hokkaido": "北海道",
+        "Tohoku": "东北",
+        "Kanto": "关东",
+        "Chubu": "中部",
+        "Kansai": "关西",
+        "Chugoku": "中国",
+        "Shikoku": "四国",
+        "Kyusyu & Okinawa": "九州・冲绳",
+
         "When visiting a friend's house": "拜访朋友家时",
         "When in a store": "在商店时",
         "When walking on the street": "在街上行走时",
@@ -32,7 +41,6 @@
         "Tohoku Region": "东北地区",
         "Iwate,Akita,Fukushima,etc": "岩手、秋田、福岛等",
         "Hokkaido Region": "北海道地区",
-        "Hokkaido": "北海道",
       
         "Contact Us": "联系我们",
         "Email": "电子邮件",

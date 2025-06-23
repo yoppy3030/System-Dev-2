@@ -127,7 +127,7 @@
                 </li>
 
                 <li>
-                    <h3>4.Don’t Treat Ebi Senbei as Just “Snacks”</h3>
+                    <h3>4. Don’t Treat Ebi Senbei as Just “Snacks”</h3>
                     <p>Ebi senbei — shrimp-flavored rice crackers — are a beloved specialty of Aichi, especially in coastal areas like Mikawa and Chita. While they may look like simple snacks, these crackers are often handmade with local shrimp and come in a wide range of flavors, textures, and packaging designs. For locals, ebi senbei are not just something to eat casually — they’re a popular form of omiyage (souvenir gift), meant to be shared with friends,
                         coworkers, or family after a trip. Treating them like cheap junk food or tossing them aside without trying them can come off as rude. Respecting them as a thoughtful and meaningful gift shows good manners and appreciation for Aichi’s local traditions.
                     <p>
@@ -150,7 +150,7 @@
                 </li>
 
                 <li>
-                    <h3>3.Don’t Take Photos of Farmers Without Permission</h3>
+                    <h3>3. Don’t Take Photos of Farmers Without Permission</h3>
                     <p>In Shizuoka, you’ll often see tea farmers working in scenic green fields or fishermen busy in coastal towns — and while these scenes may seem picture-perfect, they are part of people’s real, everyday lives. It’s important to remember that farmers and workers are not tourist attractions. Taking photos without asking can feel intrusive or disrespectful, especially in rural areas where privacy is valued.
                         If you wish to capture a moment, simply offer a polite gesture or ask with a smile — many locals will happily agree if approached respectfully. Showing this courtesy honors their hard work and helps preserve trust between visitors and the community.</p>
                 </li>
@@ -169,13 +169,13 @@
                 </li>
 
                 <li>
-                    <h3>2.Be Careful When Taking Photos in Traditional Towns Like Takayama</h3>
+                    <h3>2. Be Careful When Taking Photos in Traditional Towns Like Takayama</h3>
                     <p>The historic streets of Takayama, especially areas like Sanmachi Suji, are beautifully preserved and attract many visitors with their Edo-period charm. However, these areas are not just tourist spots — they are also home to local residents and businesses. Tourists should avoid blocking narrow walkways, setting up tripods in busy areas, or taking photos of people or shop interiors without permission.
                         Some places may have signs that say “撮影禁止” (no photography) — these should always be respected. Being mindful of your surroundings and photographing discreetly helps maintain the peaceful atmosphere that makes Takayama so special.</p>
                 </li>
 
                 <li>
-                    <h3>3.Don’t Mishandle or Joke About Blades in Seki</h3>
+                    <h3>3. Don’t Mishandle or Joke About Blades in Seki</h3>
                     <p>Seki City in Gifu is known across Japan — and even worldwide — for its masterful blade craftsmanship, with a history of sword-making that dates back over 700 years. Whether it’s a samurai katana or a finely made kitchen knife, blades from Seki are treated with deep respect. When visiting knife shops, museums, or workshops, it’s important to remember that these items are not souvenirs or toys.
                         Avoid pretending to fight with them, posing for silly photos, or grabbing them without asking. Mishandling a blade not only risks injury but also shows a lack of appreciation for the cultural and spiritual significance behind the craft. Always handle them with care, and follow staff instructions when observing or purchasing.</p>
                 </li>
@@ -186,7 +186,7 @@
                         it’s important to follow the rhythm and style of the dances rather than freestyle or make exaggerated moves. Watch others, learn the basic steps, and join with respect. Taking over the circle, filming in the center, or treating it as a performance for social media can be seen as disrespectful. The heart of Gujo Odori is in dancing with the community — not standing out from it.</p>
                 </li>
                 <li>
-                    <h3>5.Don’t Interrupt or Flash Photography During Cormorant Fishing (Ukai)</h3>
+                    <h3>5. Don’t Interrupt or Flash Photography During Cormorant Fishing (Ukai)</h3>
                     <p>Ukai, or traditional cormorant fishing, is a centuries-old ritual held on the Nagara River in Gifu City. It’s not just a tourist show — it’s a living cultural heritage, performed with deep skill and spiritual significance. As night falls, fishermen in traditional robes guide trained cormorants to catch fish by torchlight, creating a quiet and mesmerizing scene. Tourists are welcome to watch,
                          but flash photography is strictly discouraged, as it can startle the birds and break their concentration. Likewise, shouting, cheering, or waving from boats is considered disruptive. To truly appreciate Ukai, observe silently, keep your camera settings on low light or no flash, and let the ancient rhythm of the performance speak for itself.</p>
                 </li>

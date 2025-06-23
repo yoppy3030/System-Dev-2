@@ -69,8 +69,8 @@
 
              <ol>
                 
-                <h2><li>Kensai region</li></h2>
-                    <h2>Nara</h2>
+                <h2>Kensai region</h2>
+                    <h2>1. Nara</h2>
                     <ul class="rules-list">
 
                     <li>
@@ -101,7 +101,7 @@
                     </li>
                             </ul>
 
-                    <h2>Osaka</h2>
+                    <h2>2. Osaka</h2>
                     <ul class="rules-list">
                         <li>
                         <h3>1.Don't Block the Escalator</h3>
@@ -139,7 +139,7 @@
                         </li>
                             </ul>
                     <ul class="rules-list">
-                        <h2>Kobe</h2>
+                        <h2>3. Kobe</h2>
                         <li>
                             <h3>1.Don't Ignore Umbrella Etiquette on Rainy Days</h3>
                             <p>Kobe is known for its sudden weather changes, and locals take umbrella manners seriously.
@@ -161,7 +161,7 @@
                     </ul>
                     </section>
                 
-                    <h2>Kyoto</h2>
+                    <h2>4. Kyoto</h2>
                     <ul class="rules-list">
                         <li>
                         <h3>1. Don't Block the Path in Gion or Geisha Districts</h3>

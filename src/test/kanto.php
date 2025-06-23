@@ -90,8 +90,7 @@
                     <li>        
                         <h3>3. Queueing Culture</h3>
                             <p>In Tokyo, orderly queueing is an unspoken rule that everyone follows without exception. Whether you’re waiting for a train, lining up at a popular restaurant, or boarding a bus, locals always form neat, single-file lines and patiently wait their turn.
-                                 Jumping ahead or cutting in line is considered extremely rude and can draw disapproving looks or even polite</p>
-                                <p> reminders from those around you. This respect for order helps keep public spaces calm and efficient, especially during busy rush hours when crowds are large. Even at crowded places, people quietly accept the wait, valuing fairness and harmony over impatience. This culture of disciplined queuing reflects the broader social emphasis on respect and consideration that Tokyoites live by every day..</p>
+                                 Jumping ahead or cutting in line is considered extremely rude and can draw disapproving looks or even polite reminders from those around you. This respect for order helps keep public spaces calm and efficient, especially during busy rush hours when crowds are large. Even at crowded places, people quietly accept the wait, valuing fairness and harmony over impatience. This culture of disciplined queuing reflects the broader social emphasis on respect and consideration that Tokyoites live by every day..</p>
                     </li>
                     </ul>
 
@@ -109,7 +108,7 @@
                         <li>
                             <h3>2. Farmers’ Market Bargaining Is Okay</h3>
                             <p>In Chiba’s more rural and agricultural communities, visiting farmers’ markets or roadside stalls often comes with a unique cultural twist that’s quite different from Tokyo’s more formal shopping scene.
-                                It’s generally accepted—and even expected—to engage in polite bargaining or price negotiations with vendors, especially when buying in bulk or at smaller, family-run stalls. 
+                                It’s generally accepted—and even expected—to engage in polite bargaining or price negotiations with vendors, especially when buying in bulk or at smaller, family-run stalls. </p>
                             <p>This friendly back-and-forth reflects the close relationships between locals and producers, and it’s seen as part of the shopping experience rather than rude or confrontational.
                                 In contrast, Tokyo’s markets tend to have fixed prices, and bargaining is rarely practiced, making this a distinctive and authentic local custom in Chiba.</p>
                         </li>
@@ -149,7 +148,7 @@
                         <li>
                             <h3>3. No Umbrella Sharing in Crowded Areas</h3>
                                 <p>In Kanagawa, particularly in urban areas like Yokohama and around busy train stations, there’s an unspoken rule among locals to avoid sharing umbrellas with strangers in crowded places, even during sudden heavy rain. Unlike in Tokyo, where people may sometimes casually huddle under someone else’s umbrella when packed together, or in Chiba where people tend to stick to personal umbrellas due to open spaces, Kanagawa locals value personal space and privacy even in tight spots.</p>
-                                <p> Reaching under someone’s umbrella or trying to share without permission is seen as intrusive and uncomfortable. Most locals carry compact umbrellas to avoid this situation altogether, reflecting a subtle but important aspect of personal boundary awareness in the area.</p>
+                                <p>Reaching under someone’s umbrella or trying to share without permission is seen as intrusive and uncomfortable. Most locals carry compact umbrellas to avoid this situation altogether, reflecting a subtle but important aspect of personal boundary awareness in the area.</p>
                         </li>
                         <li>
                             <h3>4. Respect for Coastal Fishing Zones</h3>

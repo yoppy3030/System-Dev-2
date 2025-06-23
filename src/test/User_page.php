@@ -156,7 +156,7 @@ function renderComments($comments_array) {
                 </div>
             <?php endif; ?>
         </div>
-
+<div class="explorer-layout">
         <div class="user-profile-container">
             <div class="profile-section">
                 <div class="profile-avatar">
@@ -204,6 +204,7 @@ function renderComments($comments_array) {
                     </form>
                 </div>
 
+
                 <div class="posts">
                     <h3>My Posts</h3>
                     <?php foreach ($posts as $post): ?>
@@ -232,6 +233,7 @@ function renderComments($comments_array) {
                                         <textarea id="comment-input-<?= $post['id'] ?>" placeholder="Add a comment..."></textarea>
                                         <button class="post-comment-btn" data-post-id="<?= $post['id'] ?>">Post Comment</button>
                                     </div>
+                                    
                                     
                                     <!-- Liste des commentaires -->
                                     <div class="comments-list" id="comments-<?= $post['id'] ?>">
@@ -282,7 +284,7 @@ function renderComments($comments_array) {
                 </div>
             </div>
         </div>
-    
+    </div>
     </main>
 
     <script>

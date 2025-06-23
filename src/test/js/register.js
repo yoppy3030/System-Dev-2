@@ -1,60 +1,14 @@
 // =========================================
 // グローバル変数の初期化
 // =========================================
-let likeCount = 0;
-let dislikeCount = 0;
-let viewCount = 0;
 let currentLanguage = 'en';
 let originalTexts = new Map();
 let translations = null;
 let translationsZh = null;
 
-// =========================================
 // DOM要素の取得
-// =========================================
-const likeBtn = document.getElementById("like-btn");
-const dislikeBtn = document.getElementById("dislike-btn");
-const likeCountElement = document.getElementById("like-count");
-const dislikeCountElement = document.getElementById("dislike-count");
-const viewCountElement = document.getElementById("view-count");
 const translateBtn = document.getElementById('translateBtn');
 const languageDropdown = document.querySelector('.language-dropdown');
-const dropdownBtn = document.getElementById("dropdown-btn");
-const dropdownContent = document.getElementById("dropdown-content");
-
-// =========================================
-// ページ読み込み時の処理
-// =========================================
-window.onload = function() {
-    viewCount++;
-    viewCountElement.textContent = viewCount;
-};
-
-// =========================================
-// いいね/いいね解除の処理
-// =========================================
-likeBtn.addEventListener("click", () => {
-    likeCount++;
-    likeCountElement.textContent = likeCount;
-});
-
-dislikeBtn.addEventListener("click", () => {
-    dislikeCount++;
-    dislikeCountElement.textContent = dislikeCount;
-});
-
-// =========================================
-// ドロップダウンメニューの処理
-// =========================================
-dropdownBtn.addEventListener("click", () => {
-    dropdownContent.classList.toggle("show");
-});
-
-window.addEventListener("click", (e) => {
-    if (!e.target.matches('.dropdown-btn')) {
-        dropdownContent.classList.remove("show");
-    }
-});
 
 // =========================================
 // 翻訳機能の初期設定
@@ -87,20 +41,26 @@ document.querySelectorAll('.language-option').forEach(option => {
 // ユーティリティ関数
 // =========================================
 /**
- * テキストの正規化（余分な空白を削除）
+ * テキストの正規化（HTMLエンティティをデコードし、余分な空白を削除）
  * @param {string} text - 正規化するテキスト
  * @returns {string} 正規化されたテキスト
  */
 function normalizeText(text) {
-    return text.replace(/\s+/g, ' ').trim();
+    // 一時的なDOM要素を作成してHTMLエンティティをデコード
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = text;
+    const decodedText = tempDiv.textContent || tempDiv.innerText || "";
+    
+    // 次に余分な空白を削除
+    return decodedText.replace(/\s+/g, ' ').trim();
 }
 
 // =========================================
 // 翻訳データの読み込み
 // =========================================
 Promise.all([
-    fetch('./js/translations/index-ja.json').then(response => response.json()),
-    fetch('./js/translations/index-zh.json').then(response => response.json())
+    fetch('./js/translations/register-ja.json').then(response => response.json()),
+    fetch('./js/translations/register-zh.json').then(response => response.json())
 ])
 .then(([jaData, zhData]) => {
     translations = jaData.translations;
@@ -128,34 +88,29 @@ function translatePage(targetLang) {
     document.querySelectorAll('.menu-item').forEach(menuItem => {
         const pElement = menuItem.querySelector('p');
         if (pElement) {
-            const originalText = pElement.textContent;
+            const originalText = pElement.innerHTML;
             if (!originalTexts.has(pElement)) {
                 originalTexts.set(pElement, originalText);
             }
 
             if (targetLang === 'en') {
-                pElement.textContent = originalTexts.get(pElement);
+                pElement.innerHTML = originalTexts.get(pElement);
             } else {
                 const normalizedText = normalizeText(originalTexts.get(pElement));
                 const translation = targetLang === 'ja' ? translations[normalizedText] : translationsZh[normalizedText];
                 if (translation) {
-                    pElement.textContent = translation;
+                    pElement.innerHTML = translation;
                 }
             }
         }
     });
 
     // その他の要素の処理
-    const elements = document.querySelectorAll('p:not(.menu-item p), h1, h2, h3, h4, h5, h6, span, a:not(.menu-item a), .sidebar a, .translate-btn, button');
+    const elements = document.querySelectorAll('p:not(.menu-item p), h1, h2, h3, h4, h5, h6, span, a:not(.menu-item a), .sidebar a, .translate-btn, button, section, section *');
     
     for (const element of elements) {
         // いいねボタン、閲覧数などの特殊な要素は翻訳対象外
         if (element.id === 'like-count' || element.id === 'dislike-count' || element.id === 'view-count') {
-            continue;
-        }
-
-        // ロゴ部分は翻訳対象外
-        if (element.closest('.logo')) {
             continue;
         }
 
@@ -191,7 +146,7 @@ function translatePage(targetLang) {
             continue;
         }
 
-        const originalText = element.textContent;
+        const originalText = element.innerHTML;
         
         if (!originalText || !originalText.trim()) {
             continue;
@@ -204,7 +159,7 @@ function translatePage(targetLang) {
         
         // 英語の場合は元のテキストに戻す
         if (targetLang === 'en') {
-            element.textContent = originalTexts.get(element);
+            element.innerHTML = originalTexts.get(element);
             continue;
         }
 
@@ -213,11 +168,11 @@ function translatePage(targetLang) {
         // 言語に応じた翻訳の適用
         if (targetLang === 'ja') {
             if (translations[normalizedText]) {
-                element.textContent = translations[normalizedText];
+                element.innerHTML = translations[normalizedText];
             }
         } else if (targetLang === 'zh') {
             if (translationsZh[normalizedText]) {
-                element.textContent = translationsZh[normalizedText];
+                element.innerHTML = translationsZh[normalizedText];
             }
         }
     }
@@ -230,31 +185,3 @@ function translatePage(targetLang) {
     
     currentLanguage = targetLang;
 }
-/*
-// depends on user
-
-document.addEventListener("DOMContentLoaded", () => {
-  const startBtn = document.getElementById("start-btn");
-  if (startBtn) {
-    startBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const activityInput = document.getElementById("user-activity");
-      if (!activityInput) {
-        alert("User activity not found.");
-        return;
-      }
-      const activity = activityInput.value;
-
-      if (activity === "International Student") {
-        window.location.href = "studenthome.php";
-      } else if (activity === "Professional") {
-        window.location.href = "professional.php";
-      } else if (activity === "Tourist") {
-        window.location.href = "travelers_homePage.php";
-      } else {
-        alert("Please sign up or log in to continue.");
-      }
-    });
-  }
-});
-*/
