@@ -51,7 +51,7 @@
 
         
             <section class="submenu-grid">
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="">
                     <strong>Kyusyu & Okinawa Region</strong><br>
                     <small>Okinawa,Fukuoka,Oita,etc</small>
                 </a>
@@ -67,7 +67,7 @@
                     <strong>Kansai Region</strong><br>
                     <small>Osaka,Kyoto,Nara,etc</small>
                 </a>
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="chubu.php">
                     <strong>Chubu Region</strong><br>
                     <small>Toyama,Fukui,Gifu,etc</small>
                 </a>
@@ -75,11 +75,11 @@
                     <strong>Kanto Region</strong><br>
                     <small>Tokyo,Chiba,Saitama,etc</small>
                 </a>
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="tohoku.php">
                     <strong>Tohoku Region</strong><br>
                     <small>Iwate,Akita,Fukushima,etc</small>
                 </a>
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="hokkaido.php">
                     <strong>Hokkaido Region</strong><br>
                     <small>Hokkaido</small>
                 </a>
