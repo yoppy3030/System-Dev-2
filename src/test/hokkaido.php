@@ -63,10 +63,10 @@
 
                 <ol>
                 
-                <h2><li>Hokkaido region</li></h2>
+                <h2>Hokkaido region</h2>
 
                 <!-- Sapporo Section -->
-                    <h2>Sapporo</h2>
+                    <h2>1. Sapporo</h2>
                     <ul class="rules-list">
 
                     <li>
@@ -93,7 +93,7 @@
                     </ul>
 
                     <!-- Hakodate Section -->
-                    <h2>Hakodate </h2>
+                    <h2>2. Hakodate </h2>
                     <ul class="rules-list">
                         <li>
                             <h3>1. Don’t Be Loud at Mount Hakodate Night View</h3>
@@ -118,7 +118,7 @@
                         </li>
 
                         <li>
-                            <h3>4.Don’t Waste the Fresh Seafood at the Morning Market</h3>
+                            <h3>4. Don’t Waste the Fresh Seafood at the Morning Market</h3>
                             <p>Hakodate’s Morning Market (朝市) is famous across Japan for its incredibly fresh seafood, especially squid, sea urchin, crab, and scallops. For locals, this food isn’t just a meal — it represents hard work, tradition, and pride in the local fishing culture. When tourists order seafood, especially live or freshly prepared dishes, 
                                 it’s expected that they eat it with appreciation and finish what they take. 
                             Leaving large amounts uneaten or treating rare seafood like a novelty for photos can seem disrespectful to both the chefs and fishermen. To show proper respect in Hakodate, enjoy the food sincerely, and avoid ordering more than you can eat.<p>
@@ -133,7 +133,7 @@
                     </ul>
                     <!-- Obihiro Section -->
                     <ul class="rules-list">
-                        <h2>Obihiro</h2>
+                        <h2>3. Obihiro</h2>
                         <li>
                             <h3>1. Don’t Treat Banei Horse Racing Like a Joke</h3>
                             <p>Banei horse racing is one of Obihiro’s most cherished cultural traditions — and the only place in the world where it exists. Unlike regular horse racing, Banei involves massive draft horses pulling heavy sleds across a dirt track with hills, showcasing strength, endurance, and deep trust between horse and rider.
@@ -142,7 +142,7 @@
                         </li>
                         
                         <li>
-                            <h3>2.  Don’t Pick or Step Into Farmlands</h3>
+                            <h3>2. Don’t Pick or Step Into Farmlands</h3>
                                 <p>Obihiro is surrounded by some of the most productive farmland in Japan, making agriculture a central part of daily life and local pride. The wide, open fields filled with potatoes, corn, wheat, and beans might look like beautiful photo spots, but they are actually private property and active workspaces.
                                      Some tourists may be tempted to step into the fields for photos or even pick crops, but this is strictly forbidden and seen as deeply disrespectful.
                                      Not only does it damage the plants and soil, but it also disrupts the hard work of local farmers. 
@@ -161,7 +161,7 @@
                                      Visitors should always park in designated areas and be mindful not to block entrances, driveways, or narrow lanes. Respecting these small but vital routes shows appreciation for the land and the people who sustain it.</p>
                     </ul>
                     <!-- Asahikawa  Section -->
-                    <h2>Asahikawa </h2>
+                    <h2>4. Asahikawa </h2>
                     <ul class="rules-list">
                         <li>
                             <h3>1. Don’t Underestimate the Cold Weather</h3>
@@ -176,7 +176,7 @@
                         </li>
 
                         <li>
-                            <h3>3.Don’t Treat the Asahiyama Zoo Like a Theme Park</h3>
+                            <h3>3. Don’t Treat the Asahiyama Zoo Like a Theme Park</h3>
                             <p>The Asahiyama Zoo is one of Asahikawa’s most beloved attractions, not just for tourists but also for locals who take great pride in its thoughtful, animal-friendly design. Unlike flashy theme parks, this zoo is known for its “behavioral exhibitions,” which allow animals to move naturally and be observed in ways that reflect their true habits. It’s a place of learning, not entertainment. 
                                 Tourists who shout at animals, tap on glass, or treat the zoo like a playground may disrupt the peaceful environment and upset both staff and other visitors. Respecting the animals by watching quietly and following posted rules helps preserve the special atmosphere that makes Asahiyama Zoo such a meaningful place for the community.</p>
                         </li>

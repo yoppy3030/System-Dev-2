@@ -58,8 +58,8 @@
 
              <ol>
                 
-                <h2><li>Tohoku region</li></h2>
-                    <h2>Akita</h2>
+                <h2>Tohoku region</h2>
+                    <h2>1. Akita</h2>
                     <ul class="rules-list">
 
                     <li>
@@ -96,7 +96,7 @@
                     </li>
                             </ul>
 
-                    <h2>Miyagi</h2>
+                    <h2>2. Miyagi</h2>
                     <ul class="rules-list">
                         <li>
                         <h3>1.Respect the tradition of “Zunda” sweets</h3>
@@ -131,7 +131,7 @@
                         </li>
                             </ul>
                     <ul class="rules-list">
-                        <h2>Iwate</h2>
+                        <h2>3. Iwate</h2>
                         <li>
                             <h3>1.Don’t brag — stay humble like the locals</h3>
                             <p>In Iwate, modesty isn’t just polite—it’s a way of life. Whether in the cities like Morioka or in rural farming towns, locals value humility and quiet strength. Talking too much about your accomplishments, wealth, or personal successes can come off as boastful, even if you don’t mean it that way. Instead, people in Iwate tend to respect those who are soft-spoken, hardworking, and unassuming.</p>
@@ -174,7 +174,7 @@
                     </ul>
                     </section>
                 
-                    <h2>Fukushima</h2>
+                    <h2>4. Fukushima</h2>
                     <ul class="rules-list">
                         <li>
                         <h3>1. Respect the history and recovery spirit after the disaster</h3>
