@@ -7,6 +7,16 @@
       "Food": "食べ物",
       "Other": "その他",
       "search": "検索",
+
+      "Hokkaido": "北海道",
+      "Tohoku": "東北",
+      "Kanto": "関東",
+      "Chubu": "中部",
+      "Kansai": "関西",
+      "Chugoku": "中国",
+      "Shikoku": "四国",
+      "Kyusyu & Okinawa": "九州・沖縄",
+
     
       "When visiting a friend's house": "友人の家を訪問するとき",
       "When in a store": "お店にいるとき",
@@ -32,7 +42,6 @@
       "Tohoku Region": "東北地方",
       "Iwate,Akita,Fukushima,etc": "岩手、秋田、福島など",
       "Hokkaido Region": "北海道地方",
-      "Hokkaido": "北海道",
     
       "Contact Us": "お問い合わせ",
       "Email": "メール",

@@ -14,15 +14,19 @@
             <div class="dropdown">
             <a class="no-underline" href="#">Region</a>
             <div class="dropdown-content">
-                    <a href="#">Hokkaido</a>
-                    <a href="#">Tohoku</a>
-                    <a href="#">Kanto</a>
-                    <a href="#">Chubu</a>
+                    <a href="hokkaido.php">Hokkaido</a>
+                    <a href="tohoku.php">Tohoku</a>
+                    <a href="kanto.php">Kanto</a>
+                    <a href="Kansai.php">Kansai</a>
+                    <a href="chubu.php">Chubu</a>
+                    <a href="chugoku.php">Chugoku</a>
+                    <a href="shikoku.php">Shikoku</a>
+                    <a href="kyushu.php">Kyusyu & Okinawa</a>
                 </div>
             </div>
-            <a class="with-underline" href="#">Transports</a>
-            <a class="with-underline" href="#">Food</a>
-            <a class="with-underline" href="#">Other</a>
+            <a class="with-underline" href="">Transports</a>
+            <a class="with-underline" href="">Food</a>
+            <a class="with-underline" href="">Other</a>
             <!-- 言語選択ドロップダウン -->
             <div class="language-selector">
                 <button id="translateBtn" class="translate-btn">🌐 Translate</button>
@@ -51,7 +55,7 @@
 
         
             <section class="submenu-grid">
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="">
                     <strong>Kyusyu & Okinawa Region</strong><br>
                     <small>Okinawa,Fukuoka,Oita,etc</small>
                 </a>
@@ -67,7 +71,7 @@
                     <strong>Kansai Region</strong><br>
                     <small>Osaka,Kyoto,Nara,etc</small>
                 </a>
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="chubu.php">
                     <strong>Chubu Region</strong><br>
                     <small>Toyama,Fukui,Gifu,etc</small>
                 </a>
@@ -75,11 +79,11 @@
                     <strong>Kanto Region</strong><br>
                     <small>Tokyo,Chiba,Saitama,etc</small>
                 </a>
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="tohoku.php">
                     <strong>Tohoku Region</strong><br>
                     <small>Iwate,Akita,Fukushima,etc</small>
                 </a>
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="hokkaido.php">
                     <strong>Hokkaido Region</strong><br>
                     <small>Hokkaido</small>
                 </a>
