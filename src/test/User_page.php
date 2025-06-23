@@ -204,6 +204,7 @@ function renderComments($comments_array) {
                     </form>
                 </div>
 
+
                 <div class="posts">
                     <h3>My Posts</h3>
                     <?php foreach ($posts as $post): ?>
