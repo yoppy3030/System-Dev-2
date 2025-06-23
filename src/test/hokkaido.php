@@ -118,15 +118,9 @@
                         </li>
 
                         <li>
-<<<<<<< HEAD
-                            <h3>4. Don’t Waste the Fresh Seafood at the Morning Market</h3>
-                            <p>Hakodate’s Morning Market (朝市) is famous across Japan for its incredibly fresh seafood, especially squid, sea urchin, crab, and scallops. For locals, this food isn’t just a meal — it represents hard work, tradition, and pride in the local fishing culture. When tourists order seafood, especially live or freshly prepared dishes, 
-                                it’s expected that they eat it with appreciation and finish what they take. 
-=======
                             <h3>4.Don't Waste the Fresh Seafood at the Morning Market</h3>
                             <p>Hakodate's Morning Market (朝市) is famous across Japan for its incredibly fresh seafood, especially squid, sea urchin, crab, and scallops. For locals, this food isn't just a meal — it represents hard work, tradition, and pride in the local fishing culture. When tourists order seafood, especially live or freshly prepared dishes, 
                                 it's expected that they eat it with appreciation and finish what they take. 
->>>>>>> dd71e825acc418ab08c0617506a54c8420c5acec
                             Leaving large amounts uneaten or treating rare seafood like a novelty for photos can seem disrespectful to both the chefs and fishermen. To show proper respect in Hakodate, enjoy the food sincerely, and avoid ordering more than you can eat.<p>
                         </li>
 
@@ -148,11 +142,7 @@
                         </li>
                         
                         <li>
-<<<<<<< HEAD
-                            <h3>2. Don’t Pick or Step Into Farmlands</h3>
-=======
                             <h3>2.  Don't Pick or Step Into Farmlands</h3>
->>>>>>> dd71e825acc418ab08c0617506a54c8420c5acec
                                 <p>Obihiro is surrounded by some of the most productive farmland in Japan, making agriculture a central part of daily life and local pride. The wide, open fields filled with potatoes, corn, wheat, and beans might look like beautiful photo spots, but they are actually private property and active workspaces.
                                      Some tourists may be tempted to step into the fields for photos or even pick crops, but this is strictly forbidden and seen as deeply disrespectful.
                                      Not only does it damage the plants and soil, but it also disrupts the hard work of local farmers. 
@@ -186,13 +176,8 @@
                         </li>
 
                         <li>
-<<<<<<< HEAD
-                            <h3>3. Don’t Treat the Asahiyama Zoo Like a Theme Park</h3>
-                            <p>The Asahiyama Zoo is one of Asahikawa’s most beloved attractions, not just for tourists but also for locals who take great pride in its thoughtful, animal-friendly design. Unlike flashy theme parks, this zoo is known for its “behavioral exhibitions,” which allow animals to move naturally and be observed in ways that reflect their true habits. It’s a place of learning, not entertainment. 
-=======
                             <h3>3.Don't Treat the Asahiyama Zoo Like a Theme Park</h3>
                             <p>The Asahiyama Zoo is one of Asahikawa's most beloved attractions, not just for tourists but also for locals who take great pride in its thoughtful, animal-friendly design. Unlike flashy theme parks, this zoo is known for its "behavioral exhibitions," which allow animals to move naturally and be observed in ways that reflect their true habits. It's a place of learning, not entertainment. 
->>>>>>> dd71e825acc418ab08c0617506a54c8420c5acec
                                 Tourists who shout at animals, tap on glass, or treat the zoo like a playground may disrupt the peaceful environment and upset both staff and other visitors. Respecting the animals by watching quietly and following posted rules helps preserve the special atmosphere that makes Asahiyama Zoo such a meaningful place for the community.</p>
                         </li>
                         <li>
