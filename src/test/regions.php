@@ -19,6 +19,9 @@
                     <a href="kanto.php">Kanto</a>
                     <a href="Kansai.php">Kansai</a>
                     <a href="chubu.php">Chubu</a>
+                    <a href="chugoku.php">Chugoku</a>
+                    <a href="shikoku.php">Shikoku</a>
+                    <a href="kyushu.php">Kyusyu & Okinawa</a>
                 </div>
             </div>
             <a class="with-underline" href="">Transports</a>
