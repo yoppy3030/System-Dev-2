@@ -180,6 +180,6 @@ function validateForm() {
 <?php
 // Nettoyage de la session après affichage
 unset($_SESSION['form_data']);
-unset($_SESSION['csrf_token']);
+//unset($_SESSION['csrf_token']);
 // Fin du script
 ?>
