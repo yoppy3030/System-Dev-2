@@ -11,7 +11,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // 3. Connexion à la base de données
-require __DIR__ . '/../backend/config.php';
+require(__DIR__ . '/backend/config.php');
 // 4. Fonction de validation
 function validateInput($data) {
     return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - JAPAN Life Manual</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="form-container">

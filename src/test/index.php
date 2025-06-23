@@ -55,7 +55,7 @@
     </div>
 
     <div class="menu-item">
-      <a href="">
+      <a href="register.php">
           <i class="fas fa-user-plus icon"></i> <!-- inscription -->
           <p>Sign Up</p>
       </a>
