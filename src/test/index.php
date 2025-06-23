@@ -1,3 +1,10 @@
+
+<!-- <?php
+session_start();
+// Assume you already set $_SESSION['activity'] when user logs in/registers
+$userActivity = $_SESSION['activity'] ?? '';
+?> -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,7 +62,7 @@
     </div>
 
     <div class="menu-item">
-      <a href="">
+      <a href="register.php">
           <i class="fas fa-user-plus icon"></i> <!-- inscription -->
           <p>Sign Up</p>
       </a>
@@ -81,6 +88,7 @@
       <p>Welcome to JAPAN Life Manual, your essential guide to navigating life in Japan with ease and peace of mind. 
       Explore our resources for a smooth and enriching integration.</p>
        <a href="#"> let's start</a>
+       <input type="hidden" id="user-activity" value="<?php echo htmlspecialchars($userActivity); ?>">
     </div>
     <div>
      <img src="./img/ChatGPT Image 2025年5月26日 12_58_32.png" alt="">

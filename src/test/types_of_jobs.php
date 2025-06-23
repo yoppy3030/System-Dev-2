@@ -56,7 +56,7 @@
       <ul>
         <li><a href="https://www.gaijinpot.com/jobs/" target="_blank">GaijinPot Jobs</a></li>
         <li><a href="https://job.japantimes.com/" target="_blank">Japan Times Jobs</a></li>
-        <li><a href="https://www.jasso.go.jp/en/study_j/job/index.html" target="_blank">JASSO: Job Hunting in Japan</a></li>
+        <li><a href="https://www.jasso.go.jp/en/ryugaku/after_study_j/job/guide.html" target="_blank">JASSO: Job Hunting in Japan</a></li>
       </ul>
     </div>
   </section>

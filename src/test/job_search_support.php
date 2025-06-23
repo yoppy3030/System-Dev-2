@@ -55,7 +55,7 @@
     <div class="step">
       <h2>Helpful Links</h2>
       <ul>
-        <li><a href="https://www.jasso.go.jp/en/study_j/job/index.html" target="_blank">JASSO: Job Hunting Guide</a></li>
+        <li><a href="https://www.jasso.go.jp/en/ryugaku/after_study_j/job/guide.html" target="_blank">JASSO: Job Hunting Guide</a></li>
         <li><a href="https://www.disc.co.jp/en/" target="_blank">DISCO Career Forum</a></li>
       </ul>
     </div>
