@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     if (empty($username) || empty($password)) {
-        $error = "Veuillez remplir tous les champs.";
+        $error = "Please fill in all fields.";
     } else {
         try {
             $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE username = ? OR email = ?");
@@ -37,17 +37,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: User_page.php");
                 exit();
             } else {
-                $error = "Nom d'utilisateur ou mot de passe invalide.";
+                $error = "Invalid username or password.";
             }
         } catch (PDOException $e) {
-            $error = "Erreur de base de données. Veuillez réessayer.";
+            $error = "Database error. Please try again.";
             error_log($e->getMessage());
         }
     }
 }
 ?>
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Login - JAPAN Life Manual</title>
