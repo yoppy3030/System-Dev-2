@@ -73,6 +73,7 @@
 
                    <li>
                             <h3>1.  Awa Odori Dance Etiquette</h3>
+                            <img src="./img/awa_odori.jpg" alt="Awa Odori Festival" class="festival-image"><br>
                             <p>Awa Odori, held every August in Tokushima City, is one of Japan’s most iconic and energetic dance festivals, attracting thousands of performers and spectators. While the festival is filled with joyful music,
                                  lively chants, and vibrant movement, it’s also a deeply rooted cultural tradition with over 400 years of history. For locals, Awa Odori is not just entertainment — it's a symbol of identity and community spirit.
                                   Visitors are welcome to enjoy the atmosphere and may even be invited to join in designated “niwaka-ren” (casual dance groups). However, mocking the dance, interrupting performers, or stepping into processions for selfies is considered very disrespectful.
@@ -91,8 +92,6 @@
                             <p>The Naruto Whirlpools, located between Tokushima and Awaji Island, are one of Japan’s most dramatic natural wonders, caused by powerful tidal currents swirling through the Naruto Strait. While the sight is thrilling and draws many tourists, it also holds cultural and environmental significance for locals.
                                  When visiting by sightseeing boat or from viewing platforms like the Ōnaruto Bridge Walk, visitors are expected to behave respectfully. Shouting, throwing objects into the water, or treating the area like an amusement spot is frowned upon. The whirlpools are part of Tokushima’s pride, and locals take their preservation seriously.
                                   Observing in quiet awe, taking care not to disturb the environment, and following tour staff instructions helps maintain the dignity of this natural phenomenon.</p>
-                            <img src="./img/fire_work.jpg" alt="Chiba Festival" class="festival-image">
-
                         </li>
                     </ul>
 
@@ -115,10 +114,10 @@
 
                         <li>
                             <h3>3. Honor the Samurai Legacy of Sakamoto Ryoma</h3>
+                            <img src="./img/sakamoto.jpg" alt="Sakamoto Ryoma" class="samurai-image"><br>
                             <p>In Kochi, few historical figures are held in higher esteem than Sakamoto Ryoma, a visionary samurai who played a pivotal role in modernizing Japan during the final years of the Edo period. Born in Kochi, Ryoma is celebrated for his progressive ideals, efforts to unify rival domains, and push for peaceful political reform.
                                  Statues, museums, and even airports in Kochi proudly bear his name, reflecting the deep respect locals have for his legacy. When visiting sites associated with Ryoma — such as Katsurahama Beach, Sakamoto Ryoma Memorial Museum, or his childhood home — it’s important to treat them with the same reverence that residents do. 
                                  Making light of his story or treating historical locations as casual photo spots can come off as insensitive. By learning about his life and showing respect, visitors can better appreciate the pride and identity that Ryoma continues to inspire in Kochi today.</p>
-                            <img src="./img/fire_work.jpg" alt="Chiba Festival" class="festival-image">
 
                         </li>
 

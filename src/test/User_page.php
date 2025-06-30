@@ -171,13 +171,13 @@ function renderComments($comments_array) {
                     <?php endif; ?>
                     <p id="user-bio"><span>Bio:</span> <?= nl2br(htmlspecialchars($user_bio)) ?></p>
 
-                    <!-- <div class="social-icons">
-                        <! --?php foreach ($social_links as $contact): ?> -- >
-                            <a href="?= htmlspecialchars($contact['link']) ?>" target="_blank" title="<?= htmlspecialchars($contact['platform']) ?>">
-                                <i class="?= getSocialIconClass($contact['platform']) ?>"></i>
+                    <div class="social-icons">
+                        <?php foreach ($social_links as $contact): ?>
+                            <a href="<?= htmlspecialchars($contact['link']) ?>" target="_blank" title="<?= htmlspecialchars($contact['platform']) ?>">
+                                <i class="<?= getSocialIconClass($contact['platform']) ?>"></i>
                             </a>
-                        ?php endforeach; ?>
-                    </div> -->
+                        <?php endforeach; ?>
+                    </div>
 
                     <a id="edit-profile-btn" href="Edit-profile.php?id=<?= $user_id ?>" class="edit-profile-btn">
                         <i class="fas fa-edit"></i> Edit Profile

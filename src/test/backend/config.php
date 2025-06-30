@@ -2,8 +2,8 @@
 // config.php - Connexion à la base MySQL
 $host = 'localhost';
 $db   = 'sd2db';
-$user = 'root';
-$pass = 'root'; // mets ton mot de passe ici
+$user = 'ecc';
+$pass = 'ecc'; // mets ton mot de passe ici
 $charset = 'utf8mb4';
 
 $options = [
