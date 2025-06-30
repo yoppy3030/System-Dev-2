@@ -21,7 +21,7 @@
                     <a href="chubu.php">Chubu</a>
                     <a href="chugoku.php">Chugoku</a>
                     <a href="shikoku.php">Shikoku</a>
-                    <a href="kyushu.php">Kyusyu & Okinawa</a>
+                    <a href="kyusyu.php">Kyusyu & Okinawa</a>
                 </div>
             </div>
             <a class="with-underline" href="">Transports</a>
@@ -55,15 +55,15 @@
 
         
             <section class="submenu-grid">
-                <a class="submenu-item" href="">
+                <a class="submenu-item" href="kyusyu.php">
                     <strong>Kyusyu & Okinawa Region</strong><br>
                     <small>Okinawa,Fukuoka,Oita,etc</small>
                 </a>
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="shikoku.php">
                     <strong>Shikoku Region</strong><br>
                     <small>Tokushima,Kochi,Kagawa,etc</small>
                 </a>
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="chugoku.php">
                     <strong>Chugoku Region</strong><br>
                     <small>Tottori,Okayama,Hiroshima,etc</small>
                 </a>
