@@ -1,4 +1,4 @@
-// server.js ဖိုင်အသစ် (AI message ကို English လိုပဲ ပြပါမည်)
+// server.js (AI message ကို ရွေးချယ်ထားသော ဘာသာစကားအလိုက် ပြပါမည်)
 
 require('dotenv').config();
 const express = require('express');
@@ -37,22 +37,28 @@ app.get('/weather', async (req, res) => {
     }
 });
 
-// AI အကြံပေးချက် တောင်းဆိုရန် endpoint
+// AI အကြံပေးချက် တောင်းဆိုရန် endpoint (ဘာသာစကားမျိုးစုံအတွက် ပြင်ဆင်ပြီး)
 app.get('/generate-weather-advice', async (req, res) => {
     try {
-        const { city, weather, temp } = req.query;
+        const { city, weather, temp, lang } = req.query; // 'lang' parameter အသစ်ကို လက်ခံပါမယ်။
         const geminiApiKey = process.env.GEMINI_API_KEY;
 
         if (!geminiApiKey) {
             throw new Error("GEMINI_API_KEY ကို server မှာ ရှာမတွေ့ပါ။");
         }
 
-        // START: PROMPT အသစ် (English လိုပဲ တောင်းဆိုပါမည်)
+        // ဘာသာစကားအလိုက် AI ကို ခိုင်းစေမည့် instruction ကို ပြောင်းလဲပါမယ်။
+        let languageInstruction = "Respond in a single sentence in English only."; // Default to English
+        if (lang === 'ja') {
+            languageInstruction = "Respond in a single sentence in Japanese only.";
+        } else if (lang === 'zh') {
+            languageInstruction = "Respond in a single sentence in Chinese only.";
+        }
+
         const prompt = `You are a friendly travel assistant for a website called 'Japan Life Manual'. 
         Give a very short, helpful, and friendly travel advice for someone currently in ${city}, Japan.
         The current weather is '${weather}' with a temperature of ${temp}°C.
-        Respond in a single sentence in English only.`;
-        // END: PROMPT အသစ်
+        ${languageInstruction}`;
         
         const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
 
