@@ -44,33 +44,30 @@ $mail_admin = new PHPMailer(true);
 $mail_user = new PHPMailer(true);
 
 try {
-    // --- SMTPサーバー設定 (管理者宛・ユーザー宛で共通) ---
-    // Gmailを使う場合の設定例です
-    $mail_admin->isSMTP();
-    $mail_admin->Host       = 'smtp.gmail.com';
-    $mail_admin->SMTPAuth   = true;
-    $mail_admin->Username   = 'your-gmail-address@gmail.com'; // ★★★ あなたのGmailアドレス
-    $mail_admin->Password   = 'your-gmail-app-password';      // ★★★ あなたのGmailアプリパスワード
-    $mail_admin->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-    $mail_admin->Port       = 465;
-    $mail_admin->CharSet    = 'UTF-8';
+    // --- SMTPサーバー設定 (Microsoft 365 / Outlook) ---
+    $smtp_settings = function($mail) {
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.office365.com';
+        $mail->SMTPAuth   = true;
+        // ★★★ あなたのMicrosoftアカウントのメールアドレス
+        $mail->Username   = '2240069@ecc.ac.jp'; 
+        // ★★★ Microsoftアカウントの「アプリパスワード」
+        $mail->Password   = '';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+        $mail->CharSet    = 'UTF-8';
+    };
 
-    // ユーザー宛メールも同じ設定をコピー
-    $mail_user->isSMTP();
-    $mail_user->Host       = 'smtp.gmail.com';
-    $mail_user->SMTPAuth   = true;
-    $mail_user->Username   = 'your-gmail-address@gmail.com'; // ★★★ あなたのGmailアドレス
-    $mail_user->Password   = 'your-gmail-app-password';      // ★★★ あなたのGmailアプリパスワード
-    $mail_user->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-    $mail_user->Port       = 465;
-    $mail_user->CharSet    = 'UTF-8';
+    // 管理者宛・ユーザー宛メールに同じ設定を適用
+    $smtp_settings($mail_admin);
+    $smtp_settings($mail_user);
 
     // --- サイト管理者へのメール送信処理 ---
-    $mail_admin->setFrom('your-gmail-address@gmail.com', 'マナー学習ボット'); // 送信元
-    $mail_admin->addAddress('2240069@ecc.ac.jp', 'サイト管理者'); // ★★★ 修正された受信用のメールアドレス
-    $mail_admin->addReplyTo($email, $name); // 返信先としてユーザーのアドレスを設定
+    $mail_admin->setFrom('2240069@ecc.ac.jp', 'マナー学習ボット'); // ★★★ あなたのMicrosoftアカウントのメールアドレス
+    $mail_admin->addAddress('2240069@ecc.ac.jp', 'サイト管理者'); // ★★★ 管理者様のメールアドレス
+    $mail_admin->addReplyTo($email, $name); 
 
-    $mail_admin->isHTML(false); // テキスト形式のメール
+    $mail_admin->isHTML(false);
     $mail_admin->Subject = '【マナー学習サイト】チャットボットからのお問い合わせ';
     $body_admin = "チャットボット経由でお問い合わせがありました。\n\n";
     $body_admin .= "================================\n";
@@ -83,8 +80,8 @@ try {
     $mail_admin->send();
 
     // --- ユーザーへの自動返信メール送信処理 ---
-    $mail_user->setFrom('your-gmail-address@gmail.com', 'マナー学習サイト'); // 送信元
-    $mail_user->addAddress($email, $name); // ユーザーのアドレス宛
+    $mail_user->setFrom('2240069@ecc.ac.jp', 'マナー学習サイト'); // ★★★ あなたのMicrosoftアカウントのメールアドレス
+    $mail_user->addAddress($email, $name);
 
     $mail_user->isHTML(false);
     
@@ -100,6 +97,7 @@ try {
             break;
         case 'ja':
         default:
+            $mail_user->Subject = '【自動返信】お問い合わせありがとうございます';
             $user_body = $name . "様\n\nこの度はお問い合わせいただき、誠にありがとうございます。\n以下の内容で承りました。\n担当者より追ってご連絡いたしますので、今しばらくお待ちくださいませ。\n\n";
             break;
     }
@@ -114,7 +112,6 @@ try {
     echo json_encode(['success' => true]);
 
 } catch (Exception $e) {
-    // エラーが発生した場合
     echo json_encode(['success' => false, 'error' => "Message could not be sent. Mailer Error: {$mail_admin->ErrorInfo}"]);
 }
 

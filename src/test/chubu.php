@@ -14,7 +14,7 @@
         <div class="logo">JAPAN Life Manual</div>
         <nav class="main-nav">
             <a class="with-underline" href="index.php">Home</a>
-            <a class="no-underline" href="./regions.php">Region</a>
+            <a class="with-underline" href="./regions.php">Region</a>
             <a class="with-underline" href="#">Transports</a>
             <a class="with-underline" href="#">Food</a>
             <a class="with-underline" href="#">Other</a>
