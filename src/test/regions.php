@@ -55,15 +55,15 @@
 
         
             <section class="submenu-grid">
-                <a class="submenu-item" href="">
+                <a class="submenu-item" href="kyushu.php">
                     <strong>Kyusyu & Okinawa Region</strong><br>
                     <small>Okinawa,Fukuoka,Oita,etc</small>
                 </a>
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="shikoku.php">
                     <strong>Shikoku Region</strong><br>
                     <small>Tokushima,Kochi,Kagawa,etc</small>
                 </a>
-                <a class="submenu-item" href="#">
+                <a class="submenu-item" href="chugoku.php">
                     <strong>Chugoku Region</strong><br>
                     <small>Tottori,Okayama,Hiroshima,etc</small>
                 </a>

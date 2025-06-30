@@ -59,14 +59,16 @@
             <a href="./login.php">Login</a>
         </div>
         <!-- Main Content -->
-        <h1>Introduction to the Kyusyu & Okinawa Region</h1>
+        <h1>Introduction to the Kyushu & Okinawa Region</h1>
         Located in the southwest of Japan, Kyushu and Okinawa offer a vibrant contrast to the country's more urbanized regions. Kyushu, Japan’s third-largest island, is known for its dramatic volcanoes, historic samurai towns, hot spring resorts, and rich culinary traditions.
+         <img src="./img/kyushu.jpg" alt="Kyushu and Okinawa" class="region-image">
          With seven diverse prefectures — including Fukuoka, Kumamoto, and Nagasaki — Kyushu blends modern innovation with deep cultural roots, such as yatai street food, active volcanoes like Mt. Aso, and Christian heritage sites. Just to the south,
-          the Okinawa Islands form a tropical chain with a unique identity influenced by their history as the Ryukyu Kingdom. Okinawa is famous for its emerald beaches, distinctive music and dance, and one of the world’s longest-living populations. Together, Kyushu and Okinawa offer a deeply local, welcoming, and unforgettable side of Japan far from the big cities</p><br>
+          the Okinawa Islands form a tropical chain with a unique identity influenced by their history as the Ryukyu Kingdom. Okinawa is famous for its emerald beaches, distinctive music and dance, and one of the world’s longest-living populations. Together, 
+          Kyushu and Okinawa offer a deeply local, welcoming, and unforgettable side of Japan far from the big cities</p><br>
         <ol>
 
             <h2>
-                <li>Kyusyu & Okinawa region</li>
+                <li>Kyushu & Okinawa region</li>
             </h2>
             <h2>1. Fukuoka</h2>
             <ul class="rules-list">
@@ -79,6 +81,7 @@
 
                 <li>
                     <h3>2. Don’t Eat or Drink Around Dazaifu Tenmangu Shrine Grounds</h3>
+                    <img src="./img/dazaifu.jpg" alt="Dazaifu Tenmangu Shrine" class="shrine-image"><br>
                     <p>Dazaifu Tenmangu is one of Fukuoka’s most important and sacred shrines, dedicated to the deity of learning, Sugawara no Michizane. While the approach to the shrine is lined with lively shops selling sweets and souvenirs — including the famous ume mochi rice cakes — once you pass through the torii gate, it’s important to shift your behavior. 
                         Eating or drinking inside the shrine grounds is considered disrespectful, as the area is a place for prayer, reflection, and quiet. Be sure to finish any snacks or drinks before entering, and always bow respectfully when passing through sacred spaces. Keeping this etiquette helps preserve the solemn atmosphere that worshippers and locals deeply value.</p>
 
@@ -118,6 +121,7 @@
 
                 <li>
                     <h3>3. Don’t Touch Bamboo Crafts Without Permission</h3>
+                    <img src="./img/bamboo_craft.jpg" alt="Bamboo Crafts" class="bamboo-image"><br>
                     <p>Ōita, especially Beppu, is renowned for its traditional bamboo craftsmanship, with finely woven baskets, trays, and decorative items that often take days or even weeks to create by hand. These crafts are not mass-produced souvenirs — they are delicate works of art that reflect generations of skill and care.
                          When visiting bamboo craft shops, galleries, or exhibitions, it’s important to look with your eyes, not your hands, unless signs say it’s okay. Many items are fragile or made for display only, and touching without permission could damage them or be considered disrespectful. If you’re interested in a piece,
                           politely ask the staff for help — they’ll usually be happy to show it to you properly.</p>
@@ -148,7 +152,8 @@
                 </li>
 
                 <li>
-                    <h3>2. Show Respect When Drinking Awamori</h3>
+                    <h3>2. Show Respect When Drinking Awamori</h3>  
+                    <img src="./img/awamori.jpg" alt="Awamori" class="awamori-image"><br>
                     <p>Awamori is Okinawa’s traditional distilled liquor, made from long-grain Thai rice and aged in clay pots for a smooth, rich flavor. It’s more than just a drink — it’s a cultural symbol often shared during celebrations,
                          family gatherings, and even spiritual rituals. When offered awamori, it’s polite to receive it with both hands and return the gesture by pouring for others. Chugging it like a shot or treating it as a party drink can be seen as disrespectful,
                           especially in more traditional settings. Locals value the slow, social nature of drinking — it’s about connection, not speed. Savoring awamori and honoring the custom of mutual hospitality reflects genuine appreciation for Okinawan culture.</p>
@@ -187,6 +192,7 @@
 
                 <li>
                     <h3>3. Respect the Nature and Spiritual Energy</h3>
+                    <img src="./img/miyazaki.jpg" alt="Miyazaki Nature" class="miyazaki-image"><br>
                     <p>Miyazaki is known not only for its stunning landscapes but also for its powerful spiritual energy, especially in places like Aoshima Island, Udo Shrine, and the surrounding coastlines. Locals believe these natural spots are filled with sacred power — known as power spots (パワースポット) — where people go to pray, heal, or feel connected to something greater. While the scenery may tempt visitors to explore freely or pose for dramatic photos,
                          it’s important to stay on marked paths, avoid climbing sacred rocks, and keep noise to a minimum. These areas are treated with quiet reverence, not just as tourist spots but as spiritual sanctuaries. Respecting the natural and mystical essence of these places helps preserve both the environment and the spiritual atmosphere that makes Miyazaki so unique..</p>
                 </li>
