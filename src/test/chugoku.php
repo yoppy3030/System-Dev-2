@@ -86,10 +86,10 @@
 
                         <li>
                             <h3>3.  Folded Paper Cranes Are Sacred</h3>
+                            <img src="./img/paper_cranes.jpg" alt="Hiroshima Orizuru" class="origami-image"><br>
                             <p>In Hiroshima, folded paper cranes — known as orizuru — are powerful symbols of peace, hope, and remembrance, especially connected to the story of Sadako Sasaki, a young girl who died from radiation after the atomic bombing.
                                  Visitors often bring thousands of these colorful cranes to the Peace Memorial Park as heartfelt offerings. While they may look like decorations, these cranes carry deep emotional weight and personal prayers.
                                   Touching, rearranging, or taking them is considered highly disrespectful. Tourists are expected to observe them quietly and understand their meaning — each crane represents a wish for a world without war.</p>
-                            <img src="./img/fire_work.jpg" alt="Chiba Festival" class="festival-image">
 
                         </li>
 
@@ -113,6 +113,7 @@
                     
                         <li>
                             <h3>2.  Okayama Castle Etiquette   </h3>
+                            <img src="./img/okayama_castle.jpg" alt="Okayama Castle" class="castle-image"><br>
                             <p>Okayama Castle, often called the "Crow Castle" for its striking black exterior, is a proud symbol of the city’s history and culture. While it has been reconstructed, it remains a place of quiet appreciation and learning. Visitors are expected to behave respectfully inside the castle grounds —
                                  this means speaking softly, not touching exhibits, and avoiding casual or loud selfies in sacred or historical areas. It’s also considered poor manners to run or act playfully inside the castle, especially around traditional displays and cultural artifacts. Treating the space like a living museum, 
                                  with curiosity and respect, honors the legacy the castle represents.</p>
@@ -122,8 +123,6 @@
                             <h3>3. Manners on the Kibi Plain Cycling Route</h3>
                             <p>The Kibi Plain Cycling Route is one of Okayama’s most scenic and culturally rich paths, stretching through tranquil rice fields, ancient shrines, and historic burial mounds. While it’s a popular destination for cyclists, it’s not a race track or entertainment zone. Locals expect visitors to ride at a calm pace,
                                  avoid blasting music, and show respect to the rural surroundings. Greeting farmers with a nod, slowing down near shrines, and refraining from loud conversations helps preserve the peaceful atmosphere. Treating the route as a shared cultural space — not just a tourist activity — shows mindfulness and earns quiet appreciation from the community.</p>
-                            <img src="./img/fire_work.jpg" alt="Chiba Festival" class="festival-image">
-
                         </li>
 
                         <li>
@@ -158,6 +157,7 @@
                         </li>
                         <li>
                             <h3>4.  Respect the “Wagyu Capital”</h3>
+                            <img src="./img/wagyu.jpg" alt="Tottori Wagyu" class="wagyu-image"><br>
                                 <p>Tottori takes great pride in its wagyu heritage, often overlooked but deeply respected among beef connoisseurs. Known as the birthplace of some of Japan’s finest black cattle, Tottori produces premium-quality wagyu like Tottori Kuroushi and Olein 55, known for its exceptional marbling and buttery texture. For locals, this isn’t just food — 
                                     it’s the result of generations of careful breeding and craftsmanship. When enjoying wagyu in Tottori, it’s best to avoid comparing it to more famous varieties like Kobe or Matsusaka beef. Even light comments suggesting one is better than the other may come off as dismissive. Instead, 
                                     expressing genuine appreciation for the unique flavor and local pride behind Tottori wagyu shows cultural sensitivity and respect for what the region has perfected.</p>
@@ -181,6 +181,7 @@
 
                         <li>
                             <h3>3.Quiet Participation in the Lantern Festivals</h3>
+                            <img src="./img/latern_festival.jpg" alt="Yamaguchi Lantern Festival" class="lantern-image"><br>
                             <p>Yamaguchi’s lantern festivals, especially the Tanabata Lantern Festival, are serene and spiritual events that light up the streets with soft, glowing beauty. During these festivals, thousands of handmade lanterns line roads and temple grounds, creating a peaceful and almost sacred atmosphere. 
                                 While it’s natural to want to take photos, pushing through crowds, using flash, or loudly chatting with friends can disrupt the mood that locals work hard to preserve. These festivals are not loud celebrations — they are moments of reflection, tradition, and quiet beauty. Visitors are encouraged to walk slowly, 
                                 observe silently, and fully absorb the gentle magic of the lantern-lit night.</p>

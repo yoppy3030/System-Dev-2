@@ -143,6 +143,7 @@
 
                         <li>
                             <h3>3. Appreciate Mikan Culture</h3>
+                            <img src="./img/mikan.jpg" alt="Mikan Oranges" class="mikan-image"><br>
                                 <p>Ehime Prefecture is often called the “Kingdom of Mikan,” thanks to its ideal climate and long history of producing some of Japan’s sweetest and juiciest mandarin oranges. For locals, mikan are more than just a fruit — they’re a symbol of warmth, hospitality,
                                      and regional pride. You’ll find mikan used in everything from juice and jam to desserts and bath products. Many families even grow their own. When visiting Ehime, it’s important to treat mikan with respect: don’t waste them, don’t scoff at their simplicity,
                                       and don’t compare them negatively to foreign fruits. Complimenting their flavor, trying different varieties, or learning about mikan farming traditions is a great way to connect with the heart of Ehime’s culture — one sweet bite at a time.</p>
@@ -172,6 +173,7 @@
 
                         <li>
                             <h3>3. Respect Contemporary Art on Naoshima and Teshima</h3>
+                            <img src="./img/naoshima.jpg" alt="Naoshima Art Island" class="art-image"><br>
                             <p>Yamaguchi’s lantern festivals, especially the Tanabata Lantern Festival, are serene and spiritual events that light up the streets with soft, glowing beauty. During these festivals, thousands of handmade lanterns line roads and temple grounds, creating a peaceful and almost sacred atmosphere. 
                                 While it’s natural to want to take photos, pushing through crowds, using flash, or loudly chatting with friends can disrupt the mood that locals work hard to preserve. These festivals are not loud celebrations — they are moments of reflection, tradition, and quiet beauty. Visitors are encouraged to walk slowly, 
                                 observe silently, and fully absorb the gentle magic of the lantern-lit night.</p>
