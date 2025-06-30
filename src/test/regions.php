@@ -39,18 +39,6 @@
             <!-- 検索ボックス -->
             <input type="text" class="search-box" placeholder="search"/>
         </nav>
-                <!-- Menu Button -->
-        <div class="menu-button" onclick="toggleSidebar()">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-         <div class="sidebar" id="sidebar">
-            <a href="regions.php">Region</a>
-            <a href="#">When in a store</a>
-            <a href="#">When walking on the street</a>
-            <a href="#">When in public facilities</a>
-            <a href="./login.php">Login</a>
     </header>
     <main>
 
@@ -119,7 +107,6 @@
             <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
         </div>
     </footer>
-    <script src="./js/travelers_homePage.js"></script>
     <script src="./js/regions.js"></script>
 </html>
     

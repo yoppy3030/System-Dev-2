@@ -1,29 +1,21 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <!-- メタ情報とスタイルシートの読み込み -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/region_for_all.css">
-    <title>JAPAN Life Manual</title>
+    <title>Life in Japan</title>
 </head>
 <body>
-    <!-- サイドバー切り替えボタン -->
-    <div class="menu-button" onclick="toggleSidebar()">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-
     <!-- ヘッダーセクション -->
     <header class="site-header">
         <div class="logo">JAPAN Life Manual</div>
         <nav class="main-nav">
-            <a href="index.php">Home</a>
-            <a href="./regions.php">Region</a>
-            <a href="#">Transports</a>
-            <a href="#">Food</a>
-            <a href="#">Other</a>
+            <a class="with-underline" href="index.php">Home</a>
+            <a class="no-underline" href="./regions.php">Region</a>
+            <a class="with-underline" href="#">Transports</a>
+            <a class="with-underline" href="#">Food</a>
+            <a class="with-underline" href="#">Other</a>
             <!-- 言語選択ドロップダウン -->
             <div class="language-selector">
                 <button id="translateBtn" class="translate-btn">🌐 Translate</button>
@@ -38,13 +30,27 @@
             <input type="text" class="search-box" placeholder="search"/>
         </nav>
     </header>
-
-    <!-- メインコンテンツ -->
     <main>
-        
-        <!-- サイドバーナビゲーション -->
+
+                <!-- Menu Button -->
+        <div class="menu-button" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <!-- Sidebar -->
+        <!-- <div class="sidebar" id="sidebar">
+            <a href="#">友達を家に行く時</a>
+            <a href="#">お店の中にいる時</a>
+            <a href="#">道の中で歩いている時</a>
+            <a href="#">公共施設にいる時</a>
+            <a href="./login.php">Login</a>
+        </div> -->
+
+       
+          <!-- サイドバーナビゲーション -->
         <div class="sidebar" id="sidebar">
-            <a href="regions.php">Regions</a>
+            <a href="#">When visiting a friend's house</a>
             <a href="#">When in a store</a>
             <a href="#">When walking on the street</a>
             <a href="#">When in public facilities</a>
@@ -52,13 +58,12 @@
         </div>
         <!-- Main Content -->
          <h1>Introduction to the Kanto Region</h1>
-         <img src="./img/fujiyama.jpg" alt="Kanto Region" class="kanto-image">
-         <p>The Kanto region lies in eastern Honshu, Japan’s main island, and is home to the country’s political, economic, and cultural core. This area includes Tokyo,
-            the bustling capital,as well as other major prefectures like Kanagawa, Chiba, Saitama, Ibaraki, Tochigi, and Gunma. Known for its dense urban centers, 
-            cutting-edge technology, and historical landmarks, Kanto offers a dynamic mix of modern skyscrapers and traditional temples.
-            From the neon-lit streets of Shibuya and Shinjuku to the serene beauty of Nikko’s shrines and Hakone’s hot springs, Kanto blends old and new seamlessly. 
-            It’s also a major transport hub with access to the Shinkansen (bullet train), international airports, and extensive rail networks, making it 
-            a popular destination for both locals and travelers.</p>
+         <p>The Kanto region lies in eastern Honshu, Japan’s main island, and is home to the country’s political, economic, and cultural core. This area includes Tokyo, the bustling capital,
+             as well as other major prefectures like Kanagawa, Chiba, Saitama, Ibaraki, Tochigi, and Gunma. Known for its dense urban centers, cutting-edge technology, and historical landmarks, Kanto offers a dynamic mix of modern skyscrapers and traditional temples.</p>
+            <img src="./img/fujiyama.jpg" alt="Kanto Region" class="kanto-image">
+            <p>From the neon-lit streets of Shibuya and Shinjuku to the serene beauty of Nikko’s shrines and Hakone’s hot springs, Kanto blends old and new seamlessly. It’s also a major transport hub with access to the Shinkansen (bullet train), international airports, and extensive rail networks, making it 
+                a popular destination for both locals and travelers.</p>
+
                 <ol>
                 
                 <h2><li>Kanto region</li></h2>
@@ -194,7 +199,7 @@
             <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
         </div>
 </footer>
-<script src="./js/travelers_homePage.js"></script>
+<script src="./js/kanto.js"></script>
 <script src="./js/translations/"></script>
 </body>
 </html>
