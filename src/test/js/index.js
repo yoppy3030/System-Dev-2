@@ -259,70 +259,88 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 */
 
-
 // =========================================
-// Weather Widget Functionality (Updated)
+// Weather Widget Functionality (With AI Alerts)
 // =========================================
 document.addEventListener('DOMContentLoaded', () => {
-
     const weatherWidget = document.getElementById('weather-widget');
+    if (!weatherWidget) return;
+
     const weatherIcon = document.getElementById('weather-icon');
     const weatherTemp = document.getElementById('weather-temp');
     const weatherCity = document.getElementById('weather-city');
+    const alertBox = document.getElementById('weather-alert');
+    const alertMessage = document.getElementById('alert-message');
+    const alertClose = document.getElementById('alert-close');
 
     /**
-     * Fetches weather data from the server proxy and updates the widget
-     * @param {string} city - The name of the city to fetch weather for.
+     * Shows a styled weather alert with AI-generated message.
+     * @param {string} advice - The advice string from the AI.
+     */
+    function showWeatherAlert(advice) {
+        if (!alertBox || !alertMessage || !alertClose) return;
+
+        alertMessage.textContent = advice;
+        // Make the alert box always look neutral, as the message has context
+        alertBox.className = 'weather-alert'; // Reset classes
+        alertBox.classList.add('ai-advice'); // Add a new class for AI styling
+        alertBox.style.display = 'flex';
+
+        alertClose.onclick = () => {
+            alertBox.style.display = 'none';
+        }
+    }
+
+    /**
+     * Fetches weather data, then gets AI advice.
+     * @param {string} city - The name of the city.
      */
     async function fetchWeather(city) {
-        // The API URL now correctly points to the Node.js server running on port 3000
-        const serverUrl = `http://localhost:3000/weather?city=${encodeURIComponent(city)}`;
+        const weatherServerUrl = `http://localhost:3000/weather?city=${encodeURIComponent(city)}`;
         
         weatherCity.textContent = 'Loading...';
         weatherTemp.textContent = '--°C';
-        weatherIcon.src = ''; // Clear previous icon
+        weatherIcon.src = '';
+        if(alertBox) alertBox.style.display = 'none';
 
         try {
-            // Fetch data from the Node.js server
-            const response = await fetch(serverUrl);
-
-            // Check if the server responded with an error (e.g., 404 Not Found, 401 Unauthorized)
-            if (!response.ok) {
-                const errorData = await response.json();
-                // Display the specific error from the server (e.g., "city not found")
+            const weatherResponse = await fetch(weatherServerUrl);
+            if (!weatherResponse.ok) {
+                const errorData = await weatherResponse.json();
                 weatherCity.textContent = errorData.message || 'Error';
-                console.error('Server error:', errorData.message);
                 return;
             }
 
-            const data = await response.json();
+            const weatherData = await weatherResponse.json();
 
-            // Update the display with the new data
-            weatherCity.textContent = data.name;
-            weatherTemp.textContent = Math.round(data.main.temp) + '°C';
-            weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-            weatherIcon.alt = data.weather[0].description;
+            // Update the main widget
+            weatherCity.textContent = weatherData.name;
+            weatherTemp.textContent = Math.round(weatherData.main.temp) + '°C';
+            weatherIcon.src = `https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
+
+            // NEW: Fetch AI advice based on the weather
+            const adviceServerUrl = `http://localhost:3000/generate-weather-advice?city=${encodeURIComponent(weatherData.name)}&weather=${encodeURIComponent(weatherData.weather[0].description)}&temp=${Math.round(weatherData.main.temp)}`;
+            const adviceResponse = await fetch(adviceServerUrl);
+
+            if (adviceResponse.ok) {
+                const adviceData = await adviceResponse.json();
+                showWeatherAlert(adviceData.advice);
+            }
 
         } catch (error) {
-            // This catches network errors, like if the Node.js server is not running
             weatherCity.textContent = 'Server offline';
             console.error("Failed to connect to the weather server. Is node server.js running?", error);
         }
     }
 
-    // Add a click listener to the widget to change city
-    if (weatherWidget) {
-        weatherWidget.addEventListener('click', () => {
-            const currentCity = weatherCity.textContent;
-            // Don't use a loading message as the default prompt text
-            const promptCity = (currentCity !== 'Loading...' && currentCity !== 'Error') ? currentCity : 'Osaka';
-            const newCity = prompt('Enter a city name:', promptCity);
-            if (newCity && newCity.trim() !== '') {
-                fetchWeather(newCity.trim());
-            }
-        });
-    }
+    weatherWidget.addEventListener('click', () => {
+        const currentCity = weatherCity.textContent;
+        const promptCity = (currentCity !== 'Loading...' && currentCity !== 'Error' && currentCity !== 'Server offline') ? currentCity : 'Osaka';
+        const newCity = prompt('Enter a city name:', promptCity);
+        if (newCity && newCity.trim() !== '') {
+            fetchWeather(newCity.trim());
+        }
+    });
 
-    // Initial weather fetch for a default city when the page loads
     fetchWeather('Osaka');
 });
