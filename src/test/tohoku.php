@@ -49,7 +49,10 @@
          <!-- Main Content -->
          <h1>Introduction to the Tohoku Region</h1>
          <img src="./img/tohoku.jpg" alt="Tohoku Region" class="Tohoku-image">
-         <p>The Tohoku Region is located in the northern part of Japan's main island of Honshu, and is a region rich in nature and traditional culture. Consisting of six prefectures: Aomori, Akita, Iwate, Miyagi, Yamagata, and Fukushima, it features beautiful scenery with distinct four seasons, hospitable people, and unique culture and traditions. From snow-covered winters to lush summers, as well as delicious local cuisine, the Tohoku region is a must-visit destination for anyone wanting to experience the essence of Japan.</p><br>
+         <p>The Kansai Region, also known as Kinki, is one of Japan’s most historically and culturally significant areas. Located in the 
+            southern-central part of Honshu, Kansai is home to ancient capitals like Kyoto and Nara, the vibrant city of Osaka, and the 
+             international port of Kobe. Rich in tradition, cuisine, and architecture, Kansai offers a unique blend of old and new Japan, 
+             making it a must-visit for anyone seeking to experience the heart of Japanese culture.</p><br>
 
             
 
@@ -150,7 +153,7 @@
                         <li>
                             <h3>4. The forest is not a playground</h3>
                             <p>In Iwate, forests and mountains are not just beautiful natural spaces—they are places of deep spiritual and cultural meaning. Areas like Mt. Hayachine and the surrounding woods are often considered sacred, with many locals believing in the presence of mountain spirits or kami. Because of this, wandering off trails, shouting, or treating the forest like a place for casual play or selfies is seen as disrespectful.
-                            <p>Locals move quietly and carefully through nature, showing deep respect for the land. If you're visiting these areas, it's important to stay on marked paths, avoid making noise, and treat the natural surroundings with the same reverence the locals do.</p>
+                                 Locals move quietly and carefully through nature, showing deep respect for the land. If you’re visiting these areas, it’s important to stay on marked paths, avoid making noise, and treat the natural surroundings with the same reverence the locals do.</p>
                         </li>
                         <li>
                             <h3>5. Traditional festivals are about ancestors, not selfies</h3>
@@ -165,17 +168,17 @@
                         </li>
                         <li>
                             <h3>7. Pay quiet respect at Jizo statues and roadside shrines</h3>
-                            <p>Throughout Iwate, especially along mountain paths and rural roads, you’ll often come across small Jizo statues or humble roadside shrines. These are not just decorations—they hold deep spiritual meaning and are often placed to protect travelers, honor ancestors, or remember those who passed away. Locals typically bow slightly or silently acknowledge these spots when passing by, even while driving or walking.</p>
-                            <p>Speaking loudly, touching offerings, or treating these shrines as photo props is considered highly disrespectful. Observing them quietly, even with a small nod, shows that you understand and respect the spiritual traditions that remain very much alive in Iwate’s everyday life.</p>
+                            <p>Throughout Iwate, especially along mountain paths and rural roads, you’ll often come across small Jizo statues or humble roadside shrines. These are not just decorations—they hold deep spiritual meaning and are often placed to protect travelers, honor ancestors, or remember those who passed away. Locals typically bow slightly or silently acknowledge these spots when passing by, even while driving or walking.
+                                 Speaking loudly, touching offerings, or treating these shrines as photo props is considered highly disrespectful. Observing them quietly, even with a small nod, shows that you understand and respect the spiritual traditions that remain very much alive in Iwate’s everyday life.</p>
                         </li>
                     </ul>
                     </section>
                 
                     <h2>4. Fukushima</h2>
                     <ul class="rules-list">
-                    <li>
+                        <li>
                         <h3>1. Respect the history and recovery spirit after the disaster</h3>
-                        <p>The people of Fukushima carry a strong spirit of resilience and hope, having overcome the tremendous challenges of the 2011 earthquake, tsunami, and nuclear disaster. This history has deepened the bonds of the community and their mutual support, and efforts toward rebuilding the region continue even today. When visiting Fukushima, it’s important to approach conversations about these events with sensitivity and respect.</p>
+                        <p>The people of Fukushima carry a strong spirit of resilience and hope, having overcome the tremendous challenges of the 2011 earthquake, tsunami, and nuclear disaster. This history has deepened the bonds of the community and their mutual support, and efforts toward rebuilding the region continue even today. When visiting Fukushima, it’s important to approach conversations about these events with sensitivity and respect.<</p>
                         <p> Insensitive questions or assumptions can unintentionally hurt those who have endured such hardships. Visitors who show empathy and honor the strength and determination of the locals help acknowledge and celebrate the ongoing recovery of the area.</p>
                         </li>
 
@@ -193,8 +196,8 @@
                         
                         <li>
                         <h3>4. Visit Aizu shrines with humility and follow local etiquette</h3>
-                        <p>In the Aizu region of Fukushima, visiting shrines is an important practice that involves specific customs reflecting deep respect and humility. When entering shrine grounds, locals typically remove their hats as a sign of reverence, and it is customary to bow deeply both upon entering and leaving. There are often cleansing rituals, such as washing hands and rinsing the mouth at the temizuya (water pavilion), which visitors are expected to follow properly.</p>
-                        <p>Ignoring these customs or acting casually can be seen as disrespectful. Embracing these traditions allows visitors to connect more meaningfully with the spiritual and cultural heritage of Aizu.</p>
+                        <p>In the Aizu region of Fukushima, visiting shrines is an important practice that involves specific customs reflecting deep respect and humility. When entering shrine grounds, locals typically remove their hats as a sign of reverence, and it is customary to bow deeply both upon entering and leaving. There are often cleansing rituals, such as washing hands and rinsing the mouth at the temizuya (water pavilion), which visitors are expected to follow properly.
+                             Ignoring these customs or acting casually can be seen as disrespectful. Embracing these traditions allows visitors to connect more meaningfully with the spiritual and cultural heritage of Aizu.</p>
                         </li>
 
                         <li>
@@ -225,5 +228,6 @@
             <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
         </div>
 </footer>
-<script src="./js/tohoku.js"></script>
+<script src="./js/travelers_homePage.js"></script>
+<script src="./js/translations/"></script>
 </html>

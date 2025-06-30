@@ -40,19 +40,11 @@
             <span></span>
             <span></span>
         </div>
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <a href="#">友達を家に行く時</a>
-            <a href="#">お店の中にいる時</a>
-            <a href="#">道の中で歩いている時</a>
-            <a href="#">公共施設にいる時</a>
-            <a href="./login.php">Login</a>
-        </div>
 
 
         <!-- サイドバーナビゲーション -->
         <div class="sidebar" id="sidebar">
-            <a href="#">When visiting a friend's house</a>
+            <a href="regions.php">Regions</a>
             <a href="#">When in a store</a>
             <a href="#">When walking on the street</a>
             <a href="#">When in public facilities</a>
@@ -220,7 +212,7 @@
         <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
     </div>
 </footer>
-<script src="./js/kansai.js"></script>
+<script src="./js/travelers_homePage.js"></script>
 <script src="./js/translations/"></script>
 
 </html>
