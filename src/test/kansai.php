@@ -12,7 +12,7 @@
         <div class="logo">JAPAN Life Manual</div>
         <nav class="main-nav">
             <a class="with-underline" href="index.php">Home</a>
-            <a class="with-underline" href="./regions.php">Region</a>
+            <a class="no-underline" href="./regions.php">Region</a>
             <a class="with-underline" href="#">Transports</a>
             <a class="with-underline" href="#">Food</a>
             <a class="with-underline" href="#">Other</a>
@@ -51,7 +51,7 @@
        
           <!-- サイドバーナビゲーション -->
         <div class="sidebar" id="sidebar">
-            <a href="regions.php">Regions</a>
+            <a href="#">When visiting a friend's house</a>
             <a href="#">When in a store</a>
             <a href="#">When walking on the street</a>
             <a href="#">When in public facilities</a>
@@ -223,6 +223,6 @@
             <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
         </div>
 </footer>
-<script src="./js/travelers_homePage.js"></script>
+<script src="./js/kansai.js"></script>
 <script src="./js/translations/"></script>
 </html>

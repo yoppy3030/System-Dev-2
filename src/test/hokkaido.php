@@ -50,7 +50,7 @@
        
           <!-- サイドバーナビゲーション -->
         <div class="sidebar" id="sidebar">
-            <a href="regions.php">Region</a>
+            <a href="#">When visiting a friend's house</a>
             <a href="#">When in a store</a>
             <a href="#">When walking on the street</a>
             <a href="#">When in public facilities</a>
@@ -209,7 +209,6 @@
             <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
         </div>
 </footer>
-<script src="./js/travelers_homePage.js"></script>
 <script src="./js/hokkaido.js"></script>
 </body>
 </html>
