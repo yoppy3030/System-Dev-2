@@ -154,6 +154,11 @@ function translatePage(targetLang) {
             continue;
         }
 
+        // ロゴ部分は翻訳対象外
+        if (element.closest('.logo')) {
+            continue;
+        }
+
         // ボタン要素の特別な処理
         if (element.tagName === 'BUTTON') {
             // アイコン要素を保存
@@ -225,3 +230,99 @@ function translatePage(targetLang) {
     
     currentLanguage = targetLang;
 }
+/*
+// depends on user
+
+document.addEventListener("DOMContentLoaded", () => {
+  const startBtn = document.getElementById("start-btn");
+  if (startBtn) {
+    startBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const activityInput = document.getElementById("user-activity");
+      if (!activityInput) {
+        alert("User activity not found.");
+        return;
+      }
+      const activity = activityInput.value;
+
+      if (activity === "International Student") {
+        window.location.href = "studenthome.php";
+      } else if (activity === "Professional") {
+        window.location.href = "professional.php";
+      } else if (activity === "Tourist") {
+        window.location.href = "travelers_homePage.php";
+      } else {
+        alert("Please sign up or log in to continue.");
+      }
+    });
+  }
+});
+*/
+
+
+// =========================================
+// Weather Widget Functionality (Updated)
+// =========================================
+document.addEventListener('DOMContentLoaded', () => {
+
+    const weatherWidget = document.getElementById('weather-widget');
+    const weatherIcon = document.getElementById('weather-icon');
+    const weatherTemp = document.getElementById('weather-temp');
+    const weatherCity = document.getElementById('weather-city');
+
+    /**
+     * Fetches weather data from the server proxy and updates the widget
+     * @param {string} city - The name of the city to fetch weather for.
+     */
+    async function fetchWeather(city) {
+        // The API URL now correctly points to the Node.js server running on port 3000
+        const serverUrl = `http://localhost:3000/weather?city=${encodeURIComponent(city)}`;
+        
+        weatherCity.textContent = 'Loading...';
+        weatherTemp.textContent = '--°C';
+        weatherIcon.src = ''; // Clear previous icon
+
+        try {
+            // Fetch data from the Node.js server
+            const response = await fetch(serverUrl);
+
+            // Check if the server responded with an error (e.g., 404 Not Found, 401 Unauthorized)
+            if (!response.ok) {
+                const errorData = await response.json();
+                // Display the specific error from the server (e.g., "city not found")
+                weatherCity.textContent = errorData.message || 'Error';
+                console.error('Server error:', errorData.message);
+                return;
+            }
+
+            const data = await response.json();
+
+            // Update the display with the new data
+            weatherCity.textContent = data.name;
+            weatherTemp.textContent = Math.round(data.main.temp) + '°C';
+            weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+            weatherIcon.alt = data.weather[0].description;
+
+        } catch (error) {
+            // This catches network errors, like if the Node.js server is not running
+            weatherCity.textContent = 'Server offline';
+            console.error("Failed to connect to the weather server. Is node server.js running?", error);
+        }
+    }
+
+    // Add a click listener to the widget to change city
+    if (weatherWidget) {
+        weatherWidget.addEventListener('click', () => {
+            const currentCity = weatherCity.textContent;
+            // Don't use a loading message as the default prompt text
+            const promptCity = (currentCity !== 'Loading...' && currentCity !== 'Error') ? currentCity : 'Osaka';
+            const newCity = prompt('Enter a city name:', promptCity);
+            if (newCity && newCity.trim() !== '') {
+                fetchWeather(newCity.trim());
+            }
+        });
+    }
+
+    // Initial weather fetch for a default city when the page loads
+    fetchWeather('Osaka');
+});

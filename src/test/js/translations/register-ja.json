@@ -1,0 +1,31 @@
+{
+  "translations": {
+    "Register - JAPAN Life Manual": "登録 - 日本生活マニュアル",
+    "Registration": "ユーザー登録",
+    "Username:": "ユーザー名：",
+    "Email:": "メールアドレス：",
+    "Password:": "パスワード：",
+    "Country:": "国：",
+    "Current Location:": "現在の場所：",
+    "What are you doing in Japan?": "日本で何をされていますか？",
+    "Register": "登録する",
+    "Already have an account?": "すでにアカウントをお持ちですか？",
+    "Login here": "こちらからログイン",
+    "ECC 太郎": "ECC 太郎",
+    "example@gmail.com": "example@gmail.com",
+    "Osaka": "大阪",
+    "(8 characters minimum)": "(8文字以上)",
+    "-- Please select --": "-- 選択してください --",
+    "Professional": "プロフェッショナル",
+    "International Student": "留学生",
+    "Tourist": "観光客",
+    "Other": "その他",
+    "Password must be at least 8 characters long": "パスワードは8文字以上で入力してください",
+    "ユーザー名は3文字以上で入力してください": "ユーザー名は3文字以上で入力してください",
+    "メールアドレスが無効です": "メールアドレスが無効です",
+    "パスワードは8文字以上で入力してください": "パスワードは8文字以上で入力してください",
+    "選択されたアクティビティは無効です": "選択されたアクティビティは無効です",
+    "このメールアドレスはすでに登録されています": "このメールアドレスはすでに登録されています",
+    "データベースエラーが発生しました": "データベースエラーが発生しました"
+  }
+}

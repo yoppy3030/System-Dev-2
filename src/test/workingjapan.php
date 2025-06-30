@@ -8,14 +8,21 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="logo">STUDY in JAPAN</div>
+    <div class="logo">JAPAN Life Manual</div>
     <nav class="main-nav">
-      <a href="index.php">Home</a>
       <a href="studenthome.php">StudentHome</a>
-      <a href="travelers_homePage.php">Travelers</a>
-      <a href="professional.php">Professional</a>
       <a href="lifeinjapan.php">Life in Japan</a>
-      <a href="event.php">Events</a>
+      <a href="events.php">Events</a>
+      <!-- 言語選択ドロップダウン -->
+      <div class="language-selector">
+        <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+          <div class="language-dropdown">
+          <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+          <button class="language-option" data-lang="en">🇺🇸 English</button>
+          <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+          <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+        </div>
+      </div>
     </nav>
   </header>
 
@@ -27,30 +34,30 @@
   </section>
 
   <section class="topics-grid">
-    <div class="topic-card">
+    <a href="job_hunting.php" class="topic-card">
       <h2>Job Hunting Process</h2>
       <p>Understand the job-hunting schedule, required documents, and how to prepare for interviews.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="visa_renewal.php" class="topic-card">
       <h2>Changing Visa Status</h2>
       <p>Learn how to switch from student visa to a work visa and what documents you need.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="japanese_language.php" class="topic-card">
       <h2>Japanese Language Skills</h2>
       <p>Discover how language proficiency impacts job opportunities and working environments.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="types_of_jobs.php" class="topic-card">
       <h2>Types of Jobs</h2>
       <p>Explore job options suitable for international students, from global companies to startups.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="job_search_support.php" class="topic-card">
       <h2>Job Search Support</h2>
       <p>Find support from career centers, job fairs, and online platforms to boost your chances.</p>
-    </div>
-    <div class="topic-card">
+    </a>
+    <a href="work_conditions.php" class="topic-card">
       <h2>Work Conditions</h2>
       <p>Learn about work hours, salaries, and employee rights under Japanese labor law.</p>
-    </div>
+    </a>
   </section>
 
   <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">
@@ -69,5 +76,6 @@
   <h2>Japan life Manual</h2>
   <p>&copy; <?php echo date("Y"); ?> JAPAN Life Manual. All rights reserved.</p>
 </footer>
+<script src="./js/workingjapan.js"></script>
 </body>
 </html>

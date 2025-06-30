@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JAPAN Life Manual - Custom Clone</title>
+  <title>JAPAN Life Manual</title>
   <link rel="stylesheet" href="./css/studenthome.css">
 </head>
 <body>
@@ -11,8 +11,6 @@
     <div class="logo">JAPAN Life Manual</div>
     <nav class="main-nav">
       <a href="index.php">Home</a>
-      <a href="travelers_homePage.php">Travelers</a>
-      <a href="professional.php">Professional</a>
       <a href="lifeinjapan.php">Life in Japan</a>
       <a href="workingjapan.php">Jobs & Careers in Japan</a>
       <a href="events.php">Events</a>
@@ -37,24 +35,23 @@
   </section>
 
   <section class="submenu-grid">
-  <a class="submenu-item" href="#">
+  <a class="submenu-item" href="examination.php">
     <strong>Examinations JLPT</strong><br>
-    <small>Prepare for N5–N1 Japanese tests</small>
+    <small>Prepare for N5-N1 Japanese tests</small>
   </a>
-  <a class="submenu-item" href="#">
+  <a class="submenu-item" href="scholarships.php">
     <strong>Scholarships</strong><br>
     <small>Find funding for your education in Japan</small>
   </a>
-  <a class="submenu-item" href="#">
+  <a class="submenu-item" href="visa_renewal.php">
     <strong>Visa Renewal</strong><br>
     <small>Learn how to extend your stay legally</small>
   </a>
-  <a class="submenu-item" href="#">
+  <a class="submenu-item" href="useful_materials.php">
     <strong>Useful Materials</strong><br>
-    <small>Download guides, apps, and checklists</small>
+    <small>Garbage rules,Rental and etc</small>
   </a>
 </section>
-
   <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">↑</button>
   <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">
     <h2>Contact Us</h2>

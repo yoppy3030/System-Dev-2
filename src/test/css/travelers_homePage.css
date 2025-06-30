@@ -13,10 +13,12 @@
 /* =========================================
    基本スタイル
    ========================================= */
-body {
-  margin: 0;
-  font-family: sans-serif;
-}
+   body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: var(--dark-text);
+  }
 
 /* =========================================
    ヘッダー
@@ -32,9 +34,9 @@ body {
 
 /* ナビゲーションバー */
 .logo {
-  font-size: 20px; /* フォントサイズ */
-  font-weight: bold; /* 太字 */
-  margin-left: 22px; /* 右側に寄せる */
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 22px;
 }
 
 .main-nav a {
@@ -265,60 +267,23 @@ h1, h2 {
   margin-bottom: 2rem;
 }
 
+
 /* =========================================
    フッター
    ========================================= */
-footer {
-  background-color: var(--primary-color);
-  color: var(--light-text);
-  padding: 3rem 0;
-  margin-top: 4rem;
-}
-
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  text-align: center;
-}
-
-.footer-content h2 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-}
-
-.footer-content p {
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-.footer-content a {
-  color: var(--light-text);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.footer-content a:hover {
-  color: var(--secondary-color);
-}
-
-/* ソーシャルアイコン */
-.social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  margin: 1.5rem 0;
-}
-
-.social-icons a {
-  font-size: 1.5rem;
-  color: var(--light-text);
-  transition: all 0.3s ease;
-}
-
-.social-icons a:hover {
-  color: var(--secondary-color);
-  transform: translateY(-3px);
-}
+   footer {
+    background-color: #b71c1c;
+    color: var(--light-text);
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .footer-content a {
+    color: var(--light-text);
+    text-decoration: none;
+  }
+  
+  .footer-content a:hover {
+    text-decoration: underline;
+  }
 

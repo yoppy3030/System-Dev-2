@@ -232,7 +232,6 @@ main {
 }
 
 
-
 /* Submenu Grid */
 .submenu-grid {
   display: grid;
@@ -243,7 +242,6 @@ main {
   max-width: 1200px;
   margin: auto;
 }
-
 
 .submenu-item {
   display: block;
@@ -256,6 +254,12 @@ main {
   font-weight: 600;
   font-size: 18px;
   transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.submenu-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  background: #fafafa;
 }
 
 
@@ -296,30 +300,6 @@ footer {
 .footer-content a:hover {
   color: var(--secondary-color);
 }
-
-/* ソーシャルアイコン */
-.social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  margin: 1.5rem 0;
-}
-
-.social-icons a {
-  font-size: 1.5rem;
-  color: var(--light-text);
-  transition: all 0.3s ease;
-}
-
-.social-icons a:hover {
-  color: var(--secondary-color);
-  transform: translateY(-3px);
-}
-
-
-
-
-
 
 
 /* =========================================

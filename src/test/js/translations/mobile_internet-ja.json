@@ -1,0 +1,22 @@
+{
+    "translations": {
+      "🌐 Translate": "🌐 翻訳",
+      "StudentHome": "学生ホームページ",
+      "Back to Life in Japan": "日本での生活に戻る",
+      "📱 Mobile & Internet": "📱 移動体通信とインターネット",
+      "Learn how to set up a phone contract, find prepaid SIM cards, and choose the best Wi-Fi plan for your stay in Japan.": "電話契約の設定方法、プリペイドSIMカードの入手方法、そして日本滞在中の最適なWi-Fiプランの選択方法について学びましょう。",
+      "Set Up a Phone Contract": "電話契約のセットアップ",
+      "Major carriers like Docomo, au, and SoftBank offer contracts with monthly plans. You’ll need ID, residence card, and possibly a bank account.": "<a href='https://www.nttdocomo.co.jp/english/' target='_blank'>Docomo</a>、<a href='https://www.au.com/english/' target='_blank'>au</a>、<a href='https://www.softbank.jp/en/' target='_blank'>SoftBank</a>などの大手携帯電話会社が月額プランの契約を提供しています。身分証明書、在留カード、場合によっては銀行口座が必要となります。",
+      "Prepaid SIM Cards": "プリペイドSIMカード",
+      "For flexibility, consider prepaid SIMs from providers like Mobal or Sakura Mobile. Available at airports or online.": "柔軟なサービスを求めるなら、<a href='https://www.mobal.com/japan-sim-card/' target='_blank'>Mobal</a>や<a href='https://www.sakuramobile.jp/' target='_blank'>Sakura Mobile</a>などのプリペイドSIMカードのプロバイダーが空港やオンラインで利用可能です。",
+      "Choose a Wi-Fi Plan": "Wi-Fiプランを選択する",
+      "You can choose home broadband from NTT, SoftBank, or au, or rent portable Wi-Fi routers (pocket Wi-Fi) from companies like Japan Wireless.": "NTT、SoftBank、auなどの家庭用ブロードバンド、あるいは<a href='https://www.japan-wireless.com/'>Japan Wireless</a>のような会社からのポータブルWi-Fiルータ（ポケットWi-Fi）レンタルなどから選択可能です。",
+      "Helpful Links": "役に立つリンク集",
+      "NTT Docomo": "<a href='https://www.nttdocomo.co.jp/english/' target='_blank'>NTTドコモ</a>",
+      "au": "<a href='https://www.au.com/english/' target='_blank'>au</a>",
+      "SoftBank": "<a href='https://www.softbank.jp/en/' target='_blank'>ソフトバンク</a>",
+      "Mobal SIM": "<a href='https://www.mobal.com/japan-sim-card/' target='_blank'>Mobal SIM</a>",
+      "Sakura Mobile": "<a href='https://www.sakuramobile.jp/' target='_blank'>Sakura Mobile</a>",
+      "Japan Wireless": "<a href='https://www.japan-wireless.com/'>Japan Wireless<a/>"
+    }
+  }

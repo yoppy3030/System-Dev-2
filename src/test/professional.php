@@ -9,28 +9,39 @@
 </head>
 <body>
   <!-- Navigation Bar -->
-  <header class="site-header">
-    <div class="logo">JAPAN Life Manual</div>
-    <nav class="main-nav">
-        <a href="index.php">Home</a>
-        <a href="culture.html">Culture</a>
-        <a href="studenthome.php">Student</a>
-        <a href="travelers_homePage.php">Traveler</a>
-        <a href="about.html">About</a>
-        <!-- 言語選択ドロップダウン -->
-        <div class="language-selector">
-            <button id="translateBtn" class="translate-btn">🌐 Translate</button>
-            <div class="language-dropdown">
-                <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
-                <button class="language-option" data-lang="en">🇺🇸 English</button>
-                <button class="language-option" data-lang="zh">🇨🇳 中文</button>
-            </div>
+ <header class="site-header">
+  <div class="logo">JAPAN Life Manual</div>
+  <nav class="main-nav">
+    <ul>
+      <li><a href="index.php">Home</a></li>
+
+      <li class="dropdown">
+        <a href="culture.html">Culture ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="culture.html">Japanese Culture</a></li>
+          <li><a href="daily-life.html">Daily Life</a></li>
+        </ul>
+      </li>
+
+      <li><a href="studenthome.php">Student</a></li>
+      <li><a href="travelers_homePage.php">Traveler</a></li>
+      <li><a href="about.html">About</a></li>
+
+      <li class="language-selector">
+        <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+        <div class="language-dropdown">
+          <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+          <button class="language-option" data-lang="en">🇺🇸 English</button>
+          <button class="language-option" data-lang="zh">🇨🇳 中文</button>
         </div>
-    </nav>
-  </header>
+      </li>
+    </ul>
+  </nav>
+</header>
 
   <!-- Hero Section -->
   <section class="hero" style="background-image: url(./img/namba.jpg);">
+    <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1>Professional Life in Japan</h1>
       <p>Your trusted guide for working professionally in Japan.</p>
@@ -38,27 +49,32 @@
   </section>
 
   <!-- Main Content -->
-  <main class="main-content">
-    <div class="info-block">
-      <h2><i class="fas fa-briefcase"></i> Business Etiquette</h2>
-      <p>Bowing is a common greeting. Exchange business cards with both hands. Be punctual.</p>
-    </div>
+<main class="main-content">
+  <div class="info-block">
+    <h2><i class="fas fa-briefcase"></i> Business Etiquette</h2>
+    <p>Bowing is a common greeting. Exchange business cards with both hands. Be punctual.</p>
+    <a href="business_etiquette.php" class="details-button">Details</a>
+  </div>
 
-    <div class="info-block">
-      <h2><i class="fas fa-clock"></i> Work Hours and Holidays</h2>
-      <p>Standard hours are 9 AM–6 PM. Key holidays: New Year, Golden Week, Obon.</p>
-    </div>
+  <div class="info-block">
+    <h2><i class="fas fa-clock"></i> Work Hours and Holidays</h2>
+    <p>Standard hours are 9 AM-6 PM. Key holidays: New Year, Golden Week, Obon.</p>
+    <a href="work_hours.php" class="details-button">Details</a>
+  </div>
 
-    <div class="info-block">
-      <h2><i class="fas fa-language"></i> Language Expectations</h2>
-      <p>Basic Japanese is expected. English is useful in multinational companies.</p>
-    </div>
+  <div class="info-block">
+    <h2><i class="fas fa-language"></i> Language Expectations</h2>
+    <p>Basic Japanese is expected. English is useful in multinational companies.</p>
+    <a href="language_expectations.php" class="details-button">Details</a>
+  </div>
 
-    <div class="info-block">
-      <h2><i class="fas fa-balance-scale"></i> Labor Rights</h2>
-      <p>Know your rights: work contracts, overtime limits, and paid leave.</p>
-    </div>
-  </main>
+  <div class="info-block">
+    <h2><i class="fas fa-balance-scale"></i> Labor Rights</h2>
+    <p>Know your rights: work contracts, overtime limits, and paid leave.</p>
+    <a href="labor_rights.php" class="details-button">Details</a>
+  </div>
+</main>
+
 
   <!-- Footer -->
   <footer>

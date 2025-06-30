@@ -4,40 +4,110 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Culture | JAPAN Life Manual</title>
-  <link rel="stylesheet" href="css/professional.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="./css/culture.css" />
 </head>
 <body>
-  <nav class="navbar">
-    <div class="logo">JAPAN Life Manual</div>
-    <ul class="nav-links">
-      <li><a href="professional.php">Home</a></li>
-      <li><a href="culture.html">Culture</a></li>
+  <!-- Navigation Bar -->
+ <header class="site-header">
+  <div class="logo">JAPAN Life Manual</div>
+  <nav class="main-nav">
+    <ul>
+      <li><a href="index.php">Home</a></li>
+
+      <li class="dropdown">
+        <a href="culture.html">Culture ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="culture.html">Japanese Culture</a></li>
+          <li><a href="daily-life.html">Daily Life</a></li>
+        </ul>
+      </li>
+
+      <li><a href="studenthome.php">Student</a></li>
+      <li><a href="travelers_homePage.php">Traveler</a></li>
       <li><a href="about.html">About</a></li>
-      <li><a href="#contact">Contact</a></li>
+
+      <!-- 言語選択ドロップダウン -->
+      <div class="language-selector">
+        <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+        <div class="language-dropdown">
+          <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+          <button class="language-option" data-lang="en">🇺🇸 English</button>
+          <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+          <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
+        </div>
+    </div>
     </ul>
   </nav>
+</header>
 
 
-  <header class="header">
-    <h1>Japanese Work Culture</h1>
-  </header>
-
-  <main class="main-content">
-  <section class="section">
-    <h2>Group Harmony (Wa)</h2>
-    <p>Japanese workplaces emphasize teamwork and harmony. Decisions are often made collectively to maintain unity.</p>
+  <!-- Hero Section -->
+  <section class="culture-hero" style="background-image: url('./img/Inari-Shrine-Path.jpg');">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Japanese Work Culture</h1>
+      <p>Understanding traditions and practices in the Japanese workplace.</p>
+    </div>
   </section>
 
-  <section class="section">
-    <h2>Senpai-Kohai Relationship</h2>
-    <p>This senior-junior dynamic governs behavior in companies. Juniors respect seniors, while seniors mentor juniors.</p>
-  </section>
+  <!-- Main Content -->
+  <main class="culture-content">
+    <!-- Group Harmony -->
+    <div class="card-style-section">
+      <h2><i class="fas fa-users"></i> Group Harmony (Wa)</h2>
+      <p>Japanese workplaces emphasize teamwork and harmony. Decisions are often made collectively to maintain unity.</p>
+      <a href="Group_Harmony.php" class="details-btn">Read More</a>
+    </div>
 
-  <section class="section">
-    <h2>Nomikai (Drinking Culture)</h2>
-    <p>Company drinking parties are common and build camaraderie, though participation is usually voluntary.</p>
-  </section>
-</main>
+    <!-- Senpai-Kohai -->
+    <div class="card-style-section">
+      <h2><i class="fas fa-user-friends"></i> Senpai-Kohai Relationship</h2>
+      <p>This senior-junior dynamic governs behavior in companies. Juniors respect seniors, while seniors mentor juniors.</p>
+      <a href="senpai_kohai.php" class="details-btn">Read More</a>
+    </div>
 
+    <!-- Nomikai -->
+    <div class="card-style-section">
+      <h2><i class="fas fa-glass-cheers"></i> Nomikai (Drinking Culture)</h2>
+      <p>Company drinking parties are common and build camaraderie, though participation is usually voluntary.</p>
+      <a href="nomikai.php" class="details-btn">Read More</a>
+    </div>
+
+        <!-- Cultural Etiquette -->
+    <div class="card-style-section">
+      <h2><i class="fas fa-handshake"></i> Cultural Etiquette in Japan</h2>
+      <p>From bowing to footwear rules, etiquette in Japan reflects deep respect and tradition in daily life.</p>
+      <a href="cultural_etiquette_japan.html" class="details-btn">Read More</a>
+    </div>
+
+    <!-- Festivals & Holidays -->
+    <div class="card-style-section">
+      <h2><i class="fas fa-calendar-alt"></i> Festivals & National Holidays</h2>
+      <p>Explore Japan’s vibrant annual celebrations and how locals honor tradition through festivals and public holidays.</p>
+      <a href="festivals_holidays.html" class="details-btn">Read More</a>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <h2>Contact Us</h2>
+      <p><a href="mailto:22200797@ecc.ac.jp">Email: 22200797@ecc.ac.jp</a></p>
+      <p>Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan</p>
+      <p>Phone: +81 3-1234-5678</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+      </div>
+      <h2>Japan Life Manual</h2>
+      <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="./js/culture.js"></script>
 </body>
 </html>

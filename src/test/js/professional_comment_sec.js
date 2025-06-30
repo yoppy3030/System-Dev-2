@@ -62,7 +62,16 @@ document.querySelectorAll('.language-option').forEach(option => {
 
 // テキストの正規化（余分な空白を削除）
 function normalizeText(text) {
-    return text.replace(/\s+/g, ' ').trim();
+    // HTMLタグを一時的に保存
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = text;
+    const iconElements = tempDiv.getElementsByTagName('i');
+    const icons = Array.from(iconElements).map(icon => icon.outerHTML);
+    
+    // テキストのみを抽出して正規化
+    let normalizedText = text.replace(/<[^>]*>/g, '').replace(/[▾]/g, '').replace(/\s+/g, ' ').trim();
+    
+    return { normalizedText, icons };
 }
 
 // 翻訳データの読み込み
@@ -72,7 +81,7 @@ Promise.all([
 ])
 .then(([jaData, zhData]) => {
     translations = jaData.translations;
-    translationsZh = zhData.translations;  // .zhを削除
+    translationsZh = zhData.translations;
     console.log('翻訳データの読み込みが完了しました');
 })
 .catch(error => {
@@ -86,7 +95,7 @@ function translatePage(targetLang) {
         return;
     }
 
-    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, button');
+    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn, button, section, .section');
     
     for (const element of elements) {
         const originalText = element.textContent;
@@ -97,25 +106,35 @@ function translatePage(targetLang) {
 
         // 初回のみoriginalTextsに保存
         if (!originalTexts.has(element)) {
-            originalTexts.set(element, originalText);
+            originalTexts.set(element, element.innerHTML);
         }
         
         // 英語の場合は元のテキストに戻す
         if (targetLang === 'en') {
-            element.textContent = originalTexts.get(element);
+            element.innerHTML = originalTexts.get(element);
             continue;
         }
 
-        const normalizedText = normalizeText(originalTexts.get(element));
+        const { normalizedText, icons } = normalizeText(originalTexts.get(element));
 
         // 言語に応じた翻訳の適用
         if (targetLang === 'ja') {
-            if (translations[normalizedText]) {
-                element.textContent = translations[normalizedText];
+            const translation = Object.entries(translations).find(([key]) => 
+                normalizeText(key).normalizedText.toLowerCase() === normalizedText.toLowerCase()
+            );
+            if (translation) {
+                // 翻訳テキストにアイコンを追加
+                const hasSpecialChar = originalTexts.get(element).includes('▾');
+                element.innerHTML = icons.join('') + translation[1] + (hasSpecialChar ? ' ▾' : '');
             }
         } else if (targetLang === 'zh') {
-            if (translationsZh[normalizedText]) {
-                element.textContent = translationsZh[normalizedText];
+            const translation = Object.entries(translationsZh).find(([key]) => 
+                normalizeText(key).normalizedText.toLowerCase() === normalizedText.toLowerCase()
+            );
+            if (translation) {
+                // 翻訳テキストにアイコンを追加
+                const hasSpecialChar = originalTexts.get(element).includes('▾');
+                element.innerHTML = icons.join('') + translation[1] + (hasSpecialChar ? ' ▾' : '');
             }
         }
     }
@@ -128,3 +147,24 @@ function translatePage(targetLang) {
     
     currentLanguage = targetLang;
 }
+// ドロップダウンメニュー表示制御
+document.querySelectorAll('.main-nav ul li > a').forEach(anchor => {
+  anchor.addEventListener('click', e => {
+    const submenu = anchor.nextElementSibling;
+    if (submenu && submenu.classList.contains('dropdown-menu')) {
+      e.preventDefault();
+      submenu.classList.toggle('show');
+    }
+  });
+});
+
+// Optional: close dropdown on click outside
+document.addEventListener('click', e => {
+  document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+    if (!menu.parentElement.contains(e.target)) {
+      menu.classList.remove('show');
+    }
+  });
+});
+
+ 

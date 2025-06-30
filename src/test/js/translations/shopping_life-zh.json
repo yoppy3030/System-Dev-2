@@ -1,0 +1,28 @@
+{
+  "translations": {
+    "🌐 Translate": "🌐 翻译",
+    "Home": "主页",
+    "Life in Japan": "日本的生活",
+    "Jobs in Japan": "日本的工作",
+    "StudentHome": "学生主页",
+    "🛒 Shopping & Daily Life": "🛒 购物与日常生活",
+    "Shopping & Daily Life": "购物与日常生活",
+    "Learn where to shop for groceries, electronics, daily essentials, and how to navigate daily living in Japan.": "了解在日本哪里可以购买杂货、电子产品、日用品，以及如何驾驭日常生活。",
+    "Supermarkets & Convenience Stores": "超市与便利店",
+    "Popular chains include Aeon, Seiyu, Life, 7-Eleven, Lawson, and FamilyMart.": "知名连锁店包括 <a href='https://www.aeonretail.jp/' target='_blank' rel='noopener'>永旺</a>、<a href='https://www.seiyu.co.jp/' target='_blank' rel='noopener'>西友</a>、<a href='https://www.lifecorp.jp/' target='_blank' rel='noopener'>Life</a>、<a href='https://www.sej.co.jp/' target='_blank' rel='noopener'>7-Eleven</a>、<a href='https://www.lawson.co.jp/' target='_blank' rel='noopener'>罗森</a> 和 <a href='https://www.family.co.jp/' target='_blank' rel='noopener'>全家</a>。",
+    "Electronics & Appliances": "电子产品与家电",
+    "Find electronics at Bic Camera, Yodobashi, or Yamada Denki.": "在 <a href='https://www.biccamera.com/' target='_blank' rel='noopener'>Bic Camera</a>、<a href='https://www.yodobashi.com/' target='_blank' rel='noopener'>Yodobashi</a> 和 <a href='https://www.yamada-denki.jp/' target='_blank' rel='noopener'>Yamada Denki</a> 购买电子产品。",
+    "100-Yen & Discount Stores": "100日元商店与折扣店",
+    "Daiso, Can★Do, and Seria provide daily essentials at affordable prices.": "<a href='https://www.daiso-sangyo.co.jp/' target='_blank' rel='noopener'>大创</a>、<a href='https://www.cando-web.co.jp/' target='_blank' rel='noopener'>Can★Do</a> 和 <a href='https://www.seria-group.com/' target='_blank' rel='noopener'>Seria</a> 以实惠的价格提供日常必需品。",
+    "Online Shopping": "网上购物",
+    "Amazon Japan, Rakuten, and Yahoo! Shopping are popular platforms for online orders.": "<a href='https://www.amazon.co.jp' target='_blank' rel='noopener'>亚马逊日本</a>、<a href='https://www.rakuten.co.jp' target='_blank' rel='noopener'>乐天</a> 和 <a href='https://shopping.yahoo.co.jp' target='_blank' rel='noopener'>雅虎购物</a> 是主要的在线购物平台。",
+    "Helpful Links": "有用的链接",
+    "Amazon Japan": "<a href='https://www.amazon.co.jp' target='_blank' rel='noopener'>亚马逊日本</a>",
+    "Rakuten": "<a href='https://www.rakuten.co.jp' target='_blank' rel='noopener'>乐天</a>",
+    "Yodobashi": "<a href='https://www.yodobashi.com/' target='_blank' rel='noopener'>Yodobashi</a>",
+    "Back to Life in Japan": "返回日本生活",
+    "Email: 22200797@ecc.ac.jp": "电子邮件: <a href='mailto:22200797@ecc.ac.jp'>22200797@ecc.ac.jp</a>",
+    "Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan": "地址: <a href='https://maps.google.com/?q=1-2-61+Koraku,+Bunkyo+City,+Tokyo+123-0006,+Japan' target='_blank' rel='noopener'>日本东京都文京区后楽1-2-61</a>",
+    "Phone: +81 3-1234-5678": "电话: <a href='tel:+81312345678'>+81 3-1234-5678</a>"
+  }
+}

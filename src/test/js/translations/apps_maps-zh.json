@@ -1,0 +1,18 @@
+{
+    "translations": {
+        "StudentHome": "学生主页",
+        "Back to Train Guide": "返回列车指南",
+        "🌐 Translate": "🌐 翻译",
+        "📱 Apps & Maps": "📱 应用程序和地图",
+        "These apps will help you navigate Japan’s train systems, transfer stations, and plan routes easily.": "这些应用程序将帮助您轻松导航日本的火车系统、换乘车站以及规划路线。",
+        "Google Maps": "谷歌地图",
+        "Reliable for real-time routes, platform details, and transfers. Works across Japan with good English support.": "提供实时的路线信息、站台详情和换乘方案，可在全日本使用，且提供良好的英文支持。",
+        "Open Google Maps": "打开谷歌地图",
+        "NAVITIME Japan Travel": "NAVITIME Japan Travel",
+        "Comprehensive travel planner app. Includes trains, buses, and walking routes. Supports offline use and multiple languages.": "全面的旅行计划应用程序，包括火车、巴士和步行路线。支持离线使用和多种语言。",
+        "Open NAVITIME": "打开NAVITIME",
+        "Yahoo! Norikae Annai": "Yahoo! 乗換案内",
+        "Popular app for detailed transfer guidance and timetable info, widely used by locals.": "这是一个提供详细换乘指导和时刻表信息的流行应用程序，被当地人广泛使用。",
+        "Open Yahoo! Transit": "打开Yahoo! 乗換案内"
+    }
+}

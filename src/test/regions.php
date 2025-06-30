@@ -14,15 +14,19 @@
             <div class="dropdown">
             <a class="no-underline" href="#">Region</a>
             <div class="dropdown-content">
-                    <a href="#">Hokkaido</a>
-                    <a href="#">Tohoku</a>
-                    <a href="#">Kanto</a>
-                    <a href="#">Chubu</a>
+                    <a href="hokkaido.php">Hokkaido</a>
+                    <a href="tohoku.php">Tohoku</a>
+                    <a href="kanto.php">Kanto</a>
+                    <a href="Kansai.php">Kansai</a>
+                    <a href="chubu.php">Chubu</a>
+                    <a href="chugoku.php">Chugoku</a>
+                    <a href="shikoku.php">Shikoku</a>
+                    <a href="kyushu.php">Kyusyu & Okinawa</a>
                 </div>
             </div>
-            <a class="with-underline" href="#">Transports</a>
-            <a class="with-underline" href="#">Food</a>
-            <a class="with-underline" href="#">Other</a>
+            <a class="with-underline" href="">Transports</a>
+            <a class="with-underline" href="">Food</a>
+            <a class="with-underline" href="">Other</a>
             <!-- 言語選択ドロップダウン -->
             <div class="language-selector">
                 <button id="translateBtn" class="translate-btn">🌐 Translate</button>
@@ -35,25 +39,20 @@
             <!-- 検索ボックス -->
             <input type="text" class="search-box" placeholder="search"/>
         </nav>
-    </header>
-    <main>
-
                 <!-- Menu Button -->
         <div class="menu-button" onclick="toggleSidebar()">
             <span></span>
             <span></span>
             <span></span>
         </div>
-        
-        <!-- サイドバーナビゲーション -->
-        <div class="sidebar" id="sidebar">
-            <a href="#">When visiting a friend's house</a>
+         <div class="sidebar" id="sidebar">
+            <a href="regions.php">Region</a>
             <a href="#">When in a store</a>
             <a href="#">When walking on the street</a>
             <a href="#">When in public facilities</a>
             <a href="./login.php">Login</a>
-        </div>
-
+    </header>
+    <main>
 
         <div class="hero-img">
             <div class="hero-text">
@@ -68,46 +67,38 @@
 
         
             <section class="submenu-grid">
-            <a class="submenu-item" href="kensai.php">
-                <strong>Kensai Region</strong><br>
-                <small>Osaka,Kyoto,Nara,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Kento Region</strong><br>
-                <small>Tokyo,Chiba,Saitama,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Tohoku Region</strong><br>
-                <small>Iwate,Akita,Fukushima,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Chugoku Region</strong><br>
-                <small>Tottori,Okayama,Hiroshima,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Chugoku Region</strong><br>
-                <small>Tottori,Okayama,Hiroshima,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Chugoku Region</strong><br>
-                <small>Tottori,Okayama,Hiroshima,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Shikoku Region</strong><br>
-                <small>Tokushima,Kochi,Kagawa,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Chubu Region</strong><br>
-                <small>Toyama,Fukui,Gifu,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Kyusyu & Okinawa Region</strong><br>
-                <small>Okinawa,Fukuoka,Oita,etc</small>
-            </a>
-            <a class="submenu-item" href="#">
-                <strong>Hokkaido Region</strong><br>
-                <small>Hokkaido</small>
-            </a>
+                <a class="submenu-item" href="kyushu.php">
+                    <strong>Kyusyu & Okinawa Region</strong><br>
+                    <small>Okinawa,Fukuoka,Oita,etc</small>
+                </a>
+                <a class="submenu-item" href="shikoku.php">
+                    <strong>Shikoku Region</strong><br>
+                    <small>Tokushima,Kochi,Kagawa,etc</small>
+                </a>
+                <a class="submenu-item" href="chugoku.php">
+                    <strong>Chugoku Region</strong><br>
+                    <small>Tottori,Okayama,Hiroshima,etc</small>
+                </a>
+                <a class="submenu-item" href="kansai.php">
+                    <strong>Kansai Region</strong><br>
+                    <small>Osaka,Kyoto,Nara,etc</small>
+                </a>
+                <a class="submenu-item" href="chubu.php">
+                    <strong>Chubu Region</strong><br>
+                    <small>Toyama,Fukui,Gifu,etc</small>
+                </a>
+                <a class="submenu-item" href="kanto.php">
+                    <strong>Kanto Region</strong><br>
+                    <small>Tokyo,Chiba,Saitama,etc</small>
+                </a>
+                <a class="submenu-item" href="tohoku.php">
+                    <strong>Tohoku Region</strong><br>
+                    <small>Iwate,Akita,Fukushima,etc</small>
+                </a>
+                <a class="submenu-item" href="hokkaido.php">
+                    <strong>Hokkaido Region</strong><br>
+                    <small>Hokkaido</small>
+                </a>
             </section>
 </body>
 <!-- フッターセクション -->
@@ -128,5 +119,7 @@
             <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
         </div>
     </footer>
+    <script src="./js/travelers_homePage.js"></script>
+    <script src="./js/regions.js"></script>
 </html>
     

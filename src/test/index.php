@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/index.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <title>Document</title>
+  <title>Japan life Manual</title>
 </head>
 <body>
   <header>
@@ -55,7 +58,7 @@
     </div>
 
     <div class="menu-item">
-      <a href="">
+      <a href="register.php">
           <i class="fas fa-user-plus icon"></i> <!-- inscription -->
           <p>Sign Up</p>
       </a>
@@ -73,35 +76,55 @@
     </div>
   </header>
 <main>
-    <div>
-        <h1>DISCOVER JAPAN</h1>
+    <div class="weather-main-display">
+        <div id="weather-widget">
+            <div class="weather-content">
+                <img id="weather-icon" src="" alt="Weather" class="weather-icon">
+                <div class="weather-text">
+                    <span id="weather-city">Loading...</span>
+                    <span id="weather-temp">--°C</span>
+                </div>
+            </div>
+        </div>
+    </div>  
+    
+    <!-- Hero Section with new classes -->
+    <div class="hero-section">
+        <div class="hero-title">
+            <h1>DISCOVER JAPAN</h1>
+        </div>
+        
+        <div class="hero-description">
+            <p>Welcome to JAPAN Life Manual, your essential guide to navigating life in Japan with ease and peace of mind. 
+            Explore our resources for a smooth and enriching integration.</p>
+            <a href="#"> let's start</a>
+            <input type="hidden" id="user-activity" value="<?php echo htmlspecialchars($userActivity); ?>">
+        </div>
+    </div>
+
+    <!-- Image Gallery -->
+    <div class="image-gallery">
+        <img src="./img/ChatGPT Image 2025年5月26日 12_58_32.png" alt="">
+        <img src="./img/2025年5月26日 13_17_57.png" alt="">
     </div>
     
-    <div>
-      <p>Welcome to JAPAN Life Manual, your essential guide to navigating life in Japan with ease and peace of mind. 
-      Explore our resources for a smooth and enriching integration.</p>
-       <a href="#"> let's start</a>
-    </div>
-    <div>
-     <img src="./img/ChatGPT Image 2025年5月26日 12_58_32.png" alt="">
-     <img src="./img/2025年5月26日 13_17_57.png" alt="">
-    </div>
-    <div>
-    <!----About Section -->
-     <h3>ABOUT</h3>
+    <!-- About Section -->
+    <div class="about-section">
+        <h3>ABOUT</h3>
+        <div>
             <div>
                 <div>
-                    <div>
-                        <p>concert of music around your city</p>
-                        <p>2025/ 05/ 26</p>
-                    </div>
-                    <div>
-                        <p>Tokyo Dome 1-chome 2-61 koraku bunkyo city,Tokyo 123-0006, Japan</p>
-                    </div>
+                    <p>concert of music around your city</p>
+                    <p>2025/ 05/ 26</p>
                 </div>
-                <img src="./img/ChatGPT Image 2025年5月26日 14_01_39.png" alt="">
+                <div>
+                    <p>Tokyo Dome 1-chome 2-61 koraku bunkyo city,Tokyo 123-0006, Japan</p>
+                </div>
             </div>
+            <img src="./img/ChatGPT Image 2025年5月26日 14_01_39.png" alt="">
+        </div>
     </div>
+
     <!--- Blog Section -->
     <div class="blog">
         <h3>Blog</h3>
@@ -114,32 +137,32 @@
             </div>
         </div>
     </div>
+    
+    <!-- Services Section -->
     <div class="services">
-      <div class="product-container">
-    <!-- image  -->
-    <div class="product-image">
-        <img src="./img/スクリーンショット 2025-05-26 132909.png" alt="Nom du produit">
-    </div>
-
-    <!-- product info -->
-    <div class="product-info">
-        <h1>NAME </h1>
-        <p class="description">Description ecc computer college</p>
-        
-        <!-- Section Likes/Dislikes and Views -->
-        <div class="interaction-section">
-            <div class="like-dislike">
-                <button id="like-btn" class="like-btn"><i class="fas fa-thumbs-up"></i><span id="like-count">0</span></button>
-                <button id="dislike-btn" class="dislike-btn"><i class="fas fa-thumbs-down"></i><span id="dislike-count">0</span></button>
+        <div class="product-container">
+            <!-- image -->
+            <div class="product-image">
+                <img src="./img/スクリーンショット 2025-05-26 132909.png" alt="Nom du produit">
             </div>
-            <div class="views">
-               <i class="fas fa-eye"></i><span id="view-count">0</span> vues
+            <!-- product info -->
+            <div class="product-info">
+                <h1>NAME </h1>
+                <p class="description">Description ecc computer college</p>
+                <div class="interaction-section">
+                    <div class="like-dislike">
+                        <button id="like-btn" class="like-btn"><i class="fas fa-thumbs-up"></i><span id="like-count">0</span></button>
+                        <button id="dislike-btn" class="dislike-btn"><i class="fas fa-thumbs-down"></i><span id="dislike-count">0</span></button>
+                    </div>
+                    <div class="views">
+                       <i class="fas fa-eye"></i><span id="view-count">0</span> vues
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-    </div>
 </main>
+
 <footer>
   <div class="footer-content">
     <h2>Contact Us</h2>

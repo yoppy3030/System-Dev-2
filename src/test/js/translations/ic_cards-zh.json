@@ -1,0 +1,20 @@
+{
+    "translations": {
+      "StudentHome": "学生主页",
+      "Back to Navigation": "返回导航",
+      "🌐 Translate": "🌐 翻译",
+      "💳 IC Cards": "💳 IC卡",
+      "Learn how to use IC cards like Suica and Pasmo for convenient travel across Japan’s rail and bus systems.": "了解如何使用Suica和Pasmo等IC卡，以便在日本便捷地乘坐火车和公交车。",
+      "1️⃣ What are IC Cards?": "1️⃣ 什么是IC卡？",
+      "IC cards are rechargeable smart cards used for easy tap-and-go travel. Major types include Suica, Pasmo, ICOCA, and others, depending on region.": "IC卡是用于便捷旅行的可充值智能卡。主要类型包括Suica、Pasmo、ICOCA等，具体类型因地区而异。",
+      "2️⃣ Where to Get One?": "2️⃣ 在哪里可以购买？",
+      "You can purchase IC cards at train station ticket machines, JR offices, or convenience stores. Initial cost usually includes a refundable deposit (e.g., 500 yen).": "您可以在火车站的自动售票机、JR办公室或便利店购买IC卡。初始费用通常包括可退还的押金（例如500日元）。",
+      "3️⃣ How to Use?": "3️⃣ 如何使用？",
+      "Simply tap your card at the ticket gates when entering and exiting stations. The correct fare will be deducted automatically.": "在进出车站时，只需在检票口轻触您的卡，系统会自动扣除正确的费用。",
+      "4️⃣ Where Else Can You Use Them?": "4️⃣ 还能在哪里使用？",
+      "IC cards are also accepted at convenience stores, vending machines, and some restaurants.": "IC卡也可以在便利店、自动售货机和一些餐厅使用。",
+      "🌐 Learn More / Buy Online": "🌐 了解更多 / 在线购买",
+      "Suica (JR East official)": "<a href='https://www.jreast.co.jp/e/pass/suica.html' target='_blank'>Suica（JR东日本官方）</a>",
+      "Pasmo (official site)": "<a href='https://www.pasmo.co.jp/visitors/en/' target='_blank'>Pasmo（官方网站）</a>"
+    }
+  } 
