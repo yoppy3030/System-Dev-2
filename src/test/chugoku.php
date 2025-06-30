@@ -117,14 +117,9 @@
                     
                         <li>
                             <h3>2.  Okayama Castle Etiquette   </h3>
-<<<<<<< HEAD
                             <img src="./img/okayama_castle.jpg" alt="Okayama Castle" class="castle-image"><br>
-                            <p>Okayama Castle, often called the "Crow Castle" for its striking black exterior, is a proud symbol of the city’s history and culture. While it has been reconstructed, it remains a place of quiet appreciation and learning. Visitors are expected to behave respectfully inside the castle grounds —
-                                 this means speaking softly, not touching exhibits, and avoiding casual or loud selfies in sacred or historical areas. It’s also considered poor manners to run or act playfully inside the castle, especially around traditional displays and cultural artifacts. Treating the space like a living museum, 
-=======
                             <p>Okayama Castle, often called the "Crow Castle" for its striking black exterior, is a proud symbol of the city's history and culture. While it has been reconstructed, it remains a place of quiet appreciation and learning. Visitors are expected to behave respectfully inside the castle grounds —
                                  this means speaking softly, not touching exhibits, and avoiding casual or loud selfies in sacred or historical areas. It's also considered poor manners to run or act playfully inside the castle, especially around traditional displays and cultural artifacts. Treating the space like a living museum, 
->>>>>>> 5ea1b090b113d8e1d6a2343573437e522ca1b9a7
                                  with curiosity and respect, honors the legacy the castle represents.</p>
                         </li>
 
@@ -165,16 +160,10 @@
                                      When tourists order Butadon and leave most of it uneaten, it can feel disrespectful — especially in a place where people value food deeply and understand the effort behind every ingredient. To show appreciation, visitors should only order what they can finish and take time to enjoy the flavor and care that goes into every bowl.</p>
                         </li>
                         <li>
-<<<<<<< HEAD
-                            <h3>4.  Respect the “Wagyu Capital”</h3>
-                            <img src="./img/wagyu.jpg" alt="Tottori Wagyu" class="wagyu-image"><br>
-                                <p>Tottori takes great pride in its wagyu heritage, often overlooked but deeply respected among beef connoisseurs. Known as the birthplace of some of Japan’s finest black cattle, Tottori produces premium-quality wagyu like Tottori Kuroushi and Olein 55, known for its exceptional marbling and buttery texture. For locals, this isn’t just food — 
-                                    it’s the result of generations of careful breeding and craftsmanship. When enjoying wagyu in Tottori, it’s best to avoid comparing it to more famous varieties like Kobe or Matsusaka beef. Even light comments suggesting one is better than the other may come off as dismissive. Instead, 
-=======
                             <h3>4.  Respect the "Wagyu Capital"</h3>
+                            <img src="./img/wagyu.jpg" alt="Tottori Wagyu" class="wagyu-image"><br>
                                 <p>Tottori takes great pride in its wagyu heritage, often overlooked but deeply respected among beef connoisseurs. Known as the birthplace of some of Japan's finest black cattle, Tottori produces premium-quality wagyu like Tottori Kuroushi and Olein 55, known for its exceptional marbling and buttery texture. For locals, this isn't just food — 
                                     it's the result of generations of careful breeding and craftsmanship. When enjoying wagyu in Tottori, it's best to avoid comparing it to more famous varieties like Kobe or Matsusaka beef. Even light comments suggesting one is better than the other may come off as dismissive. Instead, 
->>>>>>> 5ea1b090b113d8e1d6a2343573437e522ca1b9a7
                                     expressing genuine appreciation for the unique flavor and local pride behind Tottori wagyu shows cultural sensitivity and respect for what the region has perfected.</p>
                     </ul>
                     <!-- Yamaguchi  Section -->
@@ -196,14 +185,9 @@
 
                         <li>
                             <h3>3.Quiet Participation in the Lantern Festivals</h3>
-<<<<<<< HEAD
                             <img src="./img/latern_festival.jpg" alt="Yamaguchi Lantern Festival" class="lantern-image"><br>
-                            <p>Yamaguchi’s lantern festivals, especially the Tanabata Lantern Festival, are serene and spiritual events that light up the streets with soft, glowing beauty. During these festivals, thousands of handmade lanterns line roads and temple grounds, creating a peaceful and almost sacred atmosphere. 
-                                While it’s natural to want to take photos, pushing through crowds, using flash, or loudly chatting with friends can disrupt the mood that locals work hard to preserve. These festivals are not loud celebrations — they are moments of reflection, tradition, and quiet beauty. Visitors are encouraged to walk slowly, 
-=======
                             <p>Yamaguchi's lantern festivals, especially the Tanabata Lantern Festival, are serene and spiritual events that light up the streets with soft, glowing beauty. During these festivals, thousands of handmade lanterns line roads and temple grounds, creating a peaceful and almost sacred atmosphere. 
                                 While it's natural to want to take photos, pushing through crowds, using flash, or loudly chatting with friends can disrupt the mood that locals work hard to preserve. These festivals are not loud celebrations — they are moments of reflection, tradition, and quiet beauty. Visitors are encouraged to walk slowly, 
->>>>>>> 5ea1b090b113d8e1d6a2343573437e522ca1b9a7
                                 observe silently, and fully absorb the gentle magic of the lantern-lit night.</p>
                         </li>
                         <li>

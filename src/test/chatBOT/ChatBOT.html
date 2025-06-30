@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マナー学習チャットボット デモ</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', 'Noto Sans SC', sans-serif;
+        }
+        #chat-window::-webkit-scrollbar { width: 8px; }
+        #chat-window::-webkit-scrollbar-track { background: #f1f5f9; }
+        #chat-window::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        #chat-window::-webkit-scrollbar-thumb:hover { background: #64748b; }
+       .bot-response-dos { color: #16a34a; /* Green */ }
+       .bot-response-donts { color: #dc2626; /* Red */ }
+    </style>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-lg mx-auto bg-white rounded-2xl shadow-2xl flex flex-col h-[90vh] max-h-[750px]">
+        
+        <header class="bg-sky-600 text-white p-4 rounded-t-2xl shadow-md flex justify-between items-center">
+            <div>
+                <h1 id="header-title" class="text-xl font-bold">マナー学習ボット</h1>
+                <p id="header-lang-status" class="text-sm opacity-90">言語: 日本語</p>
+            </div>
+            <div id="language-switcher" class="flex space-x-1 sm:space-x-2">
+                <button onclick="switchLanguage('ja')" class="ja-btn bg-white text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform scale-110 ring-2 ring-white">日本語</button>
+                <button onclick="switchLanguage('en')" class="en-btn bg-sky-500 hover:bg-white hover:text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform hover:scale-110">EN</button>
+                <button onclick="switchLanguage('zh')" class="zh-btn bg-sky-500 hover:bg-white hover:text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform hover:scale-110">中文</button>
+            </div>
+        </header>
+
+        <main id="chat-window" class="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50">
+            </main>
+
+        <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl">
+            <div class="flex items-center space-x-3">
+                <input type="text" id="user-input" class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition" placeholder="「食事のマナー」のように入力">
+                <button id="send-btn" class="bg-sky-600 text-white rounded-full p-3 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-transform transform hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+<script>
+    // --- グローバル変数 ---
+    let currentLanguage = 'ja';
+    let inquiryState = {
+        status: 'idle', 
+        name: '',
+        email: '',
+        message: ''
+    };
+    let currentQuiz = null; 
+    let askedQuizIndices = new Set();
+    let currentDifficulty = null;
+
+    // --- DOM要素 ---
+    const chatWindow = document.getElementById('chat-window');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const langSwitcher = document.getElementById('language-switcher');
+
+    // --- 多言語UIテキスト ---
+    const uiStrings = {
+        ja: {
+            headerTitle: 'マナー学習ボット',
+            langStatus: '言語: 日本語',
+            inputPlaceholder: '「食事のマナー」のように入力',
+            welcome: {
+                message: 'こんにちは！日本のマナーについて、どんなことを知りたいですか？下のボタンから選ぶか、キーワードを入力してください。',
+                replies: ['食事', '電車', '訪問', '温泉', 'クイズ', 'お問い合わせ']
+            },
+            quiz_prompt: 'クイズの難易度を選択してください。',
+            quiz_difficulty: ['簡単', '普通', '難しい'],
+            defaultReply: '申し訳ありません、そのキーワードに関する情報は見つかりませんでした。別の言葉でお試しください。',
+            back_to_menu: 'メニューに戻る',
+            continue_quiz: 'クイズを続ける',
+            start_over_quiz: 'もう一度挑戦する',
+            all_quizzes_done: 'この難易度のクイズはすべて完了しました！素晴らしいです。',
+            lang_switched: '言語を日本語に切り替えました。',
+            inquiry: {
+                start: 'お問い合わせですね。承知いたしました。まず、お名前を教えていただけますか？（途中で「キャンセル」と入力すると中断できます）',
+                prompt_email: 'ありがとうございます。次に、ご連絡先のメールアドレスをお願いします。ご入力いただいたアドレスに確認メールをお送りします。',
+                prompt_message: '承知いたしました。最後にお問い合わせ内容をご記入ください。',
+                complete: 'お問い合わせいただき、ありがとうございます。ご入力いただいたメールアドレスに確認のメールを送信しました。担当者より追ってご連絡いたします。',
+                invalid_email: '申し訳ありませんが、メールアドレスの形式が正しくないようです。もう一度入力していただけますか？',
+                send_error: '申し訳ありません、送信中にエラーが発生しました。時間をおいて再度お試しください。',
+                cancelled: 'お問い合わせをキャンセルしました。',
+                cancel_keywords: ['キャンセル', 'やめる'],
+            }
+        },
+        en: {
+            headerTitle: 'Manners Learning Bot',
+            langStatus: 'Language: English',
+            inputPlaceholder: 'e.g., "dining manners"',
+            welcome: {
+                message: 'Hello! What would you like to know about Japanese manners? Choose from the buttons below or type a keyword.',
+                replies: ['Dining', 'Trains', 'Visiting', 'Onsen', 'Quiz', 'Contact']
+            },
+            quiz_prompt: 'Please select a quiz difficulty.',
+            quiz_difficulty: ['Easy', 'Normal', 'Hard'],
+            defaultReply: "I'm sorry, I couldn't find information on that topic. Please try another keyword.",
+            back_to_menu: 'Back to Menu',
+            continue_quiz: 'Continue Quiz',
+            start_over_quiz: 'Start Over',
+            all_quizzes_done: 'You have completed all the quizzes for this difficulty! Excellent work.',
+            lang_switched: 'Language switched to English.',
+            inquiry: {
+                start: 'Okay, you want to make an inquiry. First, could you please tell me your name? (You can type "cancel" to stop at any time)',
+                prompt_email: 'Thank you. Next, please provide your email address. A confirmation email will be sent to this address.',
+                prompt_message: 'Got it. Finally, please enter your message.',
+                complete: 'Thank you for your inquiry. A confirmation email has been sent to your address. Our team will get back to you shortly.',
+                invalid_email: "I'm sorry, but the email address format seems incorrect. Could you please enter it again?",
+                send_error: 'Sorry, an error occurred while sending. Please try again later.',
+                cancelled: 'The inquiry has been cancelled.',
+                cancel_keywords: ['cancel', 'stop'],
+            }
+        },
+        zh: {
+            headerTitle: '礼仪学习机器人',
+            langStatus: '语言: 中文',
+            inputPlaceholder: '例如输入“餐饮礼仪”',
+            welcome: {
+                message: '您好！关于日本的礼仪，您想了解什么？请从下面的按钮中选择或输入关键词。',
+                replies: ['餐饮', '电车', '拜访', '温泉', '测验', '联系我们']
+            },
+            quiz_prompt: '请选择测验的难度。',
+            quiz_difficulty: ['简单', '普通', '困难'],
+            defaultReply: '很抱歉，未能找到相关信息。请换个关键词试试。',
+            back_to_menu: '返回菜单',
+            continue_quiz: '继续测验',
+            start_over_quiz: '重新开始',
+            all_quizzes_done: '您已完成此难度的所有测验！非常棒。',
+            lang_switched: '语言已切换至中文。',
+            inquiry: {
+                start: '好的，您想进行咨询。首先，请问您的名字是？（您可以随时输入“取消”来中断）',
+                prompt_email: '谢谢。接下来，请输入您的电子邮件地址。我们将向此地址发送一封确认邮件。',
+                prompt_message: '好的。最后，请输入您的咨询内容。',
+                complete: '感谢您的咨询，我们已向您的邮箱发送了确认邮件。相关人员会尽快与您联系。',
+                invalid_email: '抱歉，电子邮件地址的格式似乎不正确，可以请您再输入一次吗？',
+                send_error: '抱歉，发送时发生错误，请稍后再试。',
+                cancelled: '咨询已取消。',
+                cancel_keywords: ['取消'],
+            }
+        }
+    };
+
+    // --- ナレッジベース ---
+    const knowledgeBase = {
+        ja: {
+            '食事': { dos: ['「いただきます」「ごちそうさま」を言う', 'お箸を正しく持つ'], donts: ['箸をご飯に突き刺す（立て箸）', '音を立てて食べる'], link: '/articles/dining-etiquette' },
+            '電車': { dos: ['静かに乗車する', 'お年寄りや妊婦の方に席を譲る'], donts: ['車内で大声で話す', '大きな荷物で通路をふさぐ'], link: '/articles/train-manners' },
+            '訪問': { dos: ['手土産を持参する', '玄関で靴を脱ぎ、向きを揃える'], donts: ['約束の時間より早く着きすぎる', '長居しすぎる'], link: '/articles/visiting-homes' },
+            '温泉': { dos: ['浴槽に入る前に体を洗う（かけ湯）', 'タオルを浴槽に入れない'], donts: ['水着を着用して入る', '濡れたまま脱衣所に戻る'], link: '/articles/onsen-rules' },
+            'クイズ': {
+                isQuiz: true,
+                easy: [
+                    { question: '食事を始める前の挨拶は何ですか？', options: ['さようなら', 'いただきます', 'こんにちは'], correct: 'いただきます', explanation: '食事の前には、食材や作ってくれた人への感謝を込めて「いただきます」と言うのが日本の習慣です。' },
+                    { question: '日本では、家に入るときに何をしますか？', options: ['帽子をかぶる', '靴を脱ぐ', '歌をうたう'], correct: '靴を脱ぐ', explanation: '日本の家では、玄関で靴を脱いでから中に上がるのが基本的なマナーです。' },
+                    { question: '人に会った時の昼間の挨拶は何ですか？', options: ['おやすみなさい', 'おはようございます', 'こんにちは'], correct: 'こんにちは', explanation: '昼間に使う最も一般的な挨拶は「こんにちは」です。' },
+                    { question: 'ゴミを道に捨てるのは良いことですか？', options: ['はい', 'いいえ', 'どちらでもない'], correct: 'いいえ', explanation: '公共の場所をきれいに保つため、ゴミは指定されたゴミ箱に捨てるか、持ち帰るのがマナーです。' },
+                    { question: '電車の中で大声で電話をするのはOKですか？', options: ['はい', 'いいえ', '状況による'], correct: 'いいえ', explanation: '公共の交通機関では、他の乗客の迷惑にならないように静かにするのがマナーです。電話は通常控えます。' },
+                    { question: 'レストランで店員を呼ぶとき、大きな声で叫びますか？', options: ['はい、叫ぶのが普通', 'いいえ、手を挙げるかボタンを押す', '店員が来るまで待つ'], correct: 'いいえ、手を挙げるかボタンを押す', explanation: '店員を呼ぶ際は、静かに手を挙げるか、テーブルにある呼び出しボタンを押すのが一般的です。' },
+                    { question: 'エスカレーターに乗るとき、大阪ではどちら側に立ちますか？', options: ['左側', '右側', '真ん中'], correct: '右側', explanation: '東京では左側に立つのが一般的ですが、大阪では右側に立ち、急ぐ人のために左側を空ける習慣があります。' },
+                    { question: '人から物を受け取るとき、片手で受け取っても良いですか？', options: ['はい', 'いいえ、両手で受け取るのが丁寧', 'どちらでも良い'], correct: 'いいえ、両手で受け取るのが丁寧', explanation: '特に目上の人から物を受け取る際は、両手で受け取るのが敬意を示す丁寧な方法です。' },
+                    { question: 'くしゃみをする時、手で口を覆うだけで十分ですか？', options: ['はい、十分です', 'いいえ、マスクやハンカチを使うのが望ましい', '何もしなくても良い'], correct: 'いいえ、マスクやハンカッチを使うのが望ましい', explanation: '飛沫を飛ばさないために、手だけでなく、マスク、ハンカチ、または腕の内側で口と鼻を覆うのが良いマナーです。' },
+                    { question: 'お風呂に入る前には何をしますか？', options: ['そのまま浴槽に入る', '体を洗う、または「かけ湯」をする', '準備運動をする'], correct: '体を洗う、または「かけ湯」をする', explanation: '浴槽のお湯を汚さないように、入る前に体の汚れを洗い流すか、お湯を体にかける「かけ湯」をするのがマナーです。' },
+                    { question: '映画館で上映中にスマートフォンを見るのは良いですか？', options: ['はい、音を消せばOK', 'いいえ、画面の光が迷惑になる', '緊急時のみOK'], correct: 'いいえ、画面の光が迷惑になる', explanation: '音を消していても、スマートフォンの明るい画面は周りの人の鑑賞の妨げになるため、使用は控えるべきです。' },
+                    { question: '日本では、お辞儀はどのような意味を持ちますか？', options: ['謝罪のみ', '挨拶、感謝、敬意など様々', '挨拶のみ'], correct: '挨拶、感謝、敬意など様々', explanation: 'お辞儀は「こんにちは」という挨拶だけでなく、感謝や謝罪、敬意を示すなど、様々な場面で使われる重要なコミュニケーションです。' },
+                    { question: '割り箸を割った後、箸をこすり合わせるのは良いマナーですか？', options: ['はい、木くずを取るために必要', 'いいえ、あまり品が良くないとされる', 'どちらでもない'], correct: 'いいえ、あまり品が良くないとされる', explanation: '箸をこすり合わせる行為は、その箸が安物だと示しているようで、お店に対して失礼と見なされることがあります。' },
+                    { question: '日本ではチップ（心付け）の習慣はありますか？', options: ['はい、常に必要', 'いいえ、基本的に不要', '高級な場所でのみ必要'], correct: 'いいえ、基本的に不要', explanation: '日本ではサービス料が料金に含まれているため、ホテルやレストラン、タクシーなどでチップを渡す習慣は基本的にありません。' },
+                    { question: '公共の場で鼻をかむのはOKですか？', options: ['はい、問題ない', 'いいえ、人前では音を立てずに静かに', 'トイレなど人目につかない場所で行うのが望ましい'], correct: 'トイレなど人目につかない場所で行うのが望ましい', explanation: '人前で大きな音を立てて鼻をかむのは、不快に思う人もいます。できるだけ人目につかない場所で行うのが無難です。' }
+                ],
+                normal: [
+                    { question: 'レストランで、入り口から一番遠い席は誰が座る席でしょうか？', options: ['一番偉い人', '一番若い人', '誰でも良い'], correct: '一番偉い人', explanation: '日本では、入り口から最も遠い席が「上座（かみざ）」とされ、最も敬意を払うべき人が座るのが一般的です。' },
+                    { question: '畳の部屋を歩くとき、踏んではいけないとされている場所はどこでしょう？', options: ['畳の中心', '畳の縁（へり）', '部屋の角'], correct: '畳の縁（へり）', explanation: '畳の縁には家の紋章が入っていることがあり、その家や人を象徴するため、踏むことは失礼とされています。' },
+                    { question: '食事中、お箸からお箸へ直接食べ物を渡す行為を何と呼びますか？', options: ['渡し箸', '合わせ箸', '拾い箸'], correct: '拾い箸', explanation: '火葬後のお骨拾いを連想させるため、「拾い箸（合わせ箸とも言う）」は最大のタブーの一つです。' },
+                    { question: '温泉で、浴槽にタオルを入れるのは良いことですか？', options: ['良い', '悪い', 'どちらでもない'], correct: '悪い', explanation: '衛生上の理由から、タオルを浴槽に入れるのはマナー違反です。頭の上に置くのが一般的です。' },
+                    { question: 'タクシーの後部座席のドアは、乗客が自分で開け閉めするのが正しいですか？', options: ['はい、自分で開閉する', 'いいえ、自動で開閉する', '運転手に頼む'], correct: 'いいえ、自動で開閉する', explanation: '日本のタクシーの多くはドアが自動で開閉します。無理に開け閉めすると故障の原因になるため、触らないのがマナーです。' },
+                    { question: '乾杯の時、目上の人のグラスより自分のグラスの位置をどうするのが良いですか？', options: ['高く上げる', '同じ高さにする', '少し下げる'], correct: '少し下げる', explanation: '乾杯の際、相手への敬意を示すために、自分のグラスの縁を目上の方のグラスより少し下げて合わせるのが丁寧なマナーです。' },
+                    { question: '食事の際、一度口をつけた料理を残すのは失礼にあたりますか？', options: ['はい、必ず完食すべき', 'いいえ、問題ない', 'できるだけ避けるべき'], correct: 'できるだけ避けるべき', explanation: '食べ物を残すことは、作った人や食材への感謝が足りないと見なされることがあるため、食べきれる量を注文し、できるだけ残さないのが良いマナーです。' },
+                    { question: '人の家を訪問した際、勧められる前に好きな席に座っても良いですか？', options: ['はい、自由に座って良い', 'いいえ、案内されるまで待つべき', 'どちらでも良い'], correct: 'いいえ、案内されるまで待つべき', explanation: '訪問先では、部屋に通された後、ホストから「どうぞこちらへ」と勧められるまで、立って待つのが礼儀です。' },
+                    { question: 'お葬式に参列する際の香典で、避けるべき紙幣は何ですか？', options: ['古いお札', '新しいお札（新札）', 'どれでも良い'], correct: '新しいお札（新札）', explanation: '新札は「不幸を予期して準備していた」と連想させるため、あえて少し折り目をつけた古いお札を使うのが一般的です。' },
+                    { question: '神社を参拝する際、鳥居をくぐる前に行うと良いとされることは何ですか？', options: ['深呼吸する', '一礼する', '靴を脱ぐ'], correct: '一礼する', explanation: '鳥居は神様の領域への入り口を示すものです。くぐる前に立ち止まり、軽く一礼するのが丁寧な作法です。' },
+                    { question: '食事中、お箸を置くときはどうするのが正しいですか？', options: ['お皿の上に置く', 'お椀の縁にかける', '箸置きに置く'], correct: '箸置きに置く', explanation: '食事の途中で箸を置く際は、箸先がお皿につかないように、箸置きに置くのが正しいマナーです。箸置きがなければ、お皿の縁にかけます。' },
+                    { question: 'ビジネスの場で、相手を呼ぶときに「あなた」と言うのは適切ですか？', options: ['はい、適切です', 'いいえ、相手の役職名や「様」を使う', 'どちらでも良い'], correct: 'いいえ、相手の役職名や「様」を使う', explanation: 'ビジネスシーンで「あなた」と呼ぶのは、相手を見下しているように聞こえる場合があり失礼です。「〇〇部長」や「〇〇様」のように呼ぶのが適切です。' },
+                    { question: 'お寿司を手で食べても良いですか？', options: ['はい、問題ない', 'いいえ、必ず箸を使う', '高級店のみ手で食べても良い'], correct: 'はい、問題ない', explanation: 'お寿司は、箸を使っても手で直接つまんで食べても、どちらも正式なマナーとして認められています。食べやすい方で構いません。' },
+                    { question: '日本では、時間を守ることはどれくらい重要視されますか？', options: ['あまり重要ではない', '非常に重要', '約束による'], correct: '非常に重要', explanation: '日本の社会では、約束の時間に遅れることは相手への敬意を欠く行為と見なされ、時間を守ることは非常に重要視されます。' },
+                    { question: '贈り物に「４」や「９」の数を含む品物を避けるのはなぜですか？', options: ['縁起が悪い数字だから', '高価すぎるから', '数が足りないから'], correct: '縁起が悪い数字だから', explanation: '数字の「４」は「死」、「９」は「苦」を連想させるため、お祝い事などの贈り物ではこれらの数に関連する品物は避ける習慣があります。' }
+                ],
+                hard: [
+                    { question: '訪問先で手渡す手土産は、どのタイミングで渡すのが最も丁寧でしょうか？', options: ['玄関先ですぐに', '部屋に通されて挨拶が終わった後', '帰る直前'], correct: '部屋に通されて挨拶が終わった後', explanation: '玄関先で渡すのは相手に手間をかけさせるため、部屋に通されて落ち着いてから渡すのが丁寧なマナーです。' },
+                    { question: '名刺交換の際、受け取った名刺はすぐにどうするべきですか？', options: ['すぐに名刺入れにしまう', 'テーブルの上に自分の左側に置く', 'ポケットに入れる'], correct: 'テーブルの上に自分の左側に置く', explanation: '受け取った名刺は相手の分身と考え、すぐにしまわず、商談が終わるまでテーブルの上に置いておくのが敬意の表れです。' },
+                    { question: 'エレベーターに乗る時、操作盤の前に立った人はどうするのが一般的ですか？', options: ['率先してボタンを押す', '何もしない', '他の人に操作を頼む'], correct: '率先してボタンを押す', explanation: '操作盤の前に立った人は、他の人が乗り降りしやすいようにドアの操作などをするのが親切とされています。' },
+                    { question: '新幹線でリクライニングシートを倒す時、最も丁寧な行動はどれですか？', options: ['何も言わずに倒す', '後ろの人に一声かける', '最大まで一気に倒す'], correct: '後ろの人に一声かける', explanation: '後ろの人が飲み物等を置いている可能性があるため、一声かけるのが思いやりのあるマナーです。' },
+                    { question: '人に贈り物を渡す時、デパートの包装紙のまま渡すのは失礼にあたりますか？', options: ['はい、失礼にあたる', 'いいえ、失礼ではない', '場合による'], correct: 'いいえ、失礼ではない', explanation: 'お店のきれいな包装紙で包んでもらった状態のまま渡すのが一般的で、信頼の証と見なされることもあります。' },
+                    { question: '会食の席で、お酌をされたがお酒が飲めない場合、最も良い断り方はどれですか？', options: ['黙ってグラスを伏せる', '「結構です」と強く断る', '感謝を述べ、グラスに口をつけるふりをする'], correct: '感謝を述べ、グラスに口をつけるふりをする', explanation: '相手の厚意を無にしないよう、一度感謝して受け、飲めない理由を伝えた上で口をつける真似をするのが、角の立たない洗練された断り方です。' },
+                    { question: '結婚祝いのご祝儀で、金額が「割り切れる」偶数を避けるのはなぜですか？', options: ['計算が難しいから', '「別れ」を連想させるから', '縁起が悪いから'], correct: '「別れ」を連想させるから', explanation: '「割り切れる」＝「（夫婦が）分かれる、別れる」を連想させるため、結婚祝いでは奇数の金額が好まれます。ただし、ペアを意味する「２」や末広がりの「８」は例外的に良いとされます。' },
+                    { question: '贈り物にハンカチを選ぶのが、時として避けられるのはなぜですか？', options: ['値段が安いから', '涙を拭うものなので「別れ」を意味するから', '実用的すぎるから'], correct: '涙を拭うものなので「別れ」を意味するから', explanation: 'ハンカチは漢字で「手巾（てぎれ）」と書くことができ、これが「手切れ」を連想させるため、特に別れの場面以外での贈り物としては避けることがあります。' },
+                    { question: '和室で、座布団を足で踏むのはなぜ失礼なのですか？', options: ['汚れるから', '座布団は「お客様をお迎えする心」の象徴だから', '滑って危ないから'], correct: '座布団は「お客様をお迎えする心」の象徴だから', explanation: '座布団は単なるクッションではなく、お客様への敬意や歓迎の気持ちを表すものです。それを足で踏む行為は、相手の心を踏みにじることと同じと見なされます。' },
+                    { question: '上司や取引先とタクシーに乗る際、最も下座（部下や接待側が座る席）はどこですか？', options: ['後部座席の窓側', '助手席', '後部座席の中央'], correct: '助手席', explanation: 'タクシーでは運転席の後ろが最も上座とされ、支払いなどを行う助手席が最も下座となります。' },
+                    { question: 'お茶の入った湯呑みに蓋がある場合、飲んだ後どうするのが正しいですか？', options: ['蓋を裏返して置く', '蓋を湯呑みの横に置く', '元通りに蓋をする'], correct: '元通りに蓋をする', explanation: '飲み終わったら、元々あったように蓋を閉めるのが正しい作法です。裏返したり、ずらして置いたりするのはマナー違反です。' },
+                    { question: '「ご無沙汰しております」という挨拶は、どのくらいの期間会っていない相手に使いますか？', options: ['1週間', '1ヶ月', '3ヶ月以上'], correct: '3ヶ月以上', explanation: '一般的に、3ヶ月以上から半年、1年と、かなり長期間会っていない相手に対して使うのが適切な言葉です。' },
+                    { question: 'ビジネスメールの宛名で、相手の部署全体に送る場合に使う敬称は何ですか？', options: ['各位', '御中', '様'], correct: '御中', explanation: '「御中」は会社や部署など、組織内の不特定の誰か（担当者）に宛てて送る際に使います。「各位」は複数の個人に宛てて使う言葉です。' },
+                    { question: 'お葬式で涙を流すのは、故人に対して失礼にあたりますか？', options: ['はい、失礼にあたる', 'いいえ、自然な感情の表れとして問題ない', '場合による'], correct: 'いいえ、自然な感情の表れとして問題ない', explanation: '故人を悼む気持ちからの涙は、決して失礼にはあたりません。ただし、大声で泣き叫ぶなど、他の参列者の迷惑になるほどの振る舞いは慎むべきです。' },
+                    { question: 'お祝いの席で、使ってはいけない「忌み言葉」の例はどれですか？', options: ['「終わる」「切れる」', '「始まる」「続く」', '「嬉しい」「楽しい」'], correct: '「終わる」「切れる」', explanation: '結婚式などのお祝いの場では、「終わる」「切れる」「離れる」「戻る」といった、別れや不幸を連想させる「忌み言葉」を使うのはタブーとされています。' }
+                ]
+            },
+            'お問い合わせ': { isInquiry: true }
+        },
+        en: {
+            'dining': { dos: ['Say "itadakimasu" and "gochisosama"', 'Hold chopsticks correctly'], donts: ['Sticking chopsticks upright in your rice', 'Making loud noises while eating'], link: '/en/articles/dining-etiquette' },
+            'trains': { dos: ['Be quiet on the train', 'Offer your seat to the elderly'], donts: ['Talking loudly or on the phone', 'Blocking the aisle'], link: '/en/articles/train-manners' },
+            'visiting': { dos: ['Bring a small gift', 'Take off your shoes at the entrance'], donts: ['Arriving too early', 'Looking around rooms without permission'], link: '/en/articles/visiting-homes' },
+            'onsen': { dos: ['Wash your body before entering the bath', 'Do not put your towel in the bathtub'], donts: ['Wearing a swimsuit', 'Returning to the changing room while wet'], link: '/en/articles/onsen-rules' },
+            'quiz': {
+                isQuiz: true,
+                easy: [
+                    { question: 'What do you say before starting a meal?', options: ['Sayonara', 'Itadakimasu', 'Konnichiwa'], correct: 'Itadakimasu', explanation: 'It is a Japanese custom to say "Itadakimasu" before meals to express gratitude for the food and those who prepared it.' },
+                    { question: 'What do you do when entering a Japanese home?', options: ['Wear a hat', 'Take off your shoes', 'Sing a song'], correct: 'Take off your shoes', explanation: 'It is basic manners to take off your shoes at the entrance before entering a Japanese house.' },
+                    { question: 'What is the daytime greeting when you meet someone?', options: ['Oyasuminasai', 'Ohayou gozaimasu', 'Konnichiwa'], correct: 'Konnichiwa', explanation: 'The most common greeting used during the daytime is "Konnichiwa".' },
+                    { question: 'Is it okay to throw trash on the street?', options: ['Yes', 'No', 'It depends'], correct: 'No', explanation: 'To keep public spaces clean, it is mannerly to throw trash in designated bins or take it home with you.' },
+                    { question: 'Is it okay to talk loudly on the phone on a train?', options: ['Yes', 'No', 'It depends'], correct: 'No', explanation: 'On public transportation, it is good manners to be quiet so as not to disturb other passengers. Phone calls are usually avoided.' },
+                    { question: 'When calling a waiter in a restaurant, do you shout loudly?', options: ['Yes, that\'s normal', 'No, raise your hand or press a button', 'Wait for them to come'], correct: 'No, raise your hand or press a button', explanation: 'It is common to quietly raise your hand or press the call button on the table to call a waiter.' },
+                    { question: 'In Osaka, which side do you stand on when riding an escalator?', options: ['Left side', 'Right side', 'Middle'], correct: 'Right side', explanation: 'While it\'s common to stand on the left in Tokyo, people in Osaka stand on the right, leaving the left side open for those in a hurry.' },
+                    { question: 'Is it okay to receive something from someone with one hand?', options: ['Yes', 'No, it\'s polite to use both hands', 'It doesn\'t matter'], correct: 'No, it\'s polite to use both hands', explanation: 'Using both hands to receive items, especially from someone senior, is a polite way of showing respect.' },
+                    { question: 'When you sneeze, is it enough to cover your mouth with your hand?', options: ['Yes, it is', 'No, using a mask or handkerchief is better', 'You don\'t need to do anything'], correct: 'No, using a mask or handkerchief is better', explanation: 'To prevent spreading droplets, it is good manners to cover your mouth and nose with a mask, handkerchief, or the inside of your elbow.' },
+                    { question: 'What do you do before getting into a bathtub?', options: ['Get in directly', 'Wash your body or do "kake-yu"', 'Do warm-up exercises'], correct: 'Wash your body or do "kake-yu"', explanation: 'It is a manner to wash your body or pour hot water on yourself ("kake-yu") before entering the bathtub to keep the bathwater clean.' },
+                    { question: 'Is it okay to look at your smartphone during a movie in a cinema?', options: ['Yes, if it\'s silent', 'No, the screen light is distracting', 'Only in an emergency'], correct: 'No, the screen light is distracting', explanation: 'Even on silent, the bright screen of a smartphone can disturb others\' viewing experience and should be avoided.' },
+                    { question: 'In Japan, what does bowing signify?', options: ['Only apology', 'Greetings, thanks, respect, etc.', 'Only greetings'], correct: 'Greetings, thanks, respect, etc.', explanation: 'Bowing is an important form of communication used in various situations, not just for greetings, but also to express gratitude, apology, and respect.' },
+                    { question: 'After splitting disposable chopsticks, is it good manners to rub them together?', options: ['Yes, to remove splinters', 'No, it\'s considered unrefined', 'It doesn\'t matter'], correct: 'No, it\'s considered unrefined', explanation: 'Rubbing chopsticks together can imply that they are cheap, which may be seen as disrespectful to the establishment.' },
+                    { question: 'Is there a tipping custom in Japan?', options: ['Yes, always required', 'No, basically unnecessary', 'Only in high-end places'], correct: 'No, basically unnecessary', explanation: 'In Japan, a service charge is usually included in the bill, so there is no custom of tipping at hotels, restaurants, or in taxis.' },
+                    { question: 'Is it okay to blow your nose in public?', options: ['Yes, no problem', 'No, do it quietly without making noise', 'It\'s better to do it in private, like a restroom'], correct: 'It\'s better to do it in private, like a restroom', explanation: 'Blowing your nose loudly in public can be considered unpleasant by some people. It is best to do so in a more private setting if possible.' }
+                ],
+                normal: [
+                    { question: 'In a restaurant, who sits in the seat furthest from the entrance?', options: ['The most important person', 'The youngest person', 'Anyone'], correct: 'The most important person', explanation: 'In Japan, the seat furthest from the entrance is called "kamiza," and it is generally for the person who should be shown the most respect.' },
+                    { question: 'When walking in a tatami room, what part should you avoid stepping on?', options: ['The center of the mat', 'The border of the mat (heri)', 'The corner of the room'], correct: 'The border of the mat (heri)', explanation: 'The borders of tatami mats sometimes contain the family crest and are symbolic, so stepping on them is considered disrespectful.' },
+                    { question: 'What is the act of passing food directly from one pair of chopsticks to another called?', options: ['Watashi-bashi', 'Awase-bashi', 'Hiroi-bashi'], correct: 'Hiroi-bashi', explanation: 'This is a major taboo as it resembles the practice of picking up bones at a funeral. It is often called "Hiroi-bashi" or "Awase-bashi".' },
+                    { question: 'Is it okay to put your towel in the bathtub at an onsen?', options: ['Yes', 'No', 'It does not matter'], correct: 'No', explanation: 'For hygienic reasons, it is bad manners to put your towel in the bathwater. It is common to place it on your head.' },
+                    { question: 'When riding a taxi, is it correct for passengers to open and close the door themselves?', options: ['Yes, do it yourself', 'No, it\'s automatic', 'Ask the driver'], correct: 'No, it\'s automatic', explanation: 'Most taxis in Japan have automatic rear doors operated by the driver. It\'s polite not to touch the door.' },
+                    { question: 'When making a toast, how should you position your glass relative to a senior person\'s glass?', options: ['Higher', 'At the same level', 'Slightly lower'], correct: 'Slightly lower', explanation: 'To show respect, it is polite to clink your glass with the rim of your glass slightly below the rim of the senior person\'s glass.' },
+                    { question: 'Is it rude to leave food on your plate after you have started eating it?', options: ['Yes, you must finish everything', 'No, it is not a problem', 'It should be avoided if possible'], correct: 'It should be avoided if possible', explanation: 'Leaving food is sometimes seen as a lack of gratitude towards the person who prepared it and the ingredients, so it\'s good manners to order what you can finish.' },
+                    { question: 'When visiting someone\'s home, is it okay to sit wherever you like before being invited to?', options: ['Yes, you can sit freely', 'No, you should wait to be guided', 'It doesn\'t matter'], correct: 'No, you should wait to be guided', explanation: 'It is polite to stand and wait until the host invites you to sit in a particular place after being shown into a room.' },
+                    { question: 'For condolence money (koden) at a funeral, what kind of banknote should be avoided?', options: ['Old bills', 'New, crisp bills', 'Any bill is fine'], correct: 'New, crisp bills', explanation: 'Using new bills can imply that you were expecting the death and had prepared for it, so it is common to use older bills with a fold.' },
+                    { question: 'When visiting a shrine, what is the proper etiquette before passing through the torii gate?', options: ['Take a deep breath', 'Bow once', 'Take off your shoes'], correct: 'Bow once', explanation: 'A torii gate marks the entrance to a sacred space. It is polite to stop and make a slight bow before passing through.' },
+                    { question: 'During a meal, what is the correct way to place your chopsticks when taking a break?', options: ['On top of your plate', 'Across the rim of your bowl', 'On a chopstick rest'], correct: 'On a chopstick rest', explanation: 'When not using your chopsticks, the correct manner is to place them on a chopstick rest so that the tips do not touch the plate. If there is no rest, you can place them on the edge of a dish.' },
+                    { question: 'Is it appropriate to call someone "anata" (you) in a business setting?', options: ['Yes, it is appropriate', 'No, use their title or "-sama"', 'It doesn\'t matter'], correct: 'No, use their title or "-sama"', explanation: 'Using "anata" in business can sound condescending and is considered rude. It is appropriate to use their title, like "〇〇 Bucho" (Director 〇〇), or their name with "-sama".' },
+                    { question: 'Is it acceptable to eat sushi with your hands?', options: ['Yes, it is fine', 'No, you must use chopsticks', 'Only in high-end restaurants'], correct: 'Yes, it is fine', explanation: 'Eating sushi with either chopsticks or your hands is considered proper etiquette. You can use whichever method is more comfortable for you.' },
+                    { question: 'How important is being on time in Japan?', options: ['Not very important', 'Extremely important', 'It depends on the appointment'], correct: 'Extremely important', explanation: 'In Japanese society, being late is seen as a lack of respect, and punctuality is highly valued.' },
+                    { question: 'Why are gifts with "4" or "9" items often avoided?', options: ['Because they are unlucky numbers', 'Because they are too expensive', 'Because the quantity is insufficient'], correct: 'Because they are unlucky numbers', explanation: 'The number "4" sounds like "shi" (death) and "9" sounds like "ku" (suffering), so it is customary to avoid these numbers in gifts for celebrations.' }
+                ],
+                hard: [
+                    { question: 'When visiting someone\'s home, what is the most polite timing to give a gift (omiyage)?', options: ['Immediately at the entrance', 'After being shown into the room and finishing greetings', 'Just before leaving'], correct: 'After being shown into the room and finishing greetings', explanation: 'Giving a gift at the entrance can be burdensome for the host, so it is more polite to give it after settling in the room.' },
+                    { question: 'When exchanging business cards, what should you do immediately with the card you receive?', options: ['Put it in your card case right away', 'Place it on the table to your left', 'Put it in your pocket'], correct: 'Place it on the table to your left', explanation: 'A business card is considered an extension of the person, so you should respectfully place it on the table until the meeting is over.' },
+                    { question: 'When riding an elevator, what is the common etiquette for the person standing in front of the control panel?', options: ['Proactively press the buttons', 'Do nothing', 'Ask someone else to operate it'], correct: 'Proactively press the buttons', explanation: 'The person standing in front of the control panel is often expected to help others by operating the doors and selecting floors.' },
+                    { question: 'When reclining your seat on the Shinkansen (bullet train), what is the most polite action?', options: ['Recline without saying anything', 'Ask the person behind you', 'Recline it all the way back'], correct: 'Ask the person behind you', explanation: 'It is considerate to ask the person behind you, as they might have drinks or a laptop on their table.' },
+                    { question: 'When giving a gift, is it rude to give it in the store\'s wrapping paper?', options: ['Yes, it is rude', 'No, it is not rude', 'It depends'], correct: 'No, it is not rude', explanation: 'It is common and acceptable to give a gift in the store\'s original wrapping, as it can be a sign of quality.' },
+                    { question: 'At a dinner, if someone offers you a drink but you cannot drink alcohol, what is the best way to refuse?', options: ['Silently turn your glass upside down', 'Firmly say "No, thank you"', 'Express thanks and pretend to sip from the glass'], correct: 'Express thanks and pretend to sip from the glass', explanation: 'To not dismiss the person\'s kindness, it is a sophisticated manner to first accept with thanks, explain you cannot drink, and then just bring the glass to your lips without drinking.' },
+                    { question: 'For a wedding gift of money, why are even numbers that can be "divided" avoided?', options: ['Because it\'s hard to calculate', 'Because it suggests "separation"', 'Because it\'s unlucky'], correct: 'Because it suggests "separation"', explanation: '"Divisible" can be associated with "dividing" or "separating" a couple, so odd numbers are preferred for wedding gifts. However, "2" (a pair) and "8" (prosperity) are exceptions.' },
+                    { question: 'Why is giving a handkerchief as a gift sometimes avoided?', options: ['Because it is cheap', 'Because it\'s used to wipe tears, implying "farewell"', 'Because it is too practical'], correct: 'Because it\'s used to wipe tears, implying "farewell"', explanation: 'The Japanese word for handkerchief, "hankachi," can be written with characters that also mean "to cut ties," so it is sometimes avoided as a gift outside of farewell situations.' },
+                    { question: 'In a Japanese-style room, why is it rude to step on a zabuton (floor cushion)?', options: ['Because it gets dirty', 'Because it symbolizes the host\'s hospitality', 'Because it\'s slippery and dangerous'], correct: 'Because it symbolizes the host\'s hospitality', explanation: 'A zabuton is not just a cushion but a symbol of respect and welcome for a guest. Stepping on it is like stepping on the host\'s heart.' },
+                    { question: 'When taking a taxi with a boss or client, which seat is considered the lowest (for the subordinate)?', options: ['Rear seat by the window', 'The front passenger seat', 'The middle rear seat'], correct: 'The front passenger seat', explanation: 'In a taxi, the seat behind the driver is the highest-ranking seat, and the front passenger seat, where payments are handled, is the lowest.' },
+                    { question: 'If a teacup comes with a lid, what is the correct thing to do after drinking?', options: ['Place the lid upside down', 'Place the lid next to the teacup', 'Put the lid back on as it was'], correct: 'Put the lid back on as it was', explanation: 'The proper etiquette is to replace the lid as it was originally. Placing it upside down or to the side is incorrect.' },
+                    { question: 'When is it appropriate to use the greeting "Gobusata shiteorimasu" (It has been a while)?', options: ['After one week', 'After one month', 'After three months or more'], correct: 'After three months or more', explanation: 'This phrase is generally used when you have not seen someone for a significant period, typically three months or longer.' },
+                    { question: 'In a business email, what is the correct honorific to use when addressing an entire department?', options: ['各位 (kaku-i)', '御中 (on-chū)', '様 (sama)'], correct: '御中 (on-chū)', explanation: '"On-chū" is used when addressing a company or department as a whole, rather than a specific individual. "Kaku-i" is used for addressing a group of individuals.' },
+                    { question: 'At a funeral, is it considered disrespectful to the deceased to cry?', options: ['Yes, it is disrespectful', 'No, it is a natural expression of grief', 'It depends'], correct: 'No, it is a natural expression of grief', explanation: 'Tears shed out of grief for the deceased are not considered disrespectful. However, behavior that disturbs other mourners, such as loud wailing, should be avoided.' },
+                    { question: 'What is an example of an "imi-kotoba" (taboo word) that should be avoided at a celebration?', options: ['"To end," "to cut"', '"To begin," "to continue"', '"Happy," "joyful"'], correct: '"To end," "to cut"', explanation: 'At celebrations like weddings, it is taboo to use words that suggest separation or misfortune, such as "to end," "to cut," "to leave," or "to return".' }
+                ]
+            },
+            'contact': { isInquiry: true }
+        },
+        zh: {
+            '餐饮': { dos: ['吃饭前后说“我开动了”和“我吃好了”', '正确使用筷子'], donts: ['把筷子插在米饭上', '吃饭时发出很大声音'], link: '/zh/articles/dining-etiquette' },
+            '电车': { dos: ['安静乘车', '给老人或孕妇让座'], donts: ['在车厢内大声说话或打电话', '用大件行李堵住通道'], link: '/zh/articles/train-manners' },
+            '拜访': { dos: ["带上小礼物", "在玄关脱鞋"], donts: ["比约定时间到得太早", "未经允许随意参观房间"], link: '/zh/articles/visiting-homes' },
+            '温泉': { dos: ["进入浴池前先冲洗身体", "不要将毛巾带入浴池中"], donts: ["穿着泳衣进入浴池", "身体未擦干就回到更衣室"], link: '/zh/articles/onsen-rules' },
+            '测验': {
+                isQuiz: true,
+                easy: [
+                    { question: '开始吃饭前应该说什么？', options: ['再见', '我开动了', '你好'], correct: '我开动了', explanation: '在日本，饭前说“我开动了”是表示对食物和做饭人的感谢的习惯。' },
+                    { question: '在日本，进屋时要做什么？', options: ['戴帽子', '脱鞋', '唱歌'], correct: '脱鞋', explanation: '在日本的房子里，在玄关脱鞋再进去是基本礼仪。' },
+                    { question: '白天见到人时的问候语是什么？', options: ['晚安', '早上好', '你好'], correct: '你好', explanation: '白天最常用的问候语是“你好”。' },
+                    { question: '把垃圾扔在路上是好事吗？', options: ['是', '不是', '都可以'], correct: '不是', explanation: '为了保持公共场所的清洁，把垃圾扔到指定的垃圾箱或带回家是基本礼仪。' },
+                    { question: '可以在电车里大声打电话吗？', options: ['可以', '不可以', '看情况'], correct: '不可以', explanation: '在公共交通工具上，为了不打扰其他乘客，保持安静是基本礼仪。通常不打电话。' },
+                    { question: '在餐厅叫服务员时，应该大声喊叫吗？', options: ['是的，这是正常的', '不，应该举手或按按钮', '等着服务员过来'], correct: '不，应该举手或按按钮', explanation: '叫服务员时，通常是安静地举手或按桌上的呼叫按钮。' },
+                    { question: '在大阪乘坐自动扶梯时，应该站在哪一边？', options: ['左边', '右边', '中间'], correct: '右边', explanation: '虽然在东京通常是靠左站，但在大阪的习惯是靠右站，把左边留给赶时间的人。' },
+                    { question: '从别人那里收东西时，可以用一只手接吗？', options: ['可以', '不，用双手接更礼貌', '都可以'], correct: '不，用双手接更礼貌', explanation: '用双手接收物品，特别是从长辈那里，是表示尊重的一种礼貌方式。' },
+                    { question: '打喷嚏时，只用手捂住嘴就够了吗？', options: ['是的，足够了', '不，最好使用口罩或手帕', '什么都不用做'], correct: '不，最好使用口罩或手帕', explanation: '为了防止飞沫传播，用口罩、手帕或手臂内侧遮住口鼻是更好的礼仪。' },
+                    { question: '进入浴池前应该做什么？', options: ['直接进入浴池', '先洗身体或“冲汤”', '做准备活动'], correct: '先洗身体或“冲汤”', explanation: '为了保持浴池水的清洁，进入前先冲洗身体或用热水浇身（“冲汤”）是基本礼仪。' },
+                    { question: '在电影院放映期间看手机可以吗？', options: ['可以，只要静音就行', '不，屏幕的光会打扰别人', '只有紧急情况可以'], correct: '不，屏幕的光会打扰别人', explanation: '即使静音，智能手机的亮屏也会干扰他人的观影体验，应该避免使用。' },
+                    { question: '在日本，鞠躬代表什么意思？', options: ['只表示道歉', '问候、感谢、尊敬等多种含义', '只表示问候'], correct: '问候、感谢、尊敬等多种含义', explanation: '鞠躬不仅是问候，也是一种重要的交流方式，用于表达感谢、歉意和尊敬等多种情感。' },
+                    { question: '掰开一次性筷子后，互相摩擦筷子是好习惯吗？', options: ['是的，为了去除木屑', '不，被认为不太雅观', '都可以'], correct: '不，被认为不太雅观', explanation: '摩擦筷子的行为可能暗示筷子很廉价，这可能被视为对店家不敬。' },
+                    { question: '日本有给小费的习惯吗？', options: ['有，总是需要', '没有，基本上不需要', '只在高级场所需要'], correct: '没有，基本上不需要', explanation: '在日本，服务费通常已包含在账单里，所以在酒店、餐厅或出租车上基本没有给小费的习惯。' },
+                    { question: '在公共场合擤鼻涕可以吗？', options: ['可以，没问题', '不，应该安静地进行', '最好在洗手间等私密场所进行'], correct: '最好在洗手间等私密场所进行', explanation: '在公共场合大声擤鼻涕可能会让一些人感到不舒服，最好在不引人注目的地方进行。' }
+                ],
+                normal: [
+                    { question: '在餐厅里，离入口最远的座位是给谁坐的？', options: ['地位最高的人', '最年轻的人', '任何人都可以'], correct: '地位最高的人', explanation: '在日本，离入口最远的座位被称为“上座”，通常是给最应受尊敬的人坐的。' },
+                    { question: '在榻榻米房间行走时，哪个地方是规定不能踩的？', options: ['榻榻米的中心', '榻榻米的边缘', '房间的角落'], correct: '榻榻米的边缘', explanation: '榻榻米的边缘有时会饰有家徽，它象征着家族，因此踩踏它被认为是不礼貌的。' },
+                    { question: '用餐时，用筷子直接将食物传递给别人的筷子的行为叫什么？', options: ['渡し箸', '合わせ箸', '拾い箸'], correct: '拾い箸', explanation: '这种行为会让人联想到火葬后捡拾骨灰的仪式，因此“拾い箸”是最大的禁忌之一。' },
+                    { question: '在温泉，把毛巾放进浴池里可以吗？', options: ['可以', '不可以', '无所谓'], correct: '不可以', explanation: '出于卫生原因，将毛巾放入浴池是违反礼仪的。通常的做法是放在头顶上。' },
+                    { question: '乘坐出租车时，乘客应该自己开关车门吗？', options: ['是的，自己开关', '不，是自动的', '请司机帮忙'], correct: '不，是自动的', explanation: '日本大多数出租车的后门都是由司机操控自动开关的。乘客最好不要触摸车门，以免造成损坏。' },
+                    { question: '干杯时，自己的杯子相对于长辈的杯子应该处于什么位置？', options: ['更高', '同样高度', '稍微低一点'], correct: '稍微低一点', explanation: '为表示尊敬，干杯时将自己的杯沿置于长辈杯沿的稍下方是礼貌的做法。' },
+                    { question: '吃饭时，吃了一口的菜剩下是否失礼？', options: ['是的，必须吃完', '不，没问题', '应尽量避免'], correct: '应尽量避免', explanation: '剩下食物可能被视为对厨师和食材不够感激，所以点自己能吃完的量并尽量吃完是好习惯。' },
+                    { question: '拜访他人家里时，可以在被邀请前就随便坐下吗？', options: ['可以，随便坐', '不，应该等主人安排', '都可以'], correct: '不，应该等主人安排', explanation: '被领进房间后，礼貌的做法是站着等候，直到主人邀请你“请坐这边”。' },
+                    { question: '参加葬礼时，作为慰问金的纸币应避免使用哪一种？', options: ['旧纸币', '崭新的纸币', '任何纸币都可以'], correct: '崭新的纸币', explanation: '使用新钞可能暗示你预料到不幸并为此做了准备，所以通常会使用稍有折痕的旧钞。' },
+                    { question: '参拜神社时，穿过鸟居前最好做什么？', options: ['深呼吸', '鞠一躬', '脱鞋'], correct: '鞠一躬', explanation: '鸟居是进入神域的入口。在穿过之前停下来，轻轻鞠一躬是礼貌的做法。' },
+                    { question: '用餐期间，暂时放下筷子时应该怎么放？', options: ['放在盘子上', '架在碗边', '放在筷架上'], correct: '放在筷架上', explanation: '暂时不用筷子时，正确的做法是将其放在筷架上，以免筷尖接触到盘子。如果没有筷架，可以架在小碟子边上。' },
+                    { question: '在商务场合，称呼对方为“你”（あなた）合适吗？', options: ['是的，合适', '不，应该使用对方的职位或“様”', '都可以'], correct: '不，应该使用对方的职位或“様”', explanation: '在商务场合称呼“你”可能会显得居高临下，被认为是不礼貌的。应该使用“〇〇部长”或“〇〇様”等称呼。' },
+                    { question: '可以用手吃寿司吗？', options: ['可以，没问题', '不，必须用筷子', '只在高级餐厅可以'], correct: '可以，没问题', explanation: '无论是用筷子还是直接用手吃寿司，都被认为是正式的礼仪。选择你觉得方便的方式即可。' },
+                    { question: '在日本，守时有多重要？', options: ['不太重要', '非常重要', '看情况'], correct: '非常重要', explanation: '在日本社会，迟到被视为对对方不尊重，因此守时非常重要。' },
+                    { question: '为什么送礼物时常避免包含“4”或“9”个物品？', options: ['因为是不吉利的数字', '因为太贵了', '因为数量不够'], correct: '因为是不吉利的数字', explanation: '数字“4”的发音像“死”，“9”的发音像“苦”，所以在庆祝等场合的礼物中，习惯上会避免这些数字。' }
+                ],
+                hard: [
+                    { question: '拜访他人家里时，在什么时机送上礼物（手信）最礼貌？', options: ['在玄关立刻送上', '被领进房间，打完招呼后', '临走前'], correct: '被领进房间，打完招呼后', explanation: '在玄关送礼会给主人添麻烦，因此在进屋安顿好之后再送是更有礼貌的做法。' },
+                    { question: '交换名片时，收到的名片应该立刻怎么处理？', options: ['马上放进名片夹', '放在桌上自己的左手边', '放进口袋里'], correct: '放在桌上自己的左手边', explanation: '收到的名片被认为是对方的代表，因此不应立即收起来，而应将其放在桌上直到商谈结束，以示尊重。' },
+                    { question: '乘坐电梯时，站在控制面板前的人通常应该怎么做？', options: ['主动按按钮', '什么都不做', '请别人操作'], correct: '主动按按钮', explanation: '站在控制面板前的人，通常被期望通过操作门和选择楼层来帮助他人，这被认为是一种友好的姿态。' },
+                    { question: '在新干线上放倒座椅时，最有礼貌的做法是？', options: ['不说话直接放倒', '问一下后面的人', '一下子放到底'], correct: '问一下后面的人', explanation: '在放倒座椅之前，最好先问一下后面的人，因为他们可能在桌子上放了东西。' },
+                    { question: '送礼物给别人时，直接用百货公司的包装纸送会失礼吗？', options: ['是的，很失礼', '不，不会失礼', '看情况'], correct: '不，不会失礼', explanation: '在日本，直接用商店整洁的包装纸送礼物是很普遍的，甚至被视为品质的象征。' },
+                    { question: '在宴会上，如果有人给你倒酒但你不能喝酒，最好的拒绝方式是什么？', options: ['默默地把杯子倒扣过来', '坚决地说“不用了”', '表示感谢，然后假装抿一口'], correct: '表示感谢，然后假装抿一口', explanation: '为了不辜负对方的好意，礼貌的做法是先表示感谢并接受，说明自己不能喝，然后假装喝一口，这是比较圆滑的拒绝方式。' },
+                    { question: '在婚礼礼金中，为什么通常避免使用可以“除尽”的偶数金额？', options: ['因为计算困难', '因为它暗示“分离”', '因为不吉利'], correct: '因为它暗示“分离”', explanation: '因为“可以除尽”让人联想到“（夫妻）分开”，所以在婚礼礼金中偏爱奇数。但代表“成双成对”的“2”和寓意“广阔发展”的“8”是例外。' },
+                    { question: '为什么有时会避免选择手帕作为礼物？', options: ['因为它便宜', '因为它用来擦眼泪，暗示“告别”', '因为它太实用了'], correct: '因为它用来擦眼泪，暗示“告别”', explanation: '手帕在日语中的汉字可以写成“手巾”，发音与“手切れ”（断绝关系）相近，因此除了告别的场合，通常会避免作为礼物。' },
+                    { question: '在和式房间里，为什么用脚踩坐垫是失礼的？', options: ['因为会弄脏', '因为坐垫象征着主人的款待之心', '因为滑倒危险'], correct: '因为坐垫象征着主人的款待之心', explanation: '坐垫不仅仅是一个垫子，它代表了对客人的敬意和欢迎。用脚踩它被视为等同于践踏主人的心意。' },
+                    { question: '与上司或客户一起乘坐出租车时，哪个座位是最低的（下属或接待方坐的）？', options: ['后排靠窗座位', '副驾驶座', '后排中间座位'], correct: '副驾驶座', explanation: '在出租车里，司机后面的座位是最高级的，而负责支付等事宜的副驾驶座是最低的。' },
+                    { question: '如果茶杯有盖子，喝完茶后正确的做法是什么？', options: ['把盖子翻过来放', '把盖子放在茶杯旁边', '像原来一样盖好'], correct: '像原来一样盖好', explanation: '喝完茶后，正确的做法是把盖子像原来那样盖好。翻过来或放在旁边都是不合规矩的。' },
+                    { question: '“ご無沙汰しております”（好久不见）这个问候语，通常对多久没见的人使用？', options: ['一周', '一个月', '三个月或更久'], correct: '三个月或更久', explanation: '一般来说，这个词适用于超过三个月、半年或一年等相当长一段时间没见的人。' },
+                    { question: '在商务邮件中，当收件人是整个部门时，应该使用哪个敬称？', options: ['各位', '御中', '様'], correct: '御中', explanation: '“御中”用于称呼公司或部门等组织，而不是特定的个人。“各位”用于称呼多位个人。' },
+                    { question: '在葬礼上哭泣是对逝者的不敬吗？', options: ['是的，不敬', '不，这是情感的自然流露', '看情况'], correct: '不，这是情感的自然流露', explanation: '为悼念逝者而流泪绝非不敬。但是，应避免大声哭喊等打扰其他吊唁者的行为。' },
+                    { question: '在庆祝场合，应避免使用的“忌讳词”是哪个例子？', options: ['“结束”、“切断”', '“开始”、“继续”', '“高兴”、“快乐”'], correct: '“结束”、“切断”', explanation: '在婚礼等庆祝活动中，使用暗示分离或不幸的词语，如“结束”、“切断”、“离开”、“返回”等，是禁忌。' }
+                ]
+            },
+            '联系我们': { isInquiry: true }
+        }
+    };
+    
+    // --- 関数定義 ---
+
+    /** お問い合わせの状態をリセット */
+    function resetInquiryState() {
+        inquiryState = { status: 'idle', name: '', email: '', message: '' };
+    }
+
+    /** クイズの状態をリセット */
+    function resetQuizState() {
+        currentQuiz = null;
+        askedQuizIndices.clear();
+        currentDifficulty = null;
+    }
+    
+    /** ウェルカムメニューを表示 */
+    function showWelcomeMenu() {
+        resetQuizState();
+        const welcome = uiStrings[currentLanguage].welcome;
+        displayBotMessage(welcome.message, { quickReplies: welcome.replies });
+    }
+
+    /** 言語を切り替える */
+    function switchLanguage(lang) {
+        if (currentLanguage === lang) return;
+
+        currentLanguage = lang;
+        resetInquiryState(); 
+        resetQuizState();
+        
+        const strings = uiStrings[lang];
+        document.getElementById('header-title').textContent = strings.headerTitle;
+        document.getElementById('header-lang-status').textContent = strings.langStatus;
+        userInput.placeholder = strings.inputPlaceholder;
+
+        const buttons = langSwitcher.querySelectorAll('button');
+        buttons.forEach(btn => {
+            btn.classList.remove('bg-white', 'text-sky-600', 'scale-110', 'ring-2', 'ring-white');
+            btn.classList.add('bg-sky-500', 'hover:bg-white', 'hover:text-sky-600');
+            if (btn.classList.contains(`${lang}-btn`)) {
+                btn.classList.add('bg-white', 'text-sky-600', 'scale-110', 'ring-2', 'ring-white');
+                btn.classList.remove('bg-sky-500');
+            }
+        });
+        
+        displayBotMessage(uiStrings[currentLanguage].lang_switched);
+    }
+
+    /** チャットウィンドウにユーザーのメッセージを表示 */
+    function displayUserMessage(text) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'flex justify-end';
+        const bubble = document.createElement('div');
+        bubble.className = 'max-w-md p-3 rounded-2xl shadow bg-sky-600 text-white';
+        bubble.textContent = text;
+        messageDiv.appendChild(bubble);
+        chatWindow.appendChild(messageDiv);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    /** ボットの応答を表示（リッチコンテンツ対応）*/
+    function displayBotMessage(text, options = {}) {
+        const messageContainer = document.createElement('div');
+        messageContainer.className = 'flex flex-col items-start space-y-2';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'max-w-md p-4 rounded-2xl shadow bg-white text-gray-800';
+        
+        const mainText = document.createElement('p');
+        mainText.innerHTML = text.replace(/\n/g, '<br>');
+        bubble.appendChild(mainText);
+        
+        const langContent = uiStrings[currentLanguage];
+
+        if (options.dos || options.donts) {
+            bubble.appendChild(document.createElement('hr'));
+            if (options.dos) {
+                const dosTitle = document.createElement('h4');
+                dosTitle.className = 'font-bold mt-2 bot-response-dos';
+                dosTitle.textContent = '✅ ' + (currentLanguage === 'ja' ? 'すべきこと' : currentLanguage === 'en' ? 'Do\'s' : '应该做的事');
+                bubble.appendChild(dosTitle);
+                const dosList = document.createElement('ul');
+                dosList.className = 'list-disc list-inside text-sm';
+                options.dos.forEach(item => { const li = document.createElement('li'); li.textContent = item; dosList.appendChild(li); });
+                bubble.appendChild(dosList);
+            }
+            if (options.donts) {
+                const dontsTitle = document.createElement('h4');
+                dontsTitle.className = 'font-bold mt-2 bot-response-donts';
+                dontsTitle.textContent = '❌ ' + (currentLanguage === 'ja' ? '避けるべきこと' : currentLanguage === 'en' ? 'Don\'ts' : '应该避免的事');
+                bubble.appendChild(dontsTitle);
+                const dontsList = document.createElement('ul');
+                dontsList.className = 'list-disc list-inside text-sm';
+                options.donts.forEach(item => { const li = document.createElement('li'); li.textContent = item; dontsList.appendChild(li); });
+                bubble.appendChild(dontsList);
+            }
+        }
+        
+        if (options.link) {
+            const link = document.createElement('a');
+            link.href = options.link;
+            link.target = '_blank';
+            link.className = 'text-sky-600 hover:underline text-sm font-semibold mt-3 block';
+            link.textContent = '▶ ' + (currentLanguage === 'ja' ? 'もっと詳しく見る' : currentLanguage === 'en' ? 'Learn More' : '查看详情');
+            bubble.appendChild(link);
+        }
+
+        messageContainer.appendChild(bubble);
+
+        const repliesContainer = document.createElement('div');
+        repliesContainer.className = 'flex justify-start flex-wrap gap-2 pt-1';
+        
+        const replies = options.quickReplies || options.quizOptions;
+        if (replies) {
+             replies.forEach(replyText => {
+                const replyBtn = document.createElement('button');
+                replyBtn.textContent = replyText;
+                let actionType = 'quick_reply';
+                if(options.quizOptions) actionType = 'quiz_option';
+                else if (uiStrings[currentLanguage].quiz_difficulty.includes(replyText)) actionType = 'select_difficulty';
+                
+                replyBtn.className = 'quick-reply-btn bg-white border border-sky-500 text-sky-500 text-sm font-semibold py-1 px-4 rounded-full hover:bg-sky-500 hover:text-white transition';
+                replyBtn.dataset.action = actionType;
+                repliesContainer.appendChild(replyBtn);
+            });
+        }
+        
+        const isDetailView = options.dos || options.donts || options.link;
+        if (isDetailView) {
+            const backBtn = document.createElement('button');
+            backBtn.textContent = uiStrings[currentLanguage].back_to_menu;
+            backBtn.className = 'quick-reply-btn bg-gray-200 border border-gray-400 text-gray-700 text-sm font-semibold py-1 px-4 rounded-full hover:bg-gray-300 transition';
+            backBtn.dataset.action = 'back_to_menu';
+            repliesContainer.appendChild(backBtn);
+        }
+        
+        if (options.quizFlow === 'continue') {
+            const continueBtn = document.createElement('button');
+            continueBtn.textContent = uiStrings[currentLanguage].continue_quiz;
+            continueBtn.className = 'quick-reply-btn bg-sky-500 border border-sky-500 text-white text-sm font-semibold py-1 px-4 rounded-full hover:bg-sky-600 transition';
+            continueBtn.dataset.action = 'next_quiz';
+            repliesContainer.appendChild(continueBtn);
+
+            const backBtn = document.createElement('button');
+            backBtn.textContent = uiStrings[currentLanguage].back_to_menu;
+            backBtn.className = 'quick-reply-btn bg-gray-200 border border-gray-400 text-gray-700 text-sm font-semibold py-1 px-4 rounded-full hover:bg-gray-300 transition';
+            backBtn.dataset.action = 'back_to_menu';
+            repliesContainer.appendChild(backBtn);
+        } else if (options.quizFlow === 'end') {
+            const startOverBtn = document.createElement('button');
+            startOverBtn.textContent = uiStrings[currentLanguage].start_over_quiz;
+            startOverBtn.className = 'quick-reply-btn bg-sky-500 border border-sky-500 text-white text-sm font-semibold py-1 px-4 rounded-full hover:bg-sky-600 transition';
+            startOverBtn.dataset.action = 'start_over_quiz'; 
+            repliesContainer.appendChild(startOverBtn);
+
+            const backBtn = document.createElement('button');
+            backBtn.textContent = uiStrings[currentLanguage].back_to_menu;
+            backBtn.className = 'quick-reply-btn bg-gray-200 border border-gray-400 text-gray-700 text-sm font-semibold py-1 px-4 rounded-full hover:bg-gray-300 transition';
+            backBtn.dataset.action = 'back_to_menu';
+            repliesContainer.appendChild(backBtn);
+        }
+
+        if (repliesContainer.hasChildNodes()) {
+           messageContainer.appendChild(repliesContainer);
+        }
+        
+        chatWindow.appendChild(messageContainer);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    /** ユーザーの入力を処理するメイン関数 */
+    function handleUserInput() {
+        const inputText = userInput.value.trim();
+        if (!inputText) return;
+        displayUserMessage(inputText);
+        userInput.value = '';
+
+        setTimeout(() => {
+            const inquiryStrings = uiStrings[currentLanguage].inquiry;
+            const cancelKeywords = inquiryStrings.cancel_keywords || [];
+            
+            if (inquiryState.status !== 'idle' && cancelKeywords.includes(inputText.toLowerCase())) {
+                resetInquiryState();
+                displayBotMessage(inquiryStrings.cancelled);
+                setTimeout(showWelcomeMenu, 2000);
+                return;
+            }
+
+            if (inquiryState.status !== 'idle') {
+                processInquiry(inputText);
+            } else {
+                getBotResponse(inputText);
+            }
+        }, 500);
+    }
+    
+    /** お問い合わせフローを処理 */
+    function processInquiry(text) {
+        const strings = uiStrings[currentLanguage].inquiry;
+        switch(inquiryState.status) {
+            case 'awaiting_name':
+                inquiryState.name = text;
+                inquiryState.status = 'awaiting_email';
+                displayBotMessage(strings.prompt_email);
+                break;
+            case 'awaiting_email':
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailRegex.test(text)) {
+                    inquiryState.email = text;
+                    inquiryState.status = 'awaiting_message';
+                    displayBotMessage(strings.prompt_message);
+                } else {
+                    displayBotMessage(strings.invalid_email);
+                }
+                break;
+            case 'awaiting_message':
+                inquiryState.message = text;
+                sendInquiryToServer();
+                break;
+        }
+    }
+    
+    /** サーバーにお問い合わせ内容を送信（シミュレーション） */
+    function sendInquiryToServer() {
+        displayBotMessage("..."); 
+        
+        const payload = { ...inquiryState, lang: currentLanguage };
+
+        new Promise((resolve) => {
+            console.log("Sending to server (simulation):", payload);
+            setTimeout(() => {
+                 resolve({ success: true }); 
+            }, 1500);
+        })
+       .then(result => {
+            if (chatWindow.lastChild) {
+                chatWindow.removeChild(chatWindow.lastChild);
+            }
+            if (result.success) {
+                displayBotMessage(uiStrings[currentLanguage].inquiry.complete);
+            } else {
+                displayBotMessage(uiStrings[currentLanguage].inquiry.send_error);
+            }
+        })
+       .catch(error => {
+            console.error('Simulated fetch error:', error);
+            if (chatWindow.lastChild) {
+               chatWindow.removeChild(chatWindow.lastChild);
+            }
+            displayBotMessage(uiStrings[currentLanguage].inquiry.send_error);
+        })
+       .finally(() => {
+            resetInquiryState();
+            setTimeout(showWelcomeMenu, 3000);
+        });
+    }
+
+    /** クイズの次の問題を出題 */
+    function askNextQuizQuestion() {
+        const quizObject = Object.values(knowledgeBase[currentLanguage]).find(val => val.isQuiz === true);
+        if (!quizObject || !currentDifficulty) return;
+
+        const allQuizzesInDifficulty = quizObject[currentDifficulty];
+        const availableIndices = allQuizzesInDifficulty
+            .map((_, index) => index)
+            .filter(index => !askedQuizIndices.has(index));
+
+        if (availableIndices.length === 0) {
+            const allDoneMessage = uiStrings[currentLanguage].all_quizzes_done;
+            displayBotMessage(allDoneMessage, { quizFlow: 'end' });
+            return;
+        }
+        
+        const randomIndexInPool = Math.floor(Math.random() * availableIndices.length);
+        const originalQuizIndex = availableIndices[randomIndexInPool];
+        
+        askedQuizIndices.add(originalQuizIndex);
+        
+        currentQuiz = {
+            ...allQuizzesInDifficulty[originalQuizIndex],
+            originalIndex: originalQuizIndex
+        };
+
+        displayBotMessage(currentQuiz.question, { quizOptions: currentQuiz.options });
+    }
+
+    /** 通常の応答を検索して表示 */
+    function getBotResponse(text) {
+        const lowerCaseText = text.toLowerCase();
+        const responses = knowledgeBase[currentLanguage];
+        let foundReply = null;
+
+        for (const keyword in responses) {
+            if (lowerCaseText.includes(keyword.toLowerCase())) {
+                foundReply = responses[keyword];
+                break;
+            }
+        }
+
+        if (foundReply) {
+            if (foundReply.isInquiry) {
+                inquiryState.status = 'awaiting_name';
+                displayBotMessage(uiStrings[currentLanguage].inquiry.start);
+            } else if (foundReply.isQuiz) {
+                resetQuizState();
+                displayBotMessage(uiStrings[currentLanguage].quiz_prompt, { quickReplies: uiStrings[currentLanguage].quiz_difficulty });
+            } else {
+                const message = {
+                    ja: `「${text}」のマナーですね。`,
+                    en: `Here are some manners for "${text}".`,
+                    zh: `是关于「${text}」的礼仪呢。`
+                }[currentLanguage];
+                displayBotMessage(message, foundReply);
+            }
+        } else {
+            displayBotMessage(uiStrings[currentLanguage].defaultReply);
+            setTimeout(showWelcomeMenu, 3000); 
+        }
+    }
+
+    // --- イベントリスナー ---
+    sendBtn.addEventListener('click', handleUserInput);
+    userInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleUserInput();
+    });
+
+    /** ボタンクリックのイベントハンドラ */
+    chatWindow.addEventListener('click', function(e) {
+        if (!e.target.classList.contains('quick-reply-btn')) return;
+
+        const replyText = e.target.textContent;
+        const action = e.target.dataset.action;
+
+        displayUserMessage(replyText);
+        
+        const buttonContainer = e.target.parentElement;
+        if (buttonContainer) buttonContainer.remove();
+
+        if (action === 'back_to_menu') {
+            resetQuizState();
+            setTimeout(showWelcomeMenu, 500);
+        } else if (action === 'start_over_quiz') {
+            resetQuizState();
+             const quizKeyword = uiStrings[currentLanguage].welcome.replies.find(r => 
+                (knowledgeBase[currentLanguage][r.toLowerCase()] || knowledgeBase[currentLanguage][r])?.isQuiz
+            );
+            if (quizKeyword) {
+                getBotResponse(quizKeyword);
+            }
+        } else if (action === 'next_quiz') {
+            askNextQuizQuestion();
+        } else if (action === 'select_difficulty') {
+            const difficultyMap = {
+                '簡単': 'easy', 'Easy': 'easy', '简单': 'easy',
+                '普通': 'normal', 'Normal': 'normal', 
+                '難しい': 'hard', 'Hard': 'hard', '困难': 'hard'
+            };
+            if (replyText === "普通" && currentLanguage === "zh") {
+                 currentDifficulty = 'normal';
+            } else {
+                 currentDifficulty = difficultyMap[replyText];
+            }
+            askedQuizIndices.clear(); // 難易度を選んだら、その難易度の出題履歴をリセット
+            currentQuiz = null;
+            askNextQuizQuestion();
+        } else if (action === 'quiz_option') {
+            const quizData = currentQuiz;
+            if (!quizData) return;
+            
+            const masterQuizSet = (knowledgeBase.ja.クイズ || knowledgeBase.ja.quiz)[currentDifficulty];
+            const masterQuizData = masterQuizSet[quizData.originalIndex];
+            const masterCorrectAnswer = masterQuizData.correct;
+
+            const selectedOptionIndex = quizData.options.indexOf(replyText);
+            const masterSelectedAnswer = masterQuizData.options[selectedOptionIndex];
+
+            let resultMessage;
+            const correctMessages = { ja: '正解です！👏 ', en: 'Correct! 👏 ', zh: '回答正确！👏 ' };
+            const incorrectMessages = { ja: '残念！正解は「', en: 'Incorrect. The correct answer is "', zh: '很遗憾！正确答案是“' };
+            const endMessages = { ja: '」です。', en: '". ', zh: '”。' };
+
+            if(masterSelectedAnswer === masterCorrectAnswer) {
+                 resultMessage = correctMessages[currentLanguage] + quizData.explanation;
+            } else {
+                 resultMessage = incorrectMessages[currentLanguage] + quizData.correct + endMessages[currentLanguage] + quizData.explanation;
+            }
+            currentQuiz = null; 
+            setTimeout(() => displayBotMessage(resultMessage, { quizFlow: 'continue' }), 500);
+        } else {
+            setTimeout(() => getBotResponse(replyText), 500);
+        }
+    });
+    
+    // --- 初期化 ---
+    function initializeChat() {
+        currentLanguage = 'ja';
+        const strings = uiStrings[currentLanguage];
+        document.getElementById('header-title').textContent = strings.headerTitle;
+        document.getElementById('header-lang-status').textContent = strings.langStatus;
+        userInput.placeholder = strings.inputPlaceholder;
+
+        const buttons = langSwitcher.querySelectorAll('button');
+        buttons.forEach(btn => {
+            btn.classList.remove('bg-white', 'text-sky-600', 'scale-110', 'ring-2', 'ring-white');
+            btn.classList.add('bg-sky-500', 'hover:bg-white', 'hover:text-sky-600');
+            if (btn.classList.contains('ja-btn')) { 
+                btn.classList.add('bg-white', 'text-sky-600', 'scale-110', 'ring-2', 'ring-white');
+                btn.classList.remove('bg-sky-500');
+            }
+        });
+        showWelcomeMenu();
+    }
+    initializeChat();
+
+</script>
+
+</body>
+</html>
