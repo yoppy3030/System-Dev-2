@@ -39,6 +39,21 @@
             <!-- 検索ボックス -->
             <input type="text" class="search-box" placeholder="search"/>
         </nav>
+        
+                <!-- Menu Button -->
+        <div class="menu-button" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+          <!-- サイドバーナビゲーション -->
+        <div class="sidebar" id="sidebar">
+            <a href="regions.php">Regions</a>
+            <a href="#">When in a store</a>
+            <a href="#">When walking on the street</a>
+            <a href="#">When in public facilities</a>
+            <a href="login.php">Login</a>
+        </div>
     </header>
     <main>
 
@@ -88,7 +103,6 @@
                     <small>Hokkaido</small>
                 </a>
             </section>
-</body>
 <!-- フッターセクション -->
     <footer>
         <div class="footer-content">
@@ -107,6 +121,7 @@
             <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
         </div>
     </footer>
-    <script src="./js/regions.js"></script>
+<script src="./js/regions.js"></script>
+</body>
 </html>
     

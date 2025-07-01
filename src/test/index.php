@@ -87,12 +87,6 @@
             </div>
         </div>
     </div>  
-    <!-- START: NEW WEATHER ALERT BANNER -->
-    <div id="weather-alert" class="weather-alert" style="display:none;">
-        <span id="alert-message"></span>
-        <button id="alert-close" class="alert-close">&times;</button>
-    </div>
-    <!-- END: NEW WEATHER ALERT BANNER -->
     
     <!-- Hero Section with new classes -->
     <div class="hero-section">

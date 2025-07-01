@@ -193,7 +193,6 @@
             </ul>
         </ol>
 
-</body>
 
 <footer>
     <div class="footer-content">
@@ -214,5 +213,5 @@
 </footer>
 <script src="./js/travelers_homePage.js"></script>
 <script src="./js/translations/"></script>
-
+</body>
 </html>

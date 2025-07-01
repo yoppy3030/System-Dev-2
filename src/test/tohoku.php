@@ -11,11 +11,11 @@
     <header class="site-header">
         <div class="logo">JAPAN Life Manual</div>
         <nav class="main-nav">
-            <a href="index.php">Home</a>
-            <a href="./regions.php">Region</a>
-            <a href="#">Transports</a>
-            <a href="#">Food</a>
-            <a href="#">Other</a>
+            <a class="with-underline" href="index.php">Home</a>
+            <a class="no-underline" href="./regions.php">Region</a>
+            <a class="with-underline" href="#">Transports</a>
+            <a class="with-underline" href="#">Food</a>
+            <a class="with-underline" href="#">Other</a>
             <!-- 言語選択ドロップダウン -->
             <div class="language-selector">
                 <button id="translateBtn" class="translate-btn">🌐 Translate</button>
@@ -29,8 +29,6 @@
             <!-- 検索ボックス -->
             <input type="text" class="search-box" placeholder="search"/>
         </nav>
-    </header>
-    <main>
 
                 <!-- Menu Button -->
         <div class="menu-button" onclick="toggleSidebar()">
@@ -38,14 +36,18 @@
             <span></span>
             <span></span>
         </div>
-        <!-- Sidebar -->
+          <!-- サイドバーナビゲーション -->
         <div class="sidebar" id="sidebar">
-            <a href="#">When visiting a friend's house</a>
+            <a href="regions.php">Regions</a>
             <a href="#">When in a store</a>
             <a href="#">When walking on the street</a>
             <a href="#">When in public facilities</a>
             <a href="./login.php">Login</a>
         </div>
+    </header>
+    <main>
+
+   
          <!-- Main Content -->
          <h1>Introduction to the Tohoku Region</h1>
          <img src="./img/tohoku.jpg" alt="Tohoku Region" class="Tohoku-image">
@@ -206,7 +208,6 @@
                     </ul>
              </ol>
             
-</body>
 
 <footer>
     <div class="footer-content">
@@ -226,4 +227,5 @@
         </div>
 </footer>
 <script src="./js/tohoku.js"></script>
+</body>
 </html>

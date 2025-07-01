@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/region_for_all.css">
     <title>Life in Japan</title>
 </head>
-
 <body>
     <!-- ヘッダーセクション -->
     <header class="site-header">
         <div class="logo">JAPAN Life Manual</div>
         <nav class="main-nav">
             <a class="with-underline" href="index.php">Home</a>
-            <a class="with-underline" href="./regions.php">Region</a>
+            <a class="no-underline" href="./regions.php">Region</a>
             <a class="with-underline" href="#">Transports</a>
             <a class="with-underline" href="#">Food</a>
             <a class="with-underline" href="#">Other</a>
@@ -25,12 +23,29 @@
                     <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
                     <button class="language-option" data-lang="en">🇺🇸 English</button>
                     <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+                    <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
                 </div>
             </div>
             <!-- 検索ボックス -->
-            <input type="text" class="search-box" placeholder="search" />
+            <input type="text" class="search-box" placeholder="search"/>
         </nav>
     </header>
+    <main>
+
+                <!-- Menu Button -->
+        <div class="menu-button" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+          <!-- サイドバーナビゲーション -->
+        <div class="sidebar" id="sidebar">
+            <a href="regions.php">Regions</a>
+            <a href="#">When in a store</a>
+            <a href="#">When walking on the street</a>
+            <a href="#">When in public facilities</a>
+            <a href="./login.php">Login</a>
+        </div>
     <main>
 
         <!-- Menu Button -->
@@ -192,6 +207,7 @@
         </div>
     </footer>
     
-    <script src="./js/chubu.js"></script>
+<script src="./js/chubu.js"></script>
+
 </body>
 </html>

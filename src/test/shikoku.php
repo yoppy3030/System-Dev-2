@@ -12,7 +12,7 @@
         <div class="logo">JAPAN Life Manual</div>
         <nav class="main-nav">
             <a class="with-underline" href="index.php">Home</a>
-            <a class="with-underline" href="./regions.php">Region</a>
+            <a class="no-underline" href="./regions.php">Region</a>
             <a class="with-underline" href="#">Transports</a>
             <a class="with-underline" href="#">Food</a>
             <a class="with-underline" href="#">Other</a>
@@ -38,24 +38,17 @@
             <span></span>
             <span></span>
         </div>
-        <!-- Sidebar -->
-        <!-- <div class="sidebar" id="sidebar">
-            <a href="#">友達を家に行く時</a>
-            <a href="#">お店の中にいる時</a>
-            <a href="#">道の中で歩いている時</a>
-            <a href="#">公共施設にいる時</a>
-            <a href="./login.php">Login</a>
-        </div> -->
-
-       
           <!-- サイドバーナビゲーション -->
         <div class="sidebar" id="sidebar">
-            <a href="#">When visiting a friend's house</a>
+            <a href="regions.php">Regions</a>
             <a href="#">When in a store</a>
             <a href="#">When walking on the street</a>
             <a href="#">When in public facilities</a>
             <a href="./login.php">Login</a>
         </div>
+    </header>
+    <main>
+
         <!-- Main Content -->
          <h1 data-key="Introduction to the  Shikoku Region">Introduction to the  Shikoku Region</h1>
          <p data-key="Shikoku, the smallest of Japan's four main islands, is a region rich in spiritual heritage, natural beauty, and traditional charm. Comprising four prefectures — Tokushima, Kagawa, Ehime, and Kochi — Shikoku is best known for the Shikoku Henro, a sacred 88-temple pilgrimage route that draws both devout followers and curious travelers from across the world. Beyond its spiritual appeal, Shikoku offers stunning coastlines, lush mountains, and vibrant local cultures. Kagawa is famed for its udon noodles, Tokushima for its Awa Odori dance festival, Ehime for its historic Dogo Onsen, and Kochi for its rivers and samurai history. Far less crowded than Japan's major cities, Shikoku welcomes visitors with warm hospitality and a pace of life that invites reflection and connection with both people and place.">
