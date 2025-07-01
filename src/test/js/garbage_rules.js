@@ -1,187 +1,144 @@
-// =========================================
-// グローバル変数の初期化
-// =========================================
-let currentLanguage = 'en';
-let originalTexts = new Map();
-let translations = null;
-let translationsZh = null;
+// This runs once the entire HTML document is loaded and ready
+document.addEventListener('DOMContentLoaded', () => {
 
-// DOM要素の取得
-const translateBtn = document.getElementById('translateBtn');
-const languageDropdown = document.querySelector('.language-dropdown');
+    // --- Global Variables ---
+    let currentLanguage = 'en';
+    let originalTexts = new Map();
+    let translations = {};
+    let translationsZh = {};
 
-// =========================================
-// 翻訳機能の初期設定
-// =========================================
-translateBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    languageDropdown.classList.toggle('show');
-});
+    // --- DOM Element Selection ---
+    const translateBtn = document.getElementById('translateBtn');
+    const languageDropdown = document.querySelector('.language-dropdown');
+    const getRulesBtn = document.getElementById('get-location-rules-btn');
+    const rulesContainer = document.getElementById('ai-rules-container');
+    const loadingSpinner = document.getElementById('ai-loading');
+    const rulesResultDiv = document.getElementById('ai-rules-result');
 
-document.addEventListener('click', (e) => {
-    if (!languageDropdown.contains(e.target) && !translateBtn.contains(e.target)) {
-        languageDropdown.classList.remove('show');
-    }
-});
+    // --- Load Translation Files ---
+    Promise.all([
+        fetch('./js/translations/garbage_rules-ja.json').catch(() => ({})), // Add .catch to prevent failure if a file is missing
+        fetch('./js/translations/garbage_rules-zh.json').catch(() => ({}))
+    ])
+    .then(responses => Promise.all(responses.map(res => res.json())))
+    .then(([jaData, zhData]) => {
+        translations = jaData.translations || {};
+        translationsZh = zhData.translations || {};
+        console.log('Garbage page translation data loaded.');
+    }).catch(error => {
+        console.error('Failed to load garbage page translation data:', error);
+    });
 
-// 言語選択オプションのイベントリスナー設定
-document.querySelectorAll('.language-option').forEach(option => {
-    option.addEventListener('click', () => {
-        const targetLang = option.dataset.lang;
-        document.querySelectorAll('.language-option').forEach(opt => {
-            opt.classList.remove('active');
+    // --- Event Listeners ---
+
+    // Toggle the language dropdown menu
+    if (translateBtn) {
+        translateBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
         });
-        option.classList.add('active');
-        languageDropdown.classList.remove('show');
-        translatePage(targetLang);
-    });
-});
-
-// =========================================
-// ユーティリティ関数
-// =========================================
-/**
- * テキストの正規化（HTMLエンティティをデコードし、余分な空白を削除）
- * @param {string} text - 正規化するテキスト
- * @returns {string} 正規化されたテキスト
- */
-function normalizeText(text) {
-    // 一時的なDOM要素を作成してHTMLエンティティをデコード
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = text;
-    const decodedText = tempDiv.textContent || tempDiv.innerText || "";
-    
-    // 次に余分な空白を削除
-    return decodedText.replace(/\s+/g, ' ').trim();
-}
-
-// =========================================
-// 翻訳データの読み込み
-// =========================================
-Promise.all([
-    fetch('./js/translations/garbage_rules-ja.json').then(response => response.json()),
-    fetch('./js/translations/garbage_rules-zh.json').then(response => response.json())
-])
-.then(([jaData, zhData]) => {
-    translations = jaData.translations;
-    translationsZh = zhData.translations;
-    console.log('翻訳データの読み込みが完了しました');
-})
-.catch(error => {
-    console.error('翻訳データの読み込みに失敗しました:', error);
-});
-
-// =========================================
-// ページ翻訳の実行
-// =========================================
-/**
- * ページ全体の翻訳を実行
- * @param {string} targetLang - 翻訳先の言語（'en', 'ja', 'zh'）
- */
-function translatePage(targetLang) {
-    if (!translations || !translationsZh) {
-        console.error('翻訳データが読み込まれていません');
-        return;
     }
 
-    // メニューアイテムの特別な処理
-    document.querySelectorAll('.menu-item').forEach(menuItem => {
-        const pElement = menuItem.querySelector('p');
-        if (pElement) {
-            const originalText = pElement.innerHTML;
-            if (!originalTexts.has(pElement)) {
-                originalTexts.set(pElement, originalText);
+    // Handle clicks on individual language options
+    document.querySelectorAll('.language-option').forEach(option => {
+        option.addEventListener('click', () => {
+            currentLanguage = option.dataset.lang;
+            translatePage(currentLanguage); // Translate the static content
+
+            // If AI rules are already visible, re-fetch them in the new language
+            if (rulesContainer && rulesContainer.style.display === 'block' && rulesResultDiv.innerHTML.trim() !== '') {
+                 getRulesBtn.click(); // Simulate a click to re-fetch
             }
 
-            if (targetLang === 'en') {
-                pElement.innerHTML = originalTexts.get(pElement);
-            } else {
-                const normalizedText = normalizeText(originalTexts.get(pElement));
-                const translation = targetLang === 'ja' ? translations[normalizedText] : translationsZh[normalizedText];
-                if (translation) {
-                    pElement.innerHTML = translation;
-                }
+            // Update UI and close dropdown
+            document.querySelectorAll('.language-option').forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            languageDropdown.classList.remove('show');
+        });
+    });
+
+    // Handle click on the "Get My Location's Rules" button
+    if (getRulesBtn) {
+        getRulesBtn.addEventListener('click', () => {
+            rulesContainer.style.display = 'block';
+            rulesResultDiv.innerHTML = '';
+            loadingSpinner.style.display = 'block';
+
+            if (!navigator.geolocation) {
+                handleError({ message: "Geolocation is not supported by your browser." });
+                return;
             }
+            navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
+        });
+    }
+
+    // Close dropdown if clicked outside
+    window.addEventListener('click', (e) => {
+        if (languageDropdown && !languageDropdown.contains(e.target) && !translateBtn.contains(e.target)) {
+            languageDropdown.classList.remove('show');
         }
     });
 
-    // その他の要素の処理
-    const elements = document.querySelectorAll('p:not(.menu-item p), h1, h2, h3, h4, h5, h6, span, a:not(.menu-item a), .sidebar a, .translate-btn, button, section, section *');
-    
-    for (const element of elements) {
-        // いいねボタン、閲覧数などの特殊な要素は翻訳対象外
-        if (element.id === 'like-count' || element.id === 'dislike-count' || element.id === 'view-count') {
-            continue;
-        }
+    // --- Main Functions ---
 
-        // ボタン要素の特別な処理
-        if (element.tagName === 'BUTTON') {
-            // アイコン要素を保存
-            const icon = element.querySelector('i');
-            const iconHTML = icon ? icon.outerHTML : '';
+    /**
+     * Handles successful retrieval of user's location.
+     * @param {GeolocationPosition} position - The position object from the browser.
+     */
+    async function handleSuccess(position) {
+        const { latitude, longitude } = position.coords;
+        try {
+            const cityResponse = await fetch(`http://localhost:3000/get-city-from-coords?lat=${latitude}&lon=${longitude}`);
+            if (!cityResponse.ok) throw new Error('Could not get city name.');
+            const cityData = await cityResponse.json();
             
-            // テキストノードのみを取得
-            const textNodes = Array.from(element.childNodes)
-                .filter(node => node.nodeType === Node.TEXT_NODE)
-                .map(node => node.textContent.trim())
-                .join('')
-                .trim();
+            const rulesResponse = await fetch(`http://localhost:3000/generate-garbage-rules?city=${encodeURIComponent(cityData.city)}&lang=${currentLanguage}`);
+            if (!rulesResponse.ok) throw new Error('Could not get garbage rules.');
+            const rulesData = await rulesResponse.json();
 
-            if (!textNodes) continue;
+            rulesResultDiv.innerHTML = marked.parse(rulesData.rules);
+        } catch (error) {
+            handleError(error);
+        } finally {
+            loadingSpinner.style.display = 'none';
+        }
+    }
+
+    /**
+     * Handles errors from geolocation or API fetching.
+     * @param {Error} error - The error object.
+     */
+    function handleError(error) {
+        console.error('Error in personalized guide:', error);
+        rulesResultDiv.innerHTML = `<p>Sorry, we couldn't fetch the rules. Please ensure location access is allowed and try again.</p>`;
+        loadingSpinner.style.display = 'none';
+    }
+
+    /**
+     * Translates the static text on the page.
+     * @param {string} targetLang - The language to translate to.
+     */
+    function translatePage(targetLang) {
+        const elements = document.querySelectorAll('h1, h2, h3, h4, p, a, button, li');
+        elements.forEach(element => {
+            // Skip elements within the AI results container
+            if (element.closest('#ai-rules-container')) return;
 
             if (!originalTexts.has(element)) {
-                originalTexts.set(element, textNodes);
+                originalTexts.set(element, element.innerHTML);
             }
+            const originalHTML = originalTexts.get(element);
 
             if (targetLang === 'en') {
-                element.innerHTML = iconHTML + ' ' + originalTexts.get(element);
+                element.innerHTML = originalHTML;
             } else {
-                const normalizedText = normalizeText(originalTexts.get(element));
-                const translation = targetLang === 'ja' ? translations[normalizedText] : translationsZh[normalizedText];
-                
-                if (translation) {
-                    element.innerHTML = iconHTML + ' ' + translation;
+                const textToTranslate = element.textContent.replace(/\s+/g, ' ').trim();
+                const translationData = targetLang === 'ja' ? translations : translationsZh;
+                if (translationData && translationData[textToTranslate]) {
+                    const icon = element.querySelector('i');
+                    element.innerHTML = icon ? `${icon.outerHTML} ${translationData[textToTranslate]}` : translationData[textToTranslate];
                 }
             }
-            continue;
-        }
-
-        const originalText = element.innerHTML;
-        
-        if (!originalText || !originalText.trim()) {
-            continue;
-        }
-
-        // 初回のみoriginalTextsに保存
-        if (!originalTexts.has(element)) {
-            originalTexts.set(element, originalText);
-        }
-        
-        // 英語の場合は元のテキストに戻す
-        if (targetLang === 'en') {
-            element.innerHTML = originalTexts.get(element);
-            continue;
-        }
-
-        const normalizedText = normalizeText(originalTexts.get(element));
-
-        // 言語に応じた翻訳の適用
-        if (targetLang === 'ja') {
-            if (translations[normalizedText]) {
-                element.innerHTML = translations[normalizedText];
-            }
-        } else if (targetLang === 'zh') {
-            if (translationsZh[normalizedText]) {
-                element.innerHTML = translationsZh[normalizedText];
-            }
-        }
+        });
     }
-    
-    // アクティブな言語ボタンの更新
-    document.querySelectorAll('.language-option').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.querySelector('.language-option[data-lang="' + targetLang + '"]').classList.add('active');
-    
-    currentLanguage = targetLang;
-}
+});
