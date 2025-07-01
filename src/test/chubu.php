@@ -29,9 +29,7 @@
             <!-- 検索ボックス -->
             <input type="text" class="search-box" placeholder="search"/>
         </nav>
-    </header>
-    <main>
-
+        
                 <!-- Menu Button -->
         <div class="menu-button" onclick="toggleSidebar()">
             <span></span>
@@ -46,33 +44,9 @@
             <a href="#">When in public facilities</a>
             <a href="./login.php">Login</a>
         </div>
-    <main>
-
-        <!-- Menu Button -->
-        <div class="menu-button" onclick="toggleSidebar()">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <!-- Sidebar -->
-        <!-- <div class="sidebar" id="sidebar">
-            <a href="#">友達を家に行く時</a>
-            <a href="#">お店の中にいる時</a>
-            <a href="#">道の中で歩いている時</a>
-            <a href="#">公共施設にいる時</a>
-            <a href="./login.php">Login</a>
-        </div> -->
-
-
-        <!-- サイドバーナビゲーション -->
-        <div class="sidebar" id="sidebar">
-            <a href="#">When visiting a friend's house</a>
-            <a href="#">When in a store</a>
-            <a href="#">When walking on the street</a>
-            <a href="#">When in public facilities</a>
-            <a href="./login.php">Login</a>
-        </div>
-        
+    </header>
+    <!-- メインコンテンツセクション -->
+    <main>   
         <!-- Main Content -->
         <h1>Introduction to the Chubu Region</h1>
         <p>The Chūbu Region, meaning "central region," lies in the very heart of Japan's main island, Honshu, bridging the bustling cities of Kanto in the east and the cultural traditions of Kansai in the west. Known for its dramatic contrasts, Chūbu stretches from the rugged peaks of the Japanese Alps to the serene coastline along the Sea of Japan and the Pacific Ocean. The region includes nine diverse prefectures—from industrial hubs like Aichi (home to Toyota) to spiritual centers like Nagano and historic towns like Kanazawa in Ishikawa. Chūbu is famous for its natural beauty, traditional craftsmanship, unique local foods, and deep-rooted mountain culture. Whether you're skiing in Nagano, soaking in an onsen in Gifu, exploring miso factories in Aichi, or hiking through sacred forests in Yamanashi, the Chūbu Region offers a rich, authentic slice of Japan that blends history, nature, and innovation.</p>
