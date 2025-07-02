@@ -1,9 +1,12 @@
 <?php
-// send_inquiry.php (最終版)
-// 本番用のコードです。デバッグモードは無効化されています。
+// send_inquiry.php (セキュリティ対策版)
 
-// ComposerでインストールしたPHPMailerを読み込む
+// Composerのオートローダーとphpdotenvを読み込む
 require 'vendor/autoload.php';
+
+// .envファイルから環境変数を読み込む
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -41,9 +44,6 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 $mail = new PHPMailer(true);
 
 try {
-    // --- ★★★ SMTPサーバー設定 (Gmail用) ★★★ ---
-    // 先ほどのテストで成功した、ご自身の情報に書き換えてください。
-
     $mail->isSMTP();
     $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
@@ -51,17 +51,14 @@ try {
     $mail->Port       = 465;
     $mail->CharSet    = 'UTF-8';
 
-    // 1. ★ 送信元となる、あなたのGmailアドレス
-    $mail->Username   = 'test.example3030@gmail.com';
-
-    // 2. ★ 上記Gmailアカウントの「アプリパスワード」（16文字のコード）
-    $mail->Password   = 'kqapaspjurkqfzdi';
+    // ★★★ 変更点: .envファイルからメール情報を読み込む ★★★
+    // .envファイルに GMAIL_ADDRESS="your.email@gmail.com" のように設定してください
+    $mail->Username   = $_ENV['GMAIL_ADDRESS']; 
+    $mail->Password   = $_ENV['GMAIL_APP_PASSWORD'];
 
     // --- サイト管理者へのメール送信処理 ---
     $mail->setFrom($mail->Username, 'マナー学習ボット'); 
-
-    // 3. ★ お問い合わせメールの送信先となる、管理者様のメールアドレス
-    $mail->addAddress('test.example3030@gmail.com', 'サイト管理者'); 
+    $mail->addAddress($_ENV['GMAIL_ADDRESS'], 'サイト管理者'); 
     
     $mail->addReplyTo($email, $name); 
     $mail->isHTML(false); 
@@ -105,8 +102,7 @@ try {
     echo json_encode(['success' => true]);
 
 } catch (Exception $e) {
-    // 本番環境では、ユーザーに詳細なエラーを見せないようにします
-    error_log("Mailer Error: " . $mail->ErrorInfo); // エラーログをサーバーに残す
+    error_log("Mailer Error: " . $mail->ErrorInfo); 
     echo json_encode(['success' => false, 'error' => 'An unexpected error occurred while sending the message.']);
 }
 ?>

@@ -431,12 +431,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 openChat();
             }
         });
-
-        // ★★★ 新しく追加: チャットボットの外側をクリックしたら閉じる処理 ★★★
-        document.addEventListener('click', (e) => {
-            if (chatModal.style.display === 'flex' && !chatModal.contains(e.target) && !openButton.contains(e.target)) {
-                closeChat();
-            }
-        });
     }
 });

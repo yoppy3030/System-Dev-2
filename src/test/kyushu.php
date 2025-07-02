@@ -211,7 +211,7 @@
         <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
     </div>
 </footer>
-<script src="./js/travelers_homePage.js"></script>
+<script src="./js/kyushu.js"></script>
 <script src="./js/translations/"></script>
 </body>
 </html>
