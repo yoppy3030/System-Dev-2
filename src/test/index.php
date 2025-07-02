@@ -51,7 +51,7 @@
         <button id="translateBtn" class="translate-btn">🌐 Translate</button>
         <div class="language-dropdown">
             <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
-            <button class="language-option" data-lang="en">�🇸 English</button>
+            <button class="language-option" data-lang="en">🇺🇸 English</button>
             <button class="language-option" data-lang="zh">🇨🇳 中文</button>
         </div>
     </div>
