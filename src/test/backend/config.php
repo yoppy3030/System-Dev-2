@@ -1,9 +1,10 @@
 <?php
-// config.php - Connexion à la base MySQL
+// DB接続設定
+// このファイルは、データベース接続の設定を行います。
 $host = 'localhost';
 $db   = 'sd2db';
 $user = 'root';
-$pass = 'root'; // mets ton mot de passe ici
+$pass = 'root'; // パスワード
 $charset = 'utf8mb4';
 
 $options = [

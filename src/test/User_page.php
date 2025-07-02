@@ -170,14 +170,14 @@ function renderComments($comments_array) {
                         <p id="user_status">Statut: <span><?= htmlspecialchars($user_activity) ?></span></p>
                     <?php endif; ?>
                     <p id="user-bio"><span>Bio:</span> <?= nl2br(htmlspecialchars($user_bio)) ?></p>
-
+<!-- 
                     <div class="social-icons">
-                        <?php foreach ($social_links as $contact): ?>
-                            <a href="<?= htmlspecialchars($contact['link']) ?>" target="_blank" title="<?= htmlspecialchars($contact['platform']) ?>">
-                                <i class="<?= getSocialIconClass($contact['platform']) ?>"></i>
+                         foreach ($social_links as $contact): ?>
+                            <a href=" htmlspecialchars($contact['link']) ?>" target="_blank" title=" htmlspecialchars($contact['platform']) ?>">
+                                <i class=" getSocialIconClass($contact['platform']) ?>"></i>
                             </a>
-                        <?php endforeach; ?>
-                    </div>
+                        //endforeach; ?>
+                    </div> -->
 
                     <a id="edit-profile-btn" href="Edit-profile.php?id=<?= $user_id ?>" class="edit-profile-btn">
                         <i class="fas fa-edit"></i> Edit Profile
@@ -209,6 +209,7 @@ function renderComments($comments_array) {
                     <h3>My Posts</h3>
                     <?php foreach ($posts as $post): ?>
                             <div class="post" data-post-id="<?= $post['id'] ?>">
+                                <a href=""><i class="fa-solid fa-trash"></i></a>
                             <div class="post-header">
                                 <img src="<?= htmlspecialchars($post['avatar'] ?? '/uploads/default_avatar.jpg') ?>" class="post-avatar">
                                 <span class="post-author"><?= htmlspecialchars($post['username']) ?></span>

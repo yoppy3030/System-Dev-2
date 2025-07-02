@@ -7,10 +7,12 @@
     --light-text: #f8f8f8;
 }
 
-/* ============================================= */
-/*              EXPLORE PAGE STYLES              */
-/* ============================================= */
+/* ========== GENERAL ========== */
+img:broken {
+    display: none;
+}
 
+/* ========== EXPLORE PAGE STYLES ========== */
 .back-button {
     display: inline-flex;
     align-items: center;
@@ -116,8 +118,9 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 1.5rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 40%;
+    width: 100%;
     max-width: 800px;
+    margin: 0 auto;
 }
 
 .post:hover {
@@ -201,6 +204,7 @@
     padding: 0.5rem 0.8rem;
     border-radius: 20px;
     transition: all 0.3s ease;
+    transform-origin: center;
 }
 
 .like-btn {
@@ -219,6 +223,10 @@
 
 .dislike-btn:hover {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+.like-btn:active, .dislike-btn:active {
+    transform: scale(0.92);
 }
 
 .like-count, .dislike-count {
@@ -240,10 +248,7 @@
     color: var(--primary-color);
 }
 
-/* ============================================= */
-/*              COMMENT SECTION STYLES           */
-/* ============================================= */
-
+/* COMMENT SECTION */
 .comments {
     display: none;
     margin-top: 1.5rem;
@@ -323,6 +328,7 @@
     border-radius: 8px;
     border-left: 3px solid var(--secondary-color);
     margin-left: 0.5rem;
+    flex-direction: column;
 }
 
 .comment b {
@@ -349,38 +355,66 @@
     display: block;
 }
 
+@media (max-width: 768px) {
+    .reply-btn {
+        display: block;
+    }
+}
+
 .reply-btn:hover {
     color: var(--accent-color);
 }
 
 .reply {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    margin-left: 3rem;
+    margin-top: 0.6rem;
+    padding: 0.8rem 1rem;
+    background-color: rgba(232, 192, 125, 0.08);
+    border-left: 3px solid var(--secondary-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--dark-text);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+.reply .comment {
+    margin-left: 2rem;
     margin-top: 0.8rem;
 }
-
-.reply textarea {
-    padding: 0.6rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    resize: vertical;
-    font-size: 0.95rem;
+.reply-form {
+    margin-top: 0.8rem;
+    display: none;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.reply-form.visible {
+    display: flex;
+    flex-direction: column;
 }
 
-.reply button {
-    align-self: flex-start;
-    padding: 0.4rem 0.8rem;
+
+
+.reply-form textarea {
+    width: 100%;
+    border-radius: 8px;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--dark-text);
+    background-color: var(--light-text);
+}
+.reply-form button {
     background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 4px;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-weight: 600;
     transition: background 0.3s ease;
 }
-
-.reply button:hover {
+.reply-form button:hover {
     background: var(--accent-color);
 }
 
@@ -397,38 +431,35 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ============================================= */
-/*               RESPONSIVE DESIGN               */
-/* ============================================= */
-
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .blog-feed-container {
         padding: 0 1rem;
     }
-    
+
     .search-container {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .search-container form {
         flex-direction: column;
     }
-    
+
     .post-header {
         flex-wrap: wrap;
     }
-    
+
     .post-date {
         margin-left: 0;
         width: 100%;
     }
-    
+
     .actions {
         flex-wrap: wrap;
         gap: 0.5rem;
     }
-    
+
     .like-btn, .dislike-btn {
         padding: 0.4rem 0.6rem;
         font-size: 0.85rem;
@@ -439,11 +470,11 @@
     .post {
         padding: 1rem;
     }
-    
+
     .comment {
         flex-direction: column;
     }
-    
+
     .avatar-mini {
         align-self: center;
     }

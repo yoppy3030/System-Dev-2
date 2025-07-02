@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Récupérer les posts avec info user
+// 投稿を取得する
 $stmt = $pdo->query("
     SELECT posts.*, users.username, users.avatar,
     (SELECT COUNT(*) FROM likes WHERE target_type='post' AND target_id = posts.id AND is_like=1) AS likes,
