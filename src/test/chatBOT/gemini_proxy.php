@@ -1,54 +1,62 @@
 <?php
-// gemini_proxy.php (セキュリティ対策版)
+// gemini_proxy.php (セキュリティデバッグ版)
 
-// Composerのオートローダーとphpdotenvを読み込む
+// --- デバッグ用にエラーを詳細に表示します ---
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// 1. vendor/autoload.php の存在チェック
+if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
+    http_response_code(500);
+    echo json_encode(['error' => '[デバッグ情報] vendor/autoload.php が見つかりません。composer install または composer require を実行しましたか？']);
+    exit;
+}
 require 'vendor/autoload.php';
 
-// .envファイルから環境変数を読み込む
-// __DIR__ は、このファイル(gemini_proxy.php)が存在するディレクトリを指します
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+// 2. .env ファイルの存在チェック
+if (!file_exists(__DIR__ . '/.env')) {
+    http_response_code(500);
+    echo json_encode(['error' => '[デバッグ情報] .env ファイルが chatBOT フォルダ内に見つかりません。']);
+    exit;
+}
 
-// エラーを非表示にする（本番環境向け）
-ini_set('display_errors', 0);
-error_reporting(0);
+// 3. 環境変数の読み込み
+try {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->load();
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => '[デバッグ情報] .env ファイルの読み込みに失敗しました。', 'details' => $e->getMessage()]);
+    exit;
+}
 
-// ヘッダーを設定
+// 4. 必要な環境変数が設定されているかチェック
+if (empty($_ENV['GEMINI_API_KEY'])) {
+    http_response_code(500);
+    echo json_encode(['error' => '[デバッグ情報] .env ファイルに GEMINI_API_KEY が設定されていません。']);
+    exit;
+}
+
+// --- ここから本処理 ---
 header('Content-Type: application/json; charset=utf-8');
-
-// POST以外のリクエストを拒否
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Invalid request method.']);
     exit;
 }
 
-// ★★★ 変更点: .envファイルからAPIキーを読み込む ★★★
 $apiKey = $_ENV['GEMINI_API_KEY'];
-
-// APIキーが読み込めているかチェック
-if (empty($apiKey)) {
-    http_response_code(500);
-    echo json_encode(['error' => 'API key is not configured in the .env file.']);
-    exit;
-}
-
-// フロントエンドからのJSONリクエストを取得
 $json_data = file_get_contents('php://input');
-$request_data = json_decode($json_data, true);
+// (以降の処理は変更なし)
 
+$request_data = json_decode($json_data, true);
 if (json_last_error() !== JSON_ERROR_NONE) {
-    http_response_code(400); // Bad Request
+    http_response_code(400);
     echo json_encode(['error' => 'Invalid JSON received.']);
     exit;
 }
-
-// Google AI APIのエンドポイントURL
 $googleApiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . $apiKey;
-
-// cURLを使ってGoogleのサーバーにリクエストを転送
 $ch = curl_init();
-
 curl_setopt($ch, CURLOPT_URL, $googleApiUrl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
@@ -58,14 +66,10 @@ curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
 curl_setopt($ch, CURLOPT_TIMEOUT, 40);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-// リクエストを実行
 $response = curl_exec($ch);
 $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curl_error = curl_error($ch);
 curl_close($ch);
-
-// 結果を評価
 if ($response === false) {
     http_response_code(502);
     echo json_encode([
