@@ -21,7 +21,7 @@
                     <a href="chubu.php">Chubu</a>
                     <a href="chugoku.php">Chugoku</a>
                     <a href="shikoku.php">Shikoku</a>
-                    <a href="kyusyu.php">Kyusyu & Okinawa</a>
+                    <a href="kyushu.php">Kyusyu & Okinawa</a>
                 </div>
             </div>
             <a class="with-underline" href="">Transports</a>
@@ -39,6 +39,21 @@
             <!-- 検索ボックス -->
             <input type="text" class="search-box" placeholder="search"/>
         </nav>
+        
+                <!-- Menu Button -->
+        <div class="menu-button" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+          <!-- サイドバーナビゲーション -->
+        <div class="sidebar" id="sidebar">
+            <a href="regions.php">Regions</a>
+            <a href="#">When in a store</a>
+            <a href="#">When walking on the street</a>
+            <a href="#">When in public facilities</a>
+            <a href="login.php">Login</a>
+        </div>
     </header>
     <main>
 
@@ -55,7 +70,7 @@
 
         
             <section class="submenu-grid">
-                <a class="submenu-item" href="kyusyu.php">
+                <a class="submenu-item" href="kyushu.php">
                     <strong>Kyusyu & Okinawa Region</strong><br>
                     <small>Okinawa,Fukuoka,Oita,etc</small>
                 </a>
@@ -88,7 +103,6 @@
                     <small>Hokkaido</small>
                 </a>
             </section>
-</body>
 <!-- フッターセクション -->
     <footer>
         <div class="footer-content">
@@ -107,6 +121,7 @@
             <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
         </div>
     </footer>
-    <script src="./js/regions.js"></script>
+<script src="./js/regions.js"></script>
+</body>
 </html>
     

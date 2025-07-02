@@ -3,8 +3,13 @@
 // このファイルは、データベース接続の設定を行います。
 $host = 'localhost';
 $db   = 'sd2db';
+<<<<<<< HEAD
 $user = 'root';
 $pass = 'root'; // パスワード
+=======
+$user = 'ecc';
+$pass = 'ecc'; // mets ton mot de passe ici
+>>>>>>> 0cd5ee5decfca56389197fdc8e31f0be71028af4
 $charset = 'utf8mb4';
 
 $options = [

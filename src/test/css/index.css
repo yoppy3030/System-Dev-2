@@ -1,17 +1,13 @@
-
-
 /* Import de la police (exemple avec 'Roboto' - modifiable) */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
 header {
-
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 5%;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Ombre légère */
-    font-family: 'Roboto', sans-serif; /* Police adaptée (ni trop fine ni trop grasse) */
-    
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    font-family: 'Roboto', sans-serif;
 }
 
 .logo{
@@ -26,7 +22,7 @@ header {
 
 .dropdown-btn {
     background: transparent;
-    color: #676B56; /* Couleur texte demandée */
+    color: #676B56;
     padding: 8px 15px;
     border: 1px solid #676B56;
     border-radius: 5px;
@@ -57,7 +53,7 @@ header {
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-    font-weight: 500; /* Épaisseur moyenne */
+    font-weight: 500;
 }
 
 .dropdown-content a:hover {
@@ -69,7 +65,7 @@ header {
 }
 
 /* Style pour le titre "Japan life Manual" */
-header > div:nth-child(2) {
+header > .logo {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -77,7 +73,7 @@ header > div:nth-child(2) {
     font-weight: 500;
 }
 
-header > div:nth-child(2) h3 {
+header > .logo h3 {
     margin: 0;
     font-size: 1.2rem;
 }
@@ -127,24 +123,12 @@ header > div:nth-child(2) h3 {
         flex-wrap: wrap;
     }
     .menu-item {
-        display: none; /* Cache les items en mobile (ou utilisez un menu burger) */
+        display: none;
     }
     .dropdown-menu {
-        order: -1; /* Place le bouton Menu en premier */
+        order: -1;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Reset et Polices */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Montserrat:wght@400;600;700&display=swap');
@@ -156,6 +140,7 @@ header > div:nth-child(2) h3 {
     --light-bg: #F9F5EB;
     --dark-text: #333333;
     --light-text: #f8f8f8;
+    --hover-color: #e9e9e9;
 }
 
 * {
@@ -179,33 +164,33 @@ main {
     padding: 2rem;
 }
 
-/* Hero Section */
-main > div:first-child {
+/* Hero Section Styles using new classes */
+.hero-title {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
 }
 
-main > div:first-child h1 {
+.hero-title h1 {
     font-family: 'Montserrat', sans-serif;
     font-size: 3rem;
     color: var(--primary-color);
-    margin-bottom: 1rem;
     letter-spacing: 1px;
+    margin: 0; /* Remove default margin */
 }
 
-main > div:nth-child(2) {
+.hero-description {
     text-align: center;
     max-width: 800px;
     margin: 0 auto 3rem;
 }
 
-main > div:nth-child(2) p {
+.hero-description p {
     font-size: 1.1rem;
     margin-bottom: 1.5rem;
     color: var(--dark-text);
 }
 
-main > div:nth-child(2) a {
+.hero-description a {
     display: inline-block;
     background-color: var(--primary-color);
     color: white;
@@ -216,14 +201,14 @@ main > div:nth-child(2) a {
     transition: all 0.3s ease;
 }
 
-main > div:nth-child(2) a:hover {
+.hero-description a:hover {
     background-color: var(--accent-color);
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 /* Image Gallery */
-main > div:nth-child(3) {
+.image-gallery {
     display: flex;
     justify-content: center;
     gap: 2rem;
@@ -231,7 +216,7 @@ main > div:nth-child(3) {
     flex-wrap: wrap;
 }
 
-main > div:nth-child(3) img {
+.image-gallery img {
     max-width: 45%;
     height: auto;
     border-radius: 10px;
@@ -239,16 +224,16 @@ main > div:nth-child(3) img {
     transition: transform 0.3s ease;
 }
 
-main > div:nth-child(3) img:hover {
+.image-gallery img:hover {
     transform: scale(1.02);
 }
 
 /* About Section */
-main > div:nth-child(4) {
+.about-section {
     margin-bottom: 4rem;
 }
 
-main > div:nth-child(4) h3 {
+.about-section h3 {
     font-family: 'Montserrat', sans-serif;
     font-size: 2rem;
     color: var(--primary-color);
@@ -257,7 +242,7 @@ main > div:nth-child(4) h3 {
     position: relative;
 }
 
-main > div:nth-child(4) h3::after {
+.about-section h3::after {
     content: '';
     display: block;
     width: 80px;
@@ -266,7 +251,7 @@ main > div:nth-child(4) h3::after {
     margin: 0.5rem auto 0;
 }
 
-main > div:nth-child(4) > div {
+.about-section > div {
     display: flex;
     align-items: center;
     gap: 3rem;
@@ -275,23 +260,23 @@ main > div:nth-child(4) > div {
     border-radius: 10px;
 }
 
-main > div:nth-child(4) > div > div {
+.about-section > div > div {
     flex: 1;
 }
 
-main > div:nth-child(4) p:first-child {
+.about-section p:first-child {
     font-weight: 500;
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
 }
 
-main > div:nth-child(4) p:nth-child(2) {
+.about-section p:nth-child(2) {
     color: var(--primary-color);
     margin-bottom: 1.5rem;
     font-size: 0.9rem;
 }
 
-main > div:nth-child(4) p:last-child {
+.about-section p:last-child {
     background-color: white;
     padding: 1rem;
     border-radius: 5px;
@@ -299,18 +284,17 @@ main > div:nth-child(4) p:last-child {
     box-shadow: 0 3px 10px rgba(0,0,0,0.05);
 }
 
-main > div:nth-child(4) img {
+.about-section img {
     max-width: 40%;
     border-radius: 8px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 }
 
-/* Blog Section */
 /* Blog Section - Horizontal Scroll Layout */
 .blog {
     margin-bottom: 4rem;
-    overflow-x: auto; /* Permet le défilement horizontal si nécessaire */
-    padding-bottom: 20px; /* Espace pour la scrollbar */
+    overflow-x: auto;
+    padding-bottom: 20px;
 }
 
 .blog h3 {
@@ -335,20 +319,20 @@ main > div:nth-child(4) img {
     display: flex;
     gap: 2rem;
     padding: 1rem 0;
-    flex-wrap: nowrap; /* Empêche le retour à la ligne */
-    overflow-x: auto; /* Défilement horizontal */
-    scrollbar-width: thin; /* Pour les navigateurs modernes */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
 }
 
 .blog-post {
-    min-width: 300px; /* Largeur minimale de chaque carte */
-    max-width: 350px; /* Largeur maximale */
+    min-width: 300px;
+    max-width: 350px;
     background-color: var(--light-bg);
     padding: 1.5rem;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
-    flex-shrink: 0; /* Empêche le rétrécissement */
+    flex-shrink: 0;
 }
 
 .blog-post:hover {
@@ -375,7 +359,7 @@ main > div:nth-child(4) img {
     color: var(--dark-text);
     font-size: 0.9rem;
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Limite à 3 lignes */
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -390,7 +374,6 @@ main > div:nth-child(4) img {
     gap: 0.5rem;
 }
 
-/* Style pour la scrollbar */
 .blog-posts-container::-webkit-scrollbar {
     height: 8px;
 }
@@ -547,39 +530,37 @@ footer {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    main > div:nth-child(3) img {
+    .image-gallery img {
         max-width: 100%;
     }
     
-    main > div:nth-child(4) > div,
+    .about-section > div,
     .blog-post,
     .product-container {
         flex-direction: column;
     }
     
-    main > div:nth-child(4) img,
+    .about-section img,
     .blog-post img,
     .product-image {
         max-width: 100%;
         margin-bottom: 1.5rem;
     }
     
-    main > div:first-child h1 {
+    .hero-title h1 {
         font-size: 2.2rem;
     }
 }
 
-
-
 /* =========================================
    言語選択機能
    ========================================= */
-   .language-selector {
+.language-selector {
     position: relative;
     display: inline-block;
-  }
+}
   
-  .translate-btn {
+.translate-btn {
     background-color: var(--light-text);
     color: var(--dark-text);
     border: none;
@@ -590,13 +571,13 @@ footer {
     display: flex;
     align-items: center;
     gap: 5px;
-  }
+}
   
-  .translate-btn:hover {
+.translate-btn:hover {
     background-color: var(--hover-color);
-  }
+}
   
-  .language-dropdown {
+.language-dropdown {
     display: none;
     position: absolute;
     top: 100%;
@@ -607,13 +588,13 @@ footer {
     border-radius: 4px;
     z-index: 1000;
     margin-top: 5px;
-  }
+}
   
-  .language-dropdown.show {
+.language-dropdown.show {
     display: block;
-  }
+}
   
-  .language-option {
+.language-option {
     display: block;
     width: 100%;
     padding: 10px 15px;
@@ -623,10 +604,139 @@ footer {
     cursor: pointer;
     font-size: 14px;
     color: var(--dark-text);
-  }
+}
   
-  .language-option:hover,
-  .language-option.active {
+.language-option:hover,
+.language-option.active {
     background-color: #b2b3b1;
     color: var(--light-text);
-  }
+}
+
+/* =========================================
+   Weather Display (Main Content)
+   ========================================= */
+.weather-main-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10rem;
+    margin-top: 10rem;
+}
+
+#weather-widget {
+    cursor: pointer;
+    background-color: var(--light-bg);
+    padding: 150px 150px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    min-width: 250px;
+    border: 1px solid #eee;
+}
+
+#weather-widget:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+#weather-widget .weather-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#weather-widget .weather-icon {
+    width: 120px;
+    height: 120px;
+}
+
+#weather-widget .weather-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    color: var(--dark-text);
+    font-weight: 500;
+}
+
+#weather-widget #weather-city {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-family: 'Montserrat', sans-serif;
+}
+
+#weather-widget #weather-temp {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+
+/* チャットボット用の基本スタイル */
+.chatbot-font {
+    font-family: 'Inter', 'Noto Sans JP', 'Noto Sans SC', sans-serif;
+}
+#chat-window::-webkit-scrollbar { width: 8px; }
+#chat-window::-webkit-scrollbar-track { background: #f1f5f9; }
+#chat-window::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+#chat-window::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+#chat-open-button {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: #0ea5e9;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 999;
+    transition: transform 0.2s ease-in-out;
+}
+#chat-open-button:hover {
+    transform: scale(1.1);
+    background-color: #0284c7;
+}
+
+/* ★★★ 変更点: チャットボット本体のサイズを大きくする ★★★ */
+#chatbot-modal {
+    position: fixed;
+    bottom: 100px;
+    right: 25px;
+    width: 90vw;
+    max-width: 550px; /* 横幅を大きく */
+    height: 80vh;
+    max-height: 700px; /* 高さを大きく */
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)) drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
+
+.user-message-bubble {
+    background-color: #E0F2FE !important;
+    color: #1F2937 !important;
+}
+
+#user-input {
+    color: black !important;
+}
+
+#language-switcher .lang-switch-btn {
+    min-width: 65px !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease-in-out !important;
+}
+#language-switcher .lang-switch-btn.bg-white {
+    font-weight: 700 !important;
+}
+
+#header-title {
+    font-weight: 700 !important;
+}
