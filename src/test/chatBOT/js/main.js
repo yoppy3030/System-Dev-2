@@ -422,13 +422,28 @@ document.addEventListener('DOMContentLoaded', () => {
             openButton.innerHTML = '<i class="far fa-comments"></i>';
         };
 
+        // ★★★ 変更点: クリックイベントの処理を修正 ★★★
+        
+        // 開封ボタンのクリック
         openButton.addEventListener('click', (e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // イベントの伝播を停止
             const isVisible = chatModal.style.display === 'flex';
             if (isVisible) {
                 closeChat();
             } else {
                 openChat();
+            }
+        });
+
+        // チャットボット本体のクリック
+        chatModal.addEventListener('click', (e) => {
+            e.stopPropagation(); // イベントの伝播を停止
+        });
+
+        // ドキュメント全体のクリック
+        document.addEventListener('click', () => {
+            if (chatModal.style.display === 'flex') {
+                closeChat();
             }
         });
     }
