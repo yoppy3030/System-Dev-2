@@ -252,13 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .map((_, index) => index)
             .filter(index => !askedQuizIndices.has(index));
 
-        // ★★★ 変更点: クイズ終了時のメッセージ表示ロジックを修正 ★★★
         if (availableIndices.length === 0) {
-            // 新しいメッセージ生成関数を呼び出す
             const resultMessage = uiStrings[currentLanguage].getQuizResultMessage(quizScore, allQuizzesInDifficulty.length);
             let allDoneMessage = uiStrings[currentLanguage].all_quizzes_done;
-            
-            // 2つのメッセージを改行でつなげて表示
             displayBotMessage(allDoneMessage + "\n" + resultMessage, { quizFlow: 'end' });
             return;
         }
@@ -341,7 +337,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /** チャットボットの初期化処理 */
     function initializeChat() {
-        // イベントリスナーを設定
         sendBtn.addEventListener('click', handleUserInput);
         userInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') handleUserInput();
@@ -408,20 +403,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => getBotResponse(replyText), 500);
             }
         });
-        // ウェルカムメッセージを表示
         showWelcomeMenu();
     }
 
     // --- チャットボットの表示切り替えと初期化 ---
     if (openButton && chatModal) {
-        openButton.addEventListener('click', () => {
-            const isVisible = chatModal.style.display === 'flex';
-            chatModal.style.display = isVisible ? 'none' : 'flex';
-            openButton.innerHTML = isVisible ? '<i class="far fa-comments"></i>' : '<i class="fas fa-times"></i>';
-
-            if (!isVisible && !isChatInitialized) {
+        const openChat = () => {
+            chatModal.style.display = 'flex';
+            openButton.innerHTML = '<i class="fas fa-times"></i>';
+            if (!isChatInitialized) {
                 initializeChat();
                 isChatInitialized = true;
+            }
+        };
+
+        const closeChat = () => {
+            chatModal.style.display = 'none';
+            openButton.innerHTML = '<i class="far fa-comments"></i>';
+        };
+
+        openButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = chatModal.style.display === 'flex';
+            if (isVisible) {
+                closeChat();
+            } else {
+                openChat();
+            }
+        });
+
+        // ★★★ 新しく追加: チャットボットの外側をクリックしたら閉じる処理 ★★★
+        document.addEventListener('click', (e) => {
+            if (chatModal.style.display === 'flex' && !chatModal.contains(e.target) && !openButton.contains(e.target)) {
+                closeChat();
             }
         });
     }
