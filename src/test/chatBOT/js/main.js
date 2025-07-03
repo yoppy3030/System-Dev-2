@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let askedQuizIndices = new Set();
     let currentDifficulty = null;
     let quizScore = 0;
+    let quizLength = 0; // 挑戦する問題数を保存する変数
     let isChatInitialized = false; // チャットが初期化されたかを追跡
 
     // --- DOM要素 ---
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         askedQuizIndices.clear();
         currentDifficulty = null;
         quizScore = 0;
+        quizLength = 0;
     }
 
     /** ウェルカムメニューを表示 */
@@ -111,6 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 let actionType = 'quick_reply';
                 if (options.quizOptions) actionType = 'quiz_option';
                 else if (uiStrings[currentLanguage].quiz_difficulty.includes(replyText)) actionType = 'select_difficulty';
+                else if (uiStrings[currentLanguage].quiz_question_counts.includes(replyText)) actionType = 'select_question_count';
+                
                 replyBtn.className = 'quick-reply-btn bg-white border border-sky-500 text-sky-500 text-sm font-semibold py-1 px-4 rounded-full hover:bg-sky-500 hover:text-white transition';
                 replyBtn.dataset.action = actionType;
                 repliesContainer.appendChild(replyBtn);
@@ -242,6 +246,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /** クイズの次の問題を出題 */
     function askNextQuizQuestion() {
+        if (askedQuizIndices.size >= quizLength) {
+            const resultMessage = uiStrings[currentLanguage].getQuizResultMessage(quizScore, quizLength);
+            displayBotMessage(uiStrings[currentLanguage].quiz_complete + "\n" + resultMessage, { quizFlow: 'end' });
+            return;
+        }
+
         const allQuizzesInDifficulty = quizData[currentDifficulty];
         if (!allQuizzesInDifficulty) {
             console.error("Invalid difficulty or quiz data is missing for:", currentDifficulty);
@@ -253,9 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .filter(index => !askedQuizIndices.has(index));
 
         if (availableIndices.length === 0) {
-            const resultMessage = uiStrings[currentLanguage].getQuizResultMessage(quizScore, allQuizzesInDifficulty.length);
-            let allDoneMessage = uiStrings[currentLanguage].all_quizzes_done;
-            displayBotMessage(allDoneMessage + "\n" + resultMessage, { quizFlow: 'end' });
+            const resultMessage = uiStrings[currentLanguage].getQuizResultMessage(quizScore, askedQuizIndices.size);
+            displayBotMessage(uiStrings[currentLanguage].all_quizzes_done + "\n" + resultMessage, { quizFlow: 'end' });
             return;
         }
 
@@ -354,6 +363,10 @@ document.addEventListener('DOMContentLoaded', () => {
         chatWindow.addEventListener('click', function (e) {
             const targetButton = e.target.closest('.quick-reply-btn');
             if (!targetButton) return;
+            
+            // ★ 修正点1: イベントの伝播を停止し、documentのクリックリスナーが発火するのを防ぐ
+            e.stopPropagation();
+
             const replyText = targetButton.textContent;
             const action = targetButton.dataset.action;
             displayUserMessage(replyText);
@@ -378,10 +391,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     '難しい': 'hard', 'Hard': 'hard', '困难': 'hard'
                 };
                 currentDifficulty = difficultyMap[replyText];
+                displayBotMessage(uiStrings[currentLanguage].quiz_question_count_prompt, { quickReplies: uiStrings[currentLanguage].quiz_question_counts });
+
+            } else if (action === 'select_question_count') {
+                quizLength = parseInt(replyText);
                 askedQuizIndices.clear();
                 quizScore = 0;
                 currentQuiz = null;
                 askNextQuizQuestion();
+
             } else if (action === 'quiz_option') {
                 const quizData = currentQuiz;
                 if (!quizData) return;
@@ -408,42 +426,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- チャットボットの表示切り替えと初期化 ---
     if (openButton && chatModal) {
-        const openChat = () => {
-            chatModal.style.display = 'flex';
-            openButton.innerHTML = '<i class="fas fa-times"></i>';
-            if (!isChatInitialized) {
-                initializeChat();
-                isChatInitialized = true;
-            }
-        };
-
-        const closeChat = () => {
-            chatModal.style.display = 'none';
-            openButton.innerHTML = '<i class="far fa-comments"></i>';
-        };
-
-        // ★★★ 変更点: クリックイベントの処理を修正 ★★★
-        
-        // 開封ボタンのクリック
-        openButton.addEventListener('click', (e) => {
-            e.stopPropagation(); // イベントの伝播を停止
-            const isVisible = chatModal.style.display === 'flex';
-            if (isVisible) {
-                closeChat();
+        const toggleChat = (show) => {
+            if (show) {
+                chatModal.style.display = 'flex';
+                openButton.innerHTML = '<i class="fas fa-times"></i>';
+                if (!isChatInitialized) {
+                    initializeChat();
+                    isChatInitialized = true;
+                }
             } else {
-                openChat();
+                chatModal.style.display = 'none';
+                openButton.innerHTML = '<i class="far fa-comments"></i>';
             }
+        };
+
+        openButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = chatModal.style.display === 'flex';
+            toggleChat(!isVisible);
         });
 
-        // チャットボット本体のクリック
-        chatModal.addEventListener('click', (e) => {
-            e.stopPropagation(); // イベントの伝播を停止
-        });
-
-        // ドキュメント全体のクリック
-        document.addEventListener('click', () => {
-            if (chatModal.style.display === 'flex') {
-                closeChat();
+        document.addEventListener('click', (e) => {
+            // ★ 修正点2: クリック対象がチャットモーダルとオープンボタンのどちらにも含まれない場合のみ閉じる
+            if (chatModal.style.display === 'flex' && !chatModal.contains(e.target) && !openButton.contains(e.target)) {
+                toggleChat(false);
             }
         });
     }
