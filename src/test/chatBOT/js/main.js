@@ -21,6 +21,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 関数定義 ---
 
+    /**
+     * Creates and manages the seasonal background animations.
+     * @param {string} themeName - The name of the active theme (e.g., 'spring').
+     */
+    function updateSeasonalAnimation(themeName) {
+        const container = document.getElementById('chatbot-animation-container');
+        if (!container) return;
+        container.innerHTML = ''; // Clear previous animation particles
+
+        let particleConfig = null;
+        const particleCount = 20; // Number of particles to generate
+
+        // Define configuration for each season's animation
+        switch (themeName) {
+            case 'spring':
+                particleConfig = { type: 'span', className: 'sakura', content: '🌸', animation: 'fall' };
+                break;
+            case 'summer':
+                // For summer, let's create rising bubbles
+                particleConfig = { type: 'div', className: 'bubble', animation: 'rise' };
+                break;
+            case 'autumn':
+                // For autumn, falling leaves
+                particleConfig = { type: 'span', className: 'leaf', content: '🍁', animation: 'fall' };
+                break;
+            case 'winter':
+                // For winter, falling snow
+                particleConfig = { type: 'span', className: 'snow', content: '❄️', animation: 'fall' };
+                break;
+        }
+
+        if (!particleConfig) return; // Exit if no animation for the current theme
+
+        // Create and append particles
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement(particleConfig.type);
+            particle.className = 'particle ' + particleConfig.className;
+
+            if (particleConfig.content) {
+                particle.textContent = particleConfig.content;
+                particle.style.fontSize = `${10 + Math.random() * 15}px`;
+            } else {
+                const size = 5 + Math.random() * 15;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+            }
+
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.animationName = particleConfig.animation;
+            // Randomize duration and delay for a more natural effect
+            particle.style.animationDuration = `${8 + Math.random() * 12}s`;
+            particle.style.animationDelay = `-${Math.random() * 10}s`; // Use negative delay to start mid-animation
+            particle.style.opacity = `${0.3 + Math.random() * 0.6}`;
+            
+            container.appendChild(particle);
+        }
+    }
+
     /** お問い合わせの状態をリセット */
     function resetInquiryState() {
         inquiryState = { status: 'idle', name: '', email: '', message: '' };
@@ -333,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /** ★★★ START: REVISED FUNCTION ★★★ */
+    /** ★★★ REVISED FUNCTION ★★★ */
     /** テーマ切り替えドロップダウンを初期化 */
     function initializeThemeSwitcher() {
         const dropdownBtn = document.getElementById('cb-theme-btn');
@@ -345,7 +403,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Theme switcher elements not found. Check IDs: cb-theme-btn, cb-theme-content');
             return;
         }
-        console.log("Theme switcher initialized.");
 
         const allThemes = ['theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter', 'theme-morning', 'theme-day', 'theme-evening', 'theme-night'];
 
@@ -357,9 +414,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selectedOption) {
                 dropdownBtn.innerHTML = selectedOption.querySelector('i').outerHTML;
             }
+            // ★★★ ADDED CALL TO UPDATE ANIMATION ★★★
+            updateSeasonalAnimation(themeName);
         };
 
-        applyTheme('spring');
+        applyTheme('spring'); // Sets the default theme and triggers the animation
 
         dropdownBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -381,7 +440,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    /** ★★★ END: REVISED FUNCTION ★★★ */
 
     /** チャットボットの初期化処理 */
     function initializeChat() {

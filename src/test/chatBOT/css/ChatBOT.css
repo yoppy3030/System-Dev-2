@@ -32,7 +32,7 @@ body {
 #chatbot-modal header {
     background-color: rgba(0, 0, 0, 0.1);
     position: relative;
-    z-index: 1;
+    /* z-indexは下で個別に管理 */
     transition: background-color 0.5s ease-in-out;
 }
 
@@ -86,7 +86,7 @@ body {
 }
 
 /* --- Main Dropdown Button --- */
-.cb-theme-dropdown-btn {
+.cb-theme-btn {
     background-color: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.5);
     color: white;
@@ -102,7 +102,7 @@ body {
     padding: 0 8px;
 }
 
-.cb-theme-dropdown-btn:hover {
+.cb-theme-btn:hover {
     background-color: rgba(255, 255, 255, 0.4);
 }
 
@@ -111,7 +111,7 @@ body {
     visibility: hidden;
     opacity: 0;
     transform: translateY(-10px);
-    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s 0.2s;
     position: absolute;
     background-color: #ffffff;
     min-width: 160px;
@@ -128,6 +128,7 @@ body {
     visibility: visible;
     opacity: 1;
     transform: translateY(0);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s 0s;
 }
 
 /* --- Dropdown Options --- */
@@ -168,4 +169,87 @@ body {
 }
 /* =========================================
    ★★★ END: UPDATED SEASONAL THEME STYLES ★★★
+   ========================================= */
+
+/* =========================================
+   ★★★ START: SEASONAL ANIMATION STYLES ★★★
+   ========================================= */
+
+/* Animation container sits behind all other content */
+#chatbot-animation-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none; /* Allows clicking through the container */
+    z-index: 0;
+}
+
+/* ★★★ 修正: ヘッダーが他の要素より前面に表示されるように重なり順を調整 ★★★ */
+#chatbot-modal > header {
+    position: relative;
+    z-index: 10; /* ヘッダーを前面に配置して、ドロップダウンが表示されるようにする */
+}
+
+/* Ensure main chat components are layered on top of the animation */
+#chatbot-modal > #chat-window,
+#chatbot-modal > footer {
+    position: relative;
+    z-index: 1; /* ヘッダー以外の要素は背面に */
+}
+
+/* Base style for all animated particles */
+.particle {
+    position: absolute;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    will-change: transform;
+    user-select: none;
+}
+
+/* Specific styles for each particle type */
+.particle.sakura {
+    color: #ffb7c5;
+}
+.particle.leaf {
+    color: #e8985e;
+}
+.particle.snow {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.particle.bubble {
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Keyframes for falling animations (Spring, Autumn, Winter) */
+@keyframes fall {
+    from {
+        transform: translateY(-10vh) rotate(0deg);
+    }
+    to {
+        transform: translateY(110vh) rotate(360deg);
+    }
+}
+
+/* Keyframes for rising animation (Summer) */
+@keyframes rise {
+    from {
+        transform: translateY(110vh) scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.9;
+    }
+    to {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+    }
+}
+/* =========================================
+   ★★★ END: SEASONAL ANIMATION STYLES ★★★
    ========================================= */

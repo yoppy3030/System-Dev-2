@@ -12,7 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-
+  <!-- ChatBOTのCSSを読み込み -->
+  <link rel="stylesheet" href="./chatBOT/css/ChatBOT.css">
 </head>
 <body>
   <header>
@@ -156,18 +157,20 @@
 
 <!-- Chatbot Modal -->
 <div id="chatbot-modal" class="chatbot-font bg-white rounded-2xl shadow-2xl flex flex-col">
+    <!-- ★★★ Animation Container Added Here ★★★ -->
+    <div id="chatbot-animation-container"></div>
+    
     <header class="bg-sky-600 text-white p-4 rounded-t-2xl shadow-md flex justify-between items-center">
         <div>
             <h1 id="header-title" class="text-2xl font-bold">AIマナー学習ボット</h1>
             <p id="header-lang-status" class="text-sm opacity-90">言語: 日本語</p>
         </div>
         <div class="flex items-center">
-            <!-- ★★★ START: UPDATED THEME DROPDOWN WITH NEW CLASS NAMES ★★★ -->
             <div class="cb-theme-dropdown">
                 <button id="cb-theme-btn" class="cb-theme-btn">
                     <i class="fas fa-palette"></i>
                 </button>
-                <div id="cb-theme-content" class="cb-theme-content">
+                <div id="cb-theme-content" class="cb-theme-dropdown-content">
                     <a class="cb-theme-option" data-theme="spring">
                         <i class="fas fa-leaf fa-fw"></i> <span>春 (Spring)</span>
                     </a>
@@ -182,7 +185,6 @@
                     </a>
                 </div>
             </div>
-            <!-- ★★★ END: UPDATED THEME DROPDOWN ★★★ -->
             <div id="language-switcher" class="flex space-x-1 sm:space-x-2">
                 <button data-lang="ja" class="ja-btn lang-switch-btn bg-white text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform scale-110 ring-2 ring-white">日本語</button>
                 <button data-lang="en" class="en-btn lang-switch-btn bg-sky-500 hover:bg-white hover:text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform hover:scale-110">EN</button>
