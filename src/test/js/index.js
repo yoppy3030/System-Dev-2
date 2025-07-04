@@ -8,6 +8,7 @@ let currentLanguage = 'en';
 let originalTexts = new Map();
 let translations = null;
 let translationsZh = null;
+let lastWeatherData = null; // NEW: To store the last fetched weather data
 
 // =========================================
 // DOM要素の取得
@@ -149,68 +150,47 @@ function translatePage(targetLang) {
     const elements = document.querySelectorAll('p:not(.menu-item p), h1, h2, h3, h4, h5, h6, span, a:not(.menu-item a), .sidebar a, .translate-btn, button');
     
     for (const element of elements) {
-        // いいねボタン、閲覧数などの特殊な要素は翻訳対象外
         if (element.id === 'like-count' || element.id === 'dislike-count' || element.id === 'view-count') {
             continue;
         }
-
-        // ロゴ部分は翻訳対象外
         if (element.closest('.logo')) {
             continue;
         }
-
-        // ボタン要素の特別な処理
         if (element.tagName === 'BUTTON') {
-            // アイコン要素を保存
             const icon = element.querySelector('i');
             const iconHTML = icon ? icon.outerHTML : '';
-            
-            // テキストノードのみを取得
             const textNodes = Array.from(element.childNodes)
                 .filter(node => node.nodeType === Node.TEXT_NODE)
                 .map(node => node.textContent.trim())
                 .join('')
                 .trim();
-
             if (!textNodes) continue;
-
             if (!originalTexts.has(element)) {
                 originalTexts.set(element, textNodes);
             }
-
             if (targetLang === 'en') {
                 element.innerHTML = iconHTML + ' ' + originalTexts.get(element);
             } else {
                 const normalizedText = normalizeText(originalTexts.get(element));
                 const translation = targetLang === 'ja' ? translations[normalizedText] : translationsZh[normalizedText];
-                
                 if (translation) {
                     element.innerHTML = iconHTML + ' ' + translation;
                 }
             }
             continue;
         }
-
         const originalText = element.textContent;
-        
         if (!originalText || !originalText.trim()) {
             continue;
         }
-
-        // 初回のみoriginalTextsに保存
         if (!originalTexts.has(element)) {
             originalTexts.set(element, originalText);
         }
-        
-        // 英語の場合は元のテキストに戻す
         if (targetLang === 'en') {
             element.textContent = originalTexts.get(element);
             continue;
         }
-
         const normalizedText = normalizeText(originalTexts.get(element));
-
-        // 言語に応じた翻訳の適用
         if (targetLang === 'ja') {
             if (translations[normalizedText]) {
                 element.textContent = translations[normalizedText];
@@ -222,46 +202,23 @@ function translatePage(targetLang) {
         }
     }
     
-    // アクティブな言語ボタンの更新
     document.querySelectorAll('.language-option').forEach(btn => {
         btn.classList.remove('active');
     });
     document.querySelector('.language-option[data-lang="' + targetLang + '"]').classList.add('active');
     
     currentLanguage = targetLang;
+
+    // NEW: Re-fetch AI advice in the new language if weather data exists
+    if (lastWeatherData) {
+        const { city, weather, temp } = lastWeatherData;
+        // This function is defined in the DOMContentLoaded event listener below
+        fetchAIWeatherAdvice(city, weather, temp);
+    }
 }
-/*
-// depends on user
-
-document.addEventListener("DOMContentLoaded", () => {
-  const startBtn = document.getElementById("start-btn");
-  if (startBtn) {
-    startBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const activityInput = document.getElementById("user-activity");
-      if (!activityInput) {
-        alert("User activity not found.");
-        return;
-      }
-      const activity = activityInput.value;
-
-      if (activity === "International Student") {
-        window.location.href = "studenthome.php";
-      } else if (activity === "Professional") {
-        window.location.href = "professional.php";
-      } else if (activity === "Tourist") {
-        window.location.href = "travelers_homePage.php";
-      } else {
-        alert("Please sign up or log in to continue.");
-      }
-    });
-  }
-});
-*/
-
 
 // =========================================
-// Weather Widget Functionality (Updated)
+// Weather Widget & AI Advice Functionality
 // =========================================
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -269,52 +226,102 @@ document.addEventListener('DOMContentLoaded', () => {
     const weatherIcon = document.getElementById('weather-icon');
     const weatherTemp = document.getElementById('weather-temp');
     const weatherCity = document.getElementById('weather-city');
+    
+    // --- Get elements for AI Weather Alert Banner ---
+    const weatherAlertBanner = document.getElementById('weather-alert');
+    const alertMessageSpan = document.getElementById('alert-message');
+    const alertCloseBtn = document.getElementById('alert-close');
 
     /**
-     * Fetches weather data from the server proxy and updates the widget
+     * --- NEW: Fetches AI-powered weather advice from the server ---
+     * This function is now globally accessible due to the file structure.
+     * @param {string} city - The name of the city.
+     * @param {string} weather - The current weather description (e.g., 'clear sky').
+     * @param {number} temp - The current temperature.
+     */
+    window.fetchAIWeatherAdvice = async function(city, weather, temp) {
+        const lang = currentLanguage; 
+        const serverUrl = `http://localhost:3000/generate-weather-advice?city=${encodeURIComponent(city)}&weather=${encodeURIComponent(weather)}&temp=${temp}&lang=${lang}`;
+
+        try {
+            const response = await fetch(serverUrl);
+            if (!response.ok) {
+                console.error('AI advice server error:', await response.text());
+                weatherAlertBanner.style.display = 'none';
+                return;
+            }
+            
+            const data = await response.json();
+            
+            if(data.advice) {
+                alertMessageSpan.textContent = data.advice;
+                weatherAlertBanner.style.display = 'flex';
+                weatherAlertBanner.classList.add('ai-advice');
+            }
+
+        } catch (error) {
+            console.error("Failed to fetch AI weather advice:", error);
+            weatherAlertBanner.style.display = 'none';
+        }
+    }
+
+    /**
+     * Fetches weather data from the server and then fetches AI advice
      * @param {string} city - The name of the city to fetch weather for.
      */
     async function fetchWeather(city) {
-        // The API URL now correctly points to the Node.js server running on port 3000
         const serverUrl = `http://localhost:3000/weather?city=${encodeURIComponent(city)}`;
         
         weatherCity.textContent = 'Loading...';
         weatherTemp.textContent = '--°C';
-        weatherIcon.src = ''; // Clear previous icon
+        weatherIcon.src = '';
+        weatherAlertBanner.style.display = 'none';
 
         try {
-            // Fetch data from the Node.js server
             const response = await fetch(serverUrl);
 
-            // Check if the server responded with an error (e.g., 404 Not Found, 401 Unauthorized)
             if (!response.ok) {
                 const errorData = await response.json();
-                // Display the specific error from the server (e.g., "city not found")
                 weatherCity.textContent = errorData.message || 'Error';
                 console.error('Server error:', errorData.message);
                 return;
             }
 
             const data = await response.json();
+            
+            // Store weather data globally
+            lastWeatherData = {
+                city: data.name,
+                temp: Math.round(data.main.temp),
+                weather: data.weather[0].description
+            };
 
-            // Update the display with the new data
-            weatherCity.textContent = data.name;
-            weatherTemp.textContent = Math.round(data.main.temp) + '°C';
+            // Update the weather widget display
+            weatherCity.textContent = lastWeatherData.city;
+            weatherTemp.textContent = lastWeatherData.temp + '°C';
             weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-            weatherIcon.alt = data.weather[0].description;
+            weatherIcon.alt = lastWeatherData.weather;
+
+            // --- After getting weather, fetch the AI advice ---
+            fetchAIWeatherAdvice(lastWeatherData.city, lastWeatherData.weather, lastWeatherData.temp);
 
         } catch (error) {
-            // This catches network errors, like if the Node.js server is not running
             weatherCity.textContent = 'Server offline';
             console.error("Failed to connect to the weather server. Is node server.js running?", error);
         }
+    }
+
+    // Add event listener for the alert banner's close button
+    if (alertCloseBtn) {
+        alertCloseBtn.addEventListener('click', () => {
+            weatherAlertBanner.style.display = 'none';
+        });
     }
 
     // Add a click listener to the widget to change city
     if (weatherWidget) {
         weatherWidget.addEventListener('click', () => {
             const currentCity = weatherCity.textContent;
-            // Don't use a loading message as the default prompt text
             const promptCity = (currentCity !== 'Loading...' && currentCity !== 'Error') ? currentCity : 'Osaka';
             const newCity = prompt('Enter a city name:', promptCity);
             if (newCity && newCity.trim() !== '') {
@@ -323,6 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initial weather fetch for a default city when the page loads
+    // Initial weather fetch for a default city
     fetchWeather('Osaka');
 });

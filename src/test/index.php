@@ -86,7 +86,7 @@
             <p>Welcome to JAPAN Life Manual, your essential guide to navigating life in Japan with ease and peace of mind. 
             Explore our resources for a smooth and enriching integration.</p>
             <a href="#"> let's start</a>
-            <input type="hidden" id="user-activity" value="<?php echo htmlspecialchars($userActivity ?? ''); ?>"
+            <input type="hidden" id="user-activity" value="<?php echo htmlspecialchars($userActivity ?? ''); ?>">
         </div>
     </div>
     <div class="image-gallery">
