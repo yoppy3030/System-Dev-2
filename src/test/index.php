@@ -47,11 +47,6 @@
     <div class="menu-item">
       <a href="register.php"><i class="fas fa-user-plus icon"></i><p>Sign Up</p></a>
     </div>
-<<<<<<< HEAD
-
-    <!-- Language Selector Dropdown -->
-=======
->>>>>>> 742f0c32395656b13b4edabf27e5f7b112b837ce
     <div class="language-selector">
         <button id="translateBtn" class="translate-btn">🌐 Translate</button>
         <div class="language-dropdown">
