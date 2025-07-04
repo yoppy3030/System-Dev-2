@@ -669,7 +669,6 @@ footer {
     opacity: 0.9;
 }
 
-<<<<<<< HEAD
 /* ... (all of your existing CSS code) ... */
 
 /* =========================================
@@ -710,7 +709,6 @@ footer {
 
 .alert-close:hover {
     opacity: 1;
-=======
 
 /* チャットボット用の基本スタイル */
 .chatbot-font {
@@ -781,5 +779,4 @@ footer {
 
 #header-title {
     font-weight: 700 !important;
->>>>>>> 742f0c32395656b13b4edabf27e5f7b112b837ce
 }
