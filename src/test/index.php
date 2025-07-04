@@ -69,15 +69,11 @@
         </div>
     </div>
 
-    <!-- START: NEW WEATHER ALERT BANNER -->
     <div id="weather-alert" class="weather-alert" style="display:none;">
         <span id="alert-message"></span>
         <button id="alert-close" class="alert-close">&times;</button>
     </div>
-    <!-- END: NEW WEATHER ALERT BANNER -->
 
-    <!-- Hero Section -->
-    </div>  
     <div class="hero-section">
         <div class="hero-title">
             <h1>DISCOVER JAPAN</h1>
@@ -90,8 +86,8 @@
         </div>
     </div>
     <div class="image-gallery">
-        <img src="./img/ChatGPT Image 2025年5月26日 12_58_32.png" alt="">
-        <img src="./img/2025年5月26日 13_17_57.png" alt="">
+        <img src="./img/ChatGPT Image 2025年5月26日 12_58_32.png" alt="日本の風景1">
+        <img src="./img/2025年5月26日 13_17_57.png" alt="日本の風景2">
     </div>
     <div class="about-section">
         <h3>ABOUT</h3>
@@ -105,13 +101,13 @@
                     <p>Tokyo Dome 1-chome 2-61 koraku bunkyo city,Tokyo 123-0006, Japan</p>
                 </div>
             </div>
-            <img src="./img/ChatGPT Image 2025年5月26日 14_01_39.png" alt="">
+            <img src="./img/ChatGPT Image 2025年5月26日 14_01_39.png" alt="コンサートのイメージ">
         </div>
     </div>
     <div class="blog">
         <h3>Blog</h3>
         <div class="blog-post">
-            <img src="./img/ChatGPT Image 2025年5月26日 15_06_32.png" alt="Blog Post Image">
+            <img src="./img/ChatGPT Image 2025年5月26日 15_06_32.png" alt="ブログ投稿の画像">
             <div class="blog-content">
                 <h4>Exploring the Beauty of Japan</h4>
                 <p>Discover the rich culture, stunning landscapes, and vibrant cities of Japan. From ancient temples to modern skyscrapers, Japan offers a unique blend of tradition and innovation.</p>
@@ -122,7 +118,7 @@
     <div class="services">
         <div class="product-container">
             <div class="product-image">
-                <img src="./img/スクリーンショット 2025-05-26 132909.png" alt="Nom du produit">
+                <img src="./img/スクリーンショット 2025-05-26 132909.png" alt="製品名">
             </div>
             <div class="product-info">
                 <h1>NAME </h1>
@@ -158,16 +154,40 @@
   </div>
 </footer>
 
+<!-- Chatbot Modal -->
 <div id="chatbot-modal" class="chatbot-font bg-white rounded-2xl shadow-2xl flex flex-col">
     <header class="bg-sky-600 text-white p-4 rounded-t-2xl shadow-md flex justify-between items-center">
         <div>
             <h1 id="header-title" class="text-2xl font-bold">AIマナー学習ボット</h1>
             <p id="header-lang-status" class="text-sm opacity-90">言語: 日本語</p>
         </div>
-        <div id="language-switcher" class="flex space-x-1 sm:space-x-2">
-            <button data-lang="ja" class="ja-btn lang-switch-btn bg-white text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform scale-110 ring-2 ring-white">日本語</button>
-            <button data-lang="en" class="en-btn lang-switch-btn bg-sky-500 hover:bg-white hover:text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform hover:scale-110">EN</button>
-            <button data-lang="zh" class="zh-btn lang-switch-btn bg-sky-500 hover:bg-white hover:text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform hover:scale-110">中文</button>
+        <div class="flex items-center">
+            <!-- ★★★ START: UPDATED THEME DROPDOWN WITH NEW CLASS NAMES ★★★ -->
+            <div class="cb-theme-dropdown">
+                <button id="cb-theme-btn" class="cb-theme-btn">
+                    <i class="fas fa-palette"></i>
+                </button>
+                <div id="cb-theme-content" class="cb-theme-content">
+                    <a class="cb-theme-option" data-theme="spring">
+                        <i class="fas fa-leaf fa-fw"></i> <span>春 (Spring)</span>
+                    </a>
+                    <a class="cb-theme-option" data-theme="summer">
+                        <i class="fas fa-sun fa-fw"></i> <span>夏 (Summer)</span>
+                    </a>
+                    <a class="cb-theme-option" data-theme="autumn">
+                        <i class="fas fa-fan fa-fw"></i> <span>秋 (Autumn)</span>
+                    </a>
+                    <a class="cb-theme-option" data-theme="winter">
+                        <i class="fas fa-snowflake fa-fw"></i> <span>冬 (Winter)</span>
+                    </a>
+                </div>
+            </div>
+            <!-- ★★★ END: UPDATED THEME DROPDOWN ★★★ -->
+            <div id="language-switcher" class="flex space-x-1 sm:space-x-2">
+                <button data-lang="ja" class="ja-btn lang-switch-btn bg-white text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform scale-110 ring-2 ring-white">日本語</button>
+                <button data-lang="en" class="en-btn lang-switch-btn bg-sky-500 hover:bg-white hover:text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform hover:scale-110">EN</button>
+                <button data-lang="zh" class="zh-btn lang-switch-btn bg-sky-500 hover:bg-white hover:text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform hover:scale-110">中文</button>
+            </div>
         </div>
     </header>
     <main id="chat-window" class="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50"></main>
