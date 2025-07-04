@@ -619,14 +619,14 @@ footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 10rem;
-    margin-top: 10rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
 }
 
 #weather-widget {
     cursor: pointer;
-    background-color: var(--light-bg);
-    padding: 150px 150px;
+    background-color: var(--blue-color);
+    padding: 50px 50px;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     transition: all 0.3s ease;
@@ -646,8 +646,8 @@ footer {
 }
 
 #weather-widget .weather-icon {
-    width: 120px;
-    height: 120px;
+    width: 50px;
+    height: 50px;
 }
 
 #weather-widget .weather-text {
@@ -667,4 +667,46 @@ footer {
 #weather-widget #weather-temp {
     font-size: 1.2rem;
     opacity: 0.9;
+}
+
+/* ... (all of your existing CSS code) ... */
+
+/* =========================================
+   NEW: AI Weather Alert Banner
+   ========================================= */
+.weather-alert {
+    padding: 15px 20px;
+    margin: 0 auto 2rem;
+    max-width: 800px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.weather-alert.ai-advice {
+    background-color: #e9f5ff; /* A neutral, pleasant light blue */
+    color: #1c3d5a;
+    border-color: #bde0fe;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0 0 15px;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.alert-close:hover {
+    opacity: 1;
 }

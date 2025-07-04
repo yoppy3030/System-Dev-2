@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,14 +61,13 @@
       </a>
     </div>
 
-    <!-- 言語選択ドロップダウン -->
+    <!-- Language Selector Dropdown -->
     <div class="language-selector">
         <button id="translateBtn" class="translate-btn">🌐 Translate</button>
         <div class="language-dropdown">
             <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
             <button class="language-option" data-lang="en">🇺🇸 English</button>
             <button class="language-option" data-lang="zh">🇨🇳 中文</button>
-            <!-- <button class="language-option" data-lang="ko">🇰🇷 한국어</button> -->
         </div>
     </div>
   </header>
@@ -86,9 +82,16 @@
                 </div>
             </div>
         </div>
-    </div>  
-    
-    <!-- Hero Section with new classes -->
+    </div>
+
+    <!-- START: NEW WEATHER ALERT BANNER -->
+    <div id="weather-alert" class="weather-alert" style="display:none;">
+        <span id="alert-message"></span>
+        <button id="alert-close" class="alert-close">&times;</button>
+    </div>
+    <!-- END: NEW WEATHER ALERT BANNER -->
+
+    <!-- Hero Section -->
     <div class="hero-section">
         <div class="hero-title">
             <h1>DISCOVER JAPAN</h1>
@@ -98,7 +101,7 @@
             <p>Welcome to JAPAN Life Manual, your essential guide to navigating life in Japan with ease and peace of mind. 
             Explore our resources for a smooth and enriching integration.</p>
             <a href="#"> let's start</a>
-            <input type="hidden" id="user-activity" value="<?php echo htmlspecialchars($userActivity); ?>">
+            <input type="hidden" id="user-activity" value="<?php echo htmlspecialchars($userActivity ?? ''); ?>">
         </div>
     </div>
 
