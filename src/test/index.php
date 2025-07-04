@@ -160,7 +160,7 @@
         </div>
     </header>
     <main id="chat-window" class="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50"></main>
-    <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl">
+    <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl mt-8">
         <div class="flex items-center space-x-3">
             <input type="text" id="user-input" class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition" placeholder="日本のマナーについて質問してください">
             <button id="send-btn" class="bg-sky-600 text-white rounded-full p-3 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-transform transform hover:scale-110">
