@@ -44,7 +44,8 @@
             <a href="#">When in public facilities</a>
             <a href="./login.php">Login</a>
         </div>
-        
+    </header>
+     <main>   
         <!-- Main Content -->
         <h1>Introduction to the Chubu Region</h1>
         <p>The Chūbu Region, meaning "central region," lies in the very heart of Japan's main island, Honshu, bridging the bustling cities of Kanto in the east and the cultural traditions of Kansai in the west. Known for its dramatic contrasts, Chūbu stretches from the rugged peaks of the Japanese Alps to the serene coastline along the Sea of Japan and the Pacific Ocean. The region includes nine diverse prefectures—from industrial hubs like Aichi (home to Toyota) to spiritual centers like Nagano and historic towns like Kanazawa in Ishikawa. Chūbu is famous for its natural beauty, traditional craftsmanship, unique local foods, and deep-rooted mountain culture. Whether you're skiing in Nagano, soaking in an onsen in Gifu, exploring miso factories in Aichi, or hiking through sacred forests in Yamanashi, the Chūbu Region offers a rich, authentic slice of Japan that blends history, nature, and innovation.</p>
@@ -62,6 +63,7 @@
 
                 <li>
                     <h3>2. Don't Feed or Touch the Snow Monkeys</h3>
+                    <img src="./img/snow-monkeys-.jpg" alt="Snow Monkeys in Nagano" class="snow-monkey-image">
                     <p>At Jigokudani Monkey Park in Nagano, the sight of wild Japanese macaques relaxing in hot springs is truly unforgettable — but it's important to remember that these monkeys are not pets or performers. They come and go freely, and locals work hard to protect their natural behavior. Tourists should never try to feed, touch, or provoke them for photos, as this can cause stress, aggression, or even disrupt their delicate ecosystem. Getting too close or making loud noises may also make them feel threatened. The best way to enjoy this rare and peaceful scene is to observe quietly and respectfully from a safe distance.</p>
                 </li>
                 
@@ -97,7 +99,7 @@
                 <li>
                     <h3>3. Don't Mishandle Karakuri Puppets</h3>
                     <p>Karakuri puppets are traditional mechanical dolls that originate from Aichi, especially in cities like Inuyama and Nagoya. These beautifully crafted figures are powered by springs and gears — no electricity — and can perform complex movements such as serving tea or dancing. Far from being simple toys, they are a treasured part of Aichi's craftsmanship culture and often appear in local festivals and exhibitions. Tourists should avoid touching the puppets, leaning in too close for photos, or comparing them casually to robots or anime figures. Mishandling or underestimating their cultural value may come across as disrespectful. Observing with care and curiosity shows appreciation for the incredible artistry behind these living traditions.</p>
-                    <img src="./img/fire_work.jpg" alt="Chiba Festival" class="festival-image">
+                    <img src="./img/Karakuri_Puppets.jpg" alt="Karakuri Puppets" class="karakuri-image">
                 </li>
 
                 <li>
@@ -112,6 +114,7 @@
                 <li>
                     <h3>1. Don't Walk Through Tea Fields or Touch the Leaves Without Permission</h3>
                     <p>Shizuoka is Japan's largest tea producer, and tea farms are often mistaken for open tourist spaces. In reality, they are carefully maintained by farmers. Walking into the rows, picking leaves, or stepping on the soil damages the crop and disrespects the growers. Unless you are in a guided tour area, stay on marked paths and never enter the fields freely.</p>
+                    <img src="./img/tea_field.jpg" alt="Shizuoka Tea Fields" class="tea-fields-image">
                 </li>
 
                 <li>
@@ -136,6 +139,7 @@
                 <li>
                     <h3>1. Don't Touch or Enter Private Homes in Shirakawa-go</h3>
                     <p>Shirakawa-go, with its iconic thatched-roof farmhouses, is a UNESCO World Heritage Site — but it's also a living village where people still reside. While some homes are open to the public as museums or inns, many others are private properties. Tourists should be careful not to treat the entire village like an open-air exhibit. Avoid touching the wooden walls, peeking through windows, or walking into side paths marked as restricted. Even leaning on fences or standing too close for photos can feel intrusive to the residents. Respecting the privacy and daily lives of the locals helps preserve the harmony between tourism and tradition in this unique community.</p>
+                    <img src="./img/Shirakawa_go.jpg" alt="Shirakawa-go" class="shirakawa-image">
                 </li>
 
                 <li>

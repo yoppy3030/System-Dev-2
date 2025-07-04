@@ -59,6 +59,7 @@
         <!-- Main Content -->
          <h1>Introduction to the ChugokuRegion</h1>
          <p>
+            <img src="./img/chugoku.jpg" alt="Chugoku Region" class="region-image">
             The Chugoku region, located in western Honshu, is a land of striking contrasts — from bustling port cities to tranquil mountain villages, and from ancient shrines to industrial hubs. Comprising five prefectures — Hiroshima, Okayama, Shimane, Tottori, and Yamaguchi
              — Chugoku offers a rich blend of history, nature, and regional identity. Hiroshima stands as a global symbol of peace and resilience, while places like Izumo in Shimane preserve deep spiritual traditions rooted in Japan's oldest myths. The region is also known for its scenic coastline,
               fresh seafood, traditional crafts, and unique dialects. Whether exploring the peaceful sand dunes of Tottori or walking across the legendary Kintai Bridge in Yamaguchi, visitors to Chugoku can experience a quieter, more reflective side of Japan, steeped in both historical gravity and local pride.
@@ -92,7 +93,6 @@
                             <p>In Hiroshima, folded paper cranes — known as orizuru — are powerful symbols of peace, hope, and remembrance, especially connected to the story of Sadako Sasaki, a young girl who died from radiation after the atomic bombing.
                                  Visitors often bring thousands of these colorful cranes to the Peace Memorial Park as heartfelt offerings. While they may look like decorations, these cranes carry deep emotional weight and personal prayers.
                                   Touching, rearranging, or taking them is considered highly disrespectful. Tourists are expected to observe them quietly and understand their meaning — each crane represents a wish for a world without war.</p>
-                            <img src="./img/fire_work.jpg" alt="Chiba Festival" class="festival-image">
 
                         </li>
 
