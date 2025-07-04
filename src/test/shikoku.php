@@ -54,6 +54,7 @@
         <!-- Main Content -->
          
         <h1 data-key="Introduction to the  Shikoku Region">Introduction to the Shikoku Region</h1>
+        <img src="./img/shikoku.jpg" alt="Shikoku Region" class="region-image">
         <p data-key="Shikoku, the smallest of Japan's four main islands, is a region rich in spiritual heritage, natural beauty, and traditional charm. Comprising four prefectures — Tokushima, Kagawa, Ehime, and Kochi — Shikoku is best known for the Shikoku Henro, a sacred 88-temple pilgrimage route that draws both devout followers and curious travelers from across the world. Beyond its spiritual appeal, Shikoku offers stunning coastlines, lush mountains, and vibrant local cultures. Kagawa is famed for its udon noodles, Tokushima for its Awa Odori dance festival, Ehime for its historic Dogo Onsen, and Kochi for its rivers and samurai history. Far less crowded than Japan's major cities, Shikoku welcomes visitors with warm hospitality and a pace of life that invites reflection and connection with both people and place.">
             Shikoku, the smallest of Japan's four main islands, is a region rich in spiritual heritage, natural beauty, and traditional charm. Comprising four prefectures — Tokushima, Kagawa, Ehime, and Kochi — Shikoku is best known for the Shikoku Henro, a sacred 88-temple pilgrimage route that draws both devout followers and curious travelers from across the world. Beyond its spiritual appeal, Shikoku offers stunning coastlines, lush mountains, and vibrant local cultures. Kagawa is famed for its udon noodles, Tokushima for its Awa Odori dance festival, Ehime for its historic Dogo Onsen, and Kochi for its rivers and samurai history. Far less crowded than Japan's major cities, Shikoku welcomes visitors with warm hospitality and a pace of life that invites reflection and connection with both people and place.</p>
 
@@ -140,6 +141,7 @@
                     <p>Ehime Prefecture is often called the "Kingdom of Mikan," thanks to its ideal climate and long history of producing some of Japan's sweetest and juiciest mandarin oranges. For locals, mikan are more than just a fruit — they're a symbol of warmth, hospitality,
                         and regional pride. You'll find mikan used in everything from juice and jam to desserts and bath products. Many families even grow their own. When visiting Ehime, it's important to treat mikan with respect: don't waste them, don't scoff at their simplicity,
                         and don't compare them negatively to foreign fruits. Complimenting their flavor, trying different varieties, or learning about mikan farming traditions is a great way to connect with the heart of Ehime's culture — one sweet bite at a time.</p>
+                        <img src="./img/orange.jpg" alt="Mikan" class="mikan-image"><br>
                 </li>
                 <li>
                     <h3>4. Respect Matsuyama Castle Grounds</h3>
