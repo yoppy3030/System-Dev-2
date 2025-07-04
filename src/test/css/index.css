@@ -709,7 +709,7 @@ footer {
 
 .alert-close:hover {
     opacity: 1;
-
+}
 /* チャットボット用の基本スタイル */
 .chatbot-font {
     font-family: 'Inter', 'Noto Sans JP', 'Noto Sans SC', sans-serif;
