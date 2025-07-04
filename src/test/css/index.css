@@ -669,6 +669,7 @@ footer {
     opacity: 0.9;
 }
 
+<<<<<<< HEAD
 /* ... (all of your existing CSS code) ... */
 
 /* =========================================
@@ -709,4 +710,76 @@ footer {
 
 .alert-close:hover {
     opacity: 1;
+=======
+
+/* チャットボット用の基本スタイル */
+.chatbot-font {
+    font-family: 'Inter', 'Noto Sans JP', 'Noto Sans SC', sans-serif;
+}
+#chat-window::-webkit-scrollbar { width: 8px; }
+#chat-window::-webkit-scrollbar-track { background: #f1f5f9; }
+#chat-window::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+#chat-window::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+#chat-open-button {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: #0ea5e9;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 999;
+    transition: transform 0.2s ease-in-out;
+}
+#chat-open-button:hover {
+    transform: scale(1.1);
+    background-color: #0284c7;
+}
+
+/* ★★★ 変更点: チャットボット本体のサイズを大きくする ★★★ */
+#chatbot-modal {
+    position: fixed;
+    bottom: 100px;
+    right: 25px;
+    width: 90vw;
+    max-width: 550px; /* 横幅を大きく */
+    height: 80vh;
+    max-height: 700px; /* 高さを大きく */
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)) drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
+
+.user-message-bubble {
+    background-color: #E0F2FE !important;
+    color: #1F2937 !important;
+}
+
+#user-input {
+    color: black !important;
+}
+
+#language-switcher .lang-switch-btn {
+    min-width: 65px !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease-in-out !important;
+}
+#language-switcher .lang-switch-btn.bg-white {
+    font-weight: 700 !important;
+}
+
+#header-title {
+    font-weight: 700 !important;
+>>>>>>> 742f0c32395656b13b4edabf27e5f7b112b837ce
 }
