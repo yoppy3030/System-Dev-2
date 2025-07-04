@@ -67,7 +67,6 @@
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
     </div>
 
     <!-- START: NEW WEATHER ALERT BANNER -->
@@ -78,9 +77,7 @@
     <!-- END: NEW WEATHER ALERT BANNER -->
 
     <!-- Hero Section -->
-=======
     </div>  
->>>>>>> 742f0c32395656b13b4edabf27e5f7b112b837ce
     <div class="hero-section">
         <div class="hero-title">
             <h1>DISCOVER JAPAN</h1>
@@ -89,10 +86,7 @@
             <p>Welcome to JAPAN Life Manual, your essential guide to navigating life in Japan with ease and peace of mind. 
             Explore our resources for a smooth and enriching integration.</p>
             <a href="#"> let's start</a>
-<<<<<<< HEAD
-            <input type="hidden" id="user-activity" value="<?php echo htmlspecialchars($userActivity ?? ''); ?>">
-=======
->>>>>>> 742f0c32395656b13b4edabf27e5f7b112b837ce
+            <input type="hidden" id="user-activity" value="<?php echo htmlspecialchars($userActivity ?? ''); ?>"
         </div>
     </div>
     <div class="image-gallery">
