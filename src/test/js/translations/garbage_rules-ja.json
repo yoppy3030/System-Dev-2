@@ -1,7 +1,12 @@
 {
   "translations": {
-    "Garbage Disposal Rules in Japan": "日本のゴミ処理ルール",
-    "For Foreign Residents": "外国人居住者向け",
+    "Garbage Disposal Rules": "ゴミ処理ルール",
+    "A guide for foreign residents in Japan": "日本在住外国人のためのガイド",
+    "Personalized Local Guide":"パーソナライズされたローカルガイド",
+    "Get specific garbage collection details for your current location, powered by AI.":"AI を活用して、現在の場所のゴミ収集の詳細を取得します。",
+    "Get My Location's Rules":"私の場所のルールを取得する",
+    "In Japan, garbage is sorted into several categories. Check your local city's guide for specifics, but here are the common types:":"日本では、ゴミはいくつかの種類に分別されます。詳しくは各自治体のガイドをご確認ください。一般的な種類は以下のとおりです。",
+    " 5 Essential Rules":"5つの必須ルール",
     "🌐 Translate": "🌐 翻訳",
     "🗑️ Garbage Categories": "🗑️ ゴミの種類",
     "1. Burnable Garbage (燃えるゴミ)": "1. 燃えるゴミ (燃えるゴミ)",
