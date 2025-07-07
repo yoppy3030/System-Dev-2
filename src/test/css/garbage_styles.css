@@ -10,6 +10,7 @@
     --hover-color: #d32f2f; /* Darker red for hover effects */
     --card-bg: #ffffff;
     --body-bg: #f9f9f9;
+    --header-bg:#748873;
 }
 
 body {
@@ -132,7 +133,7 @@ body {
    Hero Section
    ========================================= */
 .culture-hero {
-  background-color: var(--primary-color);
+  background-color: var(--header-bg);
   padding: 3rem 5%;
   text-align: center;
   color: var(--light-text);

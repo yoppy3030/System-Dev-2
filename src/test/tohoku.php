@@ -208,7 +208,7 @@
                     </ul>
              </ol>
             
-
+    </main>
 <footer>
     <div class="footer-content">
             <h2>Contact Us</h2>

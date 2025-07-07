@@ -3,18 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- グローバル変数 ---
     let currentLanguage = 'ja';
-    let inquiryState = {
-        status: 'idle',
-        name: '',
-        email: '',
-        message: ''
-    };
+    let inquiryState = { status: 'idle', name: '', email: '', message: '' };
     let currentQuiz = null;
     let askedQuizIndices = new Set();
     let currentDifficulty = null;
     let quizScore = 0;
-    let quizLength = 0; // 挑戦する問題数を保存する変数
-    let isChatInitialized = false; // チャットが初期化されたかを追跡
+    let quizLength = 0;
+    let isChatInitialized = false;
 
     // --- DOM要素 ---
     const chatWindow = document.getElementById('chat-window');
@@ -25,6 +20,64 @@ document.addEventListener('DOMContentLoaded', () => {
     const openButton = document.getElementById('chat-open-button');
 
     // --- 関数定義 ---
+
+    /**
+     * Creates and manages the seasonal background animations.
+     * @param {string} themeName - The name of the active theme (e.g., 'spring').
+     */
+    function updateSeasonalAnimation(themeName) {
+        const container = document.getElementById('chatbot-animation-container');
+        if (!container) return;
+        container.innerHTML = ''; // Clear previous animation particles
+
+        let particleConfig = null;
+        const particleCount = 20; // Number of particles to generate
+
+        // Define configuration for each season's animation
+        switch (themeName) {
+            case 'spring':
+                particleConfig = { type: 'span', className: 'sakura', content: '🌸', animation: 'fall' };
+                break;
+            case 'summer':
+                // For summer, let's create rising bubbles
+                particleConfig = { type: 'div', className: 'bubble', animation: 'rise' };
+                break;
+            case 'autumn':
+                // For autumn, falling leaves
+                particleConfig = { type: 'span', className: 'leaf', content: '🍁', animation: 'fall' };
+                break;
+            case 'winter':
+                // For winter, falling snow
+                particleConfig = { type: 'span', className: 'snow', content: '❄️', animation: 'fall' };
+                break;
+        }
+
+        if (!particleConfig) return; // Exit if no animation for the current theme
+
+        // Create and append particles
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement(particleConfig.type);
+            particle.className = 'particle ' + particleConfig.className;
+
+            if (particleConfig.content) {
+                particle.textContent = particleConfig.content;
+                particle.style.fontSize = `${10 + Math.random() * 15}px`;
+            } else {
+                const size = 5 + Math.random() * 15;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+            }
+
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.animationName = particleConfig.animation;
+            // Randomize duration and delay for a more natural effect
+            particle.style.animationDuration = `${8 + Math.random() * 12}s`;
+            particle.style.animationDelay = `-${Math.random() * 10}s`; // Use negative delay to start mid-animation
+            particle.style.opacity = `${0.3 + Math.random() * 0.6}`;
+            
+            container.appendChild(particle);
+        }
+    }
 
     /** お問い合わせの状態をリセット */
     function resetInquiryState() {
@@ -223,17 +276,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.success) {
                 displayBotMessage(uiStrings[currentLanguage].inquiry.complete);
             } else {
-                console.error('--- お問い合わせ送信エラー ---');
-                console.error('サーバーからのエラーメッセージ:', result.error);
-                if (result.debug) {
-                    console.error('PHPMailer デバッグログ:\n', result.debug);
-                }
-                console.error('--------------------------');
-                const userMessage = uiStrings[currentLanguage].inquiry.send_error + ' (詳細は開発者コンソールを確認してください)';
-                displayBotMessage(userMessage);
+                console.error('Inquiry submission error:', result.error);
+                displayBotMessage(uiStrings[currentLanguage].inquiry.send_error);
             }
         } catch (error) {
-            console.error('Fetch API 自体にエラーが発生しました:', error);
+            console.error('Fetch API error during inquiry submission:', error);
             if (chatWindow.lastChild && chatWindow.lastChild.textContent === "...") {
                 chatWindow.removeChild(chatWindow.lastChild);
             }
@@ -344,8 +391,60 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    /** ★★★ REVISED FUNCTION ★★★ */
+    /** テーマ切り替えドロップダウンを初期化 */
+    function initializeThemeSwitcher() {
+        const dropdownBtn = document.getElementById('cb-theme-btn');
+        const dropdownContent = document.getElementById('cb-theme-content');
+        const themeOptions = document.querySelectorAll('.cb-theme-option');
+        const chatbotModal = document.getElementById('chatbot-modal');
+        
+        if (!dropdownBtn || !dropdownContent || !chatbotModal) {
+            console.error('Theme switcher elements not found. Check IDs: cb-theme-btn, cb-theme-content');
+            return;
+        }
+
+        const allThemes = ['theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter', 'theme-morning', 'theme-day', 'theme-evening', 'theme-night'];
+
+        const applyTheme = (themeName) => {
+            allThemes.forEach(theme => chatbotModal.classList.remove(theme));
+            chatbotModal.classList.add(`theme-${themeName}`);
+            
+            const selectedOption = document.querySelector(`.cb-theme-option[data-theme="${themeName}"]`);
+            if (selectedOption) {
+                dropdownBtn.innerHTML = selectedOption.querySelector('i').outerHTML;
+            }
+            // ★★★ ADDED CALL TO UPDATE ANIMATION ★★★
+            updateSeasonalAnimation(themeName);
+        };
+
+        applyTheme('spring'); // Sets the default theme and triggers the animation
+
+        dropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownContent.classList.toggle('show');
+        });
+
+        themeOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const selectedTheme = option.dataset.theme;
+                applyTheme(selectedTheme);
+                dropdownContent.classList.remove('show');
+            });
+        });
+
+        document.addEventListener('click', () => {
+            if (dropdownContent.classList.contains('show')) {
+                dropdownContent.classList.remove('show');
+            }
+        });
+    }
+
     /** チャットボットの初期化処理 */
     function initializeChat() {
+        initializeThemeSwitcher();
+
         sendBtn.addEventListener('click', handleUserInput);
         userInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') handleUserInput();
@@ -364,7 +463,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetButton = e.target.closest('.quick-reply-btn');
             if (!targetButton) return;
             
-            // ★ 修正点1: イベントの伝播を停止し、documentのクリックリスナーが発火するのを防ぐ
             e.stopPropagation();
 
             const replyText = targetButton.textContent;
@@ -447,7 +545,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.addEventListener('click', (e) => {
-            // ★ 修正点2: クリック対象がチャットモーダルとオープンボタンのどちらにも含まれない場合のみ閉じる
             if (chatModal.style.display === 'flex' && !chatModal.contains(e.target) && !openButton.contains(e.target)) {
                 toggleChat(false);
             }

@@ -29,9 +29,6 @@
             <!-- 検索ボックス -->
             <input type="text" class="search-box" placeholder="search"/>
         </nav>
-    </header>
-    <main>
-
                 <!-- Menu Button -->
         <div class="menu-button" onclick="toggleSidebar()">
             <span></span>
@@ -46,8 +43,13 @@
             <a href="#">When in public facilities</a>
             <a href="./login.php">Login</a>
         </div>
+    </header>
+    <main>
+
+        
         <!-- Main Content -->
          <h1>Introduction to the Hokkaido Region</h1>
+         <img src="./img/hokkaido.jpg" alt="Hokkaido Region" class="region-image">
          <p>Hokkaido, Japan's northernmost island, is a land of breathtaking natural beauty, rich culture, and unique seasonal charm. Known for its vast landscapes, snowy winters, and cool summers, Hokkaido offers a refreshing escape from Japan's more urbanized regions. The island is famous for its winter sports in areas like Niseko and Sapporo, stunning flower fields in Furano, and fresh seafood markets in Hakodate.
              Beyond its scenic appeal, Hokkaido is home to the indigenous Ainu culture, giving it a distinct heritage and identity within Japan. Whether you're drawn by adventure, cuisine, or serenity, Hokkaido welcomes visitors with wide open spaces and warm local hospitality.</p>
 
