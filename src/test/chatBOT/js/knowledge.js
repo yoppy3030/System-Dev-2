@@ -45,11 +45,9 @@ const uiStrings = {
         theme_autumn: '秋',
         theme_winter: '冬',
         clear_history: '履歴をクリア',
-        // ▼▼▼【変更点】お気に入り機能のUIテキストを修正 ▼▼▼
         view_pinned: 'お気に入り',
         pinned_empty_title: 'お気に入りはまだありません',
         pinned_empty_desc: 'ボットの回答の右上にあるピンアイコンをクリックして、重要な情報をここに保存しましょう。',
-        // ▲▲▲ ここまで ▲▲▲
         inquiry: {
             start: 'お問い合わせですね。承知いたしました。まず、お名前を教えていただけますか？（途中で「キャンセル」と入力すると中断できます）',
             prompt_email: 'ありがとうございます。次に、ご連絡先のメールアドレスをお願いします。ご入力いただいたアドレスに確認メールをお送りします。',
@@ -59,7 +57,14 @@ const uiStrings = {
             send_error: '申し訳ありません、送信中にエラーが発生しました。時間をおいて再度お試しください。',
             cancelled: 'お問い合わせをキャンセルしました。',
             cancel_keywords: ['キャンセル', 'やめる'],
+        },
+        // ▼▼▼【新機能】フィードバック機能のUIテキストを追加 ▼▼▼
+        feedback: {
+            helpful: '役に立った',
+            unhelpful: '役に立たなかった',
+            thank_you: 'フィードバックありがとうございます！'
         }
+        // ▲▲▲ ここまで ▲▲▲
     },
     en: {
         headerTitle: 'AI Manners Learning Bot',
@@ -106,11 +111,9 @@ const uiStrings = {
         theme_autumn: 'Autumn',
         theme_winter: 'Winter',
         clear_history: 'Clear History',
-        // ▼▼▼【変更点】お気に入り機能のUIテキストを修正 ▼▼▼
         view_pinned: 'Favorites',
         pinned_empty_title: 'No Favorites Yet',
         pinned_empty_desc: 'Click the pin icon on a bot response to save important information here.',
-        // ▲▲▲ ここまで ▲▲▲
         inquiry: {
             start: 'Okay, you want to make an inquiry. First, could you please tell me your name? (You can type "cancel" to stop at any time)',
             prompt_email: 'Thank you. Next, please provide your email address. A confirmation email will be sent to this address.',
@@ -120,7 +123,14 @@ const uiStrings = {
             send_error: 'Sorry, an error occurred while sending. Please try again later.',
             cancelled: 'The inquiry has been cancelled.',
             cancel_keywords: ['cancel', 'stop'],
+        },
+        // ▼▼▼【新機能】フィードバック機能のUIテキストを追加 ▼▼▼
+        feedback: {
+            helpful: 'Helpful',
+            unhelpful: 'Not Helpful',
+            thank_you: 'Thank you for your feedback!'
         }
+        // ▲▲▲ ここまで ▲▲▲
     },
     zh: {
         headerTitle: 'AI礼仪学习机器人',
@@ -167,11 +177,9 @@ const uiStrings = {
         theme_autumn: '秋天',
         theme_winter: '冬天',
         clear_history: '清除记录',
-        // ▼▼▼【変更点】お気に入り機能のUIテキストを修正 ▼▼▼
         view_pinned: '收藏',
         pinned_empty_title: '尚无收藏的消息',
         pinned_empty_desc: '点击机器人回复右上方的图钉图标，即可在此处保存重要信息。',
-        // ▲▲▲ ここまで ▲▲▲
         inquiry: {
             start: '好的，您想进行咨询。首先，请问您的名字是？（您可以随时输入“取消”来中断）',
             prompt_email: '谢谢。接下来，请输入您的电子邮件地址。我们将向此地址发送一封确认邮件。',
@@ -181,7 +189,14 @@ const uiStrings = {
             send_error: '抱歉，发送时发生错误，请稍后再试。',
             cancelled: '咨询已取消。',
             cancel_keywords: ['取消'],
+        },
+        // ▼▼▼【新機能】フィードバック機能のUIテキストを追加 ▼▼▼
+        feedback: {
+            helpful: '有帮助',
+            unhelpful: '没有帮助',
+            thank_you: '感谢您的反馈！'
         }
+        // ▲▲▲ ここまで ▲▲▲
     }
 };
 
@@ -281,7 +296,12 @@ const quizData = {
         { question: { ja: '食事の際、器の蓋はどこに置くのが正しいですか？', en: 'When dining, where is the correct place to put the lid of a bowl?', zh: '吃饭时，碗盖应该放在哪里？' }, options: { ja: ['お盆の外の右側', 'お盆の中の右側', '裏返してお椀の上'], en: ['Outside the tray on the right', 'Inside the tray on the right', 'Upside down on top of the bowl'], zh: ['餐盘外的右侧', '餐盘内的右侧', '翻过来放在碗上'] }, correct: 0, explanation: { ja: 'お椀の蓋は、お椀の右側、お盆の外に置くのが基本です。水滴が垂れないように、蓋の内側を上にして置きます。', en: 'The lid should be placed outside the tray on the right side of the bowl, with the inside facing up to prevent condensation from dripping.', zh: '碗盖的基本放法是放在餐盘外的右侧，内侧朝上以防滴水。' } },
         { question: { ja: 'ビジネスメールで、自分の名前を名乗った後、相手に「お世話になっております」と書くのは正しいですか？', en: 'In a business email, is it correct to write "Osewa ni natte orimasu" after stating your name?', zh: '在商务邮件中，报上自己名字后写“承蒙关照”正确吗？' }, options: { ja: ['はい、正しい', 'いいえ、名乗る前に書く', '初めての相手には使わない'], en: ['Yes, it is correct', 'No, write it before your name', 'Do not use it for a first-time contact'], zh: ['是的，正确', '不，要在报名前写', '不要对初次联系的人使用'] }, correct: 1, explanation: { ja: 'ビジネスメールでは、まず宛名、次に挨拶（「お世話になっております」など）、そして自分の会社名と名前を名乗るのが正しい順序です。', en: 'The correct order in a business email is: Addressee, Greeting (like "Osewa ni natte orimasu"), and then your company name and your name.', zh: '商务邮件的正确顺序是：收件人姓名、问候语（如“承蒙关照”），然后是自己的公司名和姓名。' } },
         { question: { ja: '訪問先で「つまらないものですが」と言って手土産を渡すのはなぜですか？', en: 'Why do people say "Tsumaranai mono desu ga" (It\'s a dull thing, but...) when giving a gift?', zh: '为什么在送礼时会说“一点小意思”（つまらないものですが）？' }, options: { ja: ['本当に価値がないから', '謙遜の気持ちを表すため', '決まり文句で意味はない'], en: ['Because it truly has no value', 'To express humility', 'It\'s just a set phrase with no meaning'], zh: ['因为它真的没什么价值', '为了表示谦逊', '只是没有意义的客套话'] }, correct: 1, explanation: { ja: '「立派なあなたに差し上げるには、この贈り物は大したものではありませんが」という、相手を立てる謙遜の表現です。', en: 'It is a humble expression that elevates the receiver, implying, "This gift is not much for someone as great as you."', zh: '这是一种抬高对方、表示谦逊的说法，意思是“对于尊贵的您来说，这份薄礼不成敬意”。' } },
-        { question: { ja: '和室の敷居（しきい）を踏んではいけないと言われる主な理由は何ですか？', en: 'What is the main reason it is said you should not step on the threshold (shikii) of a Japanese room?', zh: '据说不能踩在和室的门槛上，主要原因是什么？' }, options: { ja: ['家の主人の頭だから', '滑って危ないから', '単なる迷信'], en: ['Because it represents the head of the household', 'Because it is slippery and dangerous', 'It is just a superstition'], zh: ['因为它代表一家之主', '因为它很滑很危险', '只是迷信'] }, correct: 0, explanation: { ja: '敷居は、その家の内と外を分ける結界であり、またその家の主人の頭を象徴するとも言われ、踏むことは大変失礼とされています。', en: 'The threshold is a boundary separating the inside and outside of a house and is also said to symbolize the head of the household, making it very disrespectful to step on.', zh: '门槛是分隔房屋内外的结界，也象征着一家之主，因此踩踏门槛被认为是非常失礼的。' } },
+        {
+            question: { ja: '和室の敷居（しきい）を踏んではいけないと言われる主な理由は何ですか？', en: 'What is the main reason it is said you should not step on the threshold (shikii) of a Japanese room?', zh: '据说不能踩在和室的门槛上，主要原因是什么？' },
+            options: { ja: ['家の主人の頭だから', '滑って危ないから', '単なる迷信'], en: ['Because it represents the head of the household', 'Because it is slippery and dangerous', 'It is just a superstition'], zh: ['因为它代表一家之主', '因为它很滑很危险', '只是迷信'] },
+            correct: 0,
+            explanation: { ja: '敷居は、その家の内と外を分ける結界であり、またその家の主人の頭を象徴するとも言われ、踏むことは大変失礼とされています。', en: 'The threshold is a boundary separating the inside and outside of a house and is also said to symbolize the head of the household, making it very disrespectful to step on.', zh: '门槛是分隔房屋内外的结界，也象征着一家之主，因此踩踏门槛被认为是非常失礼的。' }
+        },
         { question: { ja: '食事の際、一度取り皿に取った料理を、元の大きな皿に戻しても良いですか？', en: 'During a meal, is it okay to return food from your small plate back to the large serving dish?', zh: '吃饭时，可以把自己小盘子里的菜再放回大盘子里吗？' }, options: { ja: ['はい、誰も見ていなければ', 'いいえ、絶対にしてはいけない', '少しならOK'], en: ['Yes, if no one is watching', 'No, you must never do it', 'A little is okay'], zh: ['可以，如果没人看见的话', '不，绝对不可以', '一点点なら可以'] }, correct: 1, explanation: { ja: '一度自分の皿に取ったものを共有の大皿に戻すのは、衛生的に問題があるだけでなく、重大なマナー違反（「そら箸」）です。', en: 'Returning food to a shared platter after it has been on your personal plate is a major breach of etiquette ("sora-bashi") and is also unhygienic.', zh: '把自己盘子里的食物再放回公用的大盘子里，不仅不卫生，也是严重违反礼仪的（“そら箸”）。' } },
         { question: { ja: '新築祝いに「火」を連想させる贈り物（灰皿、ライターなど）を避けるのはなぜですか？', en: 'Why are gifts that evoke "fire" (like ashtrays or lighters) avoided for a housewarming?', zh: '为什么乔迁之喜时要避免送让人联想到“火”的礼物（如烟灰缸、打火机）？' }, options: { ja: ['値段が安いから', '火事を連想させるから', '煙が出るから'], en: ['Because they are cheap', 'Because they are associated with fires', 'Because they produce smoke'], zh: ['因为便宜', '因为会让人联想到火灾', '因为会冒烟'] }, correct: 1, explanation: { ja: '新築した家が火事になることを連想させるため、灰皿、ライター、ストーブ、また赤い色の贈り物なども避けるのが一般的です。', en: 'Gifts that are associated with fire, such as ashtrays, lighters, heaters, and even red-colored items, are generally avoided as they can be associated with a house fire.', zh: '为了避免让人联想到新居发生火灾，通常会避免赠送烟灰缸、打火机、暖炉以及红色的礼物。' } },
         { question: { ja: 'エレベーターで、目上の人と二人きりの場合、どちらが先に降りますか？', en: 'When in an elevator with a superior, who gets off first?', zh: '和上级单独乘坐电梯时，谁先下？' }, options: { ja: ['目上の人が先', '自分が先', '同時に降りる'], en: ['The superior gets off first', 'I get off first', 'Get off at the same time'], zh: ['上级先下', '我先下', '同时下'] }, correct: 1, explanation: { ja: 'ドアの操作や安全確保のため、目下の者が先に降りてドアを押さえ、目上の人を安全に誘導するのが正しいマナーです。', en: 'The subordinate should get off first to hold the door and ensure the superior can exit safely. This is proper etiquette.', zh: '为了操作电梯门和确保安全，下级应该先下电梯按住开门键，引导上级安全下梯，这才是正确的礼仪。' } },

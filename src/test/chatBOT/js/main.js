@@ -181,19 +181,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const { scrollTop, scrollHeight, clientHeight } = elem;
             const deltaY = e.deltaY;
 
-            // 上にスクロールしていて、すでに一番上にいる場合
             if (scrollTop === 0 && deltaY < 0) {
                 e.preventDefault();
                 return;
             }
 
-            // 下にスクロールしていて、すでに一番下にいる場合
-            // (計算誤差を考慮して1pxのマージンを持たせる)
             if (scrollHeight - clientHeight - scrollTop <= 1 && deltaY > 0) {
                 e.preventDefault();
                 return;
             }
-        }, { passive: false }); // preventDefaultを有効にするためpassive: falseを設定
+        }, { passive: false });
     }
 
     function updateSeasonalAnimation(themeName) {
@@ -335,6 +332,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         messageWrapper.appendChild(bubble);
         
+        if (options.isAiResponse) {
+            const feedbackContainer = document.createElement('div');
+            feedbackContainer.className = 'feedback-container';
+            feedbackContainer.dataset.messageId = messageId;
+
+            const feedbackStrings = uiStrings[currentLanguage].feedback;
+
+            const helpfulBtn = document.createElement('button');
+            helpfulBtn.className = 'feedback-btn';
+            helpfulBtn.dataset.feedback = 'helpful';
+            helpfulBtn.innerHTML = `<i class="far fa-thumbs-up"></i> ${feedbackStrings.helpful}`;
+
+            const unhelpfulBtn = document.createElement('button');
+            unhelpfulBtn.className = 'feedback-btn';
+            unhelpfulBtn.dataset.feedback = 'unhelpful';
+            unhelpfulBtn.innerHTML = `<i class="far fa-thumbs-down"></i> ${feedbackStrings.unhelpful}`;
+
+            feedbackContainer.appendChild(helpfulBtn);
+            feedbackContainer.appendChild(unhelpfulBtn);
+            messageWrapper.appendChild(feedbackContainer);
+        }
+
         const repliesContainer = document.createElement('div');
         repliesContainer.className = 'flex justify-start flex-wrap gap-2 pt-2 quick-replies-container'; 
         
@@ -597,10 +616,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializeChat() {
         chatWindow.classList.add('min-h-0');
         
-        // ▼▼▼【修正点】スクロールイベントの伝播を停止する処理を追加 ▼▼▼
         preventParentScroll(chatWindow);
         preventParentScroll(pinnedWindow);
-        // ▲▲▲ ここまで ▲▲▲
 
         if (settingsBtn) {
             settingsBtn.addEventListener('click', (e) => {
@@ -678,6 +695,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const feedbackBtn = e.target.closest('.feedback-btn');
+            if (feedbackBtn) {
+                // ▼▼▼【修正】イベントの伝播を停止するコードを追加 ▼▼▼
+                e.stopPropagation();
+                // ▲▲▲ ここまで ▲▲▲
+                const feedback = feedbackBtn.dataset.feedback;
+                const container = feedbackBtn.parentElement;
+                const messageId = container.dataset.messageId;
+                const messageElement = document.querySelector(`.bot-message-container[data-message-id="${messageId}"] p`);
+                const messageText = messageElement ? messageElement.innerText : '';
+                
+                console.log({
+                    messageId: messageId,
+                    feedback: feedback,
+                    message: messageText,
+                    language: currentLanguage
+                });
+
+                container.innerHTML = `<p class="feedback-thank-you">${uiStrings[currentLanguage].feedback.thank_you}</p>`;
+                
+                saveChatHistory();
+                return; 
+            }
+
             const targetButton = e.target.closest('.quick-reply-btn');
             if (!targetButton) return;
             
@@ -722,7 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const masterCorrectAnswerIndex = quizData.correct;
                 const selectedOptionIndex = quizData.options[currentLanguage].indexOf(replyText);
                 let resultMessage;
-                const correctMessages = { ja: '正解です！👏 ', en: 'Correct! 👏 ', zh: '回答正确！� ' };
+                const correctMessages = { ja: '正解です！👏 ', en: 'Correct! 👏 ', zh: '回答正确！👏 ' };
                 const incorrectMessages = { ja: '残念！正解は「', en: 'Incorrect. The correct answer is "', zh: '很遗憾！正确答案是“' };
                 const endMessages = { ja: '」です。', en: '". ', zh: '”。' };
                 if (selectedOptionIndex === masterCorrectAnswerIndex) {

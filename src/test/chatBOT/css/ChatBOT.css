@@ -122,20 +122,8 @@ body {
 #chat-window {
     background-color: transparent;
     transition: background-color 0.5s ease-in-out;
-    /* ▼▼▼【修正】ここから ▼▼▼ */
-    /*
-      flex: 1; を指定することで、flexコンテナ内の利用可能な残りのスペースを
-      すべて埋めるようにチャットウィンドウが伸長します。
-      これにより、フッターとの間の不要な空白がなくなります。
-    */
     flex: 1;
-    /*
-      min-height: 0; は、flexアイテムがコンテンツによって
-      コンテナからあふれるのを防ぐために重要です。
-      これにより、チャット履歴が長くなってもスクロールが正しく機能します。
-    */
     min-height: 0;
-    /* ▲▲▲【修正】ここまで ▲▲▲ */
 }
 
 /* --- 時間帯テーマ --- */
@@ -385,3 +373,61 @@ body {
         opacity: 0;
     }
 }
+
+/* ▼▼▼【新機能】フィードバック機能のスタイルを追加 ▼▼▼ */
+.feedback-container {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.feedback-btn {
+    background-color: transparent;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.feedback-btn:hover {
+    background-color: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.feedback-btn.selected {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.feedback-thank-you {
+    font-size: 12px;
+    color: #64748b;
+    font-style: italic;
+}
+
+/* Night theme compatibility */
+.theme-night .feedback-btn {
+    border-color: #475569;
+    color: #94a3b8;
+}
+.theme-night .feedback-btn:hover {
+    background-color: #334155;
+    border-color: #64748b;
+}
+.theme-night .feedback-btn.selected {
+    background-color: #3b82f6;
+    color: #f1f5f9;
+    border-color: #3b82f6;
+}
+.theme-night .feedback-thank-you {
+    color: #94a3b8;
+}
+/* ▲▲▲ ここまで ▲▲▲ */
