@@ -16,10 +16,11 @@
       <li><a href="index.php">Home</a></li>
 
       <li class="dropdown">
-        <a href="culture.html">Culture ▾</a>
+        <a href="#">Others ▾</a>
         <ul class="dropdown-menu">
           <li><a href="culture.html">Japanese Culture</a></li>
           <li><a href="daily-life.html">Daily Life</a></li>
+          <li><a href="visa_guide_japan.php">Visa Guide</a></li>
         </ul>
       </li>
 
