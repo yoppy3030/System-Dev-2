@@ -30,6 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return;
         container.innerHTML = ''; // Clear previous animation particles
 
+        // ★★★ 変更点: シンプルテーマの場合はアニメーションなし ★★★
+        if (themeName === 'simple') {
+            return;
+        }
+
         let particleConfig = null;
         const particleCount = 20; // Number of particles to generate
 
@@ -404,7 +409,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const allThemes = ['theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter', 'theme-morning', 'theme-day', 'theme-evening', 'theme-night'];
+        // ★★★ 変更点: 'theme-simple' をテーマリストに追加 ★★★
+        const allThemes = ['theme-simple', 'theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter', 'theme-morning', 'theme-day', 'theme-evening', 'theme-night'];
 
         const applyTheme = (themeName) => {
             allThemes.forEach(theme => chatbotModal.classList.remove(theme));
@@ -414,11 +420,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selectedOption) {
                 dropdownBtn.innerHTML = selectedOption.querySelector('i').outerHTML;
             }
-            // ★★★ ADDED CALL TO UPDATE ANIMATION ★★★
             updateSeasonalAnimation(themeName);
         };
 
-        applyTheme('spring'); // Sets the default theme and triggers the animation
+        // ★★★ 変更点: デフォルトテーマを 'simple' に設定 ★★★
+        applyTheme('simple');
 
         dropdownBtn.addEventListener('click', (e) => {
             e.stopPropagation();

@@ -32,7 +32,6 @@ body {
 #chatbot-modal header {
     background-color: rgba(0, 0, 0, 0.1);
     position: relative;
-    /* z-indexは下で個別に管理 */
     transition: background-color 0.5s ease-in-out;
 }
 
@@ -46,6 +45,17 @@ body {
 .theme-day { background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%); }
 .theme-evening { background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 50%, #6a5acd 100%); }
 .theme-night { background: linear-gradient(135deg, #0f172a 0%, #312e81 100%); }
+
+.theme-spring header,
+.theme-summer header,
+.theme-autumn header,
+.theme-winter header,
+.theme-morning header,
+.theme-day header,
+.theme-evening header {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
 
 .theme-morning #chat-window,
 .theme-day #chat-window,
@@ -167,6 +177,58 @@ body {
 .theme-winter #chat-window {
     background-color: rgba(255, 255, 255, 0.6);
 }
+
+/* ★★★ START: シンプルテーマのスタイル ★★★ */
+.theme-simple {
+    background: #f0f8ff; /* ★★★ 変更: 背景を淡い空色 (AliceBlue) に ★★★ */
+    border: 1px solid #e5e7eb; 
+}
+
+.theme-simple header {
+    background-color: #87CEEB !important; /* ★★★ 変更: ヘッダーを空色 (SkyBlue) に ★★★ */
+}
+
+.theme-simple #header-title,
+.theme-simple #header-lang-status {
+    color: #ffffff; 
+}
+
+.theme-simple #chat-window {
+    background-color: #f0f8ff; /* ★★★ 変更: 背景を淡い空色 (AliceBlue) に ★★★ */
+}
+
+.theme-simple footer {
+    background-color: #ffffff;
+    border-top-color: #e5e7eb;
+}
+
+.theme-simple #user-input {
+    background-color: #ffffff;
+    border-color: #d1d5db;
+    color: #111827;
+}
+
+.theme-simple #user-input::placeholder {
+    color: #6b7280;
+}
+
+.theme-simple .bg-white.text-gray-800 {
+    background-color: #ffffff !important;
+    color: #1f2937 !important;
+}
+
+.theme-simple .cb-theme-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: white;
+}
+
+.theme-simple .cb-theme-btn:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ★★★ END: シンプルテーマのスタイル ★★★ */
+
 /* =========================================
    ★★★ END: UPDATED SEASONAL THEME STYLES ★★★
    ========================================= */
@@ -187,17 +249,15 @@ body {
     z-index: 0;
 }
 
-/* ★★★ 修正: ヘッダーが他の要素より前面に表示されるように重なり順を調整 ★★★ */
 #chatbot-modal > header {
     position: relative;
-    z-index: 10; /* ヘッダーを前面に配置して、ドロップダウンが表示されるようにする */
+    z-index: 10; 
 }
 
-/* Ensure main chat components are layered on top of the animation */
 #chatbot-modal > #chat-window,
 #chatbot-modal > footer {
     position: relative;
-    z-index: 1; /* ヘッダー以外の要素は背面に */
+    z-index: 1; 
 }
 
 /* Base style for all animated particles */

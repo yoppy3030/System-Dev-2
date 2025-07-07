@@ -171,6 +171,10 @@
                     <i class="fas fa-palette"></i>
                 </button>
                 <div id="cb-theme-content" class="cb-theme-dropdown-content">
+                    <!-- ★★★ 変更点: 「シンプル」テーマを追加 ★★★ -->
+                    <a class="cb-theme-option" data-theme="simple">
+                        <i class="fas fa-square fa-fw"></i> <span>シンプル (Simple)</span>
+                    </a>
                     <a class="cb-theme-option" data-theme="spring">
                         <i class="fas fa-leaf fa-fw"></i> <span>春 (Spring)</span>
                     </a>
