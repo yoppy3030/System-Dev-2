@@ -11,11 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let quizLength = 0;
     let isChatInitialized = false;
     let pinnedMessages = JSON.parse(localStorage.getItem('chatbot_pinned_messages')) || [];
+    let recognition; // SpeechRecognition オブジェクトを保持する変数
+    let isRecording = false; // 音声入力中かどうかを示すフラグ
 
     // --- DOM要素 ---
     const chatWindow = document.getElementById('chat-window');
     const userInput = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
+    const micBtn = document.getElementById('mic-btn'); // マイクボタンの追加
     const chatModal = document.getElementById('chatbot-modal');
     const openButton = document.getElementById('chat-open-button');
     const settingsBtn = document.getElementById('settings-btn');
@@ -612,6 +615,85 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    /**
+     * 音声認識を開始する関数
+     */
+    function startSpeechRecognition() {
+        if (!('webkitSpeechRecognition' in window)) {
+            displayBotMessage(uiStrings[currentLanguage].voice_not_supported);
+            return;
+        }
+
+        recognition = new webkitSpeechRecognition();
+        recognition.continuous = false; // 連続認識をオフ
+        recognition.interimResults = true; // 途中結果を返す
+        recognition.lang = currentLanguage === 'ja' ? 'ja-JP' : (currentLanguage === 'zh' ? 'zh-CN' : 'en-US'); // 言語設定
+
+        recognition.onstart = () => {
+            isRecording = true;
+            micBtn.classList.add('recording');
+            micBtn.innerHTML = '<i class="fas fa-microphone-alt-slash"></i>'; // 録音中のアイコン
+            userInput.placeholder = uiStrings[currentLanguage].voice_listening;
+            userInput.value = ''; // 入力フィールドをクリア
+            console.log("音声認識を開始しました...");
+        };
+
+        recognition.onresult = (event) => {
+            let interimTranscript = '';
+            let finalTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript;
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+            userInput.value = finalTranscript || interimTranscript; // 最終結果があればそれを使用、なければ途中結果
+        };
+
+        recognition.onerror = (event) => {
+            console.error('音声認識エラー:', event.error);
+            if (event.error === 'no-speech') {
+                displayBotMessage(uiStrings[currentLanguage].voice_no_speech);
+            } else if (event.error === 'not-allowed') {
+                displayBotMessage(uiStrings[currentLanguage].voice_permission_denied);
+            } else {
+                displayBotMessage(`${uiStrings[currentLanguage].voice_error}: ${event.error}`);
+            }
+            stopSpeechRecognition(); // エラー時は停止
+        };
+
+        recognition.onend = () => {
+            isRecording = false;
+            micBtn.classList.remove('recording');
+            micBtn.innerHTML = '<i class="fas fa-microphone"></i>'; // 通常アイコンに戻す
+            userInput.placeholder = uiStrings[currentLanguage].inputPlaceholder;
+            console.log("音声認識が終了しました。");
+            // 最終的な認識結果があれば、それを送信
+            if (userInput.value.trim() !== '') {
+                handleUserInput();
+            }
+        };
+
+        recognition.start();
+    }
+
+    /**
+     * 音声認識を停止する関数
+     */
+    function stopSpeechRecognition() {
+        if (recognition && isRecording) {
+            recognition.stop();
+            isRecording = false;
+            micBtn.classList.remove('recording');
+            micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            userInput.placeholder = uiStrings[currentLanguage].inputPlaceholder;
+            console.log("音声認識を強制停止しました。");
+        }
+    }
+
+
     /** チャットボットの初期化処理 */
     function initializeChat() {
         chatWindow.classList.add('min-h-0');
@@ -682,6 +764,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 pinnedModal.classList.add('hidden');
             }
         });
+
+        // 音声入力ボタンのイベントリスナー
+        if (micBtn) {
+            micBtn.addEventListener('click', () => {
+                if (isRecording) {
+                    stopSpeechRecognition();
+                } else {
+                    startSpeechRecognition();
+                }
+            });
+        }
 
         sendBtn.addEventListener('click', handleUserInput);
         userInput.addEventListener('keydown', (e) => {

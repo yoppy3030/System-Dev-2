@@ -58,12 +58,17 @@ const uiStrings = {
             cancelled: 'お問い合わせをキャンセルしました。',
             cancel_keywords: ['キャンセル', 'やめる'],
         },
-        // ▼▼▼【新機能】フィードバック機能のUIテキストを追加 ▼▼▼
         feedback: {
             helpful: '役に立った',
             unhelpful: '役に立たなかった',
             thank_you: 'フィードバックありがとうございます！'
-        }
+        },
+        // ▼▼▼【新機能】音声入力機能のUIテキストを追加 ▼▼▼
+        voice_listening: '話してください...',
+        voice_not_supported: '申し訳ありません、お使いのブラウザは音声入力に対応していません。',
+        voice_no_speech: '音声が検出されませんでした。もう一度お試しください。',
+        voice_permission_denied: 'マイクへのアクセスが拒否されました。ブラウザの設定で許可してください。',
+        voice_error: '音声入力でエラーが発生しました'
         // ▲▲▲ ここまで ▲▲▲
     },
     en: {
@@ -124,12 +129,17 @@ const uiStrings = {
             cancelled: 'The inquiry has been cancelled.',
             cancel_keywords: ['cancel', 'stop'],
         },
-        // ▼▼▼【新機能】フィードバック機能のUIテキストを追加 ▼▼▼
         feedback: {
             helpful: 'Helpful',
             unhelpful: 'Not Helpful',
             thank_you: 'Thank you for your feedback!'
-        }
+        },
+        // ▼▼▼【新機能】音声入力機能のUIテキストを追加 ▼▼▼
+        voice_listening: 'Speak now...',
+        voice_not_supported: 'Sorry, your browser does not support voice input.',
+        voice_no_speech: 'No speech was detected. Please try again.',
+        voice_permission_denied: 'Microphone access denied. Please allow access in your browser settings.',
+        voice_error: 'Voice input error'
         // ▲▲▲ ここまで ▲▲▲
     },
     zh: {
@@ -190,12 +200,17 @@ const uiStrings = {
             cancelled: '咨询已取消。',
             cancel_keywords: ['取消'],
         },
-        // ▼▼▼【新機能】フィードバック機能のUIテキストを追加 ▼▼▼
         feedback: {
             helpful: '有帮助',
             unhelpful: '没有帮助',
             thank_you: '感谢您的反馈！'
-        }
+        },
+        // ▼▼▼【新機能】音声入力機能のUIテキストを追加 ▼▼▼
+        voice_listening: '请说话...',
+        voice_not_supported: '抱歉，您的浏览器不支持语音输入。',
+        voice_no_speech: '未检测到语音。请再试一次。',
+        voice_permission_denied: '麦克风访问被拒绝。请在浏览器设置中允许访问。',
+        voice_error: '语音输入错误'
         // ▲▲▲ ここまで ▲▲▲
     }
 };

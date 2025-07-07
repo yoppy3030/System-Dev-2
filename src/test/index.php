@@ -211,7 +211,12 @@
     <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl mt-8">
         <div class="flex items-center space-x-3">
             <input type="text" id="user-input" class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition" placeholder="日本のマナーについて質問してください">
-            <button id="send-btn" class="bg-sky-600 text-white rounded-full p-3 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-transform transform hover:scale-110">
+            <!-- マイクボタンの追加 -->
+            <button id="mic-btn" class="mic-btn">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button id="send-btn" class="bg-sky-600 text-white rounded-full p-3 hover:bg-sky-700 focus:outline-none focus:ring-2
+                focus:ring-offset-2 focus:ring-sky-500 transition-transform transform hover:scale-110">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
             </button>
         </div>
