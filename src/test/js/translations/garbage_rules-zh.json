@@ -1,49 +1,4 @@
 {
-    "translations": {
-      "🌐 Translate": "🌐 翻译",
-      "Home": "首页",
-      "Culture ▾": "文化",
-      "Japanese Culture": "日本文化",
-      "Daily Life": "日常生活",
-      "Student": "学生",
-      "Traveler": "旅行者",
-      "About": "关于我们",
-      "Garbage Disposal Rules": "垃圾处理规则",
-      "A guide for foreign residents in Japan": "面向居住在日本的外国人的指南",
-      "Personalized Local Guide":"个性化本地指南",
-      "Get specific garbage collection details for your current location, powered by AI.":"获取由人工智能提供支持的当前位置的具体垃圾收集详情。",
-      "Get My Location's Rules":"获取我的位置规则",
-      "In Japan, garbage is sorted into several categories. Check your local city's guide for specifics, but here are the common types:":"在日本，垃圾被分为几类。请查看当地城市的指南了解具体信息，以下是常见的垃圾类型：",
-      " 5 Essential Rules":"5条基本规则",
-      "🗑️ Garbage Categories": "🗑️ 垃圾类别",
-      "1. Burnable Garbage (燃えるゴミ)": "1. 可燃垃圾",
-      "✔ Food waste, paper, cloth": "✔ 食品残渣、纸类、布料",
-      "❌ Plastics with recycling marks": "❌ 带有回收标志的塑料请分开投放",
-      "2. Non-Burnable Garbage (燃えないゴミ)": "2. 不可燃垃圾",
-      "✔ Metal, glass, ceramics": "✔ 金属、玻璃、陶瓷",
-      "❌ Batteries (handled separately)": "❌ 电池需单独回收",
-      "3. Recyclable Garbage (資源ごみ)": "3. 可回收资源垃圾",
-      "✔ PET bottles, cans, paper (cleaned & separated)": "✔ PET瓶、易拉罐、纸类（请清洗并分类）",
-      "✔ Tie newspapers and cardboard with string": "✔ 报纸和纸箱请用绳子捆扎",
-      "4. Plastic Waste (プラスチックごみ)": "4. 塑料垃圾",
-      "✔ Marked with [プラ] symbol": "✔ 带有[プラ]标识的塑料",
-      "❌ Dirty plastic goes in burnable": "❌ 污染的塑料请投入可燃垃圾",
-      "5. Oversized Garbage (粗大ゴミ)": "5. 大件垃圾",
-      "✔ Large items like furniture, bikes": "✔ 家具、自行车等大型物品",
-      "➤ Book pickup & pay fee at city office": "➤ 需预约上门回收并在市政府缴费",
-      "🧾 General Rules": "🧾 基本规则",
-      "Check your city's garbage schedule": "请确认当地垃圾收集日程",
-      "Use official trash bags from stores": "请使用指定垃圾袋（可在便利店购买）",
-      "Clean bottles/cans before recycling": "回收前请清洗瓶罐",
-      "Use the right disposal spot": "请在指定地点投放垃圾",
-      "Dispose garbage at the right time": "请在规定时间内投放垃圾",
-      "Contact Us": "联系我们",
-      "Email: 22200797@ecc.ac.jp": "邮箱：22200797@ecc.ac.jp",
-      "Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan": "地址：日本东京都文京区后乐1-2-61，邮编123-0006",
-      "Phone: +81 3-1234-5678": "电话：+81 3-1234-5678"
-    }
-}
-=======
   "translations": {
     "🌐 Translate": "🌐 翻译",
     "HOME": "首页",
@@ -84,4 +39,3 @@
     "Garbage should be put out on the morning of collection day (usually by 8 AM), not the night before, to prevent pests.": "请在收集日当天早上（通常8点前）投放，避免前一晚投放以防止害虫。"
   }
 }
->>>>>>> a452d5b75b28a9d6ee950fdc92780a5476e88009
