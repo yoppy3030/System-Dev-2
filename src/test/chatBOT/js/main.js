@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 関数定義 ---
 
-    // ▼▼▼【新機能】設定メニューのテキストを翻訳する関数 ▼▼▼
     function translateSettingsMenu() {
         const elementsToTranslate = document.querySelectorAll('#settings-content [data-translate]');
         elementsToTranslate.forEach(element => {
@@ -35,6 +34,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 element.textContent = uiStrings[currentLanguage][key];
             }
         });
+    }
+
+    function markdownToHtml(text) {
+        let html = text;
+
+        // Markdown形式の画像を<img>タグに変換: ![alt](src)
+        const markdownImageRegex = /!\[(.*?)\]\((.*?)\)/g;
+        html = html.replace(markdownImageRegex, (match, alt, src) => {
+            return `<img src="${src}" alt="${alt || '関連画像'}" class="bot-response-image">`;
+        });
+
+        // プレーンな画像URLを<img>タグに変換 (ただし、すでにimgタグの中にあるURLは除く)
+        const urlRegex = /(?<!src=")(https?:\/\/[^\s]+\.(?:png|jpg|jpeg|gif|webp|svg))/g;
+        html = html.replace(urlRegex, (url) => {
+             return `<img src="${url}" alt="関連画像" class="bot-response-image">`;
+        });
+
+        // 改行を<br>に変換
+        html = html.replace(/\n/g, '<br>');
+
+        return html;
     }
 
     function saveChatHistory() {
@@ -150,7 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-        // ▼▼▼【変更点】設定メニューの翻訳関数を呼び出す ▼▼▼
         translateSettingsMenu();
         displayBotMessage(uiStrings[currentLanguage].lang_switched);
         setTimeout(showWelcomeMenu, 1000);
@@ -180,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const bubble = document.createElement('div');
         bubble.className = 'max-w-md p-4 rounded-2xl shadow bg-white text-gray-800';
         const mainText = document.createElement('p');
-        mainText.innerHTML = text.replace(/\n/g, '<br>');
+        mainText.innerHTML = markdownToHtml(text);
         bubble.appendChild(mainText);
         messageContainer.appendChild(bubble);
         const repliesContainer = document.createElement('div');
@@ -355,7 +374,9 @@ document.addEventListener('DOMContentLoaded', () => {
         displayBotMessage("..."); 
 
         const langMap = { ja: '日本語', en: 'English', zh: '中文' };
-        const systemInstruction = `あなたは日本の文化とマナーについて教える専門家です。ユーザーからの質問に対して、${langMap[currentLanguage]}で、親切かつ簡潔に答えてください。`;
+        // ▼▼▼【変更点】AIへの指示を修正し、画像検索を求めずテキストの品質向上に注力させる ▼▼▼
+        const systemInstruction = `あなたは日本の文化とマナーについて教える専門家です。ユーザーからの質問に対して、${langMap[currentLanguage]}で、親切かつ詳細に、箇条書きやステップ・バイ・ステップの説明などを活用して分かりやすく答えてください。
+例えば、「箸の正しい持ち方」のような視覚的な説明が必要なトピックについては、具体的な手順やコツを丁寧に解説してください。`;
         const userPrompt = text;
 
         const apiUrl = 'chatBOT/gemini_proxy.php'; 
@@ -368,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 {
                     "role": "model",
-                    "parts": [{ "text": "はい、承知いたしました。日本のマナーについて、どのようなことでもお尋ねください。" }]
+                    "parts": [{ "text": "はい、承知いたしました。日本のマナーについて、どのようなことでもお尋ねください。箇条書きなどを用いて、分かりやすく詳細に説明します。" }]
                 },
                 {
                     "role": "user",
@@ -542,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const masterCorrectAnswerIndex = quizData.correct;
                 const selectedOptionIndex = quizData.options[currentLanguage].indexOf(replyText);
                 let resultMessage;
-                const correctMessages = { ja: '正解です！👏 ', en: 'Correct! 👏 ', zh: '回答正确！👏 ' };
+                const correctMessages = { ja: '正解です！👏 ', en: 'Correct! 👏 ', zh: '回答正确！� ' };
                 const incorrectMessages = { ja: '残念！正解は「', en: 'Incorrect. The correct answer is "', zh: '很遗憾！正确答案是“' };
                 const endMessages = { ja: '」です。', en: '". ', zh: '”。' };
                 if (selectedOptionIndex === masterCorrectAnswerIndex) {
@@ -558,7 +579,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // ▼▼▼【変更点】初期化時に翻訳を一度実行 ▼▼▼
         translateSettingsMenu();
         const historyLoaded = loadChatHistory();
         if (!historyLoaded) {
