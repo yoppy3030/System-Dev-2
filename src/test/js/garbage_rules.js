@@ -124,20 +124,26 @@ document.addEventListener('DOMContentLoaded', () => {
             // Skip elements within the AI results container
             if (element.closest('#ai-rules-container')) return;
 
+            // 1. 必ず最初の英語テキストを保存
             if (!originalTexts.has(element)) {
                 originalTexts.set(element, element.innerHTML);
             }
+            // 2. 翻訳キーは常に「最初の英語テキスト」から取得
             const originalHTML = originalTexts.get(element);
+            // アイコンを除いたテキスト部分だけを翻訳キーに
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = originalHTML;
+            const icon = tempDiv.querySelector('i');
+            let textToTranslate = tempDiv.textContent.replace(/\s+/g, ' ').trim();
 
+            const translationData = targetLang === 'ja' ? translations : translationsZh;
             if (targetLang === 'en') {
                 element.innerHTML = originalHTML;
+            } else if (translationData && translationData[textToTranslate]) {
+                element.innerHTML = icon ? `${icon.outerHTML} ${translationData[textToTranslate]}` : translationData[textToTranslate];
             } else {
-                const textToTranslate = element.textContent.replace(/\s+/g, ' ').trim();
-                const translationData = targetLang === 'ja' ? translations : translationsZh;
-                if (translationData && translationData[textToTranslate]) {
-                    const icon = element.querySelector('i');
-                    element.innerHTML = icon ? `${icon.outerHTML} ${translationData[textToTranslate]}` : translationData[textToTranslate];
-                }
+                // 翻訳がなければ英語のまま
+                element.innerHTML = originalHTML;
             }
         });
     }

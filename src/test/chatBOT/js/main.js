@@ -15,46 +15,100 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatWindow = document.getElementById('chat-window');
     const userInput = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
-    const langSwitcher = document.getElementById('language-switcher');
     const chatModal = document.getElementById('chatbot-modal');
     const openButton = document.getElementById('chat-open-button');
+    const settingsBtn = document.getElementById('settings-btn');
+    const settingsContent = document.getElementById('settings-content');
+    const themeOptions = document.querySelectorAll('.cb-theme-option');
+    const clearHistoryBtn = document.getElementById('clear-history-btn');
+    const langSwitcher = document.getElementById('language-switcher');
+
 
     // --- 関数定義 ---
 
-    /**
-     * Creates and manages the seasonal background animations.
-     * @param {string} themeName - The name of the active theme (e.g., 'spring').
-     */
+    function translateSettingsMenu() {
+        const elementsToTranslate = document.querySelectorAll('#settings-content [data-translate]');
+        elementsToTranslate.forEach(element => {
+            const key = element.dataset.translate;
+            if (uiStrings[currentLanguage][key]) {
+                element.textContent = uiStrings[currentLanguage][key];
+            }
+        });
+    }
+
+    function markdownToHtml(text) {
+        let html = text;
+
+        // Markdown形式の画像を<img>タグに変換: ![alt](src)
+        const markdownImageRegex = /!\[(.*?)\]\((.*?)\)/g;
+        html = html.replace(markdownImageRegex, (match, alt, src) => {
+            return `<img src="${src}" alt="${alt || '関連画像'}" class="bot-response-image">`;
+        });
+
+        // プレーンな画像URLを<img>タグに変換 (ただし、すでにimgタグの中にあるURLは除く)
+        const urlRegex = /(?<!src=")(https?:\/\/[^\s]+\.(?:png|jpg|jpeg|gif|webp|svg))/g;
+        html = html.replace(urlRegex, (url) => {
+             return `<img src="${url}" alt="関連画像" class="bot-response-image">`;
+        });
+
+        // 改行を<br>に変換
+        html = html.replace(/\n/g, '<br>');
+
+        return html;
+    }
+
+    function saveChatHistory() {
+        if (chatWindow.innerHTML) {
+            localStorage.setItem('chatbot_history', chatWindow.innerHTML);
+        }
+    }
+
+    function loadChatHistory() {
+        const savedHistory = localStorage.getItem('chatbot_history');
+        if (savedHistory) {
+            chatWindow.innerHTML = savedHistory;
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            return true; 
+        }
+        return false; 
+    }
+
+    function clearChatHistory() {
+        localStorage.removeItem('chatbot_history');
+        chatWindow.innerHTML = ''; 
+        displayBotMessage(uiStrings[currentLanguage].history_cleared);
+        showWelcomeMenu();
+    }
+
     function updateSeasonalAnimation(themeName) {
         const container = document.getElementById('chatbot-animation-container');
         if (!container) return;
-        container.innerHTML = ''; // Clear previous animation particles
+        container.innerHTML = ''; 
+
+        if (themeName === 'simple') {
+            return;
+        }
 
         let particleConfig = null;
-        const particleCount = 20; // Number of particles to generate
+        const particleCount = 20;
 
-        // Define configuration for each season's animation
         switch (themeName) {
             case 'spring':
                 particleConfig = { type: 'span', className: 'sakura', content: '🌸', animation: 'fall' };
                 break;
             case 'summer':
-                // For summer, let's create rising bubbles
                 particleConfig = { type: 'div', className: 'bubble', animation: 'rise' };
                 break;
             case 'autumn':
-                // For autumn, falling leaves
                 particleConfig = { type: 'span', className: 'leaf', content: '🍁', animation: 'fall' };
                 break;
             case 'winter':
-                // For winter, falling snow
                 particleConfig = { type: 'span', className: 'snow', content: '❄️', animation: 'fall' };
                 break;
         }
 
-        if (!particleConfig) return; // Exit if no animation for the current theme
+        if (!particleConfig) return;
 
-        // Create and append particles
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement(particleConfig.type);
             particle.className = 'particle ' + particleConfig.className;
@@ -70,21 +124,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             particle.style.left = `${Math.random() * 100}%`;
             particle.style.animationName = particleConfig.animation;
-            // Randomize duration and delay for a more natural effect
             particle.style.animationDuration = `${8 + Math.random() * 12}s`;
-            particle.style.animationDelay = `-${Math.random() * 10}s`; // Use negative delay to start mid-animation
+            particle.style.animationDelay = `-${Math.random() * 10}s`;
             particle.style.opacity = `${0.3 + Math.random() * 0.6}`;
             
             container.appendChild(particle);
         }
     }
 
-    /** お問い合わせの状態をリセット */
     function resetInquiryState() {
         inquiryState = { status: 'idle', name: '', email: '', message: '' };
     }
 
-    /** クイズの状態をリセット */
     function resetQuizState() {
         currentQuiz = null;
         askedQuizIndices.clear();
@@ -93,14 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
         quizLength = 0;
     }
 
-    /** ウェルカムメニューを表示 */
     function showWelcomeMenu() {
         resetQuizState();
         const welcome = uiStrings[currentLanguage].welcome;
         displayBotMessage(welcome.message, { quickReplies: welcome.replies });
     }
 
-    /** 言語を切り替える */
     function switchLanguage(lang) {
         if (currentLanguage === lang) return;
         currentLanguage = lang;
@@ -111,27 +160,26 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('header-lang-status').textContent = strings.langStatus;
         userInput.placeholder = strings.inputPlaceholder;
         
-        const buttons = langSwitcher.querySelectorAll('button.lang-switch-btn');
-        buttons.forEach(btn => {
-            btn.classList.remove('bg-white', 'text-sky-600', 'scale-110', 'ring-2', 'ring-white');
-            btn.classList.add('bg-sky-500', 'text-white', 'hover:bg-white', 'hover:text-sky-600');
-            if (btn.dataset.lang === lang) {
-                btn.classList.remove('bg-sky-500', 'text-white');
-                btn.classList.add('bg-white', 'text-sky-600', 'scale-110', 'ring-2', 'ring-white');
-            }
-        });
-
+        if (langSwitcher) {
+            const buttons = langSwitcher.querySelectorAll('button.lang-switch-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        translateSettingsMenu();
         displayBotMessage(uiStrings[currentLanguage].lang_switched);
         setTimeout(showWelcomeMenu, 1000);
     }
 
-    /** 古いクイック返信ボタンを削除 */
     function removeAllQuickReplies() {
         const existingReplies = document.querySelectorAll('.quick-replies-container');
         existingReplies.forEach(container => container.remove());
     }
 
-    /** チャットウィンドウにユーザーのメッセージを表示 */
     function displayUserMessage(text) {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'flex justify-end';
@@ -141,9 +189,9 @@ document.addEventListener('DOMContentLoaded', () => {
         messageDiv.appendChild(bubble);
         chatWindow.appendChild(messageDiv);
         chatWindow.scrollTop = chatWindow.scrollHeight;
+        saveChatHistory();
     }
 
-    /** ボットの応答を表示（リッチコンテンツ対応）*/
     function displayBotMessage(text, options = {}) {
         removeAllQuickReplies();
         const messageContainer = document.createElement('div');
@@ -151,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const bubble = document.createElement('div');
         bubble.className = 'max-w-md p-4 rounded-2xl shadow bg-white text-gray-800';
         const mainText = document.createElement('p');
-        mainText.innerHTML = text.replace(/\n/g, '<br>');
+        mainText.innerHTML = markdownToHtml(text);
         bubble.appendChild(mainText);
         messageContainer.appendChild(bubble);
         const repliesContainer = document.createElement('div');
@@ -208,9 +256,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         chatWindow.appendChild(messageContainer);
         chatWindow.scrollTop = chatWindow.scrollHeight;
+        saveChatHistory();
     }
 
-    /** ユーザーの入力を処理するメイン関数 */
     function handleUserInput() {
         const inputText = userInput.value.trim();
         if (!inputText) return;
@@ -233,7 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     }
 
-    /** お問い合わせフローを処理 */
     function processInquiry(text) {
         const strings = uiStrings[currentLanguage].inquiry;
         switch (inquiryState.status) {
@@ -259,7 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /** サーバーにお問い合わせ内容を送信 */
     async function sendInquiryToServer() {
         displayBotMessage("...");
         const payload = { ...inquiryState, lang: currentLanguage };
@@ -291,7 +337,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /** クイズの次の問題を出題 */
     function askNextQuizQuestion() {
         if (askedQuizIndices.size >= quizLength) {
             const resultMessage = uiStrings[currentLanguage].getQuizResultMessage(quizScore, quizLength);
@@ -325,37 +370,60 @@ document.addEventListener('DOMContentLoaded', () => {
         displayBotMessage(currentQuiz.question[currentLanguage], { quizOptions: currentQuiz.options[currentLanguage] });
     }
 
-    /** AIに応答を問い合わせる（安全なサーバー経由） */
     async function getAIResponse(text) {
-        displayBotMessage("...");
+        displayBotMessage("..."); 
+
         const langMap = { ja: '日本語', en: 'English', zh: '中文' };
-        const prompt = `あなたは日本の文化とマナーについて教える専門家です。以下の質問に対して、${langMap[currentLanguage]}で、親切かつ簡潔に答えてください。\n\n質問：${text}`;
+        // ▼▼▼【変更点】AIへの指示を修正し、画像検索を求めずテキストの品質向上に注力させる ▼▼▼
+        const systemInstruction = `あなたは日本の文化とマナーについて教える専門家です。ユーザーからの質問に対して、${langMap[currentLanguage]}で、親切かつ詳細に、箇条書きやステップ・バイ・ステップの説明などを活用して分かりやすく答えてください。
+例えば、「箸の正しい持ち方」のような視覚的な説明が必要なトピックについては、具体的な手順やコツを丁寧に解説してください。`;
+        const userPrompt = text;
+
+        const apiUrl = 'chatBOT/gemini_proxy.php'; 
+
         const payload = {
-            contents: [{
-                parts: [{ text: prompt }]
-            }]
+            contents: [
+                {
+                    "role": "user",
+                    "parts": [{ "text": systemInstruction }]
+                },
+                {
+                    "role": "model",
+                    "parts": [{ "text": "はい、承知いたしました。日本のマナーについて、どのようなことでもお尋ねください。箇条書きなどを用いて、分かりやすく詳細に説明します。" }]
+                },
+                {
+                    "role": "user",
+                    "parts": [{ "text": userPrompt }]
+                }
+            ]
         };
+
         try {
-            const apiUrl = 'chatBOT/gemini_proxy.php';
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+
             if (chatWindow.lastChild && chatWindow.lastChild.textContent === "...") {
                 chatWindow.removeChild(chatWindow.lastChild);
             }
+
             if (!response.ok) {
-                const errorResult = await response.json();
-                console.error('Proxy or API Error:', errorResult.error);
-                throw new Error(`Request failed with status ${response.status}`);
+                const errorData = await response.json();
+                console.error('Proxy or API Error:', response.status, errorData);
+                throw new Error(`Proxy or API request failed with status ${response.status}`);
             }
+
             const result = await response.json();
-            if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts[0].text) {
+
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
                 const aiText = result.candidates[0].content.parts[0].text;
                 displayBotMessage(aiText, { isAiResponse: true });
             } else {
-                console.error("Invalid AI response structure:", result);
+                console.error("Invalid AI response structure or content blocked:", result);
                 displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
             }
         } catch (error) {
@@ -367,7 +435,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /** 通常の応答を検索して表示 */
     function getBotResponse(text) {
         const lowerCaseText = text.toLowerCase();
         const features = specialFeatures[currentLanguage];
@@ -391,73 +458,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /** ★★★ REVISED FUNCTION ★★★ */
-    /** テーマ切り替えドロップダウンを初期化 */
-    function initializeThemeSwitcher() {
-        const dropdownBtn = document.getElementById('cb-theme-btn');
-        const dropdownContent = document.getElementById('cb-theme-content');
-        const themeOptions = document.querySelectorAll('.cb-theme-option');
-        const chatbotModal = document.getElementById('chatbot-modal');
-        
-        if (!dropdownBtn || !dropdownContent || !chatbotModal) {
-            console.error('Theme switcher elements not found. Check IDs: cb-theme-btn, cb-theme-content');
-            return;
+    /** チャットボットの初期化処理 */
+    function initializeChat() {
+        // --- Settings Dropdown Toggle ---
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                settingsContent.classList.toggle('hidden');
+            });
         }
 
-        const allThemes = ['theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter', 'theme-morning', 'theme-day', 'theme-evening', 'theme-night'];
-
+        // --- Theme Selection ---
+        const allThemes = ['theme-simple', 'theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter'];
         const applyTheme = (themeName) => {
-            allThemes.forEach(theme => chatbotModal.classList.remove(theme));
-            chatbotModal.classList.add(`theme-${themeName}`);
-            
-            const selectedOption = document.querySelector(`.cb-theme-option[data-theme="${themeName}"]`);
-            if (selectedOption) {
-                dropdownBtn.innerHTML = selectedOption.querySelector('i').outerHTML;
-            }
-            // ★★★ ADDED CALL TO UPDATE ANIMATION ★★★
+            allThemes.forEach(theme => chatModal.classList.remove(theme));
+            chatModal.classList.add(`theme-${themeName}`);
             updateSeasonalAnimation(themeName);
         };
-
-        applyTheme('spring'); // Sets the default theme and triggers the animation
-
-        dropdownBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownContent.classList.toggle('show');
-        });
+        applyTheme('simple'); // Set default theme
 
         themeOptions.forEach(option => {
             option.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const selectedTheme = option.dataset.theme;
                 applyTheme(selectedTheme);
-                dropdownContent.classList.remove('show');
             });
         });
+        
+        // --- Clear History ---
+        if(clearHistoryBtn) {
+            clearHistoryBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                clearChatHistory();
+            });
+        }
 
-        document.addEventListener('click', () => {
-            if (dropdownContent.classList.contains('show')) {
-                dropdownContent.classList.remove('show');
-            }
-        });
-    }
+        // --- Language Switcher ---
+        if(langSwitcher) {
+            const buttons = langSwitcher.querySelectorAll('button.lang-switch-btn');
+            // Set initial active button
+            buttons.forEach(btn => {
+                if (btn.dataset.lang === currentLanguage) {
+                    btn.classList.add('active');
+                }
+            });
 
-    /** チャットボットの初期化処理 */
-    function initializeChat() {
-        initializeThemeSwitcher();
-
-        sendBtn.addEventListener('click', handleUserInput);
-        userInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') handleUserInput();
-        });
-
-        if (langSwitcher) {
             langSwitcher.addEventListener('click', (e) => {
-                const button = e.target.closest('.lang-switch-btn');
+                 const button = e.target.closest('.lang-switch-btn');
                 if (button && button.dataset.lang) {
+                    e.stopPropagation();
                     switchLanguage(button.dataset.lang);
                 }
             });
         }
+
+        // --- Standard Event Listeners ---
+        sendBtn.addEventListener('click', handleUserInput);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleUserInput();
+        });
 
         chatWindow.addEventListener('click', function (e) {
             const targetButton = e.target.closest('.quick-reply-btn');
@@ -504,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const masterCorrectAnswerIndex = quizData.correct;
                 const selectedOptionIndex = quizData.options[currentLanguage].indexOf(replyText);
                 let resultMessage;
-                const correctMessages = { ja: '正解です！👏 ', en: 'Correct! 👏 ', zh: '回答正确！👏 ' };
+                const correctMessages = { ja: '正解です！👏 ', en: 'Correct! 👏 ', zh: '回答正确！� ' };
                 const incorrectMessages = { ja: '残念！正解は「', en: 'Incorrect. The correct answer is "', zh: '很遗憾！正确答案是“' };
                 const endMessages = { ja: '」です。', en: '". ', zh: '”。' };
                 if (selectedOptionIndex === masterCorrectAnswerIndex) {
@@ -519,7 +578,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => getBotResponse(replyText), 500);
             }
         });
-        showWelcomeMenu();
+
+        translateSettingsMenu();
+        const historyLoaded = loadChatHistory();
+        if (!historyLoaded) {
+            showWelcomeMenu();
+        }
     }
 
     // --- チャットボットの表示切り替えと初期化 ---
@@ -538,16 +602,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        // Hide dropdown when clicking outside of it
+        document.addEventListener('click', (e) => {
+            if (settingsContent && !settingsContent.classList.contains('hidden')) {
+                if (!settingsContent.contains(e.target) && !settingsBtn.contains(e.target)) {
+                    settingsContent.classList.add('hidden');
+                }
+            }
+            
+            // Hide chat modal when clicking outside of it
+            if (chatModal.style.display === 'flex' && !chatModal.contains(e.target) && !openButton.contains(e.target)) {
+                toggleChat(false);
+            }
+        });
+
         openButton.addEventListener('click', (e) => {
             e.stopPropagation();
             const isVisible = chatModal.style.display === 'flex';
             toggleChat(!isVisible);
-        });
-
-        document.addEventListener('click', (e) => {
-            if (chatModal.style.display === 'flex' && !chatModal.contains(e.target) && !openButton.contains(e.target)) {
-                toggleChat(false);
-            }
         });
     }
 });

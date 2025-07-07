@@ -157,7 +157,6 @@
 
 <!-- Chatbot Modal -->
 <div id="chatbot-modal" class="chatbot-font bg-white rounded-2xl shadow-2xl flex flex-col">
-    <!-- ★★★ Animation Container Added Here ★★★ -->
     <div id="chatbot-animation-container"></div>
     
     <header class="bg-sky-600 text-white p-4 rounded-t-2xl shadow-md flex justify-between items-center">
@@ -165,32 +164,39 @@
             <h1 id="header-title" class="text-2xl font-bold">AIマナー学習ボット</h1>
             <p id="header-lang-status" class="text-sm opacity-90">言語: 日本語</p>
         </div>
-        <div class="flex items-center">
-            <div class="cb-theme-dropdown">
-                <button id="cb-theme-btn" class="cb-theme-btn">
-                    <i class="fas fa-palette"></i>
-                </button>
-                <div id="cb-theme-content" class="cb-theme-dropdown-content">
-                    <a class="cb-theme-option" data-theme="spring">
-                        <i class="fas fa-leaf fa-fw"></i> <span>春 (Spring)</span>
-                    </a>
-                    <a class="cb-theme-option" data-theme="summer">
-                        <i class="fas fa-sun fa-fw"></i> <span>夏 (Summer)</span>
-                    </a>
-                    <a class="cb-theme-option" data-theme="autumn">
-                        <i class="fas fa-fan fa-fw"></i> <span>秋 (Autumn)</span>
-                    </a>
-                    <a class="cb-theme-option" data-theme="winter">
-                        <i class="fas fa-snowflake fa-fw"></i> <span>冬 (Winter)</span>
-                    </a>
+
+        <div id="settings-dropdown" class="relative">
+            <button id="settings-btn" class="text-white focus:outline-none p-2">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+            <div id="settings-content" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-xl z-20">
+                <div class="py-2 px-4">
+                    <!-- ▼▼▼【変更点】翻訳用の属性を追加 ▼▼▼ -->
+                    <p class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
                 </div>
-            </div>
-            <div id="language-switcher" class="flex space-x-1 sm:space-x-2">
-                <button data-lang="ja" class="ja-btn lang-switch-btn bg-white text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform scale-110 ring-2 ring-white">日本語</button>
-                <button data-lang="en" class="en-btn lang-switch-btn bg-sky-500 hover:bg-white hover:text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform hover:scale-110">EN</button>
-                <button data-lang="zh" class="zh-btn lang-switch-btn bg-sky-500 hover:bg-white hover:text-sky-600 font-bold py-1 px-3 rounded-full text-sm shadow-sm transition-transform transform hover:scale-110">中文</button>
+                <a class="cb-theme-option" data-theme="simple"><i class="fas fa-square fa-fw"></i> <span data-translate="theme_simple">シンプル</span></a>
+                <a class="cb-theme-option" data-theme="spring"><i class="fas fa-leaf fa-fw"></i> <span data-translate="theme_spring">春</span></a>
+                <a class="cb-theme-option" data-theme="summer"><i class="fas fa-sun fa-fw"></i> <span data-translate="theme_summer">夏</span></a>
+                <a class="cb-theme-option" data-theme="autumn"><i class="fas fa-fan fa-fw"></i> <span data-translate="theme_autumn">秋</span></a>
+                <a class="cb-theme-option" data-theme="winter"><i class="fas fa-snowflake fa-fw"></i> <span data-translate="theme_winter">冬</span></a>
+                
+                <div class="border-t border-gray-200 my-1"></div>
+
+                <div class="py-2 px-4">
+                    <p class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
+                </div>
+                <div id="language-switcher">
+                     <button data-lang="ja" class="ja-btn lang-switch-btn">日本語</button>
+                     <button data-lang="en" class="en-btn lang-switch-btn">EN</button>
+                     <button data-lang="zh" class="zh-btn lang-switch-btn">中文</button>
+                </div>
+
+                <div class="border-t border-gray-200 my-1"></div>
+
+                <a id="clear-history-btn" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-trash-alt fa-fw"></i> <span data-translate="clear_history">履歴をクリア</span></a>
             </div>
         </div>
+
     </header>
     <main id="chat-window" class="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50"></main>
     <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl mt-8">

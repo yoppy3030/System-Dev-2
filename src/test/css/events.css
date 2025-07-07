@@ -1,14 +1,16 @@
 /* =========================================
    変数定義
    ========================================= */
-   :root {
-    --primary-color: #b71c1c;    /* メインカラー（赤） */
-    --secondary-color: #654a4a;  /* セカンダリカラー（茶色） */
-    --light-text: #ffffff;       /* 明るいテキスト色 */
-    --dark-text: #333333;        /* 暗いテキスト色 */
-    --border-color: #eeeeee;     /* ボーダーカラー */
-    --hover-color: #8b8b8b;      /* ホバー時の色 */
-  }
+:root {
+  --primary-color: #b71c1c;    /* メインカラー（赤） */
+  --secondary-color: #654a4a;  /* セカンダリカラー（茶色） */
+  --light-text: #ffffff;       /* 明るいテキスト色 */
+  --dark-text: #333333;        /* 暗いテキスト色 */
+  --border-color: #eeeeee;     /* ボーダーカラー */
+  --hover-color: #e0e0e0;      /* ホバー時の色 */
+  --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  --card-shadow-hover: 0 6px 12px rgba(0,0,0,0.15);
+}
 
 
 body {
@@ -20,8 +22,8 @@ body {
 
 /* Header */
 .site-header {
-  background: #b71c1c;
-  color: white;
+  background: var(--primary-color);
+  color: var(--light-text);
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -34,9 +36,9 @@ body {
 
 /* ナビゲーションバー */
 .logo {
-  font-size: 20px; /* フォントサイズ */
-  font-weight: bold; /* 太字 */
-  margin-left: 22px; /* 右側に寄せる */
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 22px;
 }
 
 .main-nav a {
@@ -120,7 +122,6 @@ body {
   .language-option:hover,
   .language-option.active {
     background-color: #b2b3b1;
-    color: var(--light-text);
   }
 
 /* Hero Section */
@@ -153,41 +154,111 @@ body {
   font-size: 18px;
 }
 
-/* Event List */
-.event-list {
+/* Main Content & Event Grid Layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.event-category-section {
+  margin-bottom: 40px;
+}
+
+.category-title {
+  font-size: 28px;
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--primary-color);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+/* New Event Card Design */
+.event-card {
+  background: var(--light-text);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  text-decoration: none;
+  color: var(--dark-text);
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 40px 20px;
-  max-width: 900px;
-  margin: auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.event-card {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  background-color: #fafafa;
-  transition: background-color 0.3s;
-}
 .event-card:hover {
-  background-color: #ffe9e9;
+  transform: translateY(-5px);
+  box-shadow: var(--card-shadow-hover);
 }
 
+.event-card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  background-color: #e0e0e0; /* Placeholder color */
+}
 
-.event-card h2 {
-  margin-top: 0;
-  color: #b71c1c;
+.event-card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Allows footer to stick to the bottom */
+}
+
+.event-card-category {
+  align-self: flex-start;
+  background-color: var(--secondary-color);
+  color: var(--light-text);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.event-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  color: var(--primary-color);
+}
+
+.event-card-description {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 15px;
+  flex-grow: 1; /* Pushes details to the bottom */
+}
+
+.event-card-details {
+  border-top: 1px solid var(--border-color);
+  padding-top: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+.event-card-details p {
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.event-card-details p:last-child {
+  margin-bottom: 0;
 }
 
 /* Footer */
 .footer {
   text-align: center;
   padding: 2rem;
-  background: #b71c1c;
+  background: var(--primary-color);
   color: white;
 }
