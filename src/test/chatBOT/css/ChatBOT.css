@@ -3,17 +3,21 @@ body {
     font-family: 'Inter', 'Noto Sans JP', 'Noto Sans SC', sans-serif;
 }
 
-#chat-window::-webkit-scrollbar { 
+#chat-window::-webkit-scrollbar,
+#pinned-window::-webkit-scrollbar { 
     width: 8px; 
 }
-#chat-window::-webkit-scrollbar-track { 
-    background: transparent; 
+#chat-window::-webkit-scrollbar-track,
+#pinned-window::-webkit-scrollbar-track { 
+    background: #f1f5f9; 
 }
-#chat-window::-webkit-scrollbar-thumb { 
+#chat-window::-webkit-scrollbar-thumb,
+#pinned-window::-webkit-scrollbar-thumb { 
     background: #94a3b8; 
     border-radius: 4px; 
 }
-#chat-window::-webkit-scrollbar-thumb:hover { 
+#chat-window::-webkit-scrollbar-thumb:hover,
+#pinned-window::-webkit-scrollbar-thumb:hover { 
     background: #64748b; 
 }
 
@@ -23,6 +27,86 @@ body {
 .bot-response-donts { 
     color: #dc2626; /* Red */ 
 }
+
+.bot-response-image {
+    max-width: 100%;
+    border-radius: 12px; /* rounded-xl */
+    margin-top: 12px; /* mt-3 */
+    border: 1px solid #e5e7eb; /* border-gray-200 */
+    background-color: #f9fafb; /* bg-gray-50 */
+}
+
+/* === お気に入り機能のスタイル === */
+.bot-message-container {
+    position: relative;
+}
+
+.pin-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6b7280;
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s, background-color 0.2s;
+}
+
+.bot-message-container:hover .pin-btn {
+    opacity: 1;
+}
+
+.pin-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.pin-btn.pinned {
+    color: #f59e0b; /* Amber 500 */
+    opacity: 1;
+}
+
+#pinned-window .pinned-message-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+#pinned-window .pinned-message-text {
+    color: #374151;
+    font-size: 14px;
+}
+
+#pinned-window .unpin-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #f59e0b;
+    font-size: 16px;
+}
+
+#pinned-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+}
+#pinned-empty-state .icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: #9ca3af;
+}
+
 
 /* === テーマの基本設定 === */
 #chatbot-modal {
@@ -38,6 +122,20 @@ body {
 #chat-window {
     background-color: transparent;
     transition: background-color 0.5s ease-in-out;
+    /* ▼▼▼【修正】ここから ▼▼▼ */
+    /*
+      flex: 1; を指定することで、flexコンテナ内の利用可能な残りのスペースを
+      すべて埋めるようにチャットウィンドウが伸長します。
+      これにより、フッターとの間の不要な空白がなくなります。
+    */
+    flex: 1;
+    /*
+      min-height: 0; は、flexアイテムがコンテンツによって
+      コンテナからあふれるのを防ぐために重要です。
+      これにより、チャット履歴が長くなってもスクロールが正しく機能します。
+    */
+    min-height: 0;
+    /* ▲▲▲【修正】ここまで ▲▲▲ */
 }
 
 /* --- 時間帯テーマ --- */
@@ -83,12 +181,23 @@ body {
 .theme-night .quick-reply-btn { background-color: #334155; border-color: #475569; color: #e2e8f0; }
 .theme-night .quick-reply-btn:hover { background-color: #475569; color: #f1f5f9; }
 .theme-night .bg-white.text-gray-800 { background-color: #1e293b !important; color: #f1f5f9 !important; }
+/* お気に入りモーダルの夜テーマ対応 */
+.theme-night #pinned-modal-content { background-color: #1e293b; }
+.theme-night #pinned-modal-content header { background-color: #0f172a; border-bottom: 1px solid #334155;}
+.theme-night #pinned-modal-title { color: #f1f5f9; }
+.theme-night #pinned-modal-close-btn { color: #94a3b8; }
+.theme-night #pinned-window { background-color: #1e293b; }
+.theme-night #pinned-window .pinned-message-card { background-color: #334155; }
+.theme-night #pinned-window .pinned-message-text { color: #e2e8f0; }
+.theme-night #pinned-empty-state { color: #94a3b8; }
+.theme-night #pinned-empty-state .icon { color: #475569; }
+
+
 
 /* =========================================
-   ★★★ START: SETTINGS DROPDOWN STYLES ★★★
+   SETTINGS DROPDOWN STYLES
    ========================================= */
 
-/* --- Settings Dropdown Content --- */
 #settings-content.hidden {
     display: none;
 }
@@ -111,25 +220,24 @@ body {
     color: #6b7280; /* Gray-500 */
 }
 
-/* ▼▼▼【変更点】言語スイッチャーのスタイルを明確に定義 ▼▼▼ */
 #language-switcher {
     display: flex;
     justify-content: space-around;
-    padding: 8px; /* 上下の余白を追加 */
+    padding: 8px;
 }
 
 #language-switcher .lang-switch-btn {
-    flex-grow: 1; /* ボタンが利用可能なスペースを均等に分け合う */
+    flex-grow: 1;
     text-align: center;
     border: 1px solid #d1d5db; /* Gray-300 */
-    padding: 6px 0; /* 上下のパディングを調整 */
-    margin: 0 4px; /* ボタン間のマージン */
+    padding: 6px 0;
+    margin: 0 4px;
     border-radius: 9999px; /* rounded-full */
     font-size: 12px;
     font-weight: 500;
     transition: all 0.2s ease-in-out;
-    background-color: #ffffff; /* デフォルトの背景色 */
-    color: #374151; /* デフォルトの文字色 */
+    background-color: #ffffff;
+    color: #374151;
 }
 
 #language-switcher .lang-switch-btn:hover {
@@ -141,28 +249,15 @@ body {
     color: white;
     border-color: #3b82f6;
 }
-/* ▲▲▲ ここまで ▲▲▲ */
-
 
 #clear-history-btn {
     width: 100%;
     text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-#clear-history-btn .fa-fw {
-     color: #6b7280; /* Gray-500 */
 }
 
 
 /* =========================================
-   ★★★ END: SETTINGS DROPDOWN STYLES ★★★
-   ========================================= */
-
-
-/* =========================================
-   ★★★ START: SEASONAL THEME STYLES ★★★
+   SEASONAL THEME STYLES
    ========================================= */
 
 /* --- 季節のテーマ背景 --- */
@@ -179,7 +274,7 @@ body {
     background-color: rgba(255, 255, 255, 0.6);
 }
 
-/* ★★★ START: シンプルテーマのスタイル ★★★ */
+/* シンプルテーマのスタイル */
 .theme-simple {
     background: #f0f8ff; 
     border: 1px solid #e5e7eb; 
@@ -219,14 +314,9 @@ body {
 }
 
 /* =========================================
-   ★★★ END: SEASONAL THEME STYLES ★★★
+   SEASONAL ANIMATION STYLES
    ========================================= */
 
-/* =========================================
-   ★★★ START: SEASONAL ANIMATION STYLES ★★★
-   ========================================= */
-
-/* Animation container sits behind all other content */
 #chatbot-animation-container {
     position: absolute;
     top: 0;
@@ -234,7 +324,7 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    pointer-events: none; /* Allows clicking through the container */
+    pointer-events: none;
     z-index: 0;
 }
 
@@ -249,7 +339,6 @@ body {
     z-index: 1; 
 }
 
-/* Base style for all animated particles */
 .particle {
     position: absolute;
     animation-iteration-count: infinite;
@@ -258,7 +347,6 @@ body {
     user-select: none;
 }
 
-/* Specific styles for each particle type */
 .particle.sakura {
     color: #ffb7c5;
 }
@@ -275,7 +363,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Keyframes for falling animations (Spring, Autumn, Winter) */
 @keyframes fall {
     from {
         transform: translateY(-10vh) rotate(0deg);
@@ -285,7 +372,6 @@ body {
     }
 }
 
-/* Keyframes for rising animation (Summer) */
 @keyframes rise {
     from {
         transform: translateY(110vh) scale(0.5);
@@ -299,6 +385,3 @@ body {
         opacity: 0;
     }
 }
-/* =========================================
-   ★★★ END: SEASONAL ANIMATION STYLES ★★★
-   ========================================= */

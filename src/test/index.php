@@ -170,8 +170,11 @@
                 <i class="fas fa-bars text-2xl"></i>
             </button>
             <div id="settings-content" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-xl z-20">
+                <!-- ▼▼▼【変更点】お気に入り機能へのリンクを追加 ▼▼▼ -->
+                <a id="pinned-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-thumbtack fa-fw"></i> <span data-translate="view_pinned">お気に入り</span></a>
+                <div class="border-t border-gray-200 my-1"></div>
+                <!-- ▲▲▲ ここまで ▲▲▲ -->
                 <div class="py-2 px-4">
-                    <!-- ▼▼▼【変更点】翻訳用の属性を追加 ▼▼▼ -->
                     <p class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
                 </div>
                 <a class="cb-theme-option" data-theme="simple"><i class="fas fa-square fa-fw"></i> <span data-translate="theme_simple">シンプル</span></a>
@@ -193,12 +196,18 @@
 
                 <div class="border-t border-gray-200 my-1"></div>
 
-                <a id="clear-history-btn" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-trash-alt fa-fw"></i> <span data-translate="clear_history">履歴をクリア</span></a>
+                <a id="clear-history-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-trash-alt fa-fw"></i> <span data-translate="clear_history">履歴をクリア</span></a>
             </div>
         </div>
 
     </header>
-    <main id="chat-window" class="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50"></main>
+    
+    <!-- ▼▼▼【修正】<main>タグから "flex-1" クラスを削除 ▼▼▼ -->
+    <main id="chat-window" class="p-6 overflow-y-auto space-y-4 bg-gray-50">
+        <!-- Chat messages will be appended here -->
+    </main>
+    <!-- ▲▲▲ ここまで ▲▲▲ -->
+    
     <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl mt-8">
         <div class="flex items-center space-x-3">
             <input type="text" id="user-input" class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition" placeholder="日本のマナーについて質問してください">
@@ -207,6 +216,19 @@
             </button>
         </div>
     </footer>
+</div>
+
+<!-- 【新機能】お気に入り表示用のモーダル -->
+<div id="pinned-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[1050] flex justify-center items-center">
+    <div id="pinned-modal-content" class="bg-gray-100 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+        <header class="p-4 border-b flex justify-between items-center bg-white rounded-t-lg">
+            <h2 id="pinned-modal-title" class="text-lg font-bold text-gray-800" data-translate="view_pinned">お気に入り</h2>
+            <button id="pinned-modal-close-btn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+        </header>
+        <div id="pinned-window" class="p-6 space-y-3 overflow-y-auto">
+            <!-- Pinned messages will be rendered here by JS -->
+        </div>
+    </div>
 </div>
 
 <div id="chat-open-button">

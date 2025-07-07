@@ -37,7 +37,6 @@ const uiStrings = {
         lang_switched: '言語を日本語に切り替えました。',
         history_cleared: '会話の履歴を消去しました。',
         clear_history_button_title: '履歴をクリア',
-        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
         theme_selection: 'テーマ選択',
         language_settings: '言語設定',
         theme_simple: 'シンプル',
@@ -46,6 +45,10 @@ const uiStrings = {
         theme_autumn: '秋',
         theme_winter: '冬',
         clear_history: '履歴をクリア',
+        // ▼▼▼【変更点】お気に入り機能のUIテキストを修正 ▼▼▼
+        view_pinned: 'お気に入り',
+        pinned_empty_title: 'お気に入りはまだありません',
+        pinned_empty_desc: 'ボットの回答の右上にあるピンアイコンをクリックして、重要な情報をここに保存しましょう。',
         // ▲▲▲ ここまで ▲▲▲
         inquiry: {
             start: 'お問い合わせですね。承知いたしました。まず、お名前を教えていただけますか？（途中で「キャンセル」と入力すると中断できます）',
@@ -95,7 +98,6 @@ const uiStrings = {
         lang_switched: 'Language switched to English.',
         history_cleared: 'Conversation history has been cleared.',
         clear_history_button_title: 'Clear History',
-        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
         theme_selection: 'Theme Selection',
         language_settings: 'Language Settings',
         theme_simple: 'Simple',
@@ -104,6 +106,10 @@ const uiStrings = {
         theme_autumn: 'Autumn',
         theme_winter: 'Winter',
         clear_history: 'Clear History',
+        // ▼▼▼【変更点】お気に入り機能のUIテキストを修正 ▼▼▼
+        view_pinned: 'Favorites',
+        pinned_empty_title: 'No Favorites Yet',
+        pinned_empty_desc: 'Click the pin icon on a bot response to save important information here.',
         // ▲▲▲ ここまで ▲▲▲
         inquiry: {
             start: 'Okay, you want to make an inquiry. First, could you please tell me your name? (You can type "cancel" to stop at any time)',
@@ -153,7 +159,6 @@ const uiStrings = {
         lang_switched: '语言已切换至中文。',
         history_cleared: '对话记录已清除。',
         clear_history_button_title: '清除记录',
-        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
         theme_selection: '主题选择',
         language_settings: '语言设定',
         theme_simple: '简约',
@@ -162,6 +167,10 @@ const uiStrings = {
         theme_autumn: '秋天',
         theme_winter: '冬天',
         clear_history: '清除记录',
+        // ▼▼▼【変更点】お気に入り機能のUIテキストを修正 ▼▼▼
+        view_pinned: '收藏',
+        pinned_empty_title: '尚无收藏的消息',
+        pinned_empty_desc: '点击机器人回复右上方的图钉图标，即可在此处保存重要信息。',
         // ▲▲▲ ここまで ▲▲▲
         inquiry: {
             start: '好的，您想进行咨询。首先，请问您的名字是？（您可以随时输入“取消”来中断）',

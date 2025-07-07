@@ -747,7 +747,8 @@ footer {
     bottom: 100px;
     right: 25px;
     width: 90vw;
-    max-width: 600px;
+    /* ▼▼▼【変更点】最大幅を広げました ▼▼▼ */
+    max-width: 700px; 
     height: 82vh;
     max-height: 700px;
     z-index: 1000;

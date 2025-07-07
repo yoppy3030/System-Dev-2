@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let quizScore = 0;
     let quizLength = 0;
     let isChatInitialized = false;
+    let pinnedMessages = JSON.parse(localStorage.getItem('chatbot_pinned_messages')) || [];
 
     // --- DOM要素 ---
     const chatWindow = document.getElementById('chat-window');
@@ -22,12 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeOptions = document.querySelectorAll('.cb-theme-option');
     const clearHistoryBtn = document.getElementById('clear-history-btn');
     const langSwitcher = document.getElementById('language-switcher');
-
+    const pinnedMenuBtn = document.getElementById('pinned-menu-btn');
+    const pinnedModal = document.getElementById('pinned-modal');
+    const pinnedModalCloseBtn = document.getElementById('pinned-modal-close-btn');
+    const pinnedWindow = document.getElementById('pinned-window');
 
     // --- 関数定義 ---
 
+    /**
+     * 設定メニュー内のテキストを現在の言語に翻訳する
+     */
     function translateSettingsMenu() {
-        const elementsToTranslate = document.querySelectorAll('#settings-content [data-translate]');
+        const elementsToTranslate = document.querySelectorAll('#settings-content [data-translate], #chatbot-modal [data-translate], #pinned-modal [data-translate]');
         elementsToTranslate.forEach(element => {
             const key = element.dataset.translate;
             if (uiStrings[currentLanguage][key]) {
@@ -36,48 +43,157 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /**
+     * Markdown形式のテキストをHTMLに変換する
+     * @param {string} text - 変換するテキスト
+     * @returns {string} HTML文字列
+     */
     function markdownToHtml(text) {
         let html = text;
-
-        // Markdown形式の画像を<img>タグに変換: ![alt](src)
         const markdownImageRegex = /!\[(.*?)\]\((.*?)\)/g;
         html = html.replace(markdownImageRegex, (match, alt, src) => {
             return `<img src="${src}" alt="${alt || '関連画像'}" class="bot-response-image">`;
         });
-
-        // プレーンな画像URLを<img>タグに変換 (ただし、すでにimgタグの中にあるURLは除く)
         const urlRegex = /(?<!src=")(https?:\/\/[^\s]+\.(?:png|jpg|jpeg|gif|webp|svg))/g;
         html = html.replace(urlRegex, (url) => {
              return `<img src="${url}" alt="関連画像" class="bot-response-image">`;
         });
-
-        // 改行を<br>に変換
         html = html.replace(/\n/g, '<br>');
-
         return html;
     }
 
+    /**
+     * チャット履歴をlocalStorageに保存する
+     */
     function saveChatHistory() {
         if (chatWindow.innerHTML) {
             localStorage.setItem('chatbot_history', chatWindow.innerHTML);
         }
     }
 
+    /**
+     * localStorageからチャット履歴を読み込む
+     * @returns {boolean} 履歴が読み込まれたかどうか
+     */
     function loadChatHistory() {
         const savedHistory = localStorage.getItem('chatbot_history');
         if (savedHistory) {
             chatWindow.innerHTML = savedHistory;
+            const messageElements = chatWindow.querySelectorAll('.bot-message-container[data-message-id]');
+            messageElements.forEach(el => {
+                const messageId = el.dataset.messageId;
+                if (pinnedMessages.some(p => p.id === messageId)) {
+                    const pinBtn = el.querySelector('.pin-btn');
+                    if(pinBtn) pinBtn.classList.add('pinned');
+                }
+            });
             chatWindow.scrollTop = chatWindow.scrollHeight;
             return true; 
         }
         return false; 
     }
 
+    /**
+     * チャット履歴をクリアする
+     */
     function clearChatHistory() {
         localStorage.removeItem('chatbot_history');
         chatWindow.innerHTML = ''; 
         displayBotMessage(uiStrings[currentLanguage].history_cleared);
         showWelcomeMenu();
+    }
+
+    /**
+     * お気に入りメッセージをlocalStorageに保存する
+     */
+    function savePinnedMessages() {
+        localStorage.setItem('chatbot_pinned_messages', JSON.stringify(pinnedMessages));
+    }
+
+    /**
+     * お気に入りウィンドウをレンダリングする
+     */
+    function renderPinnedWindow() {
+        pinnedWindow.innerHTML = '';
+        if (pinnedMessages.length === 0) {
+            const strings = uiStrings[currentLanguage];
+            pinnedWindow.innerHTML = `
+                <div id="pinned-empty-state">
+                    <div class="icon"><i class="fas fa-thumbtack"></i></div>
+                    <h3 class="font-bold text-lg mb-2">${strings.pinned_empty_title}</h3>
+                    <p class="text-sm">${strings.pinned_empty_desc}</p>
+                </div>
+            `;
+        } else {
+            pinnedMessages.forEach(msg => {
+                const card = document.createElement('div');
+                card.className = 'pinned-message-card';
+                card.dataset.messageId = msg.id;
+                
+                const textP = document.createElement('p');
+                textP.className = 'pinned-message-text';
+                textP.innerHTML = markdownToHtml(msg.text);
+                
+                const unpinBtn = document.createElement('button');
+                unpinBtn.className = 'unpin-btn';
+                unpinBtn.innerHTML = '<i class="fas fa-times"></i>';
+                unpinBtn.title = 'Unpin';
+                
+                card.appendChild(textP);
+                card.appendChild(unpinBtn);
+                pinnedWindow.appendChild(card);
+            });
+        }
+    }
+
+    /**
+     * メッセージをピン留め/ピン留め解除する
+     * @param {HTMLElement} pinBtn - クリックされたピンボタン
+     */
+    function togglePinMessage(pinBtn) {
+        const messageContainer = pinBtn.closest('.bot-message-container');
+        const messageId = messageContainer.dataset.messageId;
+        const bubble = messageContainer.querySelector('.bg-white');
+        const messageText = bubble.querySelector('p').innerText;
+
+        const isPinned = pinnedMessages.some(p => p.id === messageId);
+
+        if (isPinned) {
+            pinnedMessages = pinnedMessages.filter(p => p.id !== messageId);
+            pinBtn.classList.remove('pinned');
+        } else {
+            pinnedMessages.push({ id: messageId, text: messageText });
+            pinBtn.classList.add('pinned');
+        }
+
+        savePinnedMessages();
+        if (!pinnedModal.classList.contains('hidden')) {
+            renderPinnedWindow();
+        }
+    }
+    
+    /**
+     * コンテナの端でスクロールした際に、親要素（ページ全体）がスクロールするのを防ぐ
+     * @param {HTMLElement} elem - スクロール可能な要素
+     */
+    function preventParentScroll(elem) {
+        elem.addEventListener('wheel', (e) => {
+            const { scrollTop, scrollHeight, clientHeight } = elem;
+            const deltaY = e.deltaY;
+
+            // 上にスクロールしていて、すでに一番上にいる場合
+            if (scrollTop === 0 && deltaY < 0) {
+                e.preventDefault();
+                return;
+            }
+
+            // 下にスクロールしていて、すでに一番下にいる場合
+            // (計算誤差を考慮して1pxのマージンを持たせる)
+            if (scrollHeight - clientHeight - scrollTop <= 1 && deltaY > 0) {
+                e.preventDefault();
+                return;
+            }
+        }, { passive: false }); // preventDefaultを有効にするためpassive: falseを設定
     }
 
     function updateSeasonalAnimation(themeName) {
@@ -171,6 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         translateSettingsMenu();
+        renderPinnedWindow();
         displayBotMessage(uiStrings[currentLanguage].lang_switched);
         setTimeout(showWelcomeMenu, 1000);
     }
@@ -184,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'flex justify-end';
         const bubble = document.createElement('div');
-        bubble.className = 'user-message-bubble max-w-md p-3 rounded-2xl shadow';
+        bubble.className = 'user-message-bubble max-w-2xl p-3 rounded-2xl shadow';
         bubble.textContent = text;
         messageDiv.appendChild(bubble);
         chatWindow.appendChild(messageDiv);
@@ -194,16 +311,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayBotMessage(text, options = {}) {
         removeAllQuickReplies();
+        const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         const messageContainer = document.createElement('div');
-        messageContainer.className = 'flex flex-col items-start space-y-2';
+        messageContainer.className = 'bot-message-container';
+        messageContainer.dataset.messageId = messageId;
+        
+        const messageWrapper = document.createElement('div');
+        messageWrapper.className = 'flex flex-col items-start space-y-2';
+
         const bubble = document.createElement('div');
-        bubble.className = 'max-w-md p-4 rounded-2xl shadow bg-white text-gray-800';
+        bubble.className = 'max-w-2xl p-4 rounded-2xl shadow bg-white text-gray-800 relative';
         const mainText = document.createElement('p');
         mainText.innerHTML = markdownToHtml(text);
         bubble.appendChild(mainText);
-        messageContainer.appendChild(bubble);
-        const repliesContainer = document.createElement('div');
         
+        const pinBtn = document.createElement('button');
+        pinBtn.className = 'pin-btn';
+        pinBtn.innerHTML = '<i class="fas fa-thumbtack fa-xs"></i>';
+        if (pinnedMessages.some(p => p.id === messageId)) {
+            pinBtn.classList.add('pinned');
+        }
+        bubble.appendChild(pinBtn);
+
+        messageWrapper.appendChild(bubble);
+        
+        const repliesContainer = document.createElement('div');
         repliesContainer.className = 'flex justify-start flex-wrap gap-2 pt-2 quick-replies-container'; 
         
         const replies = options.quickReplies || options.quizOptions;
@@ -252,8 +384,10 @@ document.addEventListener('DOMContentLoaded', () => {
             repliesContainer.appendChild(backBtn);
         }
         if (repliesContainer.hasChildNodes()) {
-            messageContainer.appendChild(repliesContainer);
+            messageWrapper.appendChild(repliesContainer);
         }
+
+        messageContainer.appendChild(messageWrapper);
         chatWindow.appendChild(messageContainer);
         chatWindow.scrollTop = chatWindow.scrollHeight;
         saveChatHistory();
@@ -374,7 +508,6 @@ document.addEventListener('DOMContentLoaded', () => {
         displayBotMessage("..."); 
 
         const langMap = { ja: '日本語', en: 'English', zh: '中文' };
-        // ▼▼▼【変更点】AIへの指示を修正し、画像検索を求めずテキストの品質向上に注力させる ▼▼▼
         const systemInstruction = `あなたは日本の文化とマナーについて教える専門家です。ユーザーからの質問に対して、${langMap[currentLanguage]}で、親切かつ詳細に、箇条書きやステップ・バイ・ステップの説明などを活用して分かりやすく答えてください。
 例えば、「箸の正しい持ち方」のような視覚的な説明が必要なトピックについては、具体的な手順やコツを丁寧に解説してください。`;
         const userPrompt = text;
@@ -404,9 +537,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-
-            if (chatWindow.lastChild && chatWindow.lastChild.textContent === "...") {
-                chatWindow.removeChild(chatWindow.lastChild);
+            
+            const loadingMessage = Array.from(chatWindow.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
+            if (loadingMessage) {
+                loadingMessage.remove();
             }
 
             if (!response.ok) {
@@ -428,8 +562,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('AI response fetch error:', error);
-            if (chatWindow.lastChild && chatWindow.lastChild.textContent === "...") {
-                chatWindow.removeChild(chatWindow.lastChild);
+            const loadingMessage = Array.from(chatWindow.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
+            if (loadingMessage) {
+                loadingMessage.remove();
             }
             displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
         }
@@ -460,7 +595,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /** チャットボットの初期化処理 */
     function initializeChat() {
-        // --- Settings Dropdown Toggle ---
+        chatWindow.classList.add('min-h-0');
+        
+        // ▼▼▼【修正点】スクロールイベントの伝播を停止する処理を追加 ▼▼▼
+        preventParentScroll(chatWindow);
+        preventParentScroll(pinnedWindow);
+        // ▲▲▲ ここまで ▲▲▲
+
         if (settingsBtn) {
             settingsBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -468,14 +609,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // --- Theme Selection ---
         const allThemes = ['theme-simple', 'theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter'];
         const applyTheme = (themeName) => {
             allThemes.forEach(theme => chatModal.classList.remove(theme));
             chatModal.classList.add(`theme-${themeName}`);
             updateSeasonalAnimation(themeName);
         };
-        applyTheme('simple'); // Set default theme
+        applyTheme('simple'); 
 
         themeOptions.forEach(option => {
             option.addEventListener('click', (e) => {
@@ -485,7 +625,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
-        // --- Clear History ---
         if(clearHistoryBtn) {
             clearHistoryBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -493,10 +632,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // --- Language Switcher ---
         if(langSwitcher) {
             const buttons = langSwitcher.querySelectorAll('button.lang-switch-btn');
-            // Set initial active button
             buttons.forEach(btn => {
                 if (btn.dataset.lang === currentLanguage) {
                     btn.classList.add('active');
@@ -512,13 +649,35 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // --- Standard Event Listeners ---
+        pinnedMenuBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            renderPinnedWindow();
+            pinnedModal.classList.remove('hidden');
+            settingsContent.classList.add('hidden');
+        });
+
+        pinnedModalCloseBtn.addEventListener('click', () => {
+            pinnedModal.classList.add('hidden');
+        });
+
+        pinnedModal.addEventListener('click', (e) => {
+            if (e.target === pinnedModal) {
+                pinnedModal.classList.add('hidden');
+            }
+        });
+
         sendBtn.addEventListener('click', handleUserInput);
         userInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') handleUserInput();
         });
 
         chatWindow.addEventListener('click', function (e) {
+            const pinBtn = e.target.closest('.pin-btn');
+            if (pinBtn) {
+                togglePinMessage(pinBtn);
+                return;
+            }
+
             const targetButton = e.target.closest('.quick-reply-btn');
             if (!targetButton) return;
             
@@ -579,6 +738,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        pinnedWindow.addEventListener('click', function(e) {
+            const unpinBtn = e.target.closest('.unpin-btn');
+            if (unpinBtn) {
+                const card = unpinBtn.closest('.pinned-message-card');
+                const messageId = card.dataset.messageId;
+                
+                pinnedMessages = pinnedMessages.filter(p => p.id !== messageId);
+                savePinnedMessages();
+                
+                const originalMessagePinBtn = chatWindow.querySelector(`.bot-message-container[data-message-id="${messageId}"] .pin-btn`);
+                if (originalMessagePinBtn) {
+                    originalMessagePinBtn.classList.remove('pinned');
+                }
+                
+                renderPinnedWindow();
+            }
+        });
+
         translateSettingsMenu();
         const historyLoaded = loadChatHistory();
         if (!historyLoaded) {
@@ -586,7 +763,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- チャットボットの表示切り替えと初期化 ---
     if (openButton && chatModal) {
         const toggleChat = (show) => {
             if (show) {
@@ -602,7 +778,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // Hide dropdown when clicking outside of it
         document.addEventListener('click', (e) => {
             if (settingsContent && !settingsContent.classList.contains('hidden')) {
                 if (!settingsContent.contains(e.target) && !settingsBtn.contains(e.target)) {
@@ -610,8 +785,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
-            // Hide chat modal when clicking outside of it
-            if (chatModal.style.display === 'flex' && !chatModal.contains(e.target) && !openButton.contains(e.target)) {
+            if (chatModal.style.display === 'flex' && 
+                !chatModal.contains(e.target) && 
+                !openButton.contains(e.target) &&
+                !pinnedModal.contains(e.target) &&
+                pinnedModal.classList.contains('hidden')) { 
                 toggleChat(false);
             }
         });
