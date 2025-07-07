@@ -1,7 +1,8 @@
 console.log("Script chargé !");
+
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Gestion Like/Dislike
+    // === Gestion Like/Dislike ===
     document.querySelectorAll('.actions').forEach(action => {
         const postId = action.dataset.postId;
         const likeBtn = action.querySelector('.like-btn');
@@ -10,7 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const dislikeCount = action.querySelector('.dislike-count');
 
         function updateCounts() {
-            fetch(`http://localhost/Sites/Challengers/System-Dev-2/src/test/backend/like_dislike.php?target_id=${postId}&target_type=post`)
+            if (!postId) return;
+            fetch(`http://localhost/challengers/System-Dev-2/src/test/backend/like_dislike.php?target_id=${postId}&target_type=post`)
                 .then(res => res.json())
                 .then(data => {
                     likeCount.textContent = data.likes ?? 0;
@@ -38,42 +40,53 @@ document.addEventListener('DOMContentLoaded', function () {
         updateCounts();
     });
 
-    // Boutons toggle commentaires
+    // === Boutons toggle commentaires ===
     document.querySelectorAll('.post').forEach(post => {
-        const commentsSection = post.querySelector('.comments');
-        const addCommentSection = post.querySelector('.add-comment');
+    const commentsSection = post.querySelector('.comments');
+    const addCommentSection = post.querySelector('.add-comment');
 
-        const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'toggle-comments-btn';
-        toggleBtn.innerHTML = '<i class="fas fa-comments"></i> <span>Show Comments</span>';
+    if (!commentsSection || !addCommentSection) return;
 
-        commentsSection.parentNode.insertBefore(toggleBtn, commentsSection);
+    const postId = post.querySelector('.actions')?.dataset.postId;
 
-        toggleBtn.addEventListener('click', function () {
-            commentsSection.classList.toggle('visible');
-            addCommentSection.classList.toggle('visible');
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'toggle-comments-btn';
+    toggleBtn.innerHTML = '<i class="fas fa-comments"></i> <span>Show Comments</span>';
 
-            const icon = this.querySelector('i');
-            const text = this.querySelector('span');
+    commentsSection.parentNode.insertBefore(toggleBtn, commentsSection);
 
-            if (commentsSection.classList.contains('visible')) {
-                icon.classList.replace('fa-comments', 'fa-chevron-up');
-                text.textContent = 'Hide Comments';
-            } else {
-                icon.classList.replace('fa-chevron-up', 'fa-comments');
-                text.textContent = 'Show Comments';
-            }
-        });
+    let commentsLoaded = false;
+
+    toggleBtn.addEventListener('click', function () {
+        const isVisible = commentsSection.style.display === 'block';
+
+        if (!isVisible && !commentsLoaded) {
+            loadComments(postId);
+            commentsLoaded = true;
+        }
+
+        commentsSection.style.display = isVisible ? 'none' : 'block';
+        addCommentSection.style.display = isVisible ? 'none' : 'flex';
+
+        const icon = this.querySelector('i');
+        const text = this.querySelector('span');
+
+        if (!isVisible) {
+            icon.classList.replace('fa-comments', 'fa-chevron-up');
+            text.textContent = 'Hide Comments';
+        } else {
+            icon.classList.replace('fa-chevron-up', 'fa-comments');
+            text.textContent = 'Show Comments';
+        }
     });
+});
 
-    // Charger tous les commentaires au chargement
-    document.querySelectorAll('.comments').forEach(c => {
-        const postId = c.id.split('-')[1];
-        loadComments(postId);
-    });
 
-    // Sidebar toggle
-    document.querySelector('.menu-toggle').addEventListener('click', toggleSidebar);
+    // === Charger tous les commentaires au chargement ===
+    // document.querySelectorAll('.comments').forEach(c => {
+    //     const postId = c.id?.split('-')[1];
+    //     if (postId) loadComments(postId);
+    // });
 });
 
 function renderComments(comments, parentId = null) {
@@ -99,18 +112,17 @@ function renderComments(comments, parentId = null) {
     return html;
 }
 
-
 function bindReplyButtons() {
     document.querySelectorAll('.reply-btn').forEach(replyBtn => {
         replyBtn.addEventListener('click', function () {
             const commentDiv = this.closest('.comment');
-            const replyForm = commentDiv.querySelector('.reply-form');
-            const replies = commentDiv.querySelector('.replies');
+            const replyForm = commentDiv?.querySelector('.reply-form');
+            const replies = commentDiv?.querySelector('.replies');
 
-            // Toggle reply form
-            replyForm.style.display = (replyForm.style.display === 'none' || replyForm.style.display === '') ? 'flex' : 'none';
+            if (replyForm) {
+                replyForm.style.display = (replyForm.style.display === 'none' || replyForm.style.display === '') ? 'flex' : 'none';
+            }
 
-            // Toggle replies
             if (replies) {
                 replies.style.display = (replies.style.display === 'none' || replies.style.display === '') ? 'block' : 'none';
             }
@@ -123,6 +135,7 @@ function loadComments(postId) {
         .then(res => res.json())
         .then(data => {
             const commentsContainer = document.getElementById(`comments-${postId}`);
+            if (!commentsContainer) return;
             commentsContainer.innerHTML = renderComments(data);
             bindReplyButtons();
         })
@@ -131,7 +144,10 @@ function loadComments(postId) {
 
 function addComment(postId, parentCommentId = null) {
     const inputId = parentCommentId ? `reply-input-${parentCommentId}` : `comment-input-${postId}`;
-    const content = document.getElementById(inputId).value.trim();
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    const content = input.value.trim();
     if (content === '') return;
 
     const formData = new URLSearchParams();
@@ -145,14 +161,6 @@ function addComment(postId, parentCommentId = null) {
         body: formData.toString()
     }).then(() => {
         loadComments(postId);
-        document.getElementById(inputId).value = '';
+        input.value = '';
     }).catch(err => console.error("Erreur ajout commentaire:", err));
-}
-
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    const body = document.body;
-
-    sidebar.classList.toggle('open');
-    body.classList.toggle('sidebar-open');
 }

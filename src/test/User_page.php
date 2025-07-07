@@ -84,6 +84,43 @@ function renderComments($comments_array) {
         echo '</div></div>';
     }
 }
+try {
+    $sql_posts = "SELECT p.*, u.username, u.avatar 
+                  FROM posts p 
+                  JOIN users u ON p.user_id = u.id";
+    $params = [];
+
+    if (!empty($search_query)) {
+        $sql_posts .= " WHERE p.content LIKE ? OR p.title LIKE ?";
+        $params[] = '%' . $search_query . '%';
+        $params[] = '%' . $search_query . '%';
+    }
+
+    $sql_posts .= " ORDER BY p.created_at DESC";
+
+    $stmt_posts = $pdo->prepare($sql_posts);
+    $stmt_posts->execute($params);
+    $posts = $stmt_posts->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($posts as &$post) {
+        $post_id = $post['id'];
+
+        $stmt_comment_count = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE post_id = ?");
+        $stmt_comment_count->execute([$post_id]);
+        $post['comment_count'] = $stmt_comment_count->fetchColumn() ?? 0;
+
+        $stmt_likes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 1");
+        $stmt_likes->execute([$post_id]);
+        $post['likes_count'] = $stmt_likes->fetchColumn() ?? 0;
+
+        $stmt_dislikes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 0");
+        $stmt_dislikes->execute([$post_id]);
+        $post['dislikes_count'] = $stmt_dislikes->fetchColumn() ?? 0;
+    }
+} catch (PDOException $e) {
+    error_log("Error fetching posts: " . $e->getMessage());
+    $posts = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -93,8 +130,7 @@ function renderComments($comments_array) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile</title>
     <link rel="stylesheet" href="./css/user_page.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></head>
 <body>
     <header>
         <div class="dropdown-menu">
@@ -142,8 +178,8 @@ function renderComments($comments_array) {
 
         <div class="menu-item">
             <a href="">
-                <i class="fas fa-user-plus icon"></i>
-                <p>Sign Up</p>
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <p>LogOut</p>
             </a>
         </div>
     </header>
@@ -170,14 +206,14 @@ function renderComments($comments_array) {
                         <p id="user_status">Statut: <span><?= htmlspecialchars($user_activity) ?></span></p>
                     <?php endif; ?>
                     <p id="user-bio"><span>Bio:</span> <?= nl2br(htmlspecialchars($user_bio)) ?></p>
-<!-- 
+                    
                     <div class="social-icons">
-                         foreach ($social_links as $contact): ?>
-                            <a href=" htmlspecialchars($contact['link']) ?>" target="_blank" title=" htmlspecialchars($contact['platform']) ?>">
-                                <i class=" getSocialIconClass($contact['platform']) ?>"></i>
-                            </a>
-                        //endforeach; ?>
-                    </div> -->
+                        <a href=""><i class="fab fa-facebook-f"></i></a>
+                        <a href=""><i class="fab fa-twitter"></i></a>
+                        <a href=""><i class="fab fa-instagram"></i></a>
+                        <a href=""><i class="fab fa-linkedin-in"></i></a>
+                        <a href=""><i class="fab fa-github"></i></a>
+                    </div>
 
                     <a id="edit-profile-btn" href="Edit-profile.php?id=<?= $user_id ?>" class="edit-profile-btn">
                         <i class="fas fa-edit"></i> Edit Profile
@@ -224,6 +260,16 @@ function renderComments($comments_array) {
                             </div>
                         
                             <div class="post-interactions">
+                            <div class="post-actions">
+                                <div class="actions" data-post-id="<?php echo $post['id']; ?>">
+                                    <button class="like-btn"><i class="fas fa-thumbs-up"></i> Like</button>
+                                    <span class="like-count"><?php echo $post['likes_count']; ?></span>
+                                    <button class="dislike-btn"><i class="fas fa-thumbs-down"></i> Dislike</button>
+                                    <span class="dislike-count"><?php echo $post['dislikes_count']; ?></span>
+                                    <span><i class="fas fa-comments"></i> <?php echo $post['comment_count']; ?></span>
+                                </div>
+                            </div>
+                            
                                 <button class="toggle-comments-btn">
                                     <i class="fas fa-comments fa-chevron-down"></i>
                                     <span>Show Comments</span>
