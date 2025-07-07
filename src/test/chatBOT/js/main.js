@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return;
         container.innerHTML = ''; // Clear previous animation particles
 
-        // ★★★ 変更点: シンプルテーマの場合はアニメーションなし ★★★
         if (themeName === 'simple') {
             return;
         }
@@ -44,15 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 particleConfig = { type: 'span', className: 'sakura', content: '🌸', animation: 'fall' };
                 break;
             case 'summer':
-                // For summer, let's create rising bubbles
                 particleConfig = { type: 'div', className: 'bubble', animation: 'rise' };
                 break;
             case 'autumn':
-                // For autumn, falling leaves
                 particleConfig = { type: 'span', className: 'leaf', content: '🍁', animation: 'fall' };
                 break;
             case 'winter':
-                // For winter, falling snow
                 particleConfig = { type: 'span', className: 'snow', content: '❄️', animation: 'fall' };
                 break;
         }
@@ -75,9 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             particle.style.left = `${Math.random() * 100}%`;
             particle.style.animationName = particleConfig.animation;
-            // Randomize duration and delay for a more natural effect
             particle.style.animationDuration = `${8 + Math.random() * 12}s`;
-            particle.style.animationDelay = `-${Math.random() * 10}s`; // Use negative delay to start mid-animation
+            particle.style.animationDelay = `-${Math.random() * 10}s`;
             particle.style.opacity = `${0.3 + Math.random() * 0.6}`;
             
             container.appendChild(particle);
@@ -330,37 +325,62 @@ document.addEventListener('DOMContentLoaded', () => {
         displayBotMessage(currentQuiz.question[currentLanguage], { quizOptions: currentQuiz.options[currentLanguage] });
     }
 
-    /** AIに応答を問い合わせる（安全なサーバー経由） */
+    /** ★★★ 修正: AIへの指示形式をより安定した会話形式に変更 ★★★ */
     async function getAIResponse(text) {
-        displayBotMessage("...");
+        displayBotMessage("..."); 
+
         const langMap = { ja: '日本語', en: 'English', zh: '中文' };
-        const prompt = `あなたは日本の文化とマナーについて教える専門家です。以下の質問に対して、${langMap[currentLanguage]}で、親切かつ簡潔に答えてください。\n\n質問：${text}`;
+        // AIへの役割指示
+        const systemInstruction = `あなたは日本の文化とマナーについて教える専門家です。ユーザーからの質問に対して、${langMap[currentLanguage]}で、親切かつ簡潔に答えてください。`;
+        // ユーザーからの実際の質問
+        const userPrompt = text;
+
+        const apiUrl = 'chatBOT/gemini_proxy.php'; 
+
+        // AIが文脈を理解しやすい会話形式のデータ構造
         const payload = {
-            contents: [{
-                parts: [{ text: prompt }]
-            }]
+            contents: [
+                {
+                    "role": "user",
+                    "parts": [{ "text": systemInstruction }]
+                },
+                {
+                    "role": "model",
+                    "parts": [{ "text": "はい、承知いたしました。日本のマナーについて、どのようなことでもお尋ねください。" }]
+                },
+                {
+                    "role": "user",
+                    "parts": [{ "text": userPrompt }]
+                }
+            ]
         };
+
         try {
-            const apiUrl = 'chatBOT/gemini_proxy.php';
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+
             if (chatWindow.lastChild && chatWindow.lastChild.textContent === "...") {
                 chatWindow.removeChild(chatWindow.lastChild);
             }
+
             if (!response.ok) {
-                const errorResult = await response.json();
-                console.error('Proxy or API Error:', errorResult.error);
-                throw new Error(`Request failed with status ${response.status}`);
+                const errorData = await response.json();
+                console.error('Proxy or API Error:', response.status, errorData);
+                throw new Error(`Proxy or API request failed with status ${response.status}`);
             }
+
             const result = await response.json();
-            if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts[0].text) {
+
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
                 const aiText = result.candidates[0].content.parts[0].text;
                 displayBotMessage(aiText, { isAiResponse: true });
             } else {
-                console.error("Invalid AI response structure:", result);
+                console.error("Invalid AI response structure or content blocked:", result);
                 displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
             }
         } catch (error) {
@@ -396,7 +416,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /** ★★★ REVISED FUNCTION ★★★ */
     /** テーマ切り替えドロップダウンを初期化 */
     function initializeThemeSwitcher() {
         const dropdownBtn = document.getElementById('cb-theme-btn');
@@ -409,7 +428,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // ★★★ 変更点: 'theme-simple' をテーマリストに追加 ★★★
         const allThemes = ['theme-simple', 'theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter', 'theme-morning', 'theme-day', 'theme-evening', 'theme-night'];
 
         const applyTheme = (themeName) => {
@@ -423,7 +441,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateSeasonalAnimation(themeName);
         };
 
-        // ★★★ 変更点: デフォルトテーマを 'simple' に設定 ★★★
         applyTheme('simple');
 
         dropdownBtn.addEventListener('click', (e) => {
