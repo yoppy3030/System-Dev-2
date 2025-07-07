@@ -490,7 +490,7 @@ main {
     border-radius: 8px;
     padding: 0.6rem;
     border: 1px solid #ccc;
-    resize: vertical;
+    resize: none;
     font-family: inherit;
     font-size: 0.95rem;
     color: var(--dark-text);
@@ -596,7 +596,7 @@ main {
     border-radius: 8px;
     padding: 0.6rem;
     border: 1px solid #ccc;
-    resize: vertical;
+    resize: none;
     font-family: inherit;
     font-size: 0.95rem;
     color: var(--dark-text);
@@ -691,7 +691,7 @@ main {
     border-radius: 10px;
     border: 1px solid #ccc;
     padding: 1rem;
-    resize: vertical;
+    resize: none;
     font-size: 1rem;
     margin-bottom: 1rem;
 }

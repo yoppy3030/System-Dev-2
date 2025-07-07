@@ -7,6 +7,16 @@
     --light-text: #f8f8f8;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+img:not([src]) {
+    display: none;
+}
+
 /* ========== GENERAL ========== */
 img:broken {
     display: none;
@@ -249,12 +259,14 @@ img:broken {
 }
 
 /* COMMENT SECTION */
-.comments {
-    display: none;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    animation: fadeIn 0.3s ease-out;
+.comment {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: rgba(232, 192, 125, 0.05);
+    border-radius: 8px;
 }
 
 .comments.visible {
@@ -300,7 +312,7 @@ img:broken {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 1rem;
-    resize: vertical;
+    resize: none;
 }
 
 .add-comment button {
@@ -365,6 +377,10 @@ img:broken {
     color: var(--accent-color);
 }
 
+.replies {
+    margin-top: 0.5rem;
+    padding-left: 0; /* plus d'indentation */
+}
 .reply {
     margin-left: 3rem;
     margin-top: 0.6rem;
@@ -380,12 +396,19 @@ img:broken {
     margin-left: 2rem;
     margin-top: 0.8rem;
 }
-.reply-form {
+/*.reply-form {
     margin-top: 0.8rem;
     display: none;
     flex-direction: column;
     gap: 0.5rem;
+}*/
+
+.reply-form {
+    display: none;
+    flex-direction: column;
+    gap: 0.5rem;
 }
+
 .reply-form.visible {
     display: flex;
     flex-direction: column;
@@ -403,6 +426,7 @@ img:broken {
     font-size: 0.95rem;
     color: var(--dark-text);
     background-color: var(--light-text);
+    resize: none;
 }
 .reply-form button {
     background: var(--primary-color);
@@ -471,11 +495,140 @@ img:broken {
         padding: 1rem;
     }
 
-    .comment {
+    .comment {             
         flex-direction: column;
     }
 
     .avatar-mini {
         align-self: center;
+    }
+}
+
+/* ==== SIDEBAR NAVIGATION ==== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 260px;
+    height: 100vh;
+    background-color: var(--light-bg);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #e2e2e2;
+    padding: 1.5rem 1rem;
+    transition: left 0.3s ease;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-header h1 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--accent-color);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin: 0.7rem 0;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-menu a:hover {
+    background-color: rgba(103, 107, 86, 0.1);
+    color: var(--accent-color);
+}
+
+.sidebar-menu .section-title {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    padding-left: 0.5rem;
+}
+
+.beta {
+    font-size: 0.7rem;
+    background: var(--accent-color);
+    color: white;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    margin-left: auto;
+}
+
+.menu-toggle {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.6rem 0.9rem;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.menu-toggle:hover {
+    background-color: var(--accent-color);
+}
+
+/* Décalage contenu quand menu ouvert sur grand écran */
+body.sidebar-open {
+    margin-left: 260px;
+    transition: margin-left 0.3s ease;
+}
+
+/* Mobile friendly */
+@media (max-width: 768px) {
+    body.sidebar-open {
+        margin-left: 0;
+    }
+
+    .sidebar {
+        width: 100%;
+        max-width: 260px;
+    }
+
+    .menu-toggle {
+        top: 1rem;
+        left: 1rem;
     }
 }

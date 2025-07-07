@@ -123,6 +123,31 @@ try {
             </div>
         </section>
     </div>
+    <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1><i class="fab fa-reddit"></i></h1>
+       <button class="close-btn" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="#"><i class="fas fa-chart-line"></i> Popular</a></li>
+        <li><a href="#"><i class="fas fa-question-circle"></i> Answers <span class="beta">BETA</span></a></li>
+        <li class="section-title">TOPICS</li>
+        <li><a href="#"><i class="fas fa-globe"></i> Internet Culture</a></li>
+        <li><a href="#"><i class="fas fa-gamepad"></i> Games</a></li>
+        <li><a href="#"><i class="fas fa-comments"></i> Q&As</a></li>
+        <li><a href="#"><i class="fas fa-microchip"></i> Technology</a></li>
+        <li><a href="#"><i class="fas fa-star"></i> Pop Culture</a></li>
+        <li><a href="#"><i class="fas fa-film"></i> Movies & TV</a></li>
+        <li class="section-title">RESOURCES</li>
+        <li><a href="#"><i class="fas fa-info-circle"></i> About Reddit</a></li>
+        <li><a href="#"><i class="fas fa-bullhorn"></i> Advertise</a></li>
+        <li><a href="#"><i class="fas fa-flask"></i> Reddit Pro <span class="beta">BETA</span></a></li>
+    </ul>
+</div>
+
+<button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+
     <script src="js/explorer.js"></script>
 </body>
 </html>

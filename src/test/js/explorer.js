@@ -1,5 +1,5 @@
 console.log("Script chargé !");
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 
     // Gestion Like/Dislike
     document.querySelectorAll('.actions').forEach(action => {
@@ -11,27 +11,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function updateCounts() {
             fetch(`http://localhost/Sites/Challengers/System-Dev-2/src/test/backend/like_dislike.php?target_id=${postId}&target_type=post`)
-            .then(res => res.json())
-            .then(data => {
-                likeCount.textContent = data.likes ?? 0;
-                dislikeCount.textContent = data.dislikes ?? 0;
-            })
-            .catch(err => console.error("Erreur like/dislike:", err));
+                .then(res => res.json())
+                .then(data => {
+                    likeCount.textContent = data.likes ?? 0;
+                    dislikeCount.textContent = data.dislikes ?? 0;
+                })
+                .catch(err => console.error("Erreur like/dislike:", err));
         }
 
-       function updateLikeDislikeButtons() {
-            fetch(`http://localhost/challengers/System-Dev-2/src/test/backend/get_likes.php?target_id=${postId}&target_type=post`)
-            .then(res => res.json())
-            .then(data => {
-                likeCount.textContent = data.likes ?? 0;
-                dislikeCount.textContent = data.dislikes ?? 0;
-            })
-            .catch(err => console.error("Erreur chargement likes:", err));
-        }
         likeBtn?.addEventListener('click', () => {
             fetch('http://localhost/challengers/System-Dev-2/src/test/backend/like_dislike.php', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `target_id=${postId}&target_type=post&is_like=1`
             }).then(updateCounts);
         });
@@ -39,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dislikeBtn?.addEventListener('click', () => {
             fetch('http://localhost/challengers/System-Dev-2/src/test/backend/like_dislike.php', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `target_id=${postId}&target_type=post&is_like=0`
             }).then(updateCounts);
         });
@@ -58,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         commentsSection.parentNode.insertBefore(toggleBtn, commentsSection);
 
-        toggleBtn.addEventListener('click', function() {
+        toggleBtn.addEventListener('click', function () {
             commentsSection.classList.toggle('visible');
             addCommentSection.classList.toggle('visible');
 
@@ -75,54 +66,67 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // コメントの読み込み
+    // Charger tous les commentaires au chargement
     document.querySelectorAll('.comments').forEach(c => {
         const postId = c.id.split('-')[1];
         loadComments(postId);
     });
 
-    // 返信ボタンの追加
-    document.querySelectorAll('.comment').forEach(comment => {
-        const replyBtn = document.createElement('button');
-        replyBtn.className = 'reply-btn';
-        replyBtn.textContent = 'Reply';
-
-        const replyForm = comment.querySelector('.reply-form');
-        comment.querySelector('.comment-content').appendChild(replyBtn);
-
-        replyBtn.addEventListener('click', function() {
-            replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
-        });
-    });
-
+    // Sidebar toggle
+    document.querySelector('.menu-toggle').addEventListener('click', toggleSidebar);
 });
 
-// コメントのレンダリング関数
 function renderComments(comments, parentId = null) {
     let html = '';
     comments.filter(c => c.parent_comment_id == parentId).forEach(comment => {
         html += `
-            <div class="comment">
-                <img src="${comment.avatar}" class="avatar-mini">
-                <b>${comment.username}</b>: ${comment.content}
-                <div class="reply">
+            <div class="comment" data-comment-id="${comment.id}">
+                <img src="${comment.avatar ?? '/uploads/default_avatar.jpg'}" class="avatar-mini" alt="Avatar">
+                <div class="comment-content">
+                    <b>${comment.username}</b>: ${comment.content}
+                </div>
+                <button class="reply-btn">Reply</button>
+                <div class="reply-form" style="display: none; flex-direction: column; gap: 0.5rem;">
                     <textarea id="reply-input-${comment.id}" placeholder="Reply..."></textarea>
                     <button onclick="addComment(${comment.post_id}, ${comment.id})">Reply</button>
                 </div>
-                ${renderComments(comments, comment.id)}
+                <div class="replies" style="display: none;">
+                    ${renderComments(comments, comment.id)}
+                </div>
             </div>
         `;
     });
     return html;
 }
 
+
+function bindReplyButtons() {
+    document.querySelectorAll('.reply-btn').forEach(replyBtn => {
+        replyBtn.addEventListener('click', function () {
+            const commentDiv = this.closest('.comment');
+            const replyForm = commentDiv.querySelector('.reply-form');
+            const replies = commentDiv.querySelector('.replies');
+
+            // Toggle reply form
+            replyForm.style.display = (replyForm.style.display === 'none' || replyForm.style.display === '') ? 'flex' : 'none';
+
+            // Toggle replies
+            if (replies) {
+                replies.style.display = (replies.style.display === 'none' || replies.style.display === '') ? 'block' : 'none';
+            }
+        });
+    });
+}
+
 function loadComments(postId) {
     fetch(`http://localhost/challengers/System-Dev-2/src/test/backend/get_comments.php?post_id=${postId}`)
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById(`comments-${postId}`).innerHTML = renderComments(data);
-    })
-    .catch(err => console.error("Erreur chargement commentaires:", err));
+        .then(res => res.json())
+        .then(data => {
+            const commentsContainer = document.getElementById(`comments-${postId}`);
+            commentsContainer.innerHTML = renderComments(data);
+            bindReplyButtons();
+        })
+        .catch(err => console.error("Erreur chargement commentaires:", err));
 }
 
 function addComment(postId, parentCommentId = null) {
@@ -143,4 +147,12 @@ function addComment(postId, parentCommentId = null) {
         loadComments(postId);
         document.getElementById(inputId).value = '';
     }).catch(err => console.error("Erreur ajout commentaire:", err));
+}
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const body = document.body;
+
+    sidebar.classList.toggle('open');
+    body.classList.toggle('sidebar-open');
 }

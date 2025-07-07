@@ -255,7 +255,7 @@ function renderComments($comments_array) {
                                                             <textarea placeholder="Write a reply..."></textarea>
                                                             <button onclick="addComment(<?= $post['id'] ?>, <?= $comment['id'] ?>)">Post Reply</button>
                                                         </div>
-                                                        
+
                                                         <!-- Réponses imbriquées -->
                                                         <?php if (!empty($comment['replies'])): ?>
                                                             <div class="replies">
@@ -378,7 +378,7 @@ document.querySelectorAll('.reply-btn').forEach(btn => {
     });
 });
 
-// Comment system functions
+// Comment functions
 function renderComments(comments, parentId = null) {
     let html = '';
     comments.filter(c => c.parent_comment_id == parentId).forEach(comment => {
