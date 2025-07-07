@@ -32,7 +32,6 @@ body {
 #chatbot-modal header {
     background-color: rgba(0, 0, 0, 0.1);
     position: relative;
-    z-index: 1;
     transition: background-color 0.5s ease-in-out;
 }
 
@@ -46,6 +45,17 @@ body {
 .theme-day { background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%); }
 .theme-evening { background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 50%, #6a5acd 100%); }
 .theme-night { background: linear-gradient(135deg, #0f172a 0%, #312e81 100%); }
+
+.theme-spring header,
+.theme-summer header,
+.theme-autumn header,
+.theme-winter header,
+.theme-morning header,
+.theme-day header,
+.theme-evening header {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
 
 .theme-morning #chat-window,
 .theme-day #chat-window,
@@ -75,83 +85,85 @@ body {
 .theme-night .bg-white.text-gray-800 { background-color: #1e293b !important; color: #f1f5f9 !important; }
 
 /* =========================================
-   ★★★ START: UPDATED SEASONAL THEME STYLES ★★★
+   ★★★ START: SETTINGS DROPDOWN STYLES ★★★
    ========================================= */
 
-/* --- Theme Dropdown Container --- */
-.cb-theme-dropdown {
-    position: relative;
-    display: inline-block;
-    margin-right: 12px;
+/* --- Settings Dropdown Content --- */
+#settings-content.hidden {
+    display: none;
 }
-
-/* --- Main Dropdown Button --- */
-.cb-theme-dropdown-btn {
-    background-color: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    color: white;
-    width: 40px;
-    height: 32px;
-    border-radius: 16px;
+#settings-content a, #settings-content button {
+    color: #374151; /* Gray-700 */
+    transition: background-color 0.2s;
     cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 14px;
-    transition: all 0.2s ease-in-out;
-    padding: 0 8px;
 }
-
-.cb-theme-dropdown-btn:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+#settings-content a:hover, #settings-content #clear-history-btn:hover {
+    background-color: #f3f4f6; /* Gray-100 */
 }
-
-/* --- Dropdown Content --- */
-.cb-theme-dropdown-content {
-    visibility: hidden;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
-    position: absolute;
-    background-color: #ffffff;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1001;
-    border-radius: 8px;
-    right: 0;
-    top: 120%;
-    overflow: hidden;
-    border: 1px solid #ddd;
-}
-
-.cb-theme-dropdown-content.show {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* --- Dropdown Options --- */
-.cb-theme-option {
-    color: #333;
-    padding: 12px 16px;
-    text-decoration: none;
+#settings-content .cb-theme-option {
     display: flex;
     align-items: center;
     gap: 10px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    padding: 8px 16px;
     font-size: 14px;
-    font-weight: 500;
+}
+#settings-content .cb-theme-option .fa-fw {
+    color: #6b7280; /* Gray-500 */
 }
 
-.cb-theme-option:hover {
-    background-color: #e9ecef;
+/* ▼▼▼【変更点】言語スイッチャーのスタイルを明確に定義 ▼▼▼ */
+#language-switcher {
+    display: flex;
+    justify-content: space-around;
+    padding: 8px; /* 上下の余白を追加 */
 }
 
-.cb-theme-option .fa-fw {
+#language-switcher .lang-switch-btn {
+    flex-grow: 1; /* ボタンが利用可能なスペースを均等に分け合う */
     text-align: center;
-    color: #495057;
+    border: 1px solid #d1d5db; /* Gray-300 */
+    padding: 6px 0; /* 上下のパディングを調整 */
+    margin: 0 4px; /* ボタン間のマージン */
+    border-radius: 9999px; /* rounded-full */
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    background-color: #ffffff; /* デフォルトの背景色 */
+    color: #374151; /* デフォルトの文字色 */
 }
+
+#language-switcher .lang-switch-btn:hover {
+    background-color: #f3f4f6; /* Light gray hover */
+}
+
+#language-switcher .lang-switch-btn.active {
+    background-color: #3b82f6; /* Blue-500 */
+    color: white;
+    border-color: #3b82f6;
+}
+/* ▲▲▲ ここまで ▲▲▲ */
+
+
+#clear-history-btn {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#clear-history-btn .fa-fw {
+     color: #6b7280; /* Gray-500 */
+}
+
+
+/* =========================================
+   ★★★ END: SETTINGS DROPDOWN STYLES ★★★
+   ========================================= */
+
+
+/* =========================================
+   ★★★ START: SEASONAL THEME STYLES ★★★
+   ========================================= */
 
 /* --- 季節のテーマ背景 --- */
 .theme-spring { background: linear-gradient(135deg, #FFC0CB 0%, #B6D0E2 100%); }
@@ -166,6 +178,127 @@ body {
 .theme-winter #chat-window {
     background-color: rgba(255, 255, 255, 0.6);
 }
+
+/* ★★★ START: シンプルテーマのスタイル ★★★ */
+.theme-simple {
+    background: #f0f8ff; 
+    border: 1px solid #e5e7eb; 
+}
+
+.theme-simple header {
+    background-color: #87CEEB !important; 
+}
+
+.theme-simple #header-title,
+.theme-simple #header-lang-status {
+    color: #ffffff; 
+}
+
+.theme-simple #chat-window {
+    background-color: #f0f8ff; 
+}
+
+.theme-simple footer {
+    background-color: #ffffff;
+    border-top-color: #e5e7eb;
+}
+
+.theme-simple #user-input {
+    background-color: #ffffff;
+    border-color: #d1d5db;
+    color: #111827;
+}
+
+.theme-simple #user-input::placeholder {
+    color: #6b7280;
+}
+
+.theme-simple .bg-white.text-gray-800 {
+    background-color: #ffffff !important;
+    color: #1f2937 !important;
+}
+
 /* =========================================
-   ★★★ END: UPDATED SEASONAL THEME STYLES ★★★
+   ★★★ END: SEASONAL THEME STYLES ★★★
+   ========================================= */
+
+/* =========================================
+   ★★★ START: SEASONAL ANIMATION STYLES ★★★
+   ========================================= */
+
+/* Animation container sits behind all other content */
+#chatbot-animation-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none; /* Allows clicking through the container */
+    z-index: 0;
+}
+
+#chatbot-modal > header {
+    position: relative;
+    z-index: 10; 
+}
+
+#chatbot-modal > #chat-window,
+#chatbot-modal > footer {
+    position: relative;
+    z-index: 1; 
+}
+
+/* Base style for all animated particles */
+.particle {
+    position: absolute;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    will-change: transform;
+    user-select: none;
+}
+
+/* Specific styles for each particle type */
+.particle.sakura {
+    color: #ffb7c5;
+}
+.particle.leaf {
+    color: #e8985e;
+}
+.particle.snow {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.particle.bubble {
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Keyframes for falling animations (Spring, Autumn, Winter) */
+@keyframes fall {
+    from {
+        transform: translateY(-10vh) rotate(0deg);
+    }
+    to {
+        transform: translateY(110vh) rotate(360deg);
+    }
+}
+
+/* Keyframes for rising animation (Summer) */
+@keyframes rise {
+    from {
+        transform: translateY(110vh) scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.9;
+    }
+    to {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+    }
+}
+/* =========================================
+   ★★★ END: SEASONAL ANIMATION STYLES ★★★
    ========================================= */

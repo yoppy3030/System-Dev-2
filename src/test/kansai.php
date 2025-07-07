@@ -195,7 +195,7 @@
                     </ul>
              </ol>
             
-
+    </main>
 
 <footer>
     <div class="footer-content">

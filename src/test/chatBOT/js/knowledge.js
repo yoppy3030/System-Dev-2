@@ -29,12 +29,24 @@ const uiStrings = {
                 resultText += "よくできました！この調子で頑張りましょう。";
             } else if (score > 0) {
                 resultText += "お疲れ様でした。もう一度挑戦してみましょう！";
-            } else { // score is 0
+            } else {
                 resultText += "残念！次は頑張りましょう！";
             }
             return resultText;
         },
         lang_switched: '言語を日本語に切り替えました。',
+        history_cleared: '会話の履歴を消去しました。',
+        clear_history_button_title: '履歴をクリア',
+        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
+        theme_selection: 'テーマ選択',
+        language_settings: '言語設定',
+        theme_simple: 'シンプル',
+        theme_spring: '春',
+        theme_summer: '夏',
+        theme_autumn: '秋',
+        theme_winter: '冬',
+        clear_history: '履歴をクリア',
+        // ▲▲▲ ここまで ▲▲▲
         inquiry: {
             start: 'お問い合わせですね。承知いたしました。まず、お名前を教えていただけますか？（途中で「キャンセル」と入力すると中断できます）',
             prompt_email: 'ありがとうございます。次に、ご連絡先のメールアドレスをお願いします。ご入力いただいたアドレスに確認メールをお送りします。',
@@ -75,12 +87,24 @@ const uiStrings = {
                 resultText += "Good job! Keep up the great work.";
             } else if (score > 0) {
                 resultText += "Nice try. Let's try again!";
-            } else { // score is 0
+            } else {
                 resultText += "Don't worry, let's try again!";
             }
             return resultText;
         },
         lang_switched: 'Language switched to English.',
+        history_cleared: 'Conversation history has been cleared.',
+        clear_history_button_title: 'Clear History',
+        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
+        theme_selection: 'Theme Selection',
+        language_settings: 'Language Settings',
+        theme_simple: 'Simple',
+        theme_spring: 'Spring',
+        theme_summer: 'Summer',
+        theme_autumn: 'Autumn',
+        theme_winter: 'Winter',
+        clear_history: 'Clear History',
+        // ▲▲▲ ここまで ▲▲▲
         inquiry: {
             start: 'Okay, you want to make an inquiry. First, could you please tell me your name? (You can type "cancel" to stop at any time)',
             prompt_email: 'Thank you. Next, please provide your email address. A confirmation email will be sent to this address.',
@@ -121,12 +145,24 @@ const uiStrings = {
                 resultText += "做得很好！再接再厉。";
             } else if (score > 0) {
                 resultText += "辛苦了。再挑战一次吧！";
-            } else { // score is 0
+            } else {
                 resultText += "很遗憾！下次加油吧！";
             }
             return resultText;
         },
         lang_switched: '语言已切换至中文。',
+        history_cleared: '对话记录已清除。',
+        clear_history_button_title: '清除记录',
+        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
+        theme_selection: '主题选择',
+        language_settings: '语言设定',
+        theme_simple: '简约',
+        theme_spring: '春天',
+        theme_summer: '夏天',
+        theme_autumn: '秋天',
+        theme_winter: '冬天',
+        clear_history: '清除记录',
+        // ▲▲▲ ここまで ▲▲▲
         inquiry: {
             start: '好的，您想进行咨询。首先，请问您的名字是？（您可以随时输入“取消”来中断）',
             prompt_email: '谢谢。接下来，请输入您的电子邮件地址。我们将向此地址发送一封确认邮件。',

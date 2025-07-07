@@ -43,3 +43,45 @@
       "Phone: +81 3-1234-5678": "电话：+81 3-1234-5678"
     }
 }
+=======
+  "translations": {
+    "🌐 Translate": "🌐 翻译",
+    "HOME": "首页",
+    "StudentHome": "学生主页",
+    "Garbage Disposal Rules in Japan": "日本垃圾分类规则",
+    "Garbage Disposal Rules": "垃圾分类规则",
+    "A guide for foreign residents in Japan": "面向外国居民的日本垃圾分类指南",
+    "Personalized Local Guide": "个性化本地指南",
+    "Get specific garbage collection details for your current location, powered by AI.": "AI为您提供当前位置的垃圾收集信息。",
+    "Get My Location's Rules": "获取我所在地区的规则",
+    "🗑️ Garbage Categories": "🗑️ 垃圾种类",
+    "In Japan, garbage is sorted into several categories. Check your local city's guide for specifics, but here are the common types:": "在日本，垃圾分为多种类型。具体请参考当地市政府指南，常见分类如下：",
+    "Burnable Garbage (燃えるゴミ)": "可燃垃圾（燃えるゴミ）",
+    "Kitchen scraps, paper waste, wood, clothing.": "厨余、废纸、木材、衣物等",
+    "Use your city's designated burnable garbage bags.": "请使用指定的可燃垃圾袋。",
+    "Non-Burnable Garbage (燃えないゴミ)": "不可燃垃圾（燃えないゴミ）",
+    "Small metals, glass, ceramics, broken umbrellas, batteries.": "小型金属、玻璃、陶瓷、坏掉的伞、电池等",
+    "Place sharp items in a sturdy box and label it.": "尖锐物品请用硬盒包装并贴上标签。",
+    "Recyclable Garbage (資源ごみ)": "可回收垃圾（資源ごみ）",
+    "PET bottles (remove cap/label), cans, glass bottles.": "PET瓶（去盖和标签）、易拉罐、玻璃瓶等",
+    "Rinse them out before disposal.": "请清洗干净后投放。",
+    "Plastic Waste (プラスチックごみ)": "塑料垃圾（プラスチックごみ）",
+    "Items marked with the [プラ] symbol like food trays, wrappers, and shampoo bottles.": "带有[プラ]标志的食品托盘、包装、洗发水瓶等",
+    "Rinse and clean them before disposal.": "请清洗干净后投放。",
+    "Oversized Garbage (粗大ゴミ)": "大型垃圾（粗大ゴミ）",
+    "Items larger than 30cm, like furniture or bicycles.": "30厘米以上的家具、自行车等",
+    "You must book a pickup and pay a fee.": "需提前预约并支付处理费。",
+    "🧾 5 Essential Rules": "🧾 5项基本规则",
+    "Check your city's garbage schedule": "确认当地垃圾收集日",
+    "Each type of garbage has a specific collection day. Missing it means waiting another week!": "每种垃圾有固定收集日，错过需等下次。",
+    "Use official trash bags from stores": "使用指定垃圾袋",
+    "You must buy designated bags from convenience stores or supermarkets. Using other bags will result in your trash being left behind.": "请在便利店或超市购买指定垃圾袋，其他袋子不会被收走。",
+    "Clean bottles/cans before recycling": "回收前请清洗容器",
+    "Lightly rinse PET bottles, cans, and plastic containers to remove food residue before you sort them.": "回收前请将PET瓶、易拉罐、塑料容器简单冲洗干净。",
+    "Use the right disposal spot": "在指定地点投放",
+    "Dispose of your trash at the designated collection point for your building, often a caged area or netted spot.": "请在楼栋指定的收集点（如铁笼或网罩处）投放垃圾。",
+    "Dispose garbage at the right time": "在规定时间投放",
+    "Garbage should be put out on the morning of collection day (usually by 8 AM), not the night before, to prevent pests.": "请在收集日当天早上（通常8点前）投放，避免前一晚投放以防止害虫。"
+  }
+}
+>>>>>>> a452d5b75b28a9d6ee950fdc92780a5476e88009
