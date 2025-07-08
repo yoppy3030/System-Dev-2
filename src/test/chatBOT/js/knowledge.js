@@ -46,6 +46,8 @@ const uiStrings = {
         theme_winter: '冬',
         clear_history: '履歴をクリア',
         view_pinned: 'お気に入り',
+        open_menu: 'メニューを開く',
+        close_menu: 'メニューを閉じる',
         pinned_empty_title: 'お気に入りはまだありません',
         pinned_empty_desc: 'ボットの回答の右上にあるピンアイコンをクリックして、重要な情報をここに保存しましょう。',
         inquiry: {
@@ -63,12 +65,15 @@ const uiStrings = {
             unhelpful: '役に立たなかった',
             thank_you: 'フィードバックありがとうございます！'
         },
-        // ▼▼▼【新機能】音声入力機能のUIテキストを追加 ▼▼▼
         voice_listening: '話してください...',
         voice_not_supported: '申し訳ありません、お使いのブラウザは音声入力に対応していません。',
         voice_no_speech: '音声が検出されませんでした。もう一度お試しください。',
         voice_permission_denied: 'マイクへのアクセスが拒否されました。ブラウザの設定で許可してください。',
-        voice_error: '音声入力でエラーが発生しました'
+        voice_error: '音声入力でエラーが発生しました',
+        // ▼▼▼【新機能】ボタンのツールチップテキストを追加 ▼▼▼
+        mic_tooltip: 'マイクを使用',
+        mic_tooltip_recording: '録音を停止',
+        send_tooltip: '送信'
         // ▲▲▲ ここまで ▲▲▲
     },
     en: {
@@ -117,6 +122,8 @@ const uiStrings = {
         theme_winter: 'Winter',
         clear_history: 'Clear History',
         view_pinned: 'Favorites',
+        open_menu: 'Open menu',
+        close_menu: 'Close menu',
         pinned_empty_title: 'No Favorites Yet',
         pinned_empty_desc: 'Click the pin icon on a bot response to save important information here.',
         inquiry: {
@@ -134,12 +141,15 @@ const uiStrings = {
             unhelpful: 'Not Helpful',
             thank_you: 'Thank you for your feedback!'
         },
-        // ▼▼▼【新機能】音声入力機能のUIテキストを追加 ▼▼▼
         voice_listening: 'Speak now...',
         voice_not_supported: 'Sorry, your browser does not support voice input.',
         voice_no_speech: 'No speech was detected. Please try again.',
         voice_permission_denied: 'Microphone access denied. Please allow access in your browser settings.',
-        voice_error: 'Voice input error'
+        voice_error: 'Voice input error',
+        // ▼▼▼【新機能】ボタンのツールチップテキストを追加 ▼▼▼
+        mic_tooltip: 'Use microphone',
+        mic_tooltip_recording: 'Stop recording',
+        send_tooltip: 'Send'
         // ▲▲▲ ここまで ▲▲▲
     },
     zh: {
@@ -188,6 +198,8 @@ const uiStrings = {
         theme_winter: '冬天',
         clear_history: '清除记录',
         view_pinned: '收藏',
+        open_menu: '打开菜单',
+        close_menu: '关闭菜单',
         pinned_empty_title: '尚无收藏的消息',
         pinned_empty_desc: '点击机器人回复右上方的图钉图标，即可在此处保存重要信息。',
         inquiry: {
@@ -205,12 +217,15 @@ const uiStrings = {
             unhelpful: '没有帮助',
             thank_you: '感谢您的反馈！'
         },
-        // ▼▼▼【新機能】音声入力機能のUIテキストを追加 ▼▼▼
         voice_listening: '请说话...',
         voice_not_supported: '抱歉，您的浏览器不支持语音输入。',
         voice_no_speech: '未检测到语音。请再试一次。',
         voice_permission_denied: '麦克风访问被拒绝。请在浏览器设置中允许访问。',
-        voice_error: '语音输入错误'
+        voice_error: '语音输入错误',
+        // ▼▼▼【新機能】ボタンのツールチップテキストを追加 ▼▼▼
+        mic_tooltip: '使用麦克风',
+        mic_tooltip_recording: '停止录音',
+        send_tooltip: '发送'
         // ▲▲▲ ここまで ▲▲▲
     }
 };

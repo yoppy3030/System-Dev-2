@@ -276,6 +276,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('header-lang-status').textContent = strings.langStatus;
         userInput.placeholder = strings.inputPlaceholder;
         
+        // ▼▼▼【追加】マイクと送信ボタンのタイトルも更新 ▼▼▼
+        if (micBtn) {
+            micBtn.title = isRecording ? strings.mic_tooltip_recording : strings.mic_tooltip;
+        }
+        if (sendBtn) {
+            sendBtn.title = strings.send_tooltip;
+        }
+        // ▲▲▲ ここまで ▲▲▲
+        
         if (langSwitcher) {
             const buttons = langSwitcher.querySelectorAll('button.lang-switch-btn');
             buttons.forEach(btn => {
@@ -288,6 +297,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         translateSettingsMenu();
         renderPinnedWindow();
+
+        if (settingsBtn) {
+            const isHidden = settingsContent.classList.contains('hidden');
+            settingsBtn.title = isHidden ? uiStrings[currentLanguage].open_menu : uiStrings[currentLanguage].close_menu;
+        }
+
         displayBotMessage(uiStrings[currentLanguage].lang_switched);
         setTimeout(showWelcomeMenu, 1000);
     }
@@ -633,6 +648,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isRecording = true;
             micBtn.classList.add('recording');
             micBtn.innerHTML = '<i class="fas fa-microphone-alt-slash"></i>'; // 録音中のアイコン
+            micBtn.title = uiStrings[currentLanguage].mic_tooltip_recording;
             userInput.placeholder = uiStrings[currentLanguage].voice_listening;
             userInput.value = ''; // 入力フィールドをクリア
             console.log("音声認識を開始しました...");
@@ -668,6 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isRecording = false;
             micBtn.classList.remove('recording');
             micBtn.innerHTML = '<i class="fas fa-microphone"></i>'; // 通常アイコンに戻す
+            micBtn.title = uiStrings[currentLanguage].mic_tooltip;
             userInput.placeholder = uiStrings[currentLanguage].inputPlaceholder;
             console.log("音声認識が終了しました。");
             // 最終的な認識結果があれば、それを送信
@@ -688,6 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isRecording = false;
             micBtn.classList.remove('recording');
             micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            micBtn.title = uiStrings[currentLanguage].mic_tooltip;
             userInput.placeholder = uiStrings[currentLanguage].inputPlaceholder;
             console.log("音声認識を強制停止しました。");
         }
@@ -702,11 +720,23 @@ document.addEventListener('DOMContentLoaded', () => {
         preventParentScroll(pinnedWindow);
 
         if (settingsBtn) {
+            settingsBtn.title = uiStrings[currentLanguage].open_menu;
+
             settingsBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                settingsContent.classList.toggle('hidden');
+                const isHidden = settingsContent.classList.toggle('hidden');
+                settingsBtn.title = isHidden ? uiStrings[currentLanguage].open_menu : uiStrings[currentLanguage].close_menu;
             });
         }
+        
+        // ▼▼▼【追加】マイクと送信ボタンの初期タイトルを設定 ▼▼▼
+        if (micBtn) {
+            micBtn.title = uiStrings[currentLanguage].mic_tooltip;
+        }
+        if (sendBtn) {
+            sendBtn.title = uiStrings[currentLanguage].send_tooltip;
+        }
+        // ▲▲▲ ここまで ▲▲▲
 
         const allThemes = ['theme-simple', 'theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter'];
         const applyTheme = (themeName) => {
@@ -753,6 +783,9 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPinnedWindow();
             pinnedModal.classList.remove('hidden');
             settingsContent.classList.add('hidden');
+            if (settingsBtn) {
+                settingsBtn.title = uiStrings[currentLanguage].open_menu;
+            }
         });
 
         pinnedModalCloseBtn.addEventListener('click', () => {
@@ -765,7 +798,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // 音声入力ボタンのイベントリスナー
         if (micBtn) {
             micBtn.addEventListener('click', () => {
                 if (isRecording) {
@@ -790,9 +822,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const feedbackBtn = e.target.closest('.feedback-btn');
             if (feedbackBtn) {
-                // ▼▼▼【修正】イベントの伝播を停止するコードを追加 ▼▼▼
                 e.stopPropagation();
-                // ▲▲▲ ここまで ▲▲▲
                 const feedback = feedbackBtn.dataset.feedback;
                 const container = feedbackBtn.parentElement;
                 const messageId = container.dataset.messageId;
@@ -916,6 +946,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (settingsContent && !settingsContent.classList.contains('hidden')) {
                 if (!settingsContent.contains(e.target) && !settingsBtn.contains(e.target)) {
                     settingsContent.classList.add('hidden');
+                    if (settingsBtn) {
+                        settingsBtn.title = uiStrings[currentLanguage].open_menu;
+                    }
                 }
             }
             
