@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 particleConfig = { type: 'div', className: 'bubble', animation: 'rise' };
                 break;
             case 'autumn':
-                particleConfig = { type: 'span', className: 'leaf', content: '🍁', animation: 'fall' };
+                particleConfig = { type: 'span', className: 'leaf', content: '�', animation: 'fall' };
                 break;
             case 'winter':
                 particleConfig = { type: 'span', className: 'snow', content: '❄️', animation: 'fall' };
@@ -621,7 +621,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ▼▼▼【修正点】FAQモーダルを開く関数に統一 ▼▼▼
     function openFaqModal() {
         faqList.innerHTML = '';
         const faqStrings = uiStrings[currentLanguage].faq;
@@ -633,7 +632,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         faqModal.classList.remove('hidden');
     }
-    // ▲▲▲ ここまで ▲▲▲
 
     function getBotResponse(text) {
         const lowerCaseText = text.toLowerCase();
@@ -647,9 +645,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (foundFeature) {
             if (foundFeature.isFaq) {
-                // ▼▼▼【修正点】モーダルを開く関数を呼び出すように変更 ▼▼▼
                 openFaqModal();
-                // ▲▲▲ ここまで ▲▲▲
             } else if (foundFeature.isInquiry) {
                 inquiryState.status = 'awaiting_name';
                 displayBotMessage(uiStrings[currentLanguage].inquiry.start);
@@ -1010,7 +1006,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }, 0);
 
-                copyBtn.addEventListener('click', () => {
+                // ▼▼▼【修正点】コピーとダウンロード時のイベント伝播を停止 ▼▼▼
+                copyBtn.addEventListener('click', (event) => {
+                    event.stopPropagation();
                     const textToCopy = bubble.querySelector('p').innerText;
                     const tempTextarea = document.createElement('textarea');
                     tempTextarea.value = textToCopy;
@@ -1027,7 +1025,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     menu.remove();
                 });
 
-                downloadBtn.addEventListener('click', () => {
+                downloadBtn.addEventListener('click', (event) => {
+                    event.stopPropagation();
                     const textToSave = bubble.querySelector('p').innerText;
                     const blob = new Blob([textToSave], { type: 'text/plain' });
                     const url = URL.createObjectURL(blob);
@@ -1040,6 +1039,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     URL.revokeObjectURL(url);
                     menu.remove();
                 });
+                // ▲▲▲ ここまで ▲▲▲
 
                 return;
             }
