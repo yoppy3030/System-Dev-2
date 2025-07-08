@@ -174,12 +174,10 @@ document.addEventListener('DOMContentLoaded', () => {
             pinnedMessages.push({ id: messageId, text: messageText });
             pinBtn.classList.add('pinned');
             
-            // ▼▼▼【新機能】アニメーションクラスを追加 ▼▼▼
             pinBtn.classList.add('pin-animation');
             pinBtn.addEventListener('animationend', () => {
                 pinBtn.classList.remove('pin-animation');
             }, { once: true });
-            // ▲▲▲ ここまで ▲▲▲
         }
 
         savePinnedMessages();
@@ -691,10 +689,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        // ▼▼▼【修正点】ボタンを表示せず、自動でメニューに戻るように変更 ▼▼▼
         if (conversationHistory.length < 4) {
-            displayBotMessage(uiStrings[currentLanguage].summarize_no_history, { showBackToMenu: true });
+            displayBotMessage(uiStrings[currentLanguage].summarize_no_history);
+            setTimeout(showWelcomeMenu, 2500); // 2.5秒後にメニュー表示
             return;
         }
+        // ▲▲▲ ここまで ▲▲▲
 
         displayBotMessage(uiStrings[currentLanguage].summarizing);
 
@@ -986,9 +987,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const shareBtn = e.target.closest('.share-btn');
             if (shareBtn) {
                 e.stopPropagation();
+                const bubble = shareBtn.closest('.bg-white');
+                const existingMenu = bubble.querySelector('.share-menu');
+
+                if (existingMenu) {
+                    existingMenu.remove();
+                    return;
+                }
+                
                 document.querySelectorAll('.share-menu').forEach(menu => menu.remove());
 
-                const bubble = shareBtn.closest('.bg-white');
                 const menu = document.createElement('div');
                 menu.className = 'share-menu';
 
