@@ -173,6 +173,25 @@ body {
     color: #9ca3af;
 }
 
+/* ▼▼▼【新機能】ピン留めアニメーションを追加 ▼▼▼ */
+@keyframes pin-pop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5) rotate(15deg);
+        color: #f59e0b;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pin-animation {
+    animation: pin-pop 0.3s ease-in-out;
+}
+/* ▲▲▲ ここまで ▲▲▲ */
+
 
 /* === テーマの基本設定 === */
 #chatbot-modal {

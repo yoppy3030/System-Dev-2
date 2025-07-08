@@ -173,6 +173,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             pinnedMessages.push({ id: messageId, text: messageText });
             pinBtn.classList.add('pinned');
+            
+            // ▼▼▼【新機能】アニメーションクラスを追加 ▼▼▼
+            pinBtn.classList.add('pin-animation');
+            pinBtn.addEventListener('animationend', () => {
+                pinBtn.classList.remove('pin-animation');
+            }, { once: true });
+            // ▲▲▲ ここまで ▲▲▲
         }
 
         savePinnedMessages();
@@ -222,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 particleConfig = { type: 'div', className: 'bubble', animation: 'rise' };
                 break;
             case 'autumn':
-                particleConfig = { type: 'span', className: 'leaf', content: '�', animation: 'fall' };
+                particleConfig = { type: 'span', className: 'leaf', content: '🍁', animation: 'fall' };
                 break;
             case 'winter':
                 particleConfig = { type: 'span', className: 'snow', content: '❄️', animation: 'fall' };
@@ -1006,7 +1013,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }, 0);
 
-                // ▼▼▼【修正点】コピーとダウンロード時のイベント伝播を停止 ▼▼▼
                 copyBtn.addEventListener('click', (event) => {
                     event.stopPropagation();
                     const textToCopy = bubble.querySelector('p').innerText;
@@ -1039,7 +1045,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     URL.revokeObjectURL(url);
                     menu.remove();
                 });
-                // ▲▲▲ ここまで ▲▲▲
 
                 return;
             }
