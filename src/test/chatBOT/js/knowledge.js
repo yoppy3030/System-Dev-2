@@ -5,8 +5,8 @@ const uiStrings = {
         langStatus: '言語: 日本語',
         inputPlaceholder: '日本のマナーについて質問してください',
         welcome: {
-            message: 'こんにちは！私は日本のマナーについてお答えするAIです。どんなことでもお気軽にご質問ください。\n\n「クイズ」や「お問い合わせ」もできます。',
-            replies: ['クイズ', 'お問い合わせ']
+            message: 'こんにちは！私は日本のマナーについてお答えするAIです。どんなことでもお気軽にご質問ください。\n\n「よくある質問」「クイズ」「お問い合わせ」もできます。',
+            replies: ['よくある質問', 'クイズ', 'お問い合わせ']
         },
         quiz_prompt: 'クイズの難易度を選択してください。',
         quiz_difficulty: ['簡単', '普通', '難しい'],
@@ -73,12 +73,26 @@ const uiStrings = {
         mic_tooltip: 'マイクを使用',
         mic_tooltip_recording: '録音を停止',
         send_tooltip: '送信',
-        // ▼▼▼【新機能】要約機能のテキストを追加 ▼▼▼
         summarize_conversation: '会話を要約',
         summary_title: '会話の要約',
         summarizing: '会話を要約しています...',
         summarize_error: '要約中にエラーが発生しました。もう一度お試しください。',
-        summarize_no_history: '要約するには、もう少し会話が必要です。'
+        summarize_no_history: '要約するには、もう少し会話が必要です。',
+        faq_title: 'よくある質問',
+        faq_prompt: '知りたい質問をタップしてください。',
+        faq: {
+            questions: [
+                { q: '初対面の挨拶', a: '日本では、初対面の人にはお辞儀をするのが一般的です。丁寧な挨拶は「はじめまして。〇〇です。どうぞよろしくお願いいたします。」です。相手の目を見て、にこやかに挨拶しましょう。' },
+                { q: '食事のマナー', a: '食事の前には「いただきます」、後には「ごちそうさまでした」と感謝を伝えます。お箸を正しく持ち、食べ物を刺したり、お皿の上で迷ったりしないようにしましょう（「迷い箸」）。' },
+                { q: '訪問時のマナー', a: '人の家を訪問する際は、約束の時間通りに行くことが大切です。玄関でコートを脱ぎ、靴を揃えて上がります。手土産を渡す場合は、部屋に通されて挨拶が終わった後が適切です。' },
+                { q: '電車でのマナー', a: '電車内では大声での会話や電話は控え、静かに過ごします。優先席は必要としている方に譲りましょう。リュックサックは前に抱えるか、網棚に置くと周りの人の邪魔になりません。' }
+            ]
+        },
+        // ▼▼▼【新機能】共有機能のテキストを追加 ▼▼▼
+        share_answer: '回答を共有',
+        copy_to_clipboard: 'コピー',
+        download_as_text: '保存',
+        copied_to_clipboard: 'コピーしました！'
         // ▲▲▲ ここまで ▲▲▲
     },
     en: {
@@ -86,8 +100,8 @@ const uiStrings = {
         langStatus: 'Language: English',
         inputPlaceholder: 'Ask about Japanese manners',
         welcome: {
-            message: 'Hello! I am an AI that can answer your questions about Japanese manners. Feel free to ask me anything.\n\nYou can also try "Quiz" or "Contact".',
-            replies: ['Quiz', 'Contact']
+            message: 'Hello! I am an AI that can answer your questions about Japanese manners. Feel free to ask me anything.\n\nYou can also try "FAQ", "Quiz", or "Contact".',
+            replies: ['FAQ', 'Quiz', 'Contact']
         },
         quiz_prompt: 'Please select a quiz difficulty.',
         quiz_difficulty: ['Easy', 'Normal', 'Hard'],
@@ -154,12 +168,26 @@ const uiStrings = {
         mic_tooltip: 'Use microphone',
         mic_tooltip_recording: 'Stop recording',
         send_tooltip: 'Send',
-        // ▼▼▼【新機能】要約機能のテキストを追加 ▼▼▼
         summarize_conversation: 'Summarize Conversation',
         summary_title: 'Conversation Summary',
         summarizing: 'Summarizing the conversation...',
         summarize_error: 'An error occurred while summarizing. Please try again.',
-        summarize_no_history: 'More conversation is needed to create a summary.'
+        summarize_no_history: 'More conversation is needed to create a summary.',
+        faq_title: 'FAQ',
+        faq_prompt: 'Tap a question to see the answer.',
+        faq: {
+            questions: [
+                { q: 'First-time Greetings', a: 'In Japan, it is common to bow when meeting someone for the first time. A polite greeting is "Hajimemashite. [Your Name] desu. Douzo yoroshiku onegaishimasu." Make eye contact and smile.' },
+                { q: 'Dining Etiquette', a: 'Before eating, say "Itadakimasu," and after, say "Gochisousama deshita" to show gratitude. Hold your chopsticks correctly and avoid stabbing food or hovering them over dishes ("mayoi-bashi").' },
+                { q: 'Visiting Someone\'s Home', a: 'It is important to be on time for your appointment. Take off your coat at the entrance and arrange your shoes neatly. If you bring a gift, it\'s best to present it after being shown into the room and finishing greetings.' },
+                { q: 'Train Etiquette', a: 'On the train, refrain from loud conversations or phone calls. Offer priority seats to those who need them. Hold your backpack in front of you or place it on the overhead rack to avoid bothering others.' }
+            ]
+        },
+        // ▼▼▼【新機能】共有機能のテキストを追加 ▼▼▼
+        share_answer: 'Share Answer',
+        copy_to_clipboard: 'Copy',
+        download_as_text: 'Save',
+        copied_to_clipboard: 'Copied!'
         // ▲▲▲ ここまで ▲▲▲
     },
     zh: {
@@ -167,8 +195,8 @@ const uiStrings = {
         langStatus: '语言: 中文',
         inputPlaceholder: '询问有关日本礼仪的问题',
         welcome: {
-            message: '您好！我是可以回答您关于日本礼仪问题的AI。请随时向我提问。\n\n您也可以尝试“测验”或“联系我们”。',
-            replies: ['测验', '联系我们']
+            message: '您好！我是可以回答您关于日本礼仪问题的AI。请随时向我提问。\n\n您也可以尝试“常见问题”、“测验”或“联系我们”。',
+            replies: ['常见问题', '测验', '联系我们']
         },
         quiz_prompt: '请选择测验的难度。',
         quiz_difficulty: ['简单', '普通', '困难'],
@@ -235,21 +263,35 @@ const uiStrings = {
         mic_tooltip: '使用麦克风',
         mic_tooltip_recording: '停止录音',
         send_tooltip: '发送',
-        // ▼▼▼【新機能】要約機能のテキストを追加 ▼▼▼
         summarize_conversation: '总结对话',
         summary_title: '对话总结',
         summarizing: '正在总结对话...',
         summarize_error: '总结时发生错误，请重试。',
-        summarize_no_history: '需要更多对话才能进行总结。'
+        summarize_no_history: '需要更多对话才能进行总结。',
+        faq_title: '常见问题',
+        faq_prompt: '点击问题查看答案。',
+        faq: {
+            questions: [
+                { q: '初次见面问候', a: '在日本，初次见面时通常会鞠躬。礼貌的问候语是“初次见面，我叫[您的名字]，请多关照。”（Hajimemashite. [Your Name] desu. Douzo yoroshiku onegaishimasu.）' },
+                { q: '用餐礼仪', a: '饭前说“我开动了”（Itadakimasu），饭后说“我吃好了”（Gochisousama deshita）以示感谢。正确使用筷子，不要用筷子插食物或在盘子上方犹豫（“迷い箸”）。' },
+                { q: '拜访礼仪', a: '拜访他人家时，准时到达很重要。在玄关脱下外套，并将鞋子摆放整齐。如果带了礼物，最好在进入房间并打完招呼后赠送。' },
+                { q: '电车礼仪', a: '在电车内请保持安静，不要大声交谈或打电话。请将优先座位让给有需要的人。最好将背包抱在胸前或放在行李架上，以免妨碍他人。' }
+            ]
+        },
+        // ▼▼▼【新機能】共有機能のテキストを追加 ▼▼▼
+        share_answer: '分享回答',
+        copy_to_clipboard: '复制',
+        download_as_text: '保存',
+        copied_to_clipboard: '已复制！'
         // ▲▲▲ ここまで ▲▲▲
     }
 };
 
 // --- ナレッジベース (特殊機能とクイズデータ) ---
 const specialFeatures = {
-    ja: { 'クイズ': { isQuiz: true }, 'お問い合わせ': { isInquiry: true } },
-    en: { 'quiz': { isQuiz: true }, 'contact': { isInquiry: true } },
-    zh: { '测验': { isQuiz: true }, '联系我们': { isInquiry: true } }
+    ja: { 'よくある質問': { isFaq: true }, 'クイズ': { isQuiz: true }, 'お問い合わせ': { isInquiry: true } },
+    en: { 'faq': { isFaq: true }, 'quiz': { isQuiz: true }, 'contact': { isInquiry: true } },
+    zh: { '常见问题': { isFaq: true }, '测验': { isQuiz: true }, '联系我们': { isInquiry: true } }
 };
 
 // ★★★ クイズデータを各難易度30問、合計90問に増量 ★★★

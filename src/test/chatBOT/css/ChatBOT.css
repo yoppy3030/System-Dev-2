@@ -4,20 +4,24 @@ body {
 }
 
 #chat-window::-webkit-scrollbar,
-#pinned-window::-webkit-scrollbar { 
+#pinned-window::-webkit-scrollbar,
+#faq-list::-webkit-scrollbar { 
     width: 8px; 
 }
 #chat-window::-webkit-scrollbar-track,
-#pinned-window::-webkit-scrollbar-track { 
+#pinned-window::-webkit-scrollbar-track,
+#faq-list::-webkit-scrollbar-track { 
     background: #f1f5f9; 
 }
 #chat-window::-webkit-scrollbar-thumb,
-#pinned-window::-webkit-scrollbar-thumb { 
+#pinned-window::-webkit-scrollbar-thumb,
+#faq-list::-webkit-scrollbar-thumb { 
     background: #94a3b8; 
     border-radius: 4px; 
 }
 #chat-window::-webkit-scrollbar-thumb:hover,
-#pinned-window::-webkit-scrollbar-thumb:hover { 
+#pinned-window::-webkit-scrollbar-thumb:hover,
+#faq-list::-webkit-scrollbar-thumb:hover { 
     background: #64748b; 
 }
 
@@ -36,15 +40,26 @@ body {
     background-color: #f9fafb; /* bg-gray-50 */
 }
 
-/* === お気に入り機能のスタイル === */
+/* === アクションボタンの共通スタイル === */
 .bot-message-container {
     position: relative;
 }
 
-.pin-btn {
+.action-btn-group {
     position: absolute;
     top: 8px;
     right: 8px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.bot-message-container:hover .action-btn-group {
+    opacity: 1;
+}
+
+.action-btn {
     background: rgba(255, 255, 255, 0.6);
     border: 1px solid #e5e7eb;
     border-radius: 50%;
@@ -55,23 +70,74 @@ body {
     justify-content: center;
     cursor: pointer;
     color: #6b7280;
-    opacity: 0;
-    transition: opacity 0.2s, color 0.2s, background-color 0.2s;
+    transition: color 0.2s, background-color 0.2s;
 }
 
-.bot-message-container:hover .pin-btn {
-    opacity: 1;
-}
-
-.pin-btn:hover {
+.action-btn:hover {
     background-color: #f3f4f6;
 }
 
-.pin-btn.pinned {
+.action-btn.pinned {
     color: #f59e0b; /* Amber 500 */
-    opacity: 1;
 }
 
+
+/* === 共有メニューのスタイル === */
+.share-menu {
+    position: absolute;
+    top: 36px; /* ボタンの下に表示 */
+    right: 0;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 20;
+    overflow: hidden;
+    width: 150px;
+}
+
+.share-menu-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+}
+.share-menu-btn:hover {
+    background-color: #f3f4f6;
+}
+.share-menu-btn i {
+    color: #6b7280;
+}
+
+.copy-feedback {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0,0,0,0.7);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    z-index: 30;
+    animation: fadeOut 2s forwards;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+
+/* === お気に入り機能のスタイル === */
 #pinned-window .pinned-message-card {
     background-color: #ffffff;
     border-radius: 12px;

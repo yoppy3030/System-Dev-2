@@ -165,7 +165,6 @@
             <p id="header-lang-status" class="text-sm opacity-90">言語: 日本語</p>
         </div>
 
-        <!-- ▼▼▼【変更点】要約ボタンを追加し、flexコンテナで囲む ▼▼▼ -->
         <div class="flex items-center gap-2">
             <button id="summarize-btn" class="text-white focus:outline-none p-2" title="会話を要約">
                 <i class="fas fa-file-alt text-xl"></i>
@@ -174,13 +173,15 @@
                 <button id="settings-btn" class="text-white focus:outline-none p-2" title="メニューを開く">
                     <i class="fas fa-bars text-2xl"></i>
                 </button>
+                <!-- ▼▼▼【変更点】メニュー項目の順番を整理 ▼▼▼ -->
                 <div id="settings-content" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-xl z-20">
+                    
+                    <a id="faq-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-question-circle fa-fw"></i> <span data-translate="faq_title">よくある質問</span></a>
                     <a id="pinned-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-thumbtack fa-fw"></i> <span data-translate="view_pinned">お気に入り</span></a>
-                    <div class="border-t border-gray-200 my-1"></div>
-                    <!-- ▼▼▼【新機能】要約ボタンのメニュー項目を追加 ▼▼▼ -->
                     <a id="summarize-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-file-alt fa-fw"></i> <span data-translate="summarize_conversation">会話を要約</span></a>
+                    
                     <div class="border-t border-gray-200 my-1"></div>
-                    <!-- ▲▲▲ ここまで ▲▲▲ -->
+
                     <div class="py-2 px-4">
                         <p class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
                     </div>
@@ -205,9 +206,9 @@
 
                     <a id="clear-history-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-trash-alt fa-fw"></i> <span data-translate="clear_history">履歴をクリア</span></a>
                 </div>
+                <!-- ▲▲▲ ここまで ▲▲▲ -->
             </div>
         </div>
-        <!-- ▲▲▲ ここまで ▲▲▲ -->
 
     </header>
     
@@ -229,7 +230,7 @@
     </footer>
 </div>
 
-<!-- 【新機能】お気に入り表示用のモーダル -->
+<!-- お気に入り表示用のモーダル -->
 <div id="pinned-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[1050] flex justify-center items-center">
     <div id="pinned-modal-content" class="bg-gray-100 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
         <header class="p-4 border-b flex justify-between items-center bg-white rounded-t-lg">
@@ -241,6 +242,20 @@
         </div>
     </div>
 </div>
+
+<!-- FAQモーダル -->
+<div id="faq-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[1050] flex justify-center items-center">
+    <div id="faq-modal-content" class="bg-gray-100 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+        <header class="p-4 border-b flex justify-between items-center bg-white rounded-t-lg">
+            <h2 id="faq-modal-title" class="text-lg font-bold text-gray-800" data-translate="faq_title">よくある質問</h2>
+            <button id="faq-modal-close-btn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+        </header>
+        <div id="faq-list" class="p-6 space-y-3 overflow-y-auto">
+            <!-- FAQ items will be rendered here by JS -->
+        </div>
+    </div>
+</div>
+
 
 <div id="chat-open-button">
     <i class="far fa-comments"></i>

@@ -32,6 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const pinnedWindow = document.getElementById('pinned-window');
     const summarizeBtn = document.getElementById('summarize-btn');
     const summarizeMenuBtn = document.getElementById('summarize-menu-btn');
+    const faqMenuBtn = document.getElementById('faq-menu-btn');
+    const faqModal = document.getElementById('faq-modal');
+    const faqModalCloseBtn = document.getElementById('faq-modal-close-btn');
+    const faqList = document.getElementById('faq-list');
 
     // --- 関数定義 ---
 
@@ -39,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * 設定メニュー内のテキストを現在の言語に翻訳する
      */
     function translateSettingsMenu() {
-        const elementsToTranslate = document.querySelectorAll('#settings-content [data-translate], #chatbot-modal [data-translate], #pinned-modal [data-translate]');
+        const elementsToTranslate = document.querySelectorAll('#settings-content [data-translate], #chatbot-modal [data-translate], #pinned-modal [data-translate], #faq-modal [data-translate]');
         elementsToTranslate.forEach(element => {
             const key = element.dataset.translate;
             if (uiStrings[currentLanguage][key]) {
@@ -343,13 +347,25 @@ document.addEventListener('DOMContentLoaded', () => {
         mainText.innerHTML = markdownToHtml(text);
         bubble.appendChild(mainText);
         
+        const actionBtnGroup = document.createElement('div');
+        actionBtnGroup.className = 'action-btn-group';
+        
+        const shareBtn = document.createElement('button');
+        shareBtn.className = 'action-btn share-btn';
+        shareBtn.title = uiStrings[currentLanguage].share_answer;
+        shareBtn.innerHTML = '<i class="fas fa-share-alt fa-xs"></i>';
+
         const pinBtn = document.createElement('button');
-        pinBtn.className = 'pin-btn';
+        pinBtn.className = 'action-btn pin-btn';
+        pinBtn.title = uiStrings[currentLanguage].view_pinned;
         pinBtn.innerHTML = '<i class="fas fa-thumbtack fa-xs"></i>';
         if (pinnedMessages.some(p => p.id === messageId)) {
             pinBtn.classList.add('pinned');
         }
-        bubble.appendChild(pinBtn);
+        
+        actionBtnGroup.appendChild(shareBtn);
+        actionBtnGroup.appendChild(pinBtn);
+        bubble.appendChild(actionBtnGroup);
 
         messageWrapper.appendChild(bubble);
         
@@ -605,6 +621,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ▼▼▼【修正点】FAQモーダルを開く関数に統一 ▼▼▼
+    function openFaqModal() {
+        faqList.innerHTML = '';
+        const faqStrings = uiStrings[currentLanguage].faq;
+        faqStrings.questions.forEach(item => {
+            const button = document.createElement('button');
+            button.className = 'faq-question-btn w-full text-left p-3 bg-white rounded-lg shadow hover:bg-gray-50 transition';
+            button.textContent = item.q;
+            faqList.appendChild(button);
+        });
+        faqModal.classList.remove('hidden');
+    }
+    // ▲▲▲ ここまで ▲▲▲
+
     function getBotResponse(text) {
         const lowerCaseText = text.toLowerCase();
         const features = specialFeatures[currentLanguage];
@@ -616,7 +646,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         if (foundFeature) {
-            if (foundFeature.isInquiry) {
+            if (foundFeature.isFaq) {
+                // ▼▼▼【修正点】モーダルを開く関数を呼び出すように変更 ▼▼▼
+                openFaqModal();
+                // ▲▲▲ ここまで ▲▲▲
+            } else if (foundFeature.isInquiry) {
                 inquiryState.status = 'awaiting_name';
                 displayBotMessage(uiStrings[currentLanguage].inquiry.start);
             } else if (foundFeature.isQuiz) {
@@ -632,15 +666,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const messages = Array.from(chatWindow.children);
         let conversationHistory = [];
 
-        // ▼▼▼【修正点】エラーの可能性があった箇所を修正 ▼▼▼
         const systemMessagesToExclude = Object.values(uiStrings).flatMap(lang => [
             lang.lang_switched,
             lang.history_cleared,
             lang.summarizing,
             lang.summary_title,
             lang.welcome.message
-        ]).filter(Boolean); // nullやundefinedの値を配列から除外
-        // ▲▲▲ ここまで ▲▲▲
+        ]).filter(Boolean);
 
         messages.forEach(msgDiv => {
             const userBubble = msgDiv.querySelector('.user-message-bubble');
@@ -797,6 +829,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         preventParentScroll(chatWindow);
         preventParentScroll(pinnedWindow);
+        preventParentScroll(faqList);
 
         if (settingsBtn) {
             settingsBtn.title = uiStrings[currentLanguage].open_menu;
@@ -827,6 +860,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 settingsContent.classList.add('hidden');
                 settingsBtn.title = uiStrings[currentLanguage].open_menu;
                 summarizeConversation();
+            });
+        }
+        if (faqMenuBtn) {
+            faqMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                settingsContent.classList.add('hidden');
+                settingsBtn.title = uiStrings[currentLanguage].open_menu;
+                openFaqModal();
+            });
+        }
+        
+        if (faqModal) {
+            faqModalCloseBtn.addEventListener('click', () => {
+                faqModal.classList.add('hidden');
+            });
+
+            faqModal.addEventListener('click', (e) => {
+                if (e.target === faqModal) {
+                    faqModal.classList.add('hidden');
+                }
+            });
+
+            faqList.addEventListener('click', (e) => {
+                const faqButton = e.target.closest('.faq-question-btn');
+                if (faqButton) {
+                    faqModal.classList.add('hidden');
+                    const questionText = faqButton.textContent;
+                    const faqData = uiStrings[currentLanguage].faq.questions.find(q => q.q === questionText);
+                    if (faqData) {
+                        displayUserMessage(faqData.q);
+                        setTimeout(() => {
+                           displayBotMessage(faqData.a, { showBackToMenu: true });
+                        }, 500);
+                    }
+                }
             });
         }
 
@@ -909,6 +977,70 @@ document.addEventListener('DOMContentLoaded', () => {
             const pinBtn = e.target.closest('.pin-btn');
             if (pinBtn) {
                 togglePinMessage(pinBtn);
+                return;
+            }
+            
+            const shareBtn = e.target.closest('.share-btn');
+            if (shareBtn) {
+                e.stopPropagation();
+                document.querySelectorAll('.share-menu').forEach(menu => menu.remove());
+
+                const bubble = shareBtn.closest('.bg-white');
+                const menu = document.createElement('div');
+                menu.className = 'share-menu';
+
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'share-menu-btn';
+                copyBtn.innerHTML = `<i class="fas fa-copy fa-fw"></i> ${uiStrings[currentLanguage].copy_to_clipboard}`;
+                
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'share-menu-btn';
+                downloadBtn.innerHTML = `<i class="fas fa-download fa-fw"></i> ${uiStrings[currentLanguage].download_as_text}`;
+
+                menu.appendChild(copyBtn);
+                menu.appendChild(downloadBtn);
+                bubble.appendChild(menu);
+
+                setTimeout(() => {
+                    document.addEventListener('click', function closeMenu(event) {
+                        if (!menu.contains(event.target)) {
+                            menu.remove();
+                            document.removeEventListener('click', closeMenu);
+                        }
+                    });
+                }, 0);
+
+                copyBtn.addEventListener('click', () => {
+                    const textToCopy = bubble.querySelector('p').innerText;
+                    const tempTextarea = document.createElement('textarea');
+                    tempTextarea.value = textToCopy;
+                    document.body.appendChild(tempTextarea);
+                    tempTextarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempTextarea);
+
+                    const feedback = document.createElement('div');
+                    feedback.className = 'copy-feedback';
+                    feedback.textContent = uiStrings[currentLanguage].copied_to_clipboard;
+                    bubble.appendChild(feedback);
+                    setTimeout(() => feedback.remove(), 2000);
+                    menu.remove();
+                });
+
+                downloadBtn.addEventListener('click', () => {
+                    const textToSave = bubble.querySelector('p').innerText;
+                    const blob = new Blob([textToSave], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'chatbot-answer.txt';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    menu.remove();
+                });
+
                 return;
             }
 
@@ -1048,7 +1180,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 !chatModal.contains(e.target) && 
                 !openButton.contains(e.target) &&
                 !pinnedModal.contains(e.target) &&
-                pinnedModal.classList.contains('hidden')) { 
+                !faqModal.contains(e.target) &&
+                pinnedModal.classList.contains('hidden') &&
+                faqModal.classList.contains('hidden')) { 
                 toggleChat(false);
             }
         });
