@@ -70,10 +70,15 @@ const uiStrings = {
         voice_no_speech: '音声が検出されませんでした。もう一度お試しください。',
         voice_permission_denied: 'マイクへのアクセスが拒否されました。ブラウザの設定で許可してください。',
         voice_error: '音声入力でエラーが発生しました',
-        // ▼▼▼【新機能】ボタンのツールチップテキストを追加 ▼▼▼
         mic_tooltip: 'マイクを使用',
         mic_tooltip_recording: '録音を停止',
-        send_tooltip: '送信'
+        send_tooltip: '送信',
+        // ▼▼▼【新機能】要約機能のテキストを追加 ▼▼▼
+        summarize_conversation: '会話を要約',
+        summary_title: '会話の要約',
+        summarizing: '会話を要約しています...',
+        summarize_error: '要約中にエラーが発生しました。もう一度お試しください。',
+        summarize_no_history: '要約するには、もう少し会話が必要です。'
         // ▲▲▲ ここまで ▲▲▲
     },
     en: {
@@ -146,10 +151,15 @@ const uiStrings = {
         voice_no_speech: 'No speech was detected. Please try again.',
         voice_permission_denied: 'Microphone access denied. Please allow access in your browser settings.',
         voice_error: 'Voice input error',
-        // ▼▼▼【新機能】ボタンのツールチップテキストを追加 ▼▼▼
         mic_tooltip: 'Use microphone',
         mic_tooltip_recording: 'Stop recording',
-        send_tooltip: 'Send'
+        send_tooltip: 'Send',
+        // ▼▼▼【新機能】要約機能のテキストを追加 ▼▼▼
+        summarize_conversation: 'Summarize Conversation',
+        summary_title: 'Conversation Summary',
+        summarizing: 'Summarizing the conversation...',
+        summarize_error: 'An error occurred while summarizing. Please try again.',
+        summarize_no_history: 'More conversation is needed to create a summary.'
         // ▲▲▲ ここまで ▲▲▲
     },
     zh: {
@@ -222,10 +232,15 @@ const uiStrings = {
         voice_no_speech: '未检测到语音。请再试一次。',
         voice_permission_denied: '麦克风访问被拒绝。请在浏览器设置中允许访问。',
         voice_error: '语音输入错误',
-        // ▼▼▼【新機能】ボタンのツールチップテキストを追加 ▼▼▼
         mic_tooltip: '使用麦克风',
         mic_tooltip_recording: '停止录音',
-        send_tooltip: '发送'
+        send_tooltip: '发送',
+        // ▼▼▼【新機能】要約機能のテキストを追加 ▼▼▼
+        summarize_conversation: '总结对话',
+        summary_title: '对话总结',
+        summarizing: '正在总结对话...',
+        summarize_error: '总结时发生错误，请重试。',
+        summarize_no_history: '需要更多对话才能进行总结。'
         // ▲▲▲ ここまで ▲▲▲
     }
 };

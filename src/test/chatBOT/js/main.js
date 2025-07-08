@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatWindow = document.getElementById('chat-window');
     const userInput = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
-    const micBtn = document.getElementById('mic-btn'); // マイクボタンの追加
+    const micBtn = document.getElementById('mic-btn');
     const chatModal = document.getElementById('chatbot-modal');
     const openButton = document.getElementById('chat-open-button');
     const settingsBtn = document.getElementById('settings-btn');
@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const pinnedModal = document.getElementById('pinned-modal');
     const pinnedModalCloseBtn = document.getElementById('pinned-modal-close-btn');
     const pinnedWindow = document.getElementById('pinned-window');
+    const summarizeBtn = document.getElementById('summarize-btn');
+    const summarizeMenuBtn = document.getElementById('summarize-menu-btn');
 
     // --- 関数定義 ---
 
@@ -52,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {string} HTML文字列
      */
     function markdownToHtml(text) {
-        let html = text;
+        let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         const markdownImageRegex = /!\[(.*?)\]\((.*?)\)/g;
         html = html.replace(markdownImageRegex, (match, alt, src) => {
             return `<img src="${src}" alt="${alt || '関連画像'}" class="bot-response-image">`;
@@ -276,14 +278,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('header-lang-status').textContent = strings.langStatus;
         userInput.placeholder = strings.inputPlaceholder;
         
-        // ▼▼▼【追加】マイクと送信ボタンのタイトルも更新 ▼▼▼
         if (micBtn) {
             micBtn.title = isRecording ? strings.mic_tooltip_recording : strings.mic_tooltip;
         }
         if (sendBtn) {
             sendBtn.title = strings.send_tooltip;
         }
-        // ▲▲▲ ここまで ▲▲▲
+        if (summarizeBtn) {
+            summarizeBtn.title = strings.summarize_conversation;
+        }
         
         if (langSwitcher) {
             const buttons = langSwitcher.querySelectorAll('button.lang-switch-btn');
@@ -390,36 +393,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 repliesContainer.appendChild(replyBtn);
             });
         }
-        if (options.isAiResponse) {
-            const backBtn = document.createElement('button');
-            backBtn.textContent = uiStrings[currentLanguage].back_to_menu;
-            backBtn.className = 'quick-reply-btn bg-gray-200 border border-gray-400 text-gray-700 text-sm font-semibold py-1 px-4 rounded-full hover:bg-gray-300 transition';
-            backBtn.dataset.action = 'back_to_menu';
-            repliesContainer.appendChild(backBtn);
-        }
+        
+        const shouldAddBackButton = options.isAiResponse || options.showBackToMenu || options.quizFlow === 'continue' || options.quizFlow === 'end';
+
         if (options.quizFlow === 'continue') {
             const continueBtn = document.createElement('button');
             continueBtn.textContent = uiStrings[currentLanguage].continue_quiz;
             continueBtn.className = 'quick-reply-btn bg-sky-500 border border-sky-500 text-white text-sm font-semibold py-1 px-4 rounded-full hover:bg-sky-600 transition';
             continueBtn.dataset.action = 'next_quiz';
             repliesContainer.appendChild(continueBtn);
-            const backBtn = document.createElement('button');
-            backBtn.textContent = uiStrings[currentLanguage].back_to_menu;
-            backBtn.className = 'quick-reply-btn bg-gray-200 border border-gray-400 text-gray-700 text-sm font-semibold py-1 px-4 rounded-full hover:bg-gray-300 transition';
-            backBtn.dataset.action = 'back_to_menu';
-            repliesContainer.appendChild(backBtn);
         } else if (options.quizFlow === 'end') {
             const startOverBtn = document.createElement('button');
             startOverBtn.textContent = uiStrings[currentLanguage].start_over_quiz;
             startOverBtn.className = 'quick-reply-btn bg-sky-500 border border-sky-500 text-white text-sm font-semibold py-1 px-4 rounded-full hover:bg-sky-600 transition';
             startOverBtn.dataset.action = 'start_over_quiz';
             repliesContainer.appendChild(startOverBtn);
+        }
+
+        if (shouldAddBackButton) {
             const backBtn = document.createElement('button');
             backBtn.textContent = uiStrings[currentLanguage].back_to_menu;
             backBtn.className = 'quick-reply-btn bg-gray-200 border border-gray-400 text-gray-700 text-sm font-semibold py-1 px-4 rounded-full hover:bg-gray-300 transition';
             backBtn.dataset.action = 'back_to_menu';
             repliesContainer.appendChild(backBtn);
         }
+
         if (repliesContainer.hasChildNodes()) {
             messageWrapper.appendChild(repliesContainer);
         }
@@ -630,6 +628,88 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    async function summarizeConversation() {
+        const messages = Array.from(chatWindow.children);
+        let conversationHistory = [];
+
+        // ▼▼▼【修正点】エラーの可能性があった箇所を修正 ▼▼▼
+        const systemMessagesToExclude = Object.values(uiStrings).flatMap(lang => [
+            lang.lang_switched,
+            lang.history_cleared,
+            lang.summarizing,
+            lang.summary_title,
+            lang.welcome.message
+        ]).filter(Boolean); // nullやundefinedの値を配列から除外
+        // ▲▲▲ ここまで ▲▲▲
+
+        messages.forEach(msgDiv => {
+            const userBubble = msgDiv.querySelector('.user-message-bubble');
+            const botBubble = msgDiv.querySelector('.bot-message-container .bg-white p');
+
+            if (userBubble) {
+                conversationHistory.push({ role: 'user', parts: [{ text: userBubble.textContent.trim() }] });
+            } else if (botBubble) {
+                const botText = botBubble.innerText.trim();
+                if (botText && !systemMessagesToExclude.some(sysMsg => botText.includes(sysMsg))) {
+                    conversationHistory.push({ role: 'model', parts: [{ text: botText }] });
+                }
+            }
+        });
+
+        if (conversationHistory.length < 4) {
+            displayBotMessage(uiStrings[currentLanguage].summarize_no_history, { showBackToMenu: true });
+            return;
+        }
+
+        displayBotMessage(uiStrings[currentLanguage].summarizing);
+
+        const langMap = { ja: '日本語', en: 'English', zh: '中文' };
+        const summaryPrompt = `以下のチャットボットとユーザーの会話履歴を、重要なポイントを箇条書きで簡潔に要約してください。要約の言語は${langMap[currentLanguage]}でお願いします。\n\n---\n会話履歴:\n${conversationHistory.map(m => `${m.role === 'user' ? 'ユーザー' : 'ボット'}: ${m.parts[0].text}`).join('\n')}\n---`;
+
+        const payload = {
+            contents: [{ "role": "user", "parts": [{ "text": summaryPrompt }] }]
+        };
+
+        const apiUrl = 'chatBOT/gemini_proxy.php';
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const loadingMessage = Array.from(chatWindow.querySelectorAll('.bot-message-container')).find(el => el.textContent.includes(uiStrings[currentLanguage].summarizing));
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Summarize API Error:', response.status, errorData);
+                throw new Error(`API request failed`);
+            }
+
+            const result = await response.json();
+
+            if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0].text) {
+                const summaryText = result.candidates[0].content.parts[0].text;
+                const summaryTitle = uiStrings[currentLanguage].summary_title;
+                displayBotMessage(`**${summaryTitle}**\n\n${summaryText}`, { showBackToMenu: true });
+            } else {
+                console.error("Invalid summary response structure:", result);
+                displayBotMessage(uiStrings[currentLanguage].summarize_error, { showBackToMenu: true });
+            }
+        } catch (error) {
+            console.error('Summarization fetch error:', error);
+            const loadingMessage = Array.from(chatWindow.querySelectorAll('.bot-message-container')).find(el => el.textContent.includes(uiStrings[currentLanguage].summarizing));
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
+            displayBotMessage(uiStrings[currentLanguage].summarize_error, { showBackToMenu: true });
+        }
+    }
+
     /**
      * 音声認識を開始する関数
      */
@@ -640,17 +720,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         recognition = new webkitSpeechRecognition();
-        recognition.continuous = false; // 連続認識をオフ
-        recognition.interimResults = true; // 途中結果を返す
-        recognition.lang = currentLanguage === 'ja' ? 'ja-JP' : (currentLanguage === 'zh' ? 'zh-CN' : 'en-US'); // 言語設定
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = currentLanguage === 'ja' ? 'ja-JP' : (currentLanguage === 'zh' ? 'zh-CN' : 'en-US');
 
         recognition.onstart = () => {
             isRecording = true;
             micBtn.classList.add('recording');
-            micBtn.innerHTML = '<i class="fas fa-microphone-alt-slash"></i>'; // 録音中のアイコン
+            micBtn.innerHTML = '<i class="fas fa-microphone-alt-slash"></i>';
             micBtn.title = uiStrings[currentLanguage].mic_tooltip_recording;
             userInput.placeholder = uiStrings[currentLanguage].voice_listening;
-            userInput.value = ''; // 入力フィールドをクリア
+            userInput.value = '';
             console.log("音声認識を開始しました...");
         };
 
@@ -665,7 +745,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     interimTranscript += transcript;
                 }
             }
-            userInput.value = finalTranscript || interimTranscript; // 最終結果があればそれを使用、なければ途中結果
+            userInput.value = finalTranscript || interimTranscript;
         };
 
         recognition.onerror = (event) => {
@@ -677,17 +757,16 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 displayBotMessage(`${uiStrings[currentLanguage].voice_error}: ${event.error}`);
             }
-            stopSpeechRecognition(); // エラー時は停止
+            stopSpeechRecognition();
         };
 
         recognition.onend = () => {
             isRecording = false;
             micBtn.classList.remove('recording');
-            micBtn.innerHTML = '<i class="fas fa-microphone"></i>'; // 通常アイコンに戻す
+            micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
             micBtn.title = uiStrings[currentLanguage].mic_tooltip;
             userInput.placeholder = uiStrings[currentLanguage].inputPlaceholder;
             console.log("音声認識が終了しました。");
-            // 最終的な認識結果があれば、それを送信
             if (userInput.value.trim() !== '') {
                 handleUserInput();
             }
@@ -729,14 +808,27 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-        // ▼▼▼【追加】マイクと送信ボタンの初期タイトルを設定 ▼▼▼
         if (micBtn) {
             micBtn.title = uiStrings[currentLanguage].mic_tooltip;
         }
         if (sendBtn) {
             sendBtn.title = uiStrings[currentLanguage].send_tooltip;
         }
-        // ▲▲▲ ここまで ▲▲▲
+        if (summarizeBtn) {
+            summarizeBtn.title = uiStrings[currentLanguage].summarize_conversation;
+            summarizeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                summarizeConversation();
+            });
+        }
+        if (summarizeMenuBtn) {
+             summarizeMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                settingsContent.classList.add('hidden');
+                settingsBtn.title = uiStrings[currentLanguage].open_menu;
+                summarizeConversation();
+            });
+        }
 
         const allThemes = ['theme-simple', 'theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter'];
         const applyTheme = (themeName) => {

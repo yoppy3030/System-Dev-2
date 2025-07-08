@@ -165,53 +165,59 @@
             <p id="header-lang-status" class="text-sm opacity-90">言語: 日本語</p>
         </div>
 
-        <div id="settings-dropdown" class="relative">
-            <button id="settings-btn" class="text-white focus:outline-none p-2" title="メニューを開く">
-                <i class="fas fa-bars text-2xl"></i>
+        <!-- ▼▼▼【変更点】要約ボタンを追加し、flexコンテナで囲む ▼▼▼ -->
+        <div class="flex items-center gap-2">
+            <button id="summarize-btn" class="text-white focus:outline-none p-2" title="会話を要約">
+                <i class="fas fa-file-alt text-xl"></i>
             </button>
-            <div id="settings-content" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-xl z-20">
-                <!-- ▼▼▼【変更点】お気に入り機能へのリンクを追加 ▼▼▼ -->
-                <a id="pinned-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-thumbtack fa-fw"></i> <span data-translate="view_pinned">お気に入り</span></a>
-                <div class="border-t border-gray-200 my-1"></div>
-                <!-- ▲▲▲ ここまで ▲▲▲ -->
-                <div class="py-2 px-4">
-                    <p class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
-                </div>
-                <a class="cb-theme-option" data-theme="simple"><i class="fas fa-square fa-fw"></i> <span data-translate="theme_simple">シンプル</span></a>
-                <a class="cb-theme-option" data-theme="spring"><i class="fas fa-leaf fa-fw"></i> <span data-translate="theme_spring">春</span></a>
-                <a class="cb-theme-option" data-theme="summer"><i class="fas fa-sun fa-fw"></i> <span data-translate="theme_summer">夏</span></a>
-                <a class="cb-theme-option" data-theme="autumn"><i class="fas fa-fan fa-fw"></i> <span data-translate="theme_autumn">秋</span></a>
-                <a class="cb-theme-option" data-theme="winter"><i class="fas fa-snowflake fa-fw"></i> <span data-translate="theme_winter">冬</span></a>
-                
-                <div class="border-t border-gray-200 my-1"></div>
+            <div id="settings-dropdown" class="relative">
+                <button id="settings-btn" class="text-white focus:outline-none p-2" title="メニューを開く">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+                <div id="settings-content" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-xl z-20">
+                    <a id="pinned-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-thumbtack fa-fw"></i> <span data-translate="view_pinned">お気に入り</span></a>
+                    <div class="border-t border-gray-200 my-1"></div>
+                    <!-- ▼▼▼【新機能】要約ボタンのメニュー項目を追加 ▼▼▼ -->
+                    <a id="summarize-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-file-alt fa-fw"></i> <span data-translate="summarize_conversation">会話を要約</span></a>
+                    <div class="border-t border-gray-200 my-1"></div>
+                    <!-- ▲▲▲ ここまで ▲▲▲ -->
+                    <div class="py-2 px-4">
+                        <p class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
+                    </div>
+                    <a class="cb-theme-option" data-theme="simple"><i class="fas fa-square fa-fw"></i> <span data-translate="theme_simple">シンプル</span></a>
+                    <a class="cb-theme-option" data-theme="spring"><i class="fas fa-leaf fa-fw"></i> <span data-translate="theme_spring">春</span></a>
+                    <a class="cb-theme-option" data-theme="summer"><i class="fas fa-sun fa-fw"></i> <span data-translate="theme_summer">夏</span></a>
+                    <a class="cb-theme-option" data-theme="autumn"><i class="fas fa-fan fa-fw"></i> <span data-translate="theme_autumn">秋</span></a>
+                    <a class="cb-theme-option" data-theme="winter"><i class="fas fa-snowflake fa-fw"></i> <span data-translate="theme_winter">冬</span></a>
+                    
+                    <div class="border-t border-gray-200 my-1"></div>
 
-                <div class="py-2 px-4">
-                    <p class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
-                </div>
-                <div id="language-switcher">
-                     <button data-lang="ja" class="ja-btn lang-switch-btn">日本語</button>
-                     <button data-lang="en" class="en-btn lang-switch-btn">EN</button>
-                     <button data-lang="zh" class="zh-btn lang-switch-btn">中文</button>
-                </div>
+                    <div class="py-2 px-4">
+                        <p class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
+                    </div>
+                    <div id="language-switcher">
+                         <button data-lang="ja" class="ja-btn lang-switch-btn">日本語</button>
+                         <button data-lang="en" class="en-btn lang-switch-btn">EN</button>
+                         <button data-lang="zh" class="zh-btn lang-switch-btn">中文</button>
+                    </div>
 
-                <div class="border-t border-gray-200 my-1"></div>
+                    <div class="border-t border-gray-200 my-1"></div>
 
-                <a id="clear-history-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-trash-alt fa-fw"></i> <span data-translate="clear_history">履歴をクリア</span></a>
+                    <a id="clear-history-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-trash-alt fa-fw"></i> <span data-translate="clear_history">履歴をクリア</span></a>
+                </div>
             </div>
         </div>
+        <!-- ▲▲▲ ここまで ▲▲▲ -->
 
     </header>
     
-    <!-- ▼▼▼【修正】<main>タグから "flex-1" クラスを削除 ▼▼▼ -->
     <main id="chat-window" class="p-6 overflow-y-auto space-y-4 bg-gray-50">
         <!-- Chat messages will be appended here -->
     </main>
-    <!-- ▲▲▲ ここまで ▲▲▲ -->
     
     <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl mt-8">
         <div class="flex items-center space-x-3">
             <input type="text" id="user-input" class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition" placeholder="日本のマナーについて質問してください">
-            <!-- マイクボタンの追加 -->
             <button id="mic-btn" class="mic-btn" title="マイクを使用">
                 <i class="fas fa-microphone"></i>
             </button>
