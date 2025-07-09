@@ -87,12 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * チャット履歴をクリアする
+     * チャットボットの会話履歴のみをクリアする
      */
     function clearChatHistory() {
+        // ▼▼▼【修正点】会話ログのlocalStorageのみを削除 ▼▼▼
         localStorage.removeItem('chatbot_history');
-        localStorage.removeItem('chatbot_quiz_history');
-        localStorage.removeItem('chatbot_learned_topics'); // 学習履歴も削除
+        // ▲▲▲ ここまで ▲▲▲
+
         if (chatWindow) {
             chatWindow.innerHTML = ''; 
         }
@@ -381,8 +382,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function askNextQuizQuestion() {
-        if (!quizData || Object.keys(quizData).length === 0) {
-             displayBotMessage("申し訳ありませんが、現在クイズは利用できません。");
+        if (!quizData || Object.keys(quizData).length === 0 || !quizData[currentDifficulty] || quizData[currentDifficulty].length === 0) {
+             displayBotMessage(uiStrings[currentLanguage].defaultReply);
              return;
         }
         if (askedQuizIndices.size >= quizLength) {
@@ -721,7 +722,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 particleConfig = { type: 'div', className: 'bubble', animation: 'rise' };
                 break;
             case 'autumn':
-                particleConfig = { type: 'span', className: 'leaf', content: '🍁', animation: 'fall' };
+                particleConfig = { type: 'span', className: 'leaf', content: '�', animation: 'fall' };
                 break;
             case 'winter':
                 particleConfig = { type: 'span', className: 'snow', content: '❄️', animation: 'fall' };
@@ -903,7 +904,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (faqModal && faqModalCloseBtn && faqList) {
-            // ▼▼▼【修正】イベントの伝播を停止 ▼▼▼
             faqModalCloseBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 faqModal.classList.add('hidden');
@@ -914,7 +914,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             faqList.addEventListener('click', (e) => {
                 e.stopPropagation();
-                // ▲▲▲ ここまで ▲▲▲
                 const faqButton = e.target.closest('.faq-question-btn');
                 if (faqButton) {
                     faqModal.classList.add('hidden');
@@ -1122,7 +1121,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (action === 'select_difficulty') {
                     const difficultyMap = {
                         '簡単': 'easy', 'Easy': 'easy', '简单': 'easy',
-                        '普通': 'normal', 'Normal': 'normal',
+                        '普通': 'normal', 'Normal': 'normal', '普通': 'normal',
                         '難しい': 'hard', 'Hard': 'hard', '困难': 'hard'
                     };
                     currentDifficulty = difficultyMap[replyText];
@@ -1205,7 +1204,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         document.addEventListener('click', (e) => {
-            // ▼▼▼【変更点】メニュー外クリックでメニューを閉じる処理を追加 ▼▼▼
             if (settingsBtn && settingsContent && !settingsContent.classList.contains('hidden')) {
                 const isClickInsideMenu = settingsContent.contains(e.target);
                 const isClickOnSettingsBtn = settingsBtn.contains(e.target);
@@ -1215,7 +1213,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     settingsBtn.title = uiStrings[currentLanguage].open_menu;
                 }
             }
-            // ▲▲▲ ここまで ▲▲▲
 
             if (chatModal.style.display !== 'flex') return;
 

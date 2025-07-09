@@ -9,8 +9,60 @@ body {
     list-style: none;
 }
 
-/* ▼▼▼【新機能】リセットボタンのカーソルスタイルを追加 ▼▼▼ */
 #reset-progress-btn {
     cursor: pointer;
 }
-/* ▲▲▲ ここまで ▲▲▲ */
+
+/* アチーブメントシステムのスタイル */
+#achievements-list .achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb; /* gray-200 */
+    background-color: #f9fafb; /* gray-50 */
+    transition: all 0.3s ease;
+}
+
+#achievements-list .achievement-item.unlocked {
+    background-color: #fefce8; /* yellow-50 */
+    border-color: #fde047; /* yellow-400 */
+    transform: scale(1.02);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+#achievements-list .achievement-icon {
+    font-size: 2rem;
+    color: #d1d5db; /* gray-300 */
+    width: 40px;
+    text-align: center;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+#achievements-list .achievement-item.unlocked .achievement-icon {
+    color: #f59e0b; /* amber-500 */
+    transform: rotate(-10deg) scale(1.1);
+}
+
+#achievements-list .achievement-details {
+    flex-grow: 1;
+}
+
+#achievements-list .achievement-title {
+    font-weight: 600;
+    color: #9ca3af; /* gray-400 */
+}
+
+#achievements-list .achievement-item.unlocked .achievement-title {
+    color: #a16207; /* yellow-700 */
+}
+
+#achievements-list .achievement-description {
+    font-size: 0.875rem;
+    color: #d1d5db; /* gray-300 */
+}
+
+#achievements-list .achievement-item.unlocked .achievement-description {
+    color: #4b5563; /* gray-600 */
+}

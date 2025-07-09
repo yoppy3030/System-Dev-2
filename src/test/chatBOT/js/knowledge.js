@@ -101,9 +101,21 @@ const uiStrings = {
         no_learned_topics_data: 'まだ学習したトピックがありません。',
         reset_progress_button: '学習データをリセット',
         confirm_reset_title: '本当によろしいですか？',
-        confirm_reset_text: 'すべての学習進捗データ（クイズ成績、学習したトピック）が完全に削除されます。この操作は元に戻せません。',
+        confirm_reset_text: 'すべての学習進捗データ（クイズ成績、学習したトピック、アチーブメント）が完全に削除されます。この操作は元に戻せません。',
         cancel_button: 'キャンセル',
-        reset_button: 'リセット'
+        reset_button: 'リセット',
+        achievements_title: '獲得したアチーブメント',
+        no_achievements_data: 'まだ獲得したアチーブメントはありません。',
+        achievements: {
+            quiz_master_easy: { title: '入門マナーマスター', desc: '難易度「簡単」のクイズを全問正解しました！' },
+            quiz_master_normal: { title: '中級マナーマスター', desc: '難易度「普通」のクイズを全問正解しました！' },
+            quiz_master_hard: { title: '上級マナーマスター', desc: '難易度「難しい」のクイズを全問正解しました！' },
+            perfect_master: { title: 'マナーの達人', desc: '全ての難易度のクイズで全問正解を達成しました！' },
+            first_quiz: { title: 'はじめの一歩', desc: '初めてクイズに挑戦しました。' },
+            topic_collector: { title: '知識コレクター', desc: '10個のトピックを学習しました。' }
+        },
+        faq_source_text: '（よくある質問より）',
+        ai_summary_text: 'AIの要約:'
     },
     en: {
         headerTitle: 'AI Manners Learning Bot',
@@ -206,9 +218,21 @@ const uiStrings = {
         no_learned_topics_data: 'No learned topics yet.',
         reset_progress_button: 'Reset Progress Data',
         confirm_reset_title: 'Are you sure?',
-        confirm_reset_text: 'All learning progress data (quiz results, learned topics) will be permanently deleted. This action cannot be undone.',
+        confirm_reset_text: 'All learning progress data (quiz results, learned topics, achievements) will be permanently deleted. This action cannot be undone.',
         cancel_button: 'Cancel',
-        reset_button: 'Reset'
+        reset_button: 'Reset',
+        achievements_title: 'Achievements Unlocked',
+        no_achievements_data: 'No achievements unlocked yet.',
+        achievements: {
+            quiz_master_easy: { title: 'Manners Novice', desc: 'You got a perfect score on the "Easy" quiz!' },
+            quiz_master_normal: { title: 'Manners Adept', desc: 'You got a perfect score on the "Normal" quiz!' },
+            quiz_master_hard: { title: 'Manners Expert', desc: 'You got a perfect score on the "Hard" quiz!' },
+            perfect_master: { title: 'Manners Grandmaster', desc: 'Achieved a perfect score on all quiz difficulties!' },
+            first_quiz: { title: 'First Step', desc: 'You tried the quiz for the first time.' },
+            topic_collector: { title: 'Knowledge Collector', desc: 'You have learned 10 topics.' }
+        },
+        faq_source_text: '(From FAQ)',
+        ai_summary_text: 'AI Summary:'
     },
     zh: {
         headerTitle: 'AI礼仪学习机器人',
@@ -232,7 +256,7 @@ const uiStrings = {
             const percentage = total > 0 ? (score / total) * 100 : 0;
             let resultText = `您在${total}题中答对了${score}题！\n`;
             if (percentage === 100) {
-                resultText += "全部正确！太棒了，完美！�";
+                resultText += "全部正确！太棒了，完美！🎉";
             } else if (percentage >= 80) {
                 resultText += "非常棒的成绩！您非常了解。";
             } else if (percentage >= 50) {
@@ -311,9 +335,21 @@ const uiStrings = {
         no_learned_topics_data: '暂无已学主题。',
         reset_progress_button: '重置学习数据',
         confirm_reset_title: '您确定吗？',
-        confirm_reset_text: '所有学习进度数据（测验成绩、已学主题）将被永久删除。此操作无法撤销。',
+        confirm_reset_text: '所有学习进度数据（测验成绩、已学主题、成就）将被永久删除。此操作无法撤销。',
         cancel_button: '取消',
-        reset_button: '重置'
+        reset_button: '重置',
+        achievements_title: '已获得的成就',
+        no_achievements_data: '尚未获得任何成就。',
+        achievements: {
+            quiz_master_easy: { title: '礼仪入门大师', desc: '您在“简单”难度的测验中全部答对！' },
+            quiz_master_normal: { title: '礼仪中级大师', desc: '您在“普通”难度的测验中全部答对！' },
+            quiz_master_hard: { title: '礼仪高级大师', desc: '您在“困难”难度的测验中全部答对！' },
+            perfect_master: { title: '礼仪宗师', desc: '在所有难度的测验中均取得满分！' },
+            first_quiz: { title: '第一步', desc: '您第一次尝试了测验。' },
+            topic_collector: { title: '知识收藏家', desc: '您已经学习了10个主题。' }
+        },
+        faq_source_text: '(来自常见问题)',
+        ai_summary_text: 'AI总结:'
     }
 };
 
@@ -322,6 +358,16 @@ const specialFeatures = {
     ja: { 'よくある質問': { isFaq: true }, 'クイズ': { isQuiz: true }, 'お問い合わせ': { isInquiry: true } },
     en: { 'faq': { isFaq: true }, 'quiz': { isQuiz: true }, 'contact': { isInquiry: true } },
     zh: { '常见问题': { isFaq: true }, '测验': { isQuiz: true }, '联系我们': { isInquiry: true } }
+};
+
+// --- アチーブメント定義 ---
+const achievements = {
+    first_quiz: { icon: 'fas fa-flag-checkered', condition: (stats) => stats.totalQuizzesTaken > 0 },
+    quiz_master_easy: { icon: 'fas fa-award', condition: (stats) => stats.perfectScores.easy },
+    quiz_master_normal: { icon: 'fas fa-medal', condition: (stats) => stats.perfectScores.normal },
+    quiz_master_hard: { icon: 'fas fa-trophy', condition: (stats) => stats.perfectScores.hard },
+    perfect_master: { icon: 'fas fa-crown', condition: (stats) => stats.perfectScores.easy && stats.perfectScores.normal && stats.perfectScores.hard },
+    topic_collector: { icon: 'fas fa-book-reader', condition: (stats) => stats.learnedTopicsCount >= 10 }
 };
 
 // ★★★ クイズデータを各難易度30問、合計90問に増量 ★★★

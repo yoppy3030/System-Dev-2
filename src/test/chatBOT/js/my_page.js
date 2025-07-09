@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // グローバル変数
     let learningProgressChart = null;
-    // localStorageから言語設定を読み込む（なければ日本語をデフォルトに）
     let currentLanguage = localStorage.getItem('mypage_language') || 'ja';
 
     // DOM要素
@@ -18,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setupTranslation();
         renderQuizChart();
         renderLearnedTopics();
+        renderAchievements();
         setupEventListeners();
     }
 
@@ -25,18 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
      * 翻訳関連のセットアップ
      */
     function setupTranslation() {
-        // ドロップダウンの表示を現在の言語に合わせる
         languageSwitcher.value = currentLanguage;
-        
-        // ページ全体のテキストを現在の言語で表示
         translatePage(currentLanguage);
-
-        // ドロップダウンの言語が変更されたら、翻訳を実行
         languageSwitcher.addEventListener('change', (e) => {
-            const newLang = e.target.value;
-            currentLanguage = newLang;
-            localStorage.setItem('mypage_language', newLang); // 新しい言語設定を保存
-            translatePage(newLang);
+            currentLanguage = e.target.value;
+            localStorage.setItem('mypage_language', currentLanguage);
+            translatePage(currentLanguage);
         });
     }
 
@@ -48,16 +42,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const elements = document.querySelectorAll('[data-translate]');
         elements.forEach(el => {
             const key = el.dataset.translate;
-            // uiStringsオブジェクトにキーが存在すれば翻訳
-            if (uiStrings[lang] && uiStrings[lang][key]) {
-                el.textContent = uiStrings[lang][key];
+            const translation = getTranslation(key, lang);
+            if (translation && typeof translation === 'string') {
+                 el.textContent = translation;
             }
         });
-        // チャートのラベルも言語に合わせて再描画
         renderQuizChart();
-        // 学習済みトピックの静的テキストも更新
         renderLearnedTopics();
+        renderAchievements();
     }
+    
+    /**
+     * 翻訳テキストを取得 (ネストされたキーにも対応)
+     * @param {string} key - 'my_page_title' or 'achievements.perfect_master.title'
+     * @param {string} lang 
+     */
+    function getTranslation(key, lang) {
+        let text = uiStrings[lang];
+        try {
+            const keys = key.split('.');
+            for (const k of keys) {
+                if (text[k] === undefined) return null;
+                text = text[k];
+            }
+            return text;
+        } catch (e) {
+            return null;
+        }
+    }
+
 
     /**
      * イベントリスナーをセットアップ
@@ -80,9 +93,9 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmResetBtn.addEventListener('click', () => {
             localStorage.removeItem('chatbot_quiz_history');
             localStorage.removeItem('chatbot_learned_topics');
+            localStorage.removeItem('chatbot_achievements'); // アチーブメント履歴も削除
             
-            renderQuizChart();
-            renderLearnedTopics();
+            initializePage(); // 全て再描画
 
             confirmModal.classList.add('hidden');
         });
@@ -102,19 +115,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (quizHistory.length === 0) {
             noDataEl.classList.remove('hidden');
+            document.getElementById('learningProgressChart').style.display = 'none';
             return;
         }
 
         noDataEl.classList.add('hidden');
+        document.getElementById('learningProgressChart').style.display = 'block';
 
         const labels = quizHistory.map(item => 
-            new Date(item.date).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' })
+            new Date(item.date).toLocaleDateString(currentLanguage, { month: 'numeric', day: 'numeric' })
         );
         const scores = quizHistory.map(item =>
             item.total > 0 ? (item.score / item.total) * 100 : 0
         );
         
-        const chartLabel = uiStrings[currentLanguage]?.quiz_stats_title || 'クイズ成績';
+        const chartLabel = getTranslation('quiz_stats_title', currentLanguage);
 
         learningProgressChart = new Chart(ctx, {
             type: 'line',
@@ -153,22 +168,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderLearnedTopics() {
         const topicsListEl = document.getElementById('learned-topics-list');
         const noDataEl = document.getElementById('no-learned-topics-data');
-
-        if (!topicsListEl || !noDataEl) return;
-
         let learnedTopics = [];
         try {
             const storedData = localStorage.getItem('chatbot_learned_topics');
-            if (storedData) {
-                const parsed = JSON.parse(storedData);
-                if (Array.isArray(parsed)) {
-                    learnedTopics = parsed;
-                }
-            }
-        } catch (error) {
-            console.error('Error parsing learned topics from localStorage:', error);
-            localStorage.removeItem('chatbot_learned_topics');
-        }
+            learnedTopics = storedData ? JSON.parse(storedData) : [];
+        } catch (e) { console.error("Error parsing learned topics", e); }
 
         topicsListEl.innerHTML = '';
 
@@ -178,39 +182,93 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         noDataEl.classList.add('hidden');
-
-        const faqText = currentLanguage === 'ja' ? '（よくある質問より）' : (currentLanguage === 'en' ? '(From FAQ)' : '(来自常见问题)');
-        const summaryText = currentLanguage === 'ja' ? 'AIの要約:' : (currentLanguage === 'en' ? 'AI Summary:' : 'AI总结:');
+        
+        const faqText = getTranslation('faq_source_text', currentLanguage);
+        const summaryText = getTranslation('ai_summary_text', currentLanguage);
 
         learnedTopics.forEach(topic => {
             const li = document.createElement('li');
             li.className = 'p-4 rounded-lg border';
-
             if (topic.type === 'faq') {
                 li.classList.add('bg-green-50', 'border-green-200');
-                li.innerHTML = `
-                    <div class="flex items-start gap-3">
-                        <i class="fas fa-check-circle text-green-500 text-lg mt-1"></i>
-                        <div>
-                            <p class="font-semibold text-gray-800">${topic.question}</p>
-                            <p class="text-sm text-gray-500">${faqText}</p>
-                        </div>
-                    </div>
-                `;
+                li.innerHTML = `<div class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 text-lg mt-1"></i><div><p class="font-semibold text-gray-800">${topic.question}</p><p class="text-sm text-gray-500">${faqText}</p></div></div>`;
             } else if (topic.type === 'query' && topic.summary) {
                 li.classList.add('bg-sky-50', 'border-sky-200');
-                li.innerHTML = `
-                    <div class="flex items-start gap-3">
-                        <i class="fas fa-question-circle text-sky-500 text-lg mt-1"></i>
-                        <div>
-                            <p class="font-semibold text-gray-800">${topic.question}</p>
-                            <p class="text-sm text-gray-600 mt-1"><strong>${summaryText}</strong> ${topic.summary}</p>
-                        </div>
-                    </div>
-                `;
+                li.innerHTML = `<div class="flex items-start gap-3"><i class="fas fa-question-circle text-sky-500 text-lg mt-1"></i><div><p class="font-semibold text-gray-800">${topic.question}</p><p class="text-sm text-gray-600 mt-1"><strong>${summaryText}</strong> ${topic.summary}</p></div></div>`;
             }
             topicsListEl.appendChild(li);
         });
+    }
+    
+    /**
+     * アチーブメントをチェック＆保存
+     */
+    function checkAndSaveAchievements() {
+        const quizHistory = JSON.parse(localStorage.getItem('chatbot_quiz_history')) || [];
+        const learnedTopics = JSON.parse(localStorage.getItem('chatbot_learned_topics')) || [];
+        let unlockedAchievements = JSON.parse(localStorage.getItem('chatbot_achievements')) || [];
+
+        // 条件判定用の統計データを計算
+        const stats = {
+            totalQuizzesTaken: quizHistory.length,
+            perfectScores: {
+                easy: quizHistory.some(q => q.difficulty === 'easy' && q.score === q.total && q.total > 0),
+                normal: quizHistory.some(q => q.difficulty === 'normal' && q.score === q.total && q.total > 0),
+                hard: quizHistory.some(q => q.difficulty === 'hard' && q.score === q.total && q.total > 0),
+            },
+            learnedTopicsCount: learnedTopics.length
+        };
+
+        let newAchievementUnlocked = false;
+        for (const key in achievements) {
+            if (!unlockedAchievements.includes(key) && achievements[key].condition(stats)) {
+                unlockedAchievements.push(key);
+                newAchievementUnlocked = true;
+            }
+        }
+        
+        if (newAchievementUnlocked) {
+            localStorage.setItem('chatbot_achievements', JSON.stringify(unlockedAchievements));
+        }
+    }
+
+    /**
+     * アチーブメントを描画
+     */
+    function renderAchievements() {
+        checkAndSaveAchievements();
+        const listEl = document.getElementById('achievements-list');
+        const noDataEl = document.getElementById('no-achievements-data');
+        const unlocked = JSON.parse(localStorage.getItem('chatbot_achievements')) || [];
+
+        listEl.innerHTML = '';
+
+        if (Object.keys(achievements).length === 0) {
+            noDataEl.classList.remove('hidden');
+            return;
+        }
+        noDataEl.classList.add('hidden');
+
+        for (const key in achievements) {
+            const isUnlocked = unlocked.includes(key);
+            const achievementInfo = achievements[key];
+            const langStrings = getTranslation(`achievements.${key}`, currentLanguage);
+            
+            const li = document.createElement('li');
+            li.className = 'achievement-item';
+            if (isUnlocked) {
+                li.classList.add('unlocked');
+            }
+
+            li.innerHTML = `
+                <div class="achievement-icon"><i class="${achievementInfo.icon}"></i></div>
+                <div class="achievement-details">
+                    <p class="achievement-title">${langStrings.title}</p>
+                    <p class="achievement-description">${langStrings.desc}</p>
+                </div>
+            `;
+            listEl.appendChild(li);
+        }
     }
 
     // ページの実行開始
