@@ -82,18 +82,28 @@ const uiStrings = {
         faq_prompt: '知りたい質問をタップしてください。',
         faq: {
             questions: [
-                { q: '初対面の挨拶', a: '日本では、初対面の人にはお辞儀をするのが一般的です。丁寧な挨拶は「はじめまして。〇〇です。どうぞよろしくお願いいたします。」です。相手の目を見て、にこやかに挨拶しましょう。' },
-                { q: '食事のマナー', a: '食事の前には「いただきます」、後には「ごちそうさまでした」と感謝を伝えます。お箸を正しく持ち、食べ物を刺したり、お皿の上で迷ったりしないようにしましょう（「迷い箸」）。' },
-                { q: '訪問時のマナー', a: '人の家を訪問する際は、約束の時間通りに行くことが大切です。玄関でコートを脱ぎ、靴を揃えて上がります。手土産を渡す場合は、部屋に通されて挨拶が終わった後が適切です。' },
-                { q: '電車でのマナー', a: '電車内では大声での会話や電話は控え、静かに過ごします。優先席は必要としている方に譲りましょう。リュックサックは前に抱えるか、網棚に置くと周りの人の邪魔になりません。' }
+                { id: 'faq_greeting', q: '初対面の挨拶', a: '日本では、初対面の人にはお辞儀をするのが一般的です。丁寧な挨拶は「はじめまして。〇〇です。どうぞよろしくお願いいたします。」です。相手の目を見て、にこやかに挨拶しましょう。' },
+                { id: 'faq_dining', q: '食事のマナー', a: '食事の前には「いただきます」、後には「ごちそうさまでした」と感謝を伝えます。お箸を正しく持ち、食べ物を刺したり、お皿の上で迷ったりしないようにしましょう（「迷い箸」）。' },
+                { id: 'faq_visiting', q: '訪問時のマナー', a: '人の家を訪問する際は、約束の時間通りに行くことが大切です。玄関でコートを脱ぎ、靴を揃えて上がります。手土産を渡す場合は、部屋に通されて挨拶が終わった後が適切です。' },
+                { id: 'faq_train', q: '電車でのマナー', a: '電車内では大声での会話や電話は控え、静かに過ごします。優先席は必要としている方に譲りましょう。リュックサックは前に抱えるか、網棚に置くと周りの人の邪魔になりません。' }
             ]
         },
-        // ▼▼▼【新機能】共有機能のテキストを追加 ▼▼▼
         share_answer: '回答を共有',
         copy_to_clipboard: 'コピー',
         download_as_text: '保存',
-        copied_to_clipboard: 'コピーしました！'
-        // ▲▲▲ ここまで ▲▲▲
+        copied_to_clipboard: 'コピーしました！',
+        my_page_title: '学習進捗ページ',
+        back_to_home: 'ホームに戻る',
+        quiz_stats_title: 'クイズ成績',
+        no_data_available: 'まだ利用可能なデータがありません。',
+        my_page_link: 'マイページ',
+        learned_topics_title: '学習したトピック',
+        no_learned_topics_data: 'まだ学習したトピックがありません。',
+        reset_progress_button: '学習データをリセット',
+        confirm_reset_title: '本当によろしいですか？',
+        confirm_reset_text: 'すべての学習進捗データ（クイズ成績、学習したトピック）が完全に削除されます。この操作は元に戻せません。',
+        cancel_button: 'キャンセル',
+        reset_button: 'リセット'
     },
     en: {
         headerTitle: 'AI Manners Learning Bot',
@@ -177,18 +187,28 @@ const uiStrings = {
         faq_prompt: 'Tap a question to see the answer.',
         faq: {
             questions: [
-                { q: 'First-time Greetings', a: 'In Japan, it is common to bow when meeting someone for the first time. A polite greeting is "Hajimemashite. [Your Name] desu. Douzo yoroshiku onegaishimasu." Make eye contact and smile.' },
-                { q: 'Dining Etiquette', a: 'Before eating, say "Itadakimasu," and after, say "Gochisousama deshita" to show gratitude. Hold your chopsticks correctly and avoid stabbing food or hovering them over dishes ("mayoi-bashi").' },
-                { q: 'Visiting Someone\'s Home', a: 'It is important to be on time for your appointment. Take off your coat at the entrance and arrange your shoes neatly. If you bring a gift, it\'s best to present it after being shown into the room and finishing greetings.' },
-                { q: 'Train Etiquette', a: 'On the train, refrain from loud conversations or phone calls. Offer priority seats to those who need them. Hold your backpack in front of you or place it on the overhead rack to avoid bothering others.' }
+                { id: 'faq_greeting', q: 'First-time Greetings', a: 'In Japan, it is common to bow when meeting someone for the first time. A polite greeting is "Hajimemashite. [Your Name] desu. Douzo yoroshiku onegaishimasu." Make eye contact and smile.' },
+                { id: 'faq_dining', q: 'Dining Etiquette', a: 'Before eating, say "Itadakimasu," and after, say "Gochisousama deshita" to show gratitude. Hold your chopsticks correctly and avoid stabbing food or hovering them over dishes ("mayoi-bashi").' },
+                { id: 'faq_visiting', q: 'Visiting Someone\'s Home', a: 'It is important to be on time for your appointment. Take off your coat at the entrance and arrange your shoes neatly. If you bring a gift, it\'s best to present it after being shown into the room and finishing greetings.' },
+                { id: 'faq_train', q: 'Train Etiquette', a: 'On the train, refrain from loud conversations or phone calls. Offer priority seats to those who need them. Hold your backpack in front of you or place it on the overhead rack to avoid bothering others.' }
             ]
         },
-        // ▼▼▼【新機能】共有機能のテキストを追加 ▼▼▼
         share_answer: 'Share Answer',
         copy_to_clipboard: 'Copy',
         download_as_text: 'Save',
-        copied_to_clipboard: 'Copied!'
-        // ▲▲▲ ここまで ▲▲▲
+        copied_to_clipboard: 'Copied!',
+        my_page_title: 'Learning Progress',
+        back_to_home: 'Back to Home',
+        quiz_stats_title: 'Quiz Performance',
+        no_data_available: 'No data available yet.',
+        my_page_link: 'My Page',
+        learned_topics_title: 'Learned Topics',
+        no_learned_topics_data: 'No learned topics yet.',
+        reset_progress_button: 'Reset Progress Data',
+        confirm_reset_title: 'Are you sure?',
+        confirm_reset_text: 'All learning progress data (quiz results, learned topics) will be permanently deleted. This action cannot be undone.',
+        cancel_button: 'Cancel',
+        reset_button: 'Reset'
     },
     zh: {
         headerTitle: 'AI礼仪学习机器人',
@@ -212,7 +232,7 @@ const uiStrings = {
             const percentage = total > 0 ? (score / total) * 100 : 0;
             let resultText = `您在${total}题中答对了${score}题！\n`;
             if (percentage === 100) {
-                resultText += "全部正确！太棒了，完美！🎉";
+                resultText += "全部正确！太棒了，完美！�";
             } else if (percentage >= 80) {
                 resultText += "非常棒的成绩！您非常了解。";
             } else if (percentage >= 50) {
@@ -272,22 +292,32 @@ const uiStrings = {
         faq_prompt: '点击问题查看答案。',
         faq: {
             questions: [
-                { q: '初次见面问候', a: '在日本，初次见面时通常会鞠躬。礼貌的问候语是“初次见面，我叫[您的名字]，请多关照。”（Hajimemashite. [Your Name] desu. Douzo yoroshiku onegaishimasu.）' },
-                { q: '用餐礼仪', a: '饭前说“我开动了”（Itadakimasu），饭后说“我吃好了”（Gochisousama deshita）以示感谢。正确使用筷子，不要用筷子插食物或在盘子上方犹豫（“迷い箸”）。' },
-                { q: '拜访礼仪', a: '拜访他人家时，准时到达很重要。在玄关脱下外套，并将鞋子摆放整齐。如果带了礼物，最好在进入房间并打完招呼后赠送。' },
-                { q: '电车礼仪', a: '在电车内请保持安静，不要大声交谈或打电话。请将优先座位让给有需要的人。最好将背包抱在胸前或放在行李架上，以免妨碍他人。' }
+                { id: 'faq_greeting', q: '初次见面问候', a: '在日本，初次见面时通常会鞠躬。礼貌的问候语是“初次见面，我叫[您的名字]，请多关照。”（Hajimemashite. [Your Name] desu. Douzo yoroshiku onegaishimasu.）' },
+                { id: 'faq_dining', q: '用餐礼仪', a: '饭前说“我开动了”（Itadakimasu），饭后说“我吃好了”（Gochisousama deshita）以示感谢。正确使用筷子，不要用筷子插食物或在盘子上方犹豫（“迷い箸”）。' },
+                { id: 'faq_visiting', q: '拜访礼仪', a: '拜访他人家时，准时到达很重要。在玄关脱下外套，并将鞋子摆放整齐。如果带了礼物，最好在进入房间并打完招呼后赠送。' },
+                { id: 'faq_train', q: '电车礼仪', a: '在电车内请保持安静，不要大声交谈或打电话。请将优先座位让给有需要的人。最好将背包抱在胸前或放在行李架上，以免妨碍他人。' }
             ]
         },
-        // ▼▼▼【新機能】共有機能のテキストを追加 ▼▼▼
         share_answer: '分享回答',
         copy_to_clipboard: '复制',
         download_as_text: '保存',
-        copied_to_clipboard: '已复制！'
-        // ▲▲▲ ここまで ▲▲▲
+        copied_to_clipboard: '已复制！',
+        my_page_title: '学习进度',
+        back_to_home: '返回首页',
+        quiz_stats_title: '测验成绩',
+        no_data_available: '暂无可用数据。',
+        my_page_link: '我的主页',
+        learned_topics_title: '已学主题',
+        no_learned_topics_data: '暂无已学主题。',
+        reset_progress_button: '重置学习数据',
+        confirm_reset_title: '您确定吗？',
+        confirm_reset_text: '所有学习进度数据（测验成绩、已学主题）将被永久删除。此操作无法撤销。',
+        cancel_button: '取消',
+        reset_button: '重置'
     }
 };
 
-// --- ナレッジベース (特殊機能とクイズデータ) ---
+// --- ナレッジベース (特殊機能) ---
 const specialFeatures = {
     ja: { 'よくある質問': { isFaq: true }, 'クイズ': { isQuiz: true }, 'お問い合わせ': { isInquiry: true } },
     en: { 'faq': { isFaq: true }, 'quiz': { isQuiz: true }, 'contact': { isInquiry: true } },

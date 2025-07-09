@@ -21,11 +21,13 @@
     <button class="dropdown-btn" id="dropdown-btn">
         <i class="fas fa-bars"></i> Menu
     </button>
+    <!-- ▼▼▼【変更点】マイページへのリンクを修正 ▼▼▼ -->
     <div class="dropdown-content" id="dropdown-content">
-        <a href="User_page.php">My page</a>
+        <a href="my_page.php" data-translate="my_page_link">マイページ</a>
         <a href="#">contact</a>
         <a href="#">Blog</a>
     </div>
+    <!-- ▲▲▲ ここまで ▲▲▲ -->
 </div>
    
   <div class="logo">
@@ -173,8 +175,12 @@
                 <button id="settings-btn" class="text-white focus:outline-none p-2" title="メニューを開く">
                     <i class="fas fa-bars text-2xl"></i>
                 </button>
-                <!-- ▼▼▼【変更点】メニュー項目の順番を整理 ▼▼▼ -->
                 <div id="settings-content" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-xl z-20">
+                    
+                    <!-- ▼▼▼【変更点】マイページへのリンクを追加 ▼▼▼ -->
+                    <a href="./chatBOT/my_page.php" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-chart-line fa-fw"></i> <span data-translate="my_page_link">マイページ</span></a>
+                    <div class="border-t border-gray-200 my-1"></div>
+                    <!-- ▲▲▲ ここまで ▲▲▲ -->
                     
                     <a id="faq-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-question-circle fa-fw"></i> <span data-translate="faq_title">よくある質問</span></a>
                     <a id="pinned-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-thumbtack fa-fw"></i> <span data-translate="view_pinned">お気に入り</span></a>
@@ -206,7 +212,6 @@
 
                     <a id="clear-history-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-trash-alt fa-fw"></i> <span data-translate="clear_history">履歴をクリア</span></a>
                 </div>
-                <!-- ▲▲▲ ここまで ▲▲▲ -->
             </div>
         </div>
 

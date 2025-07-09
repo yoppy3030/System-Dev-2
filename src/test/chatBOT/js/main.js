@@ -36,20 +36,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const faqModal = document.getElementById('faq-modal');
     const faqModalCloseBtn = document.getElementById('faq-modal-close-btn');
     const faqList = document.getElementById('faq-list');
-
+    
     // --- 関数定義 ---
 
     /**
-     * 設定メニュー内のテキストを現在の言語に翻訳する
+     * 学習したトピックをlocalStorageに保存する
+     * @param {object} topic - 保存するトピックオブジェクト {type: 'faq' | 'query', id?: string, question: string, summary?: string}
      */
-    function translateSettingsMenu() {
-        const elementsToTranslate = document.querySelectorAll('#settings-content [data-translate], #chatbot-modal [data-translate], #pinned-modal [data-translate], #faq-modal [data-translate]');
-        elementsToTranslate.forEach(element => {
-            const key = element.dataset.translate;
-            if (uiStrings[currentLanguage][key]) {
-                element.textContent = uiStrings[currentLanguage][key];
+    async function saveLearnedTopic(topic) {
+        try {
+            let learnedTopics = [];
+            const existingData = localStorage.getItem('chatbot_learned_topics');
+            if (existingData) {
+                const parsed = JSON.parse(existingData);
+                if (Array.isArray(parsed)) {
+                    learnedTopics = parsed;
+                }
             }
-        });
+            learnedTopics.push(topic);
+            
+            // 重複を排除（FAQはid、自由質問はquestionをキーとする）
+            const uniqueTopics = Array.from(new Map(learnedTopics.map(item => [item.id || item.question, item])).values());
+
+            localStorage.setItem('chatbot_learned_topics', JSON.stringify(uniqueTopics));
+        } catch (error) {
+            console.error('Failed to save learned topic:', error);
+            // エラーが発生した場合、新しいデータだけで上書きを試みる
+            localStorage.setItem('chatbot_learned_topics', JSON.stringify([topic]));
+        }
     }
 
     /**
@@ -58,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {string} HTML文字列
      */
     function markdownToHtml(text) {
+        if (!text) return '';
         let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         const markdownImageRegex = /!\[(.*?)\]\((.*?)\)/g;
         html = html.replace(markdownImageRegex, (match, alt, src) => {
@@ -72,251 +87,87 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * チャット履歴をlocalStorageに保存する
-     */
-    function saveChatHistory() {
-        if (chatWindow.innerHTML) {
-            localStorage.setItem('chatbot_history', chatWindow.innerHTML);
-        }
-    }
-
-    /**
-     * localStorageからチャット履歴を読み込む
-     * @returns {boolean} 履歴が読み込まれたかどうか
-     */
-    function loadChatHistory() {
-        const savedHistory = localStorage.getItem('chatbot_history');
-        if (savedHistory) {
-            chatWindow.innerHTML = savedHistory;
-            const messageElements = chatWindow.querySelectorAll('.bot-message-container[data-message-id]');
-            messageElements.forEach(el => {
-                const messageId = el.dataset.messageId;
-                if (pinnedMessages.some(p => p.id === messageId)) {
-                    const pinBtn = el.querySelector('.pin-btn');
-                    if(pinBtn) pinBtn.classList.add('pinned');
-                }
-            });
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-            return true; 
-        }
-        return false; 
-    }
-
-    /**
      * チャット履歴をクリアする
      */
     function clearChatHistory() {
         localStorage.removeItem('chatbot_history');
-        chatWindow.innerHTML = ''; 
+        localStorage.removeItem('chatbot_quiz_history');
+        localStorage.removeItem('chatbot_learned_topics'); // 学習履歴も削除
+        if (chatWindow) {
+            chatWindow.innerHTML = ''; 
+        }
         displayBotMessage(uiStrings[currentLanguage].history_cleared);
         showWelcomeMenu();
     }
-
-    /**
-     * お気に入りメッセージをlocalStorageに保存する
-     */
-    function savePinnedMessages() {
-        localStorage.setItem('chatbot_pinned_messages', JSON.stringify(pinnedMessages));
-    }
-
-    /**
-     * お気に入りウィンドウをレンダリングする
-     */
-    function renderPinnedWindow() {
-        pinnedWindow.innerHTML = '';
-        if (pinnedMessages.length === 0) {
-            const strings = uiStrings[currentLanguage];
-            pinnedWindow.innerHTML = `
-                <div id="pinned-empty-state">
-                    <div class="icon"><i class="fas fa-thumbtack"></i></div>
-                    <h3 class="font-bold text-lg mb-2">${strings.pinned_empty_title}</h3>
-                    <p class="text-sm">${strings.pinned_empty_desc}</p>
-                </div>
-            `;
-        } else {
-            pinnedMessages.forEach(msg => {
-                const card = document.createElement('div');
-                card.className = 'pinned-message-card';
-                card.dataset.messageId = msg.id;
-                
-                const textP = document.createElement('p');
-                textP.className = 'pinned-message-text';
-                textP.innerHTML = markdownToHtml(msg.text);
-                
-                const unpinBtn = document.createElement('button');
-                unpinBtn.className = 'unpin-btn';
-                unpinBtn.innerHTML = '<i class="fas fa-times"></i>';
-                unpinBtn.title = 'Unpin';
-                
-                card.appendChild(textP);
-                card.appendChild(unpinBtn);
-                pinnedWindow.appendChild(card);
-            });
-        }
-    }
-
-    /**
-     * メッセージをピン留め/ピン留め解除する
-     * @param {HTMLElement} pinBtn - クリックされたピンボタン
-     */
-    function togglePinMessage(pinBtn) {
-        const messageContainer = pinBtn.closest('.bot-message-container');
-        const messageId = messageContainer.dataset.messageId;
-        const bubble = messageContainer.querySelector('.bg-white');
-        const messageText = bubble.querySelector('p').innerText;
-
-        const isPinned = pinnedMessages.some(p => p.id === messageId);
-
-        if (isPinned) {
-            pinnedMessages = pinnedMessages.filter(p => p.id !== messageId);
-            pinBtn.classList.remove('pinned');
-        } else {
-            pinnedMessages.push({ id: messageId, text: messageText });
-            pinBtn.classList.add('pinned');
-            
-            pinBtn.classList.add('pin-animation');
-            pinBtn.addEventListener('animationend', () => {
-                pinBtn.classList.remove('pin-animation');
-            }, { once: true });
-        }
-
-        savePinnedMessages();
-        if (!pinnedModal.classList.contains('hidden')) {
-            renderPinnedWindow();
-        }
-    }
     
     /**
-     * コンテナの端でスクロールした際に、親要素（ページ全体）がスクロールするのを防ぐ
-     * @param {HTMLElement} elem - スクロール可能な要素
+     * AIからの回答を取得し、表示・保存する
+     * @param {string} userPrompt - ユーザーからの入力テキスト
      */
-    function preventParentScroll(elem) {
-        elem.addEventListener('wheel', (e) => {
-            const { scrollTop, scrollHeight, clientHeight } = elem;
-            const deltaY = e.deltaY;
+    async function getAIResponse(userPrompt) {
+        displayBotMessage("..."); 
 
-            if (scrollTop === 0 && deltaY < 0) {
-                e.preventDefault();
-                return;
-            }
-
-            if (scrollHeight - clientHeight - scrollTop <= 1 && deltaY > 0) {
-                e.preventDefault();
-                return;
-            }
-        }, { passive: false });
-    }
-
-    function updateSeasonalAnimation(themeName) {
-        const container = document.getElementById('chatbot-animation-container');
-        if (!container) return;
-        container.innerHTML = ''; 
-
-        if (themeName === 'simple') {
-            return;
-        }
-
-        let particleConfig = null;
-        const particleCount = 20;
-
-        switch (themeName) {
-            case 'spring':
-                particleConfig = { type: 'span', className: 'sakura', content: '🌸', animation: 'fall' };
-                break;
-            case 'summer':
-                particleConfig = { type: 'div', className: 'bubble', animation: 'rise' };
-                break;
-            case 'autumn':
-                particleConfig = { type: 'span', className: 'leaf', content: '🍁', animation: 'fall' };
-                break;
-            case 'winter':
-                particleConfig = { type: 'span', className: 'snow', content: '❄️', animation: 'fall' };
-                break;
-        }
-
-        if (!particleConfig) return;
-
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement(particleConfig.type);
-            particle.className = 'particle ' + particleConfig.className;
-
-            if (particleConfig.content) {
-                particle.textContent = particleConfig.content;
-                particle.style.fontSize = `${10 + Math.random() * 15}px`;
-            } else {
-                const size = 5 + Math.random() * 15;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-            }
-
-            particle.style.left = `${Math.random() * 100}%`;
-            particle.style.animationName = particleConfig.animation;
-            particle.style.animationDuration = `${8 + Math.random() * 12}s`;
-            particle.style.animationDelay = `-${Math.random() * 10}s`;
-            particle.style.opacity = `${0.3 + Math.random() * 0.6}`;
-            
-            container.appendChild(particle);
-        }
-    }
-
-    function resetInquiryState() {
-        inquiryState = { status: 'idle', name: '', email: '', message: '' };
-    }
-
-    function resetQuizState() {
-        currentQuiz = null;
-        askedQuizIndices.clear();
-        currentDifficulty = null;
-        quizScore = 0;
-        quizLength = 0;
-    }
-
-    function showWelcomeMenu() {
-        resetQuizState();
-        const welcome = uiStrings[currentLanguage].welcome;
-        displayBotMessage(welcome.message, { quickReplies: welcome.replies });
-    }
-
-    function switchLanguage(lang) {
-        if (currentLanguage === lang) return;
-        currentLanguage = lang;
-        resetInquiryState();
-        resetQuizState();
-        const strings = uiStrings[lang];
-        document.getElementById('header-title').textContent = strings.headerTitle;
-        document.getElementById('header-lang-status').textContent = strings.langStatus;
-        userInput.placeholder = strings.inputPlaceholder;
+        const langMap = { ja: '日本語', en: 'English', zh: '中文' };
+        const systemInstruction = `あなたは日本の文化とマナーについて教える専門家です。ユーザーからの質問に対して、${langMap[currentLanguage]}で、親切かつ詳細に、箇条書きやステップ・バイ・ステップの説明などを活用して分かりやすく答えてください。`;
         
-        if (micBtn) {
-            micBtn.title = isRecording ? strings.mic_tooltip_recording : strings.mic_tooltip;
-        }
-        if (sendBtn) {
-            sendBtn.title = strings.send_tooltip;
-        }
-        if (summarizeBtn) {
-            summarizeBtn.title = strings.summarize_conversation;
-        }
+        const apiUrl = 'chatBOT/gemini_proxy.php';
         
-        if (langSwitcher) {
-            const buttons = langSwitcher.querySelectorAll('button.lang-switch-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.lang === lang) {
-                    btn.classList.add('active');
-                }
+        const generatePayload = {
+            contents: [
+                { "role": "user", "parts": [{ "text": systemInstruction }] },
+                { "role": "model", "parts": [{ "text": "はい、承知いたしました。" }] },
+                { "role": "user", "parts": [{ "text": userPrompt }] }
+            ]
+        };
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(generatePayload)
             });
-        }
-        
-        translateSettingsMenu();
-        renderPinnedWindow();
+            
+            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
+            if (loadingMessage) loadingMessage.remove();
 
-        if (settingsBtn) {
-            const isHidden = settingsContent.classList.contains('hidden');
-            settingsBtn.title = isHidden ? uiStrings[currentLanguage].open_menu : uiStrings[currentLanguage].close_menu;
-        }
+            if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+            
+            const result = await response.json();
+            const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text;
 
-        displayBotMessage(uiStrings[currentLanguage].lang_switched);
-        setTimeout(showWelcomeMenu, 1000);
+            if (aiText) {
+                displayBotMessage(aiText, { isAiResponse: true });
+
+                const summaryPrompt = `以下の文章を30字程度の日本語で簡潔に要約してください。:\n\n---\n${aiText}`;
+                const summarizePayload = { contents: [{ "role": "user", "parts": [{ "text": summaryPrompt }] }] };
+                
+                const summaryResponse = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(summarizePayload)
+                });
+                
+                if (summaryResponse.ok) {
+                    const summaryResult = await summaryResponse.json();
+                    const summaryText = summaryResult.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (summaryText) {
+                        await saveLearnedTopic({
+                            type: 'query',
+                            question: userPrompt,
+                            summary: summaryText.replace(/「|」/g, '')
+                        });
+                    }
+                }
+            } else {
+                console.error("Invalid AI response structure or content blocked:", result);
+                displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
+            }
+        } catch (error) {
+            console.error('AI response fetch error:', error);
+            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
+            if (loadingMessage) loadingMessage.remove();
+            displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
+        }
     }
 
     function removeAllQuickReplies() {
@@ -325,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayUserMessage(text) {
+        if (!chatWindow) return;
         const messageDiv = document.createElement('div');
         messageDiv.className = 'flex justify-end';
         const bubble = document.createElement('div');
@@ -337,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayBotMessage(text, options = {}) {
+        if (!chatWindow) return;
         removeAllQuickReplies();
         const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         const messageContainer = document.createElement('div');
@@ -450,6 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleUserInput() {
+        if (!userInput) return;
         const inputText = userInput.value.trim();
         if (!inputText) return;
         displayUserMessage(inputText);
@@ -506,9 +360,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(payload)
             });
             const result = await response.json();
-            if (chatWindow.lastChild && chatWindow.lastChild.textContent === "...") {
-                chatWindow.removeChild(chatWindow.lastChild);
-            }
+            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
+            if (loadingMessage) loadingMessage.remove();
+
             if (result.success) {
                 displayBotMessage(uiStrings[currentLanguage].inquiry.complete);
             } else {
@@ -517,9 +371,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Fetch API error during inquiry submission:', error);
-            if (chatWindow.lastChild && chatWindow.lastChild.textContent === "...") {
-                chatWindow.removeChild(chatWindow.lastChild);
-            }
+            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
+            if (loadingMessage) loadingMessage.remove();
             displayBotMessage(uiStrings[currentLanguage].inquiry.send_error);
         } finally {
             resetInquiryState();
@@ -528,9 +381,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function askNextQuizQuestion() {
+        if (!quizData || Object.keys(quizData).length === 0) {
+             displayBotMessage("申し訳ありませんが、現在クイズは利用できません。");
+             return;
+        }
         if (askedQuizIndices.size >= quizLength) {
             const resultMessage = uiStrings[currentLanguage].getQuizResultMessage(quizScore, quizLength);
             displayBotMessage(uiStrings[currentLanguage].quiz_complete + "\n" + resultMessage, { quizFlow: 'end' });
+            
+            const quizHistory = JSON.parse(localStorage.getItem('chatbot_quiz_history')) || [];
+            quizHistory.push({
+                difficulty: currentDifficulty,
+                score: quizScore,
+                total: quizLength,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('chatbot_quiz_history', JSON.stringify(quizHistory));
             return;
         }
 
@@ -560,84 +426,6 @@ document.addEventListener('DOMContentLoaded', () => {
         displayBotMessage(currentQuiz.question[currentLanguage], { quizOptions: currentQuiz.options[currentLanguage] });
     }
 
-    async function getAIResponse(text) {
-        displayBotMessage("..."); 
-
-        const langMap = { ja: '日本語', en: 'English', zh: '中文' };
-        const systemInstruction = `あなたは日本の文化とマナーについて教える専門家です。ユーザーからの質問に対して、${langMap[currentLanguage]}で、親切かつ詳細に、箇条書きやステップ・バイ・ステップの説明などを活用して分かりやすく答えてください。
-例えば、「箸の正しい持ち方」のような視覚的な説明が必要なトピックについては、具体的な手順やコツを丁寧に解説してください。`;
-        const userPrompt = text;
-
-        const apiUrl = 'chatBOT/gemini_proxy.php'; 
-
-        const payload = {
-            contents: [
-                {
-                    "role": "user",
-                    "parts": [{ "text": systemInstruction }]
-                },
-                {
-                    "role": "model",
-                    "parts": [{ "text": "はい、承知いたしました。日本のマナーについて、どのようなことでもお尋ねください。箇条書きなどを用いて、分かりやすく詳細に説明します。" }]
-                },
-                {
-                    "role": "user",
-                    "parts": [{ "text": userPrompt }]
-                }
-            ]
-        };
-
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            
-            const loadingMessage = Array.from(chatWindow.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
-            if (loadingMessage) {
-                loadingMessage.remove();
-            }
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Proxy or API Error:', response.status, errorData);
-                throw new Error(`Proxy or API request failed with status ${response.status}`);
-            }
-
-            const result = await response.json();
-
-            if (result.candidates && result.candidates.length > 0 &&
-                result.candidates[0].content && result.candidates[0].content.parts &&
-                result.candidates[0].content.parts.length > 0) {
-                const aiText = result.candidates[0].content.parts[0].text;
-                displayBotMessage(aiText, { isAiResponse: true });
-            } else {
-                console.error("Invalid AI response structure or content blocked:", result);
-                displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
-            }
-        } catch (error) {
-            console.error('AI response fetch error:', error);
-            const loadingMessage = Array.from(chatWindow.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
-            if (loadingMessage) {
-                loadingMessage.remove();
-            }
-            displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
-        }
-    }
-
-    function openFaqModal() {
-        faqList.innerHTML = '';
-        const faqStrings = uiStrings[currentLanguage].faq;
-        faqStrings.questions.forEach(item => {
-            const button = document.createElement('button');
-            button.className = 'faq-question-btn w-full text-left p-3 bg-white rounded-lg shadow hover:bg-gray-50 transition';
-            button.textContent = item.q;
-            faqList.appendChild(button);
-        });
-        faqModal.classList.remove('hidden');
-    }
-
     function getBotResponse(text) {
         const lowerCaseText = text.toLowerCase();
         const features = specialFeatures[currentLanguage];
@@ -664,6 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function summarizeConversation() {
+        if (!chatWindow) return;
         const messages = Array.from(chatWindow.children);
         let conversationHistory = [];
 
@@ -689,13 +478,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // ▼▼▼【修正点】ボタンを表示せず、自動でメニューに戻るように変更 ▼▼▼
         if (conversationHistory.length < 4) {
             displayBotMessage(uiStrings[currentLanguage].summarize_no_history);
-            setTimeout(showWelcomeMenu, 2500); // 2.5秒後にメニュー表示
+            setTimeout(showWelcomeMenu, 2500);
             return;
         }
-        // ▲▲▲ ここまで ▲▲▲
 
         displayBotMessage(uiStrings[currentLanguage].summarizing);
 
@@ -715,16 +502,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(payload)
             });
 
-            const loadingMessage = Array.from(chatWindow.querySelectorAll('.bot-message-container')).find(el => el.textContent.includes(uiStrings[currentLanguage].summarizing));
-            if (loadingMessage) {
-                loadingMessage.remove();
-            }
+            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent.includes(uiStrings[currentLanguage].summarizing));
+            if (loadingMessage) loadingMessage.remove();
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Summarize API Error:', response.status, errorData);
-                throw new Error(`API request failed`);
-            }
+            if (!response.ok) throw new Error(`API request failed`);
 
             const result = await response.json();
 
@@ -738,17 +519,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Summarization fetch error:', error);
-            const loadingMessage = Array.from(chatWindow.querySelectorAll('.bot-message-container')).find(el => el.textContent.includes(uiStrings[currentLanguage].summarizing));
-            if (loadingMessage) {
-                loadingMessage.remove();
-            }
+            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent.includes(uiStrings[currentLanguage].summarizing));
+            if (loadingMessage) loadingMessage.remove();
             displayBotMessage(uiStrings[currentLanguage].summarize_error, { showBackToMenu: true });
         }
     }
 
-    /**
-     * 音声認識を開始する関数
-     */
     function startSpeechRecognition() {
         if (!('webkitSpeechRecognition' in window)) {
             displayBotMessage(uiStrings[currentLanguage].voice_not_supported);
@@ -767,7 +543,6 @@ document.addEventListener('DOMContentLoaded', () => {
             micBtn.title = uiStrings[currentLanguage].mic_tooltip_recording;
             userInput.placeholder = uiStrings[currentLanguage].voice_listening;
             userInput.value = '';
-            console.log("音声認識を開始しました...");
         };
 
         recognition.onresult = (event) => {
@@ -797,39 +572,279 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         recognition.onend = () => {
-            isRecording = false;
-            micBtn.classList.remove('recording');
-            micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-            micBtn.title = uiStrings[currentLanguage].mic_tooltip;
-            userInput.placeholder = uiStrings[currentLanguage].inputPlaceholder;
-            console.log("音声認識が終了しました。");
-            if (userInput.value.trim() !== '') {
-                handleUserInput();
+            if (isRecording) {
+                isRecording = false;
+                micBtn.classList.remove('recording');
+                micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                micBtn.title = uiStrings[currentLanguage].mic_tooltip;
+                userInput.placeholder = uiStrings[currentLanguage].inputPlaceholder;
+                if (userInput.value.trim() !== '') {
+                    handleUserInput();
+                }
             }
         };
 
         recognition.start();
     }
 
-    /**
-     * 音声認識を停止する関数
-     */
     function stopSpeechRecognition() {
         if (recognition && isRecording) {
             recognition.stop();
-            isRecording = false;
-            micBtn.classList.remove('recording');
-            micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-            micBtn.title = uiStrings[currentLanguage].mic_tooltip;
-            userInput.placeholder = uiStrings[currentLanguage].inputPlaceholder;
-            console.log("音声認識を強制停止しました。");
         }
     }
 
+    function saveChatHistory() {
+        if (chatWindow && chatWindow.innerHTML) {
+            localStorage.setItem('chatbot_history', chatWindow.innerHTML);
+        }
+    }
 
-    /** チャットボットの初期化処理 */
+    function loadChatHistory() {
+        if (!chatWindow) return false;
+        const savedHistory = localStorage.getItem('chatbot_history');
+        if (savedHistory) {
+            chatWindow.innerHTML = savedHistory;
+            const messageElements = chatWindow.querySelectorAll('.bot-message-container[data-message-id]');
+            messageElements.forEach(el => {
+                const messageId = el.dataset.messageId;
+                if (pinnedMessages.some(p => p.id === messageId)) {
+                    const pinBtn = el.querySelector('.pin-btn');
+                    if(pinBtn) pinBtn.classList.add('pinned');
+                }
+            });
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            return true; 
+        }
+        return false; 
+    }
+
+    function savePinnedMessages() {
+        localStorage.setItem('chatbot_pinned_messages', JSON.stringify(pinnedMessages));
+    }
+
+    function renderPinnedWindow() {
+        if (!pinnedWindow) return;
+        pinnedWindow.innerHTML = '';
+        if (pinnedMessages.length === 0) {
+            const strings = uiStrings[currentLanguage];
+            pinnedWindow.innerHTML = `
+                <div id="pinned-empty-state">
+                    <div class="icon"><i class="fas fa-thumbtack"></i></div>
+                    <h3 class="font-bold text-lg mb-2">${strings.pinned_empty_title}</h3>
+                    <p class="text-sm">${strings.pinned_empty_desc}</p>
+                </div>
+            `;
+        } else {
+            pinnedMessages.forEach(msg => {
+                const card = document.createElement('div');
+                card.className = 'pinned-message-card';
+                card.dataset.messageId = msg.id;
+                
+                const textP = document.createElement('p');
+                textP.className = 'pinned-message-text';
+                textP.innerHTML = markdownToHtml(msg.text);
+                
+                const unpinBtn = document.createElement('button');
+                unpinBtn.className = 'unpin-btn';
+                unpinBtn.innerHTML = '<i class="fas fa-times"></i>';
+                unpinBtn.title = 'Unpin';
+                
+                card.appendChild(textP);
+                card.appendChild(unpinBtn);
+                pinnedWindow.appendChild(card);
+            });
+        }
+    }
+
+    function togglePinMessage(pinBtn) {
+        const messageContainer = pinBtn.closest('.bot-message-container');
+        const messageId = messageContainer.dataset.messageId;
+        const bubble = messageContainer.querySelector('.bg-white');
+        const messageText = bubble.querySelector('p').innerText;
+
+        const isPinned = pinnedMessages.some(p => p.id === messageId);
+
+        if (isPinned) {
+            pinnedMessages = pinnedMessages.filter(p => p.id !== messageId);
+            pinBtn.classList.remove('pinned');
+        } else {
+            pinnedMessages.push({ id: messageId, text: messageText });
+            pinBtn.classList.add('pinned');
+            
+            pinBtn.classList.add('pin-animation');
+            pinBtn.addEventListener('animationend', () => {
+                pinBtn.classList.remove('pin-animation');
+            }, { once: true });
+        }
+
+        savePinnedMessages();
+        if (pinnedModal && !pinnedModal.classList.contains('hidden')) {
+            renderPinnedWindow();
+        }
+    }
+
+    function preventParentScroll(elem) {
+        if (!elem) return;
+        elem.addEventListener('wheel', (e) => {
+            const { scrollTop, scrollHeight, clientHeight } = elem;
+            const deltaY = e.deltaY;
+
+            if (scrollTop === 0 && deltaY < 0) {
+                e.preventDefault();
+                return;
+            }
+
+            if (scrollHeight - clientHeight - scrollTop <= 1 && deltaY > 0) {
+                e.preventDefault();
+                return;
+            }
+        }, { passive: false });
+    }
+
+    function updateSeasonalAnimation(themeName) {
+        const container = document.getElementById('chatbot-animation-container');
+        if (!container) return;
+        container.innerHTML = ''; 
+
+        if (themeName === 'simple') {
+            return;
+        }
+
+        let particleConfig = null;
+        const particleCount = 20;
+
+        switch (themeName) {
+            case 'spring':
+                particleConfig = { type: 'span', className: 'sakura', content: '🌸', animation: 'fall' };
+                break;
+            case 'summer':
+                particleConfig = { type: 'div', className: 'bubble', animation: 'rise' };
+                break;
+            case 'autumn':
+                particleConfig = { type: 'span', className: 'leaf', content: '🍁', animation: 'fall' };
+                break;
+            case 'winter':
+                particleConfig = { type: 'span', className: 'snow', content: '❄️', animation: 'fall' };
+                break;
+        }
+
+        if (!particleConfig) return;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement(particleConfig.type);
+            particle.className = 'particle ' + particleConfig.className;
+
+            if (particleConfig.content) {
+                particle.textContent = particleConfig.content;
+                particle.style.fontSize = `${10 + Math.random() * 15}px`;
+            } else {
+                const size = 5 + Math.random() * 15;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+            }
+
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.animationName = particleConfig.animation;
+            particle.style.animationDuration = `${8 + Math.random() * 12}s`;
+            particle.style.animationDelay = `-${Math.random() * 10}s`;
+            particle.style.opacity = `${0.3 + Math.random() * 0.6}`;
+            
+            container.appendChild(particle);
+        }
+    }
+
+    function resetInquiryState() {
+        inquiryState = { status: 'idle', name: '', email: '', message: '' };
+    }
+
+    function resetQuizState() {
+        currentQuiz = null;
+        askedQuizIndices.clear();
+        currentDifficulty = null;
+        quizScore = 0;
+        quizLength = 0;
+    }
+
+    function showWelcomeMenu() {
+        resetQuizState();
+        const welcome = uiStrings[currentLanguage].welcome;
+        displayBotMessage(welcome.message, { quickReplies: welcome.replies });
+    }
+
+    function switchLanguage(lang) {
+        if (currentLanguage === lang) return;
+        currentLanguage = lang;
+        localStorage.setItem('chatbot_language', currentLanguage);
+        resetInquiryState();
+        resetQuizState();
+        const strings = uiStrings[lang];
+        document.getElementById('header-title').textContent = strings.headerTitle;
+        document.getElementById('header-lang-status').textContent = strings.langStatus;
+        userInput.placeholder = strings.inputPlaceholder;
+        
+        if (micBtn) {
+            micBtn.title = isRecording ? strings.mic_tooltip_recording : strings.mic_tooltip;
+        }
+        if (sendBtn) {
+            sendBtn.title = strings.send_tooltip;
+        }
+        if (summarizeBtn) {
+            summarizeBtn.title = strings.summarize_conversation;
+        }
+        
+        if (langSwitcher) {
+            const buttons = langSwitcher.querySelectorAll('button.lang-switch-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        translateSettingsMenu();
+        renderPinnedWindow();
+
+        if (settingsBtn) {
+            const isHidden = settingsContent.classList.contains('hidden');
+            settingsBtn.title = isHidden ? uiStrings[currentLanguage].open_menu : uiStrings[currentLanguage].close_menu;
+        }
+
+        displayBotMessage(uiStrings[currentLanguage].lang_switched);
+        setTimeout(showWelcomeMenu, 1000);
+    }
+
+    function openFaqModal() {
+        if (!faqList || !faqModal) return;
+        faqList.innerHTML = '';
+        const faqStrings = uiStrings[currentLanguage].faq;
+        faqStrings.questions.forEach(item => {
+            const button = document.createElement('button');
+            button.className = 'faq-question-btn w-full text-left p-3 bg-white rounded-lg shadow hover:bg-gray-50 transition';
+            button.textContent = item.q;
+            faqList.appendChild(button);
+        });
+        faqModal.classList.remove('hidden');
+    }
+
+    function translateSettingsMenu() {
+        const elementsToTranslate = document.querySelectorAll('#settings-content [data-translate], #chatbot-modal [data-translate], #pinned-modal [data-translate], #faq-modal [data-translate]');
+        elementsToTranslate.forEach(element => {
+            const key = element.dataset.translate;
+            if (uiStrings[currentLanguage][key]) {
+                element.textContent = uiStrings[currentLanguage][key];
+            }
+        });
+    }
+
+    // --- 初期化処理 ---
+    
+    // チャットボットのメイン初期化関数
     function initializeChat() {
-        chatWindow.classList.add('min-h-0');
+        if (isChatInitialized) return;
+        isChatInitialized = true;
+
+        if(chatWindow) chatWindow.classList.add('min-h-0');
         
         preventParentScroll(chatWindow);
         preventParentScroll(pinnedWindow);
@@ -837,19 +852,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (settingsBtn) {
             settingsBtn.title = uiStrings[currentLanguage].open_menu;
-
             settingsBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const isHidden = settingsContent.classList.toggle('hidden');
-                settingsBtn.title = isHidden ? uiStrings[currentLanguage].open_menu : uiStrings[currentLanguage].close_menu;
+                if(settingsContent) {
+                    settingsContent.classList.toggle('hidden');
+                    const isHidden = settingsContent.classList.contains('hidden');
+                    settingsBtn.title = isHidden ? uiStrings[currentLanguage].open_menu : uiStrings[currentLanguage].close_menu;
+                }
             });
         }
         
         if (micBtn) {
             micBtn.title = uiStrings[currentLanguage].mic_tooltip;
+            micBtn.addEventListener('click', () => {
+                if (isRecording) stopSpeechRecognition();
+                else startSpeechRecognition();
+            });
         }
         if (sendBtn) {
             sendBtn.title = uiStrings[currentLanguage].send_tooltip;
+            sendBtn.addEventListener('click', handleUserInput);
+        }
+        if(userInput) {
+            userInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') handleUserInput();
+            });
         }
         if (summarizeBtn) {
             summarizeBtn.title = uiStrings[currentLanguage].summarize_conversation;
@@ -861,32 +888,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (summarizeMenuBtn) {
              summarizeMenuBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                settingsContent.classList.add('hidden');
-                settingsBtn.title = uiStrings[currentLanguage].open_menu;
+                if(settingsContent) settingsContent.classList.add('hidden');
+                if(settingsBtn) settingsBtn.title = uiStrings[currentLanguage].open_menu;
                 summarizeConversation();
             });
         }
         if (faqMenuBtn) {
             faqMenuBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                settingsContent.classList.add('hidden');
-                settingsBtn.title = uiStrings[currentLanguage].open_menu;
+                if(settingsContent) settingsContent.classList.add('hidden');
+                if(settingsBtn) settingsBtn.title = uiStrings[currentLanguage].open_menu;
                 openFaqModal();
             });
         }
         
-        if (faqModal) {
-            faqModalCloseBtn.addEventListener('click', () => {
+        if (faqModal && faqModalCloseBtn && faqList) {
+            // ▼▼▼【修正】イベントの伝播を停止 ▼▼▼
+            faqModalCloseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 faqModal.classList.add('hidden');
             });
-
             faqModal.addEventListener('click', (e) => {
-                if (e.target === faqModal) {
-                    faqModal.classList.add('hidden');
-                }
+                e.stopPropagation();
+                if (e.target === faqModal) faqModal.classList.add('hidden');
             });
-
             faqList.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // ▲▲▲ ここまで ▲▲▲
                 const faqButton = e.target.closest('.faq-question-btn');
                 if (faqButton) {
                     faqModal.classList.add('hidden');
@@ -894,29 +922,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     const faqData = uiStrings[currentLanguage].faq.questions.find(q => q.q === questionText);
                     if (faqData) {
                         displayUserMessage(faqData.q);
-                        setTimeout(() => {
+                        setTimeout(async () => {
                            displayBotMessage(faqData.a, { showBackToMenu: true });
+                           await saveLearnedTopic({ type: 'faq', id: faqData.id, question: faqData.q });
                         }, 500);
                     }
                 }
             });
         }
 
-        const allThemes = ['theme-simple', 'theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter'];
-        const applyTheme = (themeName) => {
-            allThemes.forEach(theme => chatModal.classList.remove(theme));
-            chatModal.classList.add(`theme-${themeName}`);
-            updateSeasonalAnimation(themeName);
-        };
-        applyTheme('simple'); 
-
-        themeOptions.forEach(option => {
-            option.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const selectedTheme = option.dataset.theme;
-                applyTheme(selectedTheme);
+        if(themeOptions){
+            const allThemes = ['theme-simple', 'theme-spring', 'theme-summer', 'theme-autumn', 'theme-winter'];
+            const applyTheme = (themeName) => {
+                if(!chatModal) return;
+                allThemes.forEach(theme => chatModal.classList.remove(theme));
+                chatModal.classList.add(`theme-${themeName}`);
+                updateSeasonalAnimation(themeName);
+            };
+            applyTheme('simple'); 
+            themeOptions.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const selectedTheme = option.dataset.theme;
+                    applyTheme(selectedTheme);
+                });
             });
-        });
+        }
         
         if(clearHistoryBtn) {
             clearHistoryBtn.addEventListener('click', (e) => {
@@ -932,7 +963,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.classList.add('active');
                 }
             });
-
             langSwitcher.addEventListener('click', (e) => {
                  const button = e.target.closest('.lang-switch-btn');
                 if (button && button.dataset.lang) {
@@ -942,220 +972,211 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        pinnedMenuBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            renderPinnedWindow();
-            pinnedModal.classList.remove('hidden');
-            settingsContent.classList.add('hidden');
-            if (settingsBtn) {
-                settingsBtn.title = uiStrings[currentLanguage].open_menu;
-            }
-        });
-
-        pinnedModalCloseBtn.addEventListener('click', () => {
-            pinnedModal.classList.add('hidden');
-        });
-
-        pinnedModal.addEventListener('click', (e) => {
-            if (e.target === pinnedModal) {
+        if(pinnedMenuBtn && pinnedModal){
+            pinnedMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                renderPinnedWindow();
+                pinnedModal.classList.remove('hidden');
+                if(settingsContent) settingsContent.classList.add('hidden');
+                if(settingsBtn) settingsBtn.title = uiStrings[currentLanguage].open_menu;
+            });
+        }
+        
+        if(pinnedModalCloseBtn && pinnedModal){
+            pinnedModalCloseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 pinnedModal.classList.add('hidden');
-            }
-        });
+            });
+            pinnedModal.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (e.target === pinnedModal) pinnedModal.classList.add('hidden');
+            });
+        }
 
-        if (micBtn) {
-            micBtn.addEventListener('click', () => {
-                if (isRecording) {
-                    stopSpeechRecognition();
+        if(chatWindow){
+            chatWindow.addEventListener('click', function (e) {
+                const pinBtn = e.target.closest('.pin-btn');
+                if (pinBtn) {
+                    togglePinMessage(pinBtn);
+                    return;
+                }
+                
+                const shareBtn = e.target.closest('.share-btn');
+                if (shareBtn) {
+                    e.stopPropagation();
+                    const bubble = shareBtn.closest('.bg-white');
+                    const existingMenu = bubble.querySelector('.share-menu');
+
+                    if (existingMenu) {
+                        existingMenu.remove();
+                        return;
+                    }
+                    
+                    document.querySelectorAll('.share-menu').forEach(menu => menu.remove());
+
+                    const menu = document.createElement('div');
+                    menu.className = 'share-menu';
+
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'share-menu-btn';
+                    copyBtn.innerHTML = `<i class="fas fa-copy fa-fw"></i> ${uiStrings[currentLanguage].copy_to_clipboard}`;
+                    
+                    const downloadBtn = document.createElement('button');
+                    downloadBtn.className = 'share-menu-btn';
+                    downloadBtn.innerHTML = `<i class="fas fa-download fa-fw"></i> ${uiStrings[currentLanguage].download_as_text}`;
+
+                    menu.appendChild(copyBtn);
+                    menu.appendChild(downloadBtn);
+                    bubble.appendChild(menu);
+
+                    setTimeout(() => {
+                        document.addEventListener('click', function closeMenu(event) {
+                            if (!menu.contains(event.target)) {
+                                menu.remove();
+                                document.removeEventListener('click', closeMenu);
+                            }
+                        });
+                    }, 0);
+
+                    copyBtn.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        const textToCopy = bubble.querySelector('p').innerText;
+                        const tempTextarea = document.createElement('textarea');
+                        tempTextarea.value = textToCopy;
+                        document.body.appendChild(tempTextarea);
+                        tempTextarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempTextarea);
+
+                        const feedback = document.createElement('div');
+                        feedback.className = 'copy-feedback';
+                        feedback.textContent = uiStrings[currentLanguage].copied_to_clipboard;
+                        bubble.appendChild(feedback);
+                        setTimeout(() => feedback.remove(), 2000);
+                        menu.remove();
+                    });
+
+                    downloadBtn.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        const textToSave = bubble.querySelector('p').innerText;
+                        const blob = new Blob([textToSave], { type: 'text/plain' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'chatbot-answer.txt';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        menu.remove();
+                    });
+
+                    return;
+                }
+
+                const feedbackBtn = e.target.closest('.feedback-btn');
+                if (feedbackBtn) {
+                    e.stopPropagation();
+                    const feedback = feedbackBtn.dataset.feedback;
+                    const container = feedbackBtn.parentElement;
+                    const messageId = container.dataset.messageId;
+                    const messageElement = document.querySelector(`.bot-message-container[data-message-id="${messageId}"] p`);
+                    const messageText = messageElement ? messageElement.innerText : '';
+                    
+                    console.log({
+                        messageId: messageId,
+                        feedback: feedback,
+                        message: messageText,
+                        language: currentLanguage
+                    });
+
+                    container.innerHTML = `<p class="feedback-thank-you">${uiStrings[currentLanguage].feedback.thank_you}</p>`;
+                    
+                    saveChatHistory();
+                    return; 
+                }
+
+                const targetButton = e.target.closest('.quick-reply-btn');
+                if (!targetButton) return;
+                
+                e.stopPropagation();
+
+                const replyText = targetButton.textContent;
+                const action = targetButton.dataset.action;
+                displayUserMessage(replyText);
+                removeAllQuickReplies();
+                if (action === 'back_to_menu') {
+                    resetQuizState();
+                    setTimeout(showWelcomeMenu, 500);
+                } else if (action === 'start_over_quiz') {
+                    resetQuizState();
+                    const quizKeyword = uiStrings[currentLanguage].welcome.replies.find(r =>
+                        specialFeatures[currentLanguage][r.toLowerCase()]?.isQuiz
+                    );
+                    if (quizKeyword) {
+                        getBotResponse(quizKeyword);
+                    }
+                } else if (action === 'next_quiz') {
+                    askNextQuizQuestion();
+                } else if (action === 'select_difficulty') {
+                    const difficultyMap = {
+                        '簡単': 'easy', 'Easy': 'easy', '简单': 'easy',
+                        '普通': 'normal', 'Normal': 'normal',
+                        '難しい': 'hard', 'Hard': 'hard', '困难': 'hard'
+                    };
+                    currentDifficulty = difficultyMap[replyText];
+                    displayBotMessage(uiStrings[currentLanguage].quiz_question_count_prompt, { quickReplies: uiStrings[currentLanguage].quiz_question_counts });
+
+                } else if (action === 'select_question_count') {
+                    quizLength = parseInt(replyText);
+                    askedQuizIndices.clear();
+                    quizScore = 0;
+                    currentQuiz = null;
+                    askNextQuizQuestion();
+
+                } else if (action === 'quiz_option') {
+                    const quizData = currentQuiz;
+                    if (!quizData) return;
+                    const masterCorrectAnswerIndex = quizData.correct;
+                    const selectedOptionIndex = quizData.options[currentLanguage].indexOf(replyText);
+                    let resultMessage;
+                    const correctMessages = { ja: '正解です！👏 ', en: 'Correct! 👏 ', zh: '回答正确！👏 ' };
+                    const incorrectMessages = { ja: '残念！正解は「', en: 'Incorrect. The correct answer is "', zh: '很遗憾！正确答案是“' };
+                    const endMessages = { ja: '」です。', en: '". ', zh: '”。' };
+                    if (selectedOptionIndex === masterCorrectAnswerIndex) {
+                        quizScore++;
+                        resultMessage = correctMessages[currentLanguage] + quizData.explanation[currentLanguage];
+                    } else {
+                        resultMessage = incorrectMessages[currentLanguage] + quizData.options[currentLanguage][masterCorrectAnswerIndex] + endMessages[currentLanguage] + quizData.explanation[currentLanguage];
+                    }
+                    currentQuiz = null;
+                    setTimeout(() => displayBotMessage(resultMessage, { quizFlow: 'continue' }), 500);
                 } else {
-                    startSpeechRecognition();
+                    setTimeout(() => getBotResponse(replyText), 500);
                 }
             });
         }
 
-        sendBtn.addEventListener('click', handleUserInput);
-        userInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') handleUserInput();
-        });
-
-        chatWindow.addEventListener('click', function (e) {
-            const pinBtn = e.target.closest('.pin-btn');
-            if (pinBtn) {
-                togglePinMessage(pinBtn);
-                return;
-            }
-            
-            const shareBtn = e.target.closest('.share-btn');
-            if (shareBtn) {
-                e.stopPropagation();
-                const bubble = shareBtn.closest('.bg-white');
-                const existingMenu = bubble.querySelector('.share-menu');
-
-                if (existingMenu) {
-                    existingMenu.remove();
-                    return;
+        if(pinnedWindow){
+            pinnedWindow.addEventListener('click', function(e) {
+                const unpinBtn = e.target.closest('.unpin-btn');
+                if (unpinBtn) {
+                    const card = unpinBtn.closest('.pinned-message-card');
+                    const messageId = card.dataset.messageId;
+                    
+                    pinnedMessages = pinnedMessages.filter(p => p.id !== messageId);
+                    savePinnedMessages();
+                    
+                    const originalMessagePinBtn = document.querySelector(`.bot-message-container[data-message-id="${messageId}"] .pin-btn`);
+                    if (originalMessagePinBtn) {
+                        originalMessagePinBtn.classList.remove('pinned');
+                    }
+                    
+                    renderPinnedWindow();
                 }
-                
-                document.querySelectorAll('.share-menu').forEach(menu => menu.remove());
-
-                const menu = document.createElement('div');
-                menu.className = 'share-menu';
-
-                const copyBtn = document.createElement('button');
-                copyBtn.className = 'share-menu-btn';
-                copyBtn.innerHTML = `<i class="fas fa-copy fa-fw"></i> ${uiStrings[currentLanguage].copy_to_clipboard}`;
-                
-                const downloadBtn = document.createElement('button');
-                downloadBtn.className = 'share-menu-btn';
-                downloadBtn.innerHTML = `<i class="fas fa-download fa-fw"></i> ${uiStrings[currentLanguage].download_as_text}`;
-
-                menu.appendChild(copyBtn);
-                menu.appendChild(downloadBtn);
-                bubble.appendChild(menu);
-
-                setTimeout(() => {
-                    document.addEventListener('click', function closeMenu(event) {
-                        if (!menu.contains(event.target)) {
-                            menu.remove();
-                            document.removeEventListener('click', closeMenu);
-                        }
-                    });
-                }, 0);
-
-                copyBtn.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    const textToCopy = bubble.querySelector('p').innerText;
-                    const tempTextarea = document.createElement('textarea');
-                    tempTextarea.value = textToCopy;
-                    document.body.appendChild(tempTextarea);
-                    tempTextarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(tempTextarea);
-
-                    const feedback = document.createElement('div');
-                    feedback.className = 'copy-feedback';
-                    feedback.textContent = uiStrings[currentLanguage].copied_to_clipboard;
-                    bubble.appendChild(feedback);
-                    setTimeout(() => feedback.remove(), 2000);
-                    menu.remove();
-                });
-
-                downloadBtn.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    const textToSave = bubble.querySelector('p').innerText;
-                    const blob = new Blob([textToSave], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'chatbot-answer.txt';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    menu.remove();
-                });
-
-                return;
-            }
-
-            const feedbackBtn = e.target.closest('.feedback-btn');
-            if (feedbackBtn) {
-                e.stopPropagation();
-                const feedback = feedbackBtn.dataset.feedback;
-                const container = feedbackBtn.parentElement;
-                const messageId = container.dataset.messageId;
-                const messageElement = document.querySelector(`.bot-message-container[data-message-id="${messageId}"] p`);
-                const messageText = messageElement ? messageElement.innerText : '';
-                
-                console.log({
-                    messageId: messageId,
-                    feedback: feedback,
-                    message: messageText,
-                    language: currentLanguage
-                });
-
-                container.innerHTML = `<p class="feedback-thank-you">${uiStrings[currentLanguage].feedback.thank_you}</p>`;
-                
-                saveChatHistory();
-                return; 
-            }
-
-            const targetButton = e.target.closest('.quick-reply-btn');
-            if (!targetButton) return;
-            
-            e.stopPropagation();
-
-            const replyText = targetButton.textContent;
-            const action = targetButton.dataset.action;
-            displayUserMessage(replyText);
-            removeAllQuickReplies();
-            if (action === 'back_to_menu') {
-                resetQuizState();
-                setTimeout(showWelcomeMenu, 500);
-            } else if (action === 'start_over_quiz') {
-                resetQuizState();
-                const quizKeyword = uiStrings[currentLanguage].welcome.replies.find(r =>
-                    specialFeatures[currentLanguage][r.toLowerCase()]?.isQuiz
-                );
-                if (quizKeyword) {
-                    getBotResponse(quizKeyword);
-                }
-            } else if (action === 'next_quiz') {
-                askNextQuizQuestion();
-            } else if (action === 'select_difficulty') {
-                const difficultyMap = {
-                    '簡単': 'easy', 'Easy': 'easy', '简单': 'easy',
-                    '普通': 'normal', 'Normal': 'normal',
-                    '難しい': 'hard', 'Hard': 'hard', '困难': 'hard'
-                };
-                currentDifficulty = difficultyMap[replyText];
-                displayBotMessage(uiStrings[currentLanguage].quiz_question_count_prompt, { quickReplies: uiStrings[currentLanguage].quiz_question_counts });
-
-            } else if (action === 'select_question_count') {
-                quizLength = parseInt(replyText);
-                askedQuizIndices.clear();
-                quizScore = 0;
-                currentQuiz = null;
-                askNextQuizQuestion();
-
-            } else if (action === 'quiz_option') {
-                const quizData = currentQuiz;
-                if (!quizData) return;
-                const masterCorrectAnswerIndex = quizData.correct;
-                const selectedOptionIndex = quizData.options[currentLanguage].indexOf(replyText);
-                let resultMessage;
-                const correctMessages = { ja: '正解です！👏 ', en: 'Correct! 👏 ', zh: '回答正确！👏 ' };
-                const incorrectMessages = { ja: '残念！正解は「', en: 'Incorrect. The correct answer is "', zh: '很遗憾！正确答案是“' };
-                const endMessages = { ja: '」です。', en: '". ', zh: '”。' };
-                if (selectedOptionIndex === masterCorrectAnswerIndex) {
-                    quizScore++;
-                    resultMessage = correctMessages[currentLanguage] + quizData.explanation[currentLanguage];
-                } else {
-                    resultMessage = incorrectMessages[currentLanguage] + quizData.options[currentLanguage][masterCorrectAnswerIndex] + endMessages[currentLanguage] + quizData.explanation[currentLanguage];
-                }
-                currentQuiz = null;
-                setTimeout(() => displayBotMessage(resultMessage, { quizFlow: 'continue' }), 500);
-            } else {
-                setTimeout(() => getBotResponse(replyText), 500);
-            }
-        });
-
-        pinnedWindow.addEventListener('click', function(e) {
-            const unpinBtn = e.target.closest('.unpin-btn');
-            if (unpinBtn) {
-                const card = unpinBtn.closest('.pinned-message-card');
-                const messageId = card.dataset.messageId;
-                
-                pinnedMessages = pinnedMessages.filter(p => p.id !== messageId);
-                savePinnedMessages();
-                
-                const originalMessagePinBtn = chatWindow.querySelector(`.bot-message-container[data-message-id="${messageId}"] .pin-btn`);
-                if (originalMessagePinBtn) {
-                    originalMessagePinBtn.classList.remove('pinned');
-                }
-                
-                renderPinnedWindow();
-            }
-        });
+            });
+        }
 
         translateSettingsMenu();
         const historyLoaded = loadChatHistory();
@@ -1164,46 +1185,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // メインの実行ロジック
     if (openButton && chatModal) {
         const toggleChat = (show) => {
             if (show) {
                 chatModal.style.display = 'flex';
                 openButton.innerHTML = '<i class="fas fa-times"></i>';
-                if (!isChatInitialized) {
-                    initializeChat();
-                    isChatInitialized = true;
-                }
+                initializeChat();
             } else {
                 chatModal.style.display = 'none';
                 openButton.innerHTML = '<i class="far fa-comments"></i>';
             }
         };
 
-        document.addEventListener('click', (e) => {
-            if (settingsContent && !settingsContent.classList.contains('hidden')) {
-                if (!settingsContent.contains(e.target) && !settingsBtn.contains(e.target)) {
-                    settingsContent.classList.add('hidden');
-                    if (settingsBtn) {
-                        settingsBtn.title = uiStrings[currentLanguage].open_menu;
-                    }
-                }
-            }
-            
-            if (chatModal.style.display === 'flex' && 
-                !chatModal.contains(e.target) && 
-                !openButton.contains(e.target) &&
-                !pinnedModal.contains(e.target) &&
-                !faqModal.contains(e.target) &&
-                pinnedModal.classList.contains('hidden') &&
-                faqModal.classList.contains('hidden')) { 
-                toggleChat(false);
-            }
-        });
-
         openButton.addEventListener('click', (e) => {
             e.stopPropagation();
             const isVisible = chatModal.style.display === 'flex';
             toggleChat(!isVisible);
+        });
+        
+        document.addEventListener('click', (e) => {
+            // ▼▼▼【変更点】メニュー外クリックでメニューを閉じる処理を追加 ▼▼▼
+            if (settingsBtn && settingsContent && !settingsContent.classList.contains('hidden')) {
+                const isClickInsideMenu = settingsContent.contains(e.target);
+                const isClickOnSettingsBtn = settingsBtn.contains(e.target);
+
+                if (!isClickInsideMenu && !isClickOnSettingsBtn) {
+                    settingsContent.classList.add('hidden');
+                    settingsBtn.title = uiStrings[currentLanguage].open_menu;
+                }
+            }
+            // ▲▲▲ ここまで ▲▲▲
+
+            if (chatModal.style.display !== 'flex') return;
+
+            const isClickInsideChat = chatModal.contains(e.target);
+            const isClickOnOpenButton = openButton.contains(e.target);
+            
+            if (!isClickInsideChat && !isClickOnOpenButton) {
+                toggleChat(false);
+            }
         });
     }
 });
