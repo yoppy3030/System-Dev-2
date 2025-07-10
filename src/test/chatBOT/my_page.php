@@ -6,7 +6,9 @@
     <title>マイページ - Japan Life Manual</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ▼▼▼【変更】CSSファイルの参照を更新 ▼▼▼ -->
     <link rel="stylesheet" href="./css/my_page.css">
+    <!-- ▲▲▲ ここまで ▲▲▲ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-100">
@@ -45,14 +47,48 @@
             <!-- Left Column -->
             <div class="lg:col-span-2 space-y-8">
 
-                <!-- Quiz Performance Section -->
-                <section class="bg-gradient-to-br from-sky-500 to-indigo-600 p-6 rounded-2xl shadow-lg text-white">
-                    <h2 id="quiz-stats-title" class="section-title text-white border-white/30" data-translate="quiz_stats_title">クイズ成績</h2>
-                    <div id="quiz-stats-container" class="relative" style="height: 400px;">
-                        <canvas id="learningProgressChart"></canvas>
-                        <p id="no-quiz-data" class="hidden absolute inset-0 flex items-center justify-center text-lg bg-black/10 rounded-lg" data-translate="no_data_available">まだ利用可能なクイズデータがありません。</p>
+                <!-- ▼▼▼【変更】クイズ成績セクションの構造を刷新 ▼▼▼ -->
+                <section class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h2 class="section-title" data-translate="quiz_stats_title">クイズ成績</h2>
+                    <div id="quiz-stats-container" class="mt-6">
+                        <div id="no-quiz-data" class="hidden text-center py-12 text-gray-500">
+                            <i class="fas fa-chart-line text-4xl mb-4 text-gray-300"></i>
+                            <p data-translate="no_data_available">まだ利用可能なクイズデータがありません。</p>
+                        </div>
+                        <div id="quiz-data-display" class="hidden">
+                            <!-- サマリーカード -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                <div class="bg-sky-50 border border-sky-200 p-4 rounded-lg flex items-center gap-4">
+                                    <i class="fas fa-star text-2xl text-sky-500"></i>
+                                    <div>
+                                        <p class="text-sm text-sky-800" data-translate="overall_avg_score">総合平均点</p>
+                                        <p id="total-average-score" class="text-2xl font-bold text-sky-900">--</p>
+                                    </div>
+                                </div>
+                                <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-lg flex items-center gap-4">
+                                    <i class="fas fa-gamepad text-2xl text-indigo-500"></i>
+                                    <div>
+                                        <p class="text-sm text-indigo-800" data-translate="total_attempts">総受験回数</p>
+                                        <p id="total-quiz-count" class="text-2xl font-bold text-indigo-900">--</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- グラフと難易度別成績 -->
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                                <div class="md:col-span-3 h-80 bg-gray-50 p-4 rounded-lg">
+                                    <canvas id="quizScoreChart"></canvas>
+                                </div>
+                                <div class="md:col-span-2 space-y-4">
+                                    <div id="easy-stats" class="difficulty-card bg-green-50 border-green-200"></div>
+                                    <div id="normal-stats" class="difficulty-card bg-yellow-50 border-yellow-200"></div>
+                                    <div id="hard-stats" class="difficulty-card bg-red-50 border-red-200"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
+                <!-- ▲▲▲ ここまで ▲▲▲ -->
 
                 <!-- Learned Topics Section -->
                 <section class="bg-white p-6 rounded-2xl shadow-lg">
@@ -103,6 +139,8 @@
     </div>
 
     <script src="./js/knowledge.js"></script>
+    <!-- ▼▼▼【変更】JSファイルの参照を更新 ▼▼▼ -->
     <script src="./js/my_page.js"></script>
+    <!-- ▲▲▲ ここまで ▲▲▲ -->
 </body>
 </html>

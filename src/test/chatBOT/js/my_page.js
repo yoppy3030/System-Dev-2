@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // グローバル変数
-    let learningProgressChart = null;
+    let quizScoreChart = null; // Chart.jsのインスタンスを保持
     let currentLanguage = localStorage.getItem('mypage_language') || 'ja';
 
     // DOM要素
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function initializePage() {
         setupTranslation();
-        renderQuizChart();
+        renderQuizStats(); // クイズ成績の描画関数を呼び出し
         renderLearnedTopics();
         renderAchievements();
         setupEventListeners();
@@ -47,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
                  el.textContent = translation;
             }
         });
-        renderQuizChart();
+        // 言語変更後にデータを再描画
+        renderQuizStats();
         renderLearnedTopics();
         renderAchievements();
     }
@@ -58,16 +59,24 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {string} lang 
      */
     function getTranslation(key, lang) {
-        let text = uiStrings[lang];
+        // ▼▼▼【追加】uiStringsに新しい翻訳キーを追加 ▼▼▼
+        const extendedUiStrings = {
+            ...uiStrings,
+            ja: { ...uiStrings.ja, overall_avg_score: '総合平均点', total_attempts: '総受験回数', attempts: '回', avg_score: '平均点', difficulty_easy: '簡単', difficulty_normal: '普通', difficulty_hard: '難しい' },
+            en: { ...uiStrings.en, overall_avg_score: 'Overall Avg. Score', total_attempts: 'Total Attempts', attempts: 'attempts', avg_score: 'Avg. Score', difficulty_easy: 'Easy', difficulty_normal: 'Normal', difficulty_hard: 'Hard' },
+            zh: { ...uiStrings.zh, overall_avg_score: '综合平均分', total_attempts: '总挑战次数', attempts: '次', avg_score: '平均分', difficulty_easy: '简单', difficulty_normal: '普通', difficulty_hard: '困难' }
+        };
+        // ▲▲▲ ここまで ▲▲▲
+        let text = extendedUiStrings[lang];
         try {
             const keys = key.split('.');
             for (const k of keys) {
-                if (text[k] === undefined) return null;
+                if (text[k] === undefined) return key; // 翻訳が見つからない場合はキーを返す
                 text = text[k];
             }
             return text;
         } catch (e) {
-            return null;
+            return key;
         }
     }
 
@@ -93,74 +102,143 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmResetBtn.addEventListener('click', () => {
             localStorage.removeItem('chatbot_quiz_history');
             localStorage.removeItem('chatbot_learned_topics');
-            localStorage.removeItem('chatbot_achievements'); // アチーブメント履歴も削除
+            localStorage.removeItem('chatbot_achievements');
             
-            initializePage(); // 全て再描画
+            initializePage();
 
             confirmModal.classList.add('hidden');
         });
     }
 
     /**
-     * クイズ成績グラフを描画
+     * ▼▼▼【全面改修】クイズ成績の統計表示とグラフ描画を行う関数 ▼▼▼
      */
-    function renderQuizChart() {
-        const ctx = document.getElementById('learningProgressChart').getContext('2d');
+    function renderQuizStats() {
         const noDataEl = document.getElementById('no-quiz-data');
+        const dataDisplayEl = document.getElementById('quiz-data-display');
         const quizHistory = JSON.parse(localStorage.getItem('chatbot_quiz_history')) || [];
 
-        if (learningProgressChart) {
-            learningProgressChart.destroy();
+        if (quizScoreChart) {
+            quizScoreChart.destroy();
         }
 
         if (quizHistory.length === 0) {
             noDataEl.classList.remove('hidden');
-            document.getElementById('learningProgressChart').style.display = 'none';
+            dataDisplayEl.classList.add('hidden');
             return;
         }
 
         noDataEl.classList.add('hidden');
-        document.getElementById('learningProgressChart').style.display = 'block';
+        dataDisplayEl.classList.remove('hidden');
+        dataDisplayEl.classList.add('grid'); // grid表示を有効化
 
-        const labels = quizHistory.map(item => 
-            new Date(item.date).toLocaleDateString(currentLanguage, { month: 'numeric', day: 'numeric' })
-        );
-        const scores = quizHistory.map(item =>
-            item.total > 0 ? (item.score / item.total) * 100 : 0
-        );
+        // 1. 統計データの計算
+        const stats = {
+            totalScore: 0,
+            totalQuestions: 0,
+            totalAttempts: quizHistory.length,
+            easy: { score: 0, questions: 0, attempts: 0 },
+            normal: { score: 0, questions: 0, attempts: 0 },
+            hard: { score: 0, questions: 0, attempts: 0 },
+        };
+
+        quizHistory.forEach(item => {
+            stats.totalScore += item.score;
+            stats.totalQuestions += item.total;
+            if (stats[item.difficulty]) {
+                stats[item.difficulty].score += item.score;
+                stats[item.difficulty].questions += item.total;
+                stats[item.difficulty].attempts++;
+            }
+        });
+
+        const totalAverage = stats.totalQuestions > 0 ? (stats.totalScore / stats.totalQuestions * 100).toFixed(1) : 0;
         
-        const chartLabel = getTranslation('quiz_stats_title', currentLanguage);
+        const getAvg = (diff) => diff.questions > 0 ? (diff.score / diff.questions * 100).toFixed(1) : 0;
+        const easyAvg = getAvg(stats.easy);
+        const normalAvg = getAvg(stats.normal);
+        const hardAvg = getAvg(stats.hard);
 
-        learningProgressChart = new Chart(ctx, {
-            type: 'line',
+        // 2. 統計データをHTMLに反映
+        document.getElementById('total-average-score').textContent = `${totalAverage}%`;
+        document.getElementById('total-quiz-count').textContent = stats.totalAttempts;
+
+        const renderDifficultyCard = (difficulty) => {
+            const el = document.getElementById(`${difficulty}-stats`);
+            const difficultyData = stats[difficulty];
+            const avgScore = getAvg(difficultyData);
+            const colorClasses = {
+                easy: { text: 'text-green-800', title: 'text-green-600' },
+                normal: { text: 'text-yellow-800', title: 'text-yellow-600' },
+                hard: { text: 'text-red-800', title: 'text-red-600' },
+            };
+            
+            el.innerHTML = `
+                <p class="font-semibold ${colorClasses[difficulty].title}">${getTranslation(`difficulty_${difficulty}`, currentLanguage)}</p>
+                <p class="text-sm ${colorClasses[difficulty].text}">${getTranslation('avg_score', currentLanguage)}: <span class="font-bold">${avgScore}%</span></p>
+                <p class="text-sm ${colorClasses[difficulty].text}">${difficultyData.attempts} ${getTranslation('attempts', currentLanguage)}</p>
+            `;
+        };
+        renderDifficultyCard('easy');
+        renderDifficultyCard('normal');
+        renderDifficultyCard('hard');
+
+        // 3. 棒グラフの描画
+        const ctx = document.getElementById('quizScoreChart').getContext('2d');
+        quizScoreChart = new Chart(ctx, {
+            type: 'bar',
             data: {
-                labels: labels,
+                labels: [
+                    getTranslation('difficulty_easy', currentLanguage), 
+                    getTranslation('difficulty_normal', currentLanguage), 
+                    getTranslation('difficulty_hard', currentLanguage)
+                ],
                 datasets: [{
-                    label: chartLabel,
-                    data: scores,
-                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                    borderColor: 'rgba(255, 255, 255, 1)',
-                    pointBackgroundColor: 'rgba(255, 255, 255, 1)',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgba(14, 165, 233, 1)',
-                    fill: true,
-                    tension: 0.3
+                    label: getTranslation('overall_avg_score', currentLanguage),
+                    data: [easyAvg, normalAvg, hardAvg],
+                    backgroundColor: [
+                        'rgba(74, 222, 128, 0.6)',  // green-400
+                        'rgba(250, 204, 21, 0.6)',   // yellow-400
+                        'rgba(248, 113, 113, 0.6)'  // red-400
+                    ],
+                    borderColor: [
+                        'rgba(34, 197, 94, 1)',   // green-500
+                        'rgba(234, 179, 8, 1)',    // yellow-500
+                        'rgba(239, 68, 68, 1)'    // red-500
+                    ],
+                    borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { ticks: { color: 'white' }, grid: { color: 'rgba(255, 255, 255, 0.2)' } },
-                    y: { ticks: { color: 'white' }, grid: { color: 'rgba(255, 255, 255, 0.2)' }, beginAtZero: true, max: 100 }
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
                 },
                 plugins: {
-                    legend: { labels: { color: '#fff', font: { size: 14 } } }
+                    legend: {
+                        display: false // 凡例は非表示
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
                 }
             }
         });
     }
+    // ▲▲▲ ここまで ▲▲▲
 
     /**
      * 学習したトピックリストを描画
@@ -208,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const learnedTopics = JSON.parse(localStorage.getItem('chatbot_learned_topics')) || [];
         let unlockedAchievements = JSON.parse(localStorage.getItem('chatbot_achievements')) || [];
 
-        // 条件判定用の統計データを計算
         const stats = {
             totalQuizzesTaken: quizHistory.length,
             perfectScores: {
