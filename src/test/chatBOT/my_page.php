@@ -6,9 +6,7 @@
     <title>マイページ - Japan Life Manual</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- ▼▼▼【変更】CSSファイルの参照を更新 ▼▼▼ -->
     <link rel="stylesheet" href="./css/my_page.css">
-    <!-- ▲▲▲ ここまで ▲▲▲ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-100">
@@ -47,7 +45,6 @@
             <!-- Left Column -->
             <div class="lg:col-span-2 space-y-8">
 
-                <!-- ▼▼▼【変更】クイズ成績セクションの構造を刷新 ▼▼▼ -->
                 <section class="bg-white p-6 rounded-2xl shadow-lg">
                     <h2 class="section-title" data-translate="quiz_stats_title">クイズ成績</h2>
                     <div id="quiz-stats-container" class="mt-6">
@@ -56,7 +53,6 @@
                             <p data-translate="no_data_available">まだ利用可能なクイズデータがありません。</p>
                         </div>
                         <div id="quiz-data-display" class="hidden">
-                            <!-- サマリーカード -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                                 <div class="bg-sky-50 border border-sky-200 p-4 rounded-lg flex items-center gap-4">
                                     <i class="fas fa-star text-2xl text-sky-500"></i>
@@ -74,7 +70,6 @@
                                 </div>
                             </div>
 
-                            <!-- グラフと難易度別成績 -->
                             <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
                                 <div class="md:col-span-3 h-80 bg-gray-50 p-4 rounded-lg">
                                     <canvas id="quizScoreChart"></canvas>
@@ -88,15 +83,25 @@
                         </div>
                     </div>
                 </section>
-                <!-- ▲▲▲ ここまで ▲▲▲ -->
 
                 <!-- Learned Topics Section -->
                 <section class="bg-white p-6 rounded-2xl shadow-lg">
-                    <h2 id="learned-topics-title" class="section-title" data-translate="learned_topics_title">学習したトピック</h2>
+                    <!-- ▼▼▼【変更】セクションタイトルに並び替え機能を追加 ▼▼▼ -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 id="learned-topics-title" class="section-title !mb-0 !border-b-0" data-translate="learned_topics_title">学習したトピック</h2>
+                        <div class="relative">
+                            <select id="topic-sort-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 p-2">
+                                <option value="newest" data-translate="sort_newest">新しい順</option>
+                                <option value="oldest" data-translate="sort_oldest">古い順</option>
+                                <option value="type" data-translate="sort_type">種類別</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- ▲▲▲ ここまで ▲▲▲ -->
                     <div id="learned-topics-container">
-                        <ul id="learned-topics-list" class="space-y-4">
-                            <!-- 学習したトピックがここに表示されます -->
-                        </ul>
+                        <div id="learned-topics-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- 学習したトピックがフラッシュカードとしてここに表示されます -->
+                        </div>
                         <p id="no-learned-topics-data" class="hidden text-gray-500" data-translate="no_learned_topics_data">まだ学習したトピックがありません。</p>
                     </div>
                 </section>
@@ -139,8 +144,6 @@
     </div>
 
     <script src="./js/knowledge.js"></script>
-    <!-- ▼▼▼【変更】JSファイルの参照を更新 ▼▼▼ -->
     <script src="./js/my_page.js"></script>
-    <!-- ▲▲▲ ここまで ▲▲▲ -->
 </body>
 </html>

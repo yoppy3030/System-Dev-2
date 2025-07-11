@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // グローバル変数
-    let quizScoreChart = null; // Chart.jsのインスタンスを保持
+    let quizScoreChart = null; 
     let currentLanguage = localStorage.getItem('mypage_language') || 'ja';
+    let learnedTopicsData = []; // トピックデータを保持する
 
     // DOM要素
     const languageSwitcher = document.getElementById('language-switcher-mypage');
@@ -9,14 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmModal = document.getElementById('confirm-modal');
     const cancelResetBtn = document.getElementById('cancel-reset-btn');
     const confirmResetBtn = document.getElementById('confirm-reset-btn');
+    const topicSortSelect = document.getElementById('topic-sort-select');
 
     /**
      * ページ初期化
      */
     function initializePage() {
         setupTranslation();
-        renderQuizStats(); // クイズ成績の描画関数を呼び出し
-        renderLearnedTopics();
+        renderQuizStats(); 
+        loadAndRenderTopics(); // データをロードして描画
         renderAchievements();
         setupEventListeners();
     }
@@ -49,29 +51,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         // 言語変更後にデータを再描画
         renderQuizStats();
-        renderLearnedTopics();
+        renderLearnedTopics(); // 保持しているデータで再描画
         renderAchievements();
     }
     
-    /**
-     * 翻訳テキストを取得 (ネストされたキーにも対応)
-     * @param {string} key - 'my_page_title' or 'achievements.perfect_master.title'
-     * @param {string} lang 
-     */
     function getTranslation(key, lang) {
-        // ▼▼▼【追加】uiStringsに新しい翻訳キーを追加 ▼▼▼
         const extendedUiStrings = {
             ...uiStrings,
-            ja: { ...uiStrings.ja, overall_avg_score: '総合平均点', total_attempts: '総受験回数', attempts: '回', avg_score: '平均点', difficulty_easy: '簡単', difficulty_normal: '普通', difficulty_hard: '難しい' },
-            en: { ...uiStrings.en, overall_avg_score: 'Overall Avg. Score', total_attempts: 'Total Attempts', attempts: 'attempts', avg_score: 'Avg. Score', difficulty_easy: 'Easy', difficulty_normal: 'Normal', difficulty_hard: 'Hard' },
-            zh: { ...uiStrings.zh, overall_avg_score: '综合平均分', total_attempts: '总挑战次数', attempts: '次', avg_score: '平均分', difficulty_easy: '简单', difficulty_normal: '普通', difficulty_hard: '困难' }
+            ja: { ...uiStrings.ja, overall_avg_score: '総合平均点', total_attempts: '総受験回数', attempts: '回', avg_score: '平均点', difficulty_easy: '簡単', difficulty_normal: '普通', difficulty_hard: '難しい', sort_newest: '新しい順', sort_oldest: '古い順', sort_type: '種類別' },
+            en: { ...uiStrings.en, overall_avg_score: 'Overall Avg. Score', total_attempts: 'Total Attempts', attempts: 'attempts', avg_score: 'Avg. Score', difficulty_easy: 'Easy', difficulty_normal: 'Normal', difficulty_hard: 'Hard', sort_newest: 'Newest First', sort_oldest: 'Oldest First', sort_type: 'By Type' },
+            zh: { ...uiStrings.zh, overall_avg_score: '综合平均分', total_attempts: '总挑战次数', attempts: '次', avg_score: '平均分', difficulty_easy: '简单', difficulty_normal: '普通', difficulty_hard: '困难', sort_newest: '最新', sort_oldest: '最早', sort_type: '按类型' }
         };
-        // ▲▲▲ ここまで ▲▲▲
         let text = extendedUiStrings[lang];
         try {
             const keys = key.split('.');
             for (const k of keys) {
-                if (text[k] === undefined) return key; // 翻訳が見つからない場合はキーを返す
+                if (text[k] === undefined) return key; 
                 text = text[k];
             }
             return text;
@@ -108,11 +103,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             confirmModal.classList.add('hidden');
         });
+
+        const topicsListEl = document.getElementById('learned-topics-list');
+        topicsListEl.addEventListener('click', (e) => {
+            const card = e.target.closest('.flashcard');
+            if (card) {
+                card.classList.toggle('is-flipped');
+            }
+        });
+
+        // ▼▼▼【追加】並び替えセレクトボックスのイベントリスナー ▼▼▼
+        topicSortSelect.addEventListener('change', (e) => {
+            sortAndRenderTopics(e.target.value);
+        });
     }
 
-    /**
-     * ▼▼▼【全面改修】クイズ成績の統計表示とグラフ描画を行う関数 ▼▼▼
-     */
     function renderQuizStats() {
         const noDataEl = document.getElementById('no-quiz-data');
         const dataDisplayEl = document.getElementById('quiz-data-display');
@@ -130,9 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         noDataEl.classList.add('hidden');
         dataDisplayEl.classList.remove('hidden');
-        dataDisplayEl.classList.add('grid'); // grid表示を有効化
+        dataDisplayEl.classList.add('grid'); 
 
-        // 1. 統計データの計算
         const stats = {
             totalScore: 0,
             totalQuestions: 0,
@@ -159,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const normalAvg = getAvg(stats.normal);
         const hardAvg = getAvg(stats.hard);
 
-        // 2. 統計データをHTMLに反映
         document.getElementById('total-average-score').textContent = `${totalAverage}%`;
         document.getElementById('total-quiz-count').textContent = stats.totalAttempts;
 
@@ -183,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderDifficultyCard('normal');
         renderDifficultyCard('hard');
 
-        // 3. 棒グラフの描画
         const ctx = document.getElementById('quizScoreChart').getContext('2d');
         quizScoreChart = new Chart(ctx, {
             type: 'bar',
@@ -197,14 +199,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     label: getTranslation('overall_avg_score', currentLanguage),
                     data: [easyAvg, normalAvg, hardAvg],
                     backgroundColor: [
-                        'rgba(74, 222, 128, 0.6)',  // green-400
-                        'rgba(250, 204, 21, 0.6)',   // yellow-400
-                        'rgba(248, 113, 113, 0.6)'  // red-400
+                        'rgba(74, 222, 128, 0.6)',
+                        'rgba(250, 204, 21, 0.6)',
+                        'rgba(248, 113, 113, 0.6)'
                     ],
                     borderColor: [
-                        'rgba(34, 197, 94, 1)',   // green-500
-                        'rgba(234, 179, 8, 1)',    // yellow-500
-                        'rgba(239, 68, 68, 1)'    // red-500
+                        'rgba(34, 197, 94, 1)',
+                        'rgba(234, 179, 8, 1)',
+                        'rgba(239, 68, 68, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -225,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 plugins: {
                     legend: {
-                        display: false // 凡例は非表示
+                        display: false
                     },
                     tooltip: {
                         callbacks: {
@@ -238,49 +240,90 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // ▲▲▲ ここまで ▲▲▲
 
-    /**
-     * 学習したトピックリストを描画
-     */
+    // ▼▼▼【変更】トピックのロードと描画を分離 ▼▼▼
+    function loadAndRenderTopics() {
+        try {
+            const storedData = localStorage.getItem('chatbot_learned_topics');
+            // 各トピックにタイムスタンプを追加
+            learnedTopicsData = (storedData ? JSON.parse(storedData) : []).map((topic, index) => ({
+                ...topic,
+                timestamp: Date.now() - index // 古いデータほど小さいタイムスタンプになるように仮設定
+            }));
+        } catch (e) { 
+            console.error("Error parsing learned topics", e); 
+            learnedTopicsData = [];
+        }
+        sortAndRenderTopics(topicSortSelect.value);
+    }
+
+    function sortAndRenderTopics(sortBy) {
+        switch (sortBy) {
+            case 'newest':
+                learnedTopicsData.sort((a, b) => b.timestamp - a.timestamp);
+                break;
+            case 'oldest':
+                learnedTopicsData.sort((a, b) => a.timestamp - b.timestamp);
+                break;
+            case 'type':
+                learnedTopicsData.sort((a, b) => a.type.localeCompare(b.type));
+                break;
+        }
+        renderLearnedTopics();
+    }
+    
     function renderLearnedTopics() {
         const topicsListEl = document.getElementById('learned-topics-list');
         const noDataEl = document.getElementById('no-learned-topics-data');
-        let learnedTopics = [];
-        try {
-            const storedData = localStorage.getItem('chatbot_learned_topics');
-            learnedTopics = storedData ? JSON.parse(storedData) : [];
-        } catch (e) { console.error("Error parsing learned topics", e); }
 
         topicsListEl.innerHTML = '';
 
-        if (learnedTopics.length === 0) {
+        if (learnedTopicsData.length === 0) {
             noDataEl.classList.remove('hidden');
+            topicsListEl.classList.add('hidden');
             return;
         }
 
         noDataEl.classList.add('hidden');
+        topicsListEl.classList.remove('hidden');
         
         const faqText = getTranslation('faq_source_text', currentLanguage);
         const summaryText = getTranslation('ai_summary_text', currentLanguage);
 
-        learnedTopics.forEach(topic => {
-            const li = document.createElement('li');
-            li.className = 'p-4 rounded-lg border';
+        learnedTopicsData.forEach(topic => {
+            const cardContainer = document.createElement('div');
+            cardContainer.className = 'flashcard';
+
+            const cardInner = document.createElement('div');
+            cardInner.className = 'flashcard-inner';
+
+            const cardFront = document.createElement('div');
+            cardFront.className = 'flashcard-front';
+            const frontIconClass = topic.type === 'faq' ? 'fas fa-check-circle text-green-500' : 'fas fa-question-circle text-sky-500';
+            cardFront.innerHTML = `
+                <i class="${frontIconClass} text-2xl mb-2"></i>
+                <p class="font-semibold text-gray-800 text-center">${topic.question}</p>
+                <p class="text-xs text-gray-400 mt-auto pt-2">${new Date(topic.timestamp).toLocaleDateString()}</p>
+            `;
+
+            const cardBack = document.createElement('div');
+            cardBack.className = 'flashcard-back';
+            let backContent = '';
             if (topic.type === 'faq') {
-                li.classList.add('bg-green-50', 'border-green-200');
-                li.innerHTML = `<div class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 text-lg mt-1"></i><div><p class="font-semibold text-gray-800">${topic.question}</p><p class="text-sm text-gray-500">${faqText}</p></div></div>`;
+                const faqItem = uiStrings[currentLanguage].faq.questions.find(q => q.id === topic.id);
+                backContent = `<p class="text-sm font-bold">${faqText}</p><hr class="my-2 border-gray-300 w-full"><p class="text-base">${faqItem ? faqItem.a : ''}</p>`;
             } else if (topic.type === 'query' && topic.summary) {
-                li.classList.add('bg-sky-50', 'border-sky-200');
-                li.innerHTML = `<div class="flex items-start gap-3"><i class="fas fa-question-circle text-sky-500 text-lg mt-1"></i><div><p class="font-semibold text-gray-800">${topic.question}</p><p class="text-sm text-gray-600 mt-1"><strong>${summaryText}</strong> ${topic.summary}</p></div></div>`;
+                backContent = `<p class="text-sm font-bold">${summaryText}</p><hr class="my-2 border-gray-300 w-full"><p class="text-base">${topic.summary}</p>`;
             }
-            topicsListEl.appendChild(li);
+            cardBack.innerHTML = backContent;
+
+            cardInner.appendChild(cardFront);
+            cardInner.appendChild(cardBack);
+            cardContainer.appendChild(cardInner);
+            topicsListEl.appendChild(cardContainer);
         });
     }
     
-    /**
-     * アチーブメントをチェック＆保存
-     */
     function checkAndSaveAchievements() {
         const quizHistory = JSON.parse(localStorage.getItem('chatbot_quiz_history')) || [];
         const learnedTopics = JSON.parse(localStorage.getItem('chatbot_learned_topics')) || [];
@@ -309,9 +352,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * アチーブメントを描画
-     */
     function renderAchievements() {
         checkAndSaveAchievements();
         const listEl = document.getElementById('achievements-list');

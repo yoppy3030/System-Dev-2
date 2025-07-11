@@ -6,15 +6,10 @@ body {
     background-color: #f3f4f6; /* gray-100 */
 }
 
-#faq-list li {
-    list-style: none;
-}
-
 #reset-progress-btn {
     cursor: pointer;
 }
 
-/* ▼▼▼【変更】セクションタイトルのスタイルを統一 ▼▼▼ */
 .section-title {
     font-size: 1.25rem; /* text-xl */
     font-weight: 700; /* font-bold */
@@ -23,10 +18,16 @@ body {
     border-bottom: 2px solid #e5e7eb; /* border-b-2 border-gray-200 */
     margin-bottom: 1.5rem; /* mb-6 */
 }
+
+/* ▼▼▼【追加】!mb-0, !border-b-0 ユーティリティクラス ▼▼▼ */
+.section-title.\!mb-0 {
+    margin-bottom: 0 !important;
+}
+.section-title.\!border-b-0 {
+    border-bottom: 0 !important;
+}
 /* ▲▲▲ ここまで ▲▲▲ */
 
-
-/* ▼▼▼【追加】難易度別成績カードのスタイル ▼▼▼ */
 .difficulty-card {
     padding: 1rem; /* p-4 */
     border-radius: 0.5rem; /* rounded-lg */
@@ -37,6 +38,67 @@ body {
 .difficulty-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* ▼▼▼【修正】フラッシュカードのスタイル改善 ▼▼▼ */
+.flashcard {
+    background-color: transparent;
+    aspect-ratio: 3 / 2;
+    perspective: 1000px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.flashcard:hover {
+    transform: translateY(-5px);
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+    border-radius: 0.75rem; /* rounded-xl */
+}
+
+.flashcard.is-flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 0.75rem; /* rounded-xl */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.flashcard-front {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+}
+
+.flashcard-back {
+    background-color: #f3f4f6; /* gray-100 */
+    color: #1f2937;
+    transform: rotateY(180deg);
+    overflow-y: auto;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.flashcard-back p {
+    width: 100%;
 }
 /* ▲▲▲ ここまで ▲▲▲ */
 
