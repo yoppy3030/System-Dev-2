@@ -1,107 +1,159 @@
 /* =========================================
-   翻訳機能
+   scholarships.js
    ========================================= */
-// 翻訳関連の変数
+
+// Global state variables
 let currentLanguage = 'en';
 let originalTexts = new Map();
-let translations = null;
-let translationsZh = null;
+let translations = { ja: null, zh: null };
 
-// 翻訳ボタンとドロップダウンの制御
-const translateBtn = document.getElementById('translateBtn');
-const languageDropdown = document.querySelector('.language-dropdown');
-
-// 翻訳ボタンクリック時の処理
-translateBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    languageDropdown.classList.toggle('show');
+// --- Main function to run on page load ---
+document.addEventListener('DOMContentLoaded', () => {
+    loadTranslations();
+    setupEventListeners();
+    // Fetch initial data in English
+    fetchAndRenderScholarships(); 
 });
 
-// ドロップダウン外クリックで閉じる
-document.addEventListener('click', (e) => {
-    if (!languageDropdown.contains(e.target) && !translateBtn.contains(e.target)) {
-        languageDropdown.classList.remove('show');
-    }
-});
+function setupEventListeners() {
+    const translateBtn = document.getElementById('translateBtn');
+    const languageDropdown = document.querySelector('.language-dropdown');
 
-// 言語選択オプションのイベントリスナー
-document.querySelectorAll('.language-option').forEach(option => {
-    option.addEventListener('click', () => {
-        const targetLang = option.dataset.lang;
-        document.querySelectorAll('.language-option').forEach(opt => {
-            opt.classList.remove('active');
+    if (translateBtn) {
+        translateBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
         });
-        option.classList.add('active');
-        languageDropdown.classList.remove('show');
-        translatePage(targetLang);
-    });
-});
+    }
 
-// テキストの正規化（余分な空白を削除）
-function normalizeText(text) {
-    return text.replace(/\s+/g, ' ').trim();
+    document.addEventListener('click', (e) => {
+        if (!languageDropdown.contains(e.target) && !translateBtn.contains(e.target)) {
+            languageDropdown.classList.remove('show');
+        }
+    });
+
+    // Event listener now calls the new changeLanguage function
+    document.querySelectorAll('.language-option').forEach(option => {
+        option.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const targetLang = e.currentTarget.dataset.lang;
+            languageDropdown.classList.remove('show');
+            changeLanguage(targetLang); // Use the new controller function
+        });
+    });
 }
 
-// 翻訳データの読み込み
-Promise.all([
-    fetch('./js/translations/scholarships-ja.json').then(response => response.json()),
-    fetch('./js/translations/scholarships-zh.json').then(response => response.json())
-])
-.then(([jaData, zhData]) => {
-    translations = jaData.translations;
-    translationsZh = zhData.translations;
-    console.log('翻訳データの読み込みが完了しました');
-})
-.catch(error => {
-    console.error('翻訳データの読み込みに失敗しました:', error);
-});
-
-// ページ翻訳の実行
-function translatePage(targetLang) {
-    if (!translations || !translationsZh) {
-        console.error('翻訳データが読み込まれていません');
-        return;
+/**
+ * Main controller for changing the language.
+ * This function triggers the data refetch.
+ */
+function changeLanguage(targetLang) {
+    if (targetLang === currentLanguage) {
+        return; // Do nothing if the language is already selected
     }
-
-    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, .sidebar a, .translate-btn');
-    
-    for (const element of elements) {
-        const originalText = element.textContent;
-        
-        if (!originalText || !originalText.trim()) {
-            continue;
-        }
-
-        // 初回のみoriginalTextsに保存
-        if (!originalTexts.has(element)) {
-            originalTexts.set(element, originalText);
-        }
-        
-        // 英語の場合は元のテキストに戻す
-        if (targetLang === 'en') {
-            element.textContent = originalTexts.get(element);
-            continue;
-        }
-
-        const normalizedText = normalizeText(originalTexts.get(element));
-
-        // 言語に応じた翻訳の適用
-        if (targetLang === 'ja') {
-            if (translations[normalizedText]) {
-                element.textContent = translations[normalizedText];
-            }
-        } else if (targetLang === 'zh') {
-            if (translationsZh[normalizedText]) {
-                element.textContent = translationsZh[normalizedText];
-            }
-        }
-    }
-    
-    // アクティブな言語ボタンの更新
-    document.querySelectorAll('.language-option').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.querySelector('.language-option[data-lang="' + targetLang + '"]').classList.add('active');
-    
     currentLanguage = targetLang;
+    // This is the key change: we fetch new data every time the language is switched.
+    fetchAndRenderScholarships();
+}
+
+// --- Translation Logic ---
+async function loadTranslations() {
+    try {
+        const [jaData, zhData] = await Promise.all([
+            fetch('./js/translations/scholarships-ja.json').then(res => res.json()),
+            fetch('./js/translations/scholarships-zh.json').then(res => res.json())
+        ]);
+        translations.ja = jaData.translations;
+        translations.zh = zhData.translations;
+    } catch (error) {
+        console.error('Could not load translation files.', error);
+    }
+}
+
+/**
+ * This function now ONLY translates the static labels on the page.
+ */
+function translateStaticLabels() {
+    const lang = currentLanguage;
+    if (lang !== 'en' && (!translations.ja || !translations.zh)) {
+        return; 
+    }
+
+    const elements = document.querySelectorAll('[data-translate]'); 
+    
+    elements.forEach(element => {
+        if (!originalTexts.has(element)) {
+            originalTexts.set(element, element.textContent);
+        }
+
+        const originalText = originalTexts.get(element);
+        
+        if (lang === 'en') {
+            element.textContent = originalText;
+            return;
+        }
+
+        const normalizedText = originalText.replace(/\s+/g, ' ').trim();
+        const targetDict = lang === 'ja' ? translations.ja : translations.zh;
+
+        if (targetDict && targetDict[normalizedText]) {
+            element.textContent = targetDict[normalizedText];
+        } else {
+            // If translation not found, show original text
+            element.textContent = originalText;
+
+        }
+    });
+
+    document.querySelectorAll('.language-option').forEach(btn => btn.classList.remove('active'));
+    const activeOption = document.querySelector(`.language-option[data-lang="${lang}"]`);
+    if (activeOption) activeOption.classList.add('active');
+}
+
+
+// --- Scholarship Fetching and Rendering ---
+async function fetchAndRenderScholarships() {
+    const container = document.getElementById('scholarship-list-container');
+    if (!container) return;
+
+    // Set loading message and translate it immediately
+    container.innerHTML = '<p style="text-align:center;" data-translate>Fetching the latest scholarship information...</p>';
+    translateStaticLabels(); 
+
+    try {
+        // Fetch data using the NEW currentLanguage
+        const response = await fetch(`http://localhost:3000/scholarships?lang=${currentLanguage}`);
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+        
+        const data = await response.json();
+        container.innerHTML = ''; 
+
+        if (!data.scholarships || data.scholarships.length === 0) {
+            container.innerHTML = '<p style="text-align:center;" data-translate>No current scholarship listings found. Please check back later.</p>';
+            translateStaticLabels();
+            return;
+        }
+
+        data.scholarships.forEach(scholarship => {
+            const scholarshipCardHTML = `
+                <div class="scholarship-card">
+                    <h2>${scholarship.name || 'N/A'}</h2>
+                    <p><strong><span data-translate>Provider:</span></strong> <span>${scholarship.organization || 'N/A'}</span></p>
+                    <p><strong><span data-translate>Eligibility:</span></strong> <span>${scholarship.eligibility || 'N/A'}</span></p>
+                    <p><strong><span data-translate>Amount:</span></strong> <span>${scholarship.amount || 'N/A'}</span></p>
+                    <p><strong><span data-translate>Deadline:</span></strong> <span>${scholarship.deadline || 'N/A'}</span></p>
+                    <a href="${scholarship.link}" target="_blank" class="btn" data-translate>Learn More</a>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', scholarshipCardHTML);
+        });
+        
+        // After rendering the new content, translate the static labels again
+        translateStaticLabels();
+
+    } catch (error) {
+        console.error('Error fetching scholarships:', error);
+        container.innerHTML = '<p style="text-align:center; color: red;" data-translate>Sorry, we could not retrieve scholarship data. Please try refreshing the page.</p>';
+        translateStaticLabels();
+    }
 }

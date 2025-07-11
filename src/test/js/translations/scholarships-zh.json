@@ -1,27 +1,19 @@
 {
-    "translations": {
-        "🌐 Translate": "🌐 翻译",
-        "Home": "首页",
-        "StudentHome": "学生主页",
-        "Life in Japan": "在日本的生活",
-        "Events": "活动",
-        "Scholarships for International Students": "留学生奖学金",
-        "Discover financial support to help you study in Japan.": "探索助力您在日本学习的各类资金支持。",
-        "MEXT Scholarship (Monbukagakusho)": "日本文部科学省奖学金（MEXT）",
-        "Who: Government-funded for undergraduate & graduate students": "对象：政府资助的本科生及研究生",
-        "Includes: Tuition, airfare, monthly stipend": "资助内容：学费、机票、月度生活津贴",
-        "Learn More": "了解详情",
-        "JASSO Scholarship": "JASSO奖学金",
-        "Who: For short-term or exchange students": "对象：短期或交换留学生",
-        "Includes: Monthly stipend (~¥80,000)": "资助内容：月度生活津贴（约8万日元）",
-        "Apply Now": "立即申请",
-        "University-specific Scholarships": "各大学专属奖学金",
-        "Who: Offered by many private/public universities": "对象：由多所公立或私立大学提供",
-        "How: Apply directly through the school": "申请方式：直接通过学校申请",
-        "Explore": "查看更多",
-        "Contact Us": "联系我们",
-        "Email: 22200797@ecc.ac.jp": "邮箱：22200797@ecc.ac.jp",
-        "Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan": "地址：日本东京都文京区后乐1-2-61，邮编123-0006",
-        "Phone: +81 3-1234-5678": "电话：+81 3-1234-5678"
+  "translations": {
+    "StudentHome": "学生主页",
+    "Translate": "翻译",
+    "Scholarships for International Students": "留学生奖学金",
+    "Discover financial support to help you study in Japan.": "探索助力您在日本学习的各类资金支持。",
+    "Provider:": "提供方:",
+    "Eligibility:": "申请资格:",
+    "Amount:": "奖学金额:",
+    "Deadline:": "截止日期:",
+    "Learn More": "了解详情",
+    "Fetching the latest scholarship information...": "正在获取最新的奖学金信息...",
+    "No current scholarship listings found. Please check back later.": "目前没有找到奖学金信息，请稍后再试。",
+    "Sorry, we could not retrieve scholarship data. Please try refreshing the page.": "抱歉，无法获取奖学金数据，请尝试刷新页面。",
+    "Contact Us": "联系我们",
+    "Address:": "地址:",
+    "Phone:": "电话:"
     }
 }

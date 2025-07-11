@@ -1,21 +1,20 @@
 {
   "translations": {
-    "🌐 Translate": "🌐 翻訳",
-    "StudentHome": "学生ホームページ",
-    "Back to Life in Japan": "日本での生活に戻る",
-    "💼 Types of Jobs": "💼 仕事の種類",
-    "Explore job options suitable for international students, from global companies to startups in Japan.": "グローバル企業からスタートアップまで、留学生に適した仕事の選択肢をご紹介します。",
-    "Global Companies": "グローバル企業",
-    "Large multinational firms often seek bilingual employees for roles in IT, finance, engineering, and business development. These companies may offer English-speaking environments or support for Japanese learning.": "大手多国籍企業は、IT、金融、エンジニアリング、ビジネス開発などの分野でバイリンガル人材を求めています。これらの企業は英語環境を提供したり、日本語学習をサポートしたりすることがあります。",
-    "Japanese Companies": "日本企業",
-    "Many traditional firms hire international students with strong Japanese skills (usually JLPT N2 or higher). Common sectors include manufacturing, retail, and services.": "多くの伝統的な企業は、高い日本語能力（通常JLPT N2以上）を持つ留学生を採用しています。一般的な業界には製造業、小売業、サービス業などがあります。",
-    "Startups": "スタートアップ",
-    "Japan’s startup ecosystem is growing, offering opportunities in tech, design, and business development. Startups often value flexibility, creativity, and English communication skills.": "日本のスタートアップエコシステムは成長しており、テクノロジー、デザイン、ビジネス開発の分野で機会を提供しています。スタートアップは柔軟性、創造性、英語コミュニケーション能力を重視することが多いです。",
-    "Part-Time & Internship Jobs": "アルバイト・インターンシップ",
-    "While studying, students can work part-time or take internships to gain experience. Common roles include language teaching, retail, hospitality, or research assistantships.": "留学中は、アルバイトやインターンシップを通じて経験を積むことができます。一般的な職種には語学教師、小売業、接客業、研究アシスタントなどがあります。",
-    "Helpful Links": "役立つリンク",
-    "GaijinPot Jobs": "<a href='https://www.gaijinpot.com/jobs/' target='_blank' rel='noopener'>GaijinPot求人</a>",
-    "Japan Times Jobs": "<a href='https://job.japantimes.com/' target='_blank' rel='noopener'>ジャパンタイムズ求人</a>",
-    "JASSO: Job Hunting in Japan": "<a href='https://www.jasso.go.jp/en/study_j/job/index.html' target='_blank' rel='noopener'>JASSO：日本での就職活動</a>"
+    "StudentHome": "学生ホーム",
+    "Back to Life in Japan": "生活情報へ戻る",
+    "Explore job options suitable for international students, from global companies to startups in Japan":"グローバル企業から日本のスタートアップ企業まで、留学生に適した仕事の選択肢を探る",
+    "Types of Jobs":"仕事の種類",
+    "Translate": "翻訳",
+    "Internships in Osaka": "大阪のインターンシップ",
+    "Full-time Jobs in Osaka": "大阪の正社員求人",
+    "Company:": "会社名:",
+    "Location:": "勤務地:",
+    "Type:": "種類:",
+    "Internship": "インターンシップ",
+    "Full-time": "正社員",
+    "View Posting": "求人を見る",
+    "Fetching job listings for Osaka...": "大阪の求人情報を取得中...",
+    "No job listings found at this time. Please check back later.": "現在、求人情報はありません。後ほど再確認してください。",
+    "Could not retrieve job listings. Please try again later.": "求人情報を取得できませんでした。もう一度お試しください。"
   }
 }

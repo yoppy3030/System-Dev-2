@@ -112,7 +112,7 @@
             <div class="blog-content">
                 <h4>Exploring the Beauty of Japan</h4>
                 <p>Discover the rich culture, stunning landscapes, and vibrant cities of Japan. From ancient temples to modern skyscrapers, Japan offers a unique blend of tradition and innovation.</p>
-                <a href="#">Read more</a>
+                <a href="travelers_homePage.php" class="read-more">Read more</a>
             </div>
         </div>
     </div>

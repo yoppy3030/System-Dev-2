@@ -20,26 +20,28 @@ body {
 
 /* Header */
 .site-header {
-  background: #b71c1c;
+  background: #f0f0f0;
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 32px;
+  padding: 30px 32px;
   position: sticky;
   top: 0;
   z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .logo {
   font-size: 20px;
   font-weight: bold;
+  color: #676B56;
 }
 
 .main-nav a {
   margin: 0 10px;
   text-decoration: none;
-  color: white;
+  color: #676B56;
   font-weight: 500;
   position: relative;
 }
@@ -51,7 +53,7 @@ body {
   height: 2px;
   bottom: -5px;
   left: 0;
-  background-color: white;
+  background-color: #676B56;
   transition: width 0.3s ease;
 }
 
