@@ -218,15 +218,15 @@
     </main>
     
     <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl mt-8">
-        <div class="flex items-center space-x-3">
-            <input type="text" id="user-input" class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition" placeholder="日本のマナーについて質問してください">
+        <div class="flex items-end space-x-3">
+            <!-- ▼▼▼【変更】inputをtextareaに変更し、自動高さ調整に対応 ▼▼▼ -->
+            <textarea id="user-input" class="flex-1 p-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500 transition resize-none" placeholder="日本のマナーについて質問してください" rows="1" style="max-height: 120px;"></textarea>
+            <!-- ▲▲▲ ここまで ▲▲▲ -->
             
-            <!-- ▼▼▼【追加】画像アップロードボタン ▼▼▼ -->
             <button id="image-upload-btn" class="mic-btn" title="画像をアップロード">
                 <i class="fas fa-paperclip"></i>
             </button>
             <input type="file" id="image-upload-input" hidden accept="image/*,video/*">
-            <!-- ▲▲▲ ここまで ▲▲▲ -->
 
             <button id="mic-btn" class="mic-btn" title="マイクを使用">
                 <i class="fas fa-microphone"></i>

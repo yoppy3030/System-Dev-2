@@ -45,6 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const roleplayList = document.getElementById('roleplay-list');
     
     // --- 関数定義 ---
+    
+    function displaySkeletonLoader() {
+        if (!chatWindow) return;
+        const loaderContainer = document.createElement('div');
+        loaderContainer.className = 'skeleton-loader-container'; 
+        loaderContainer.innerHTML = `
+            <div class="skeleton-bubble">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+            </div>
+        `;
+        chatWindow.appendChild(loaderContainer);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
 
     /**
      * 学習したトピックをlocalStorageに保存する
@@ -103,12 +118,13 @@ document.addEventListener('DOMContentLoaded', () => {
         showWelcomeMenu();
     }
     
+    // ▼▼▼【修正箇所】ロールプレイ中のエラーハンドリングを改善 ▼▼▼
     /**
      * AIからの回答を取得し、表示・保存する
      * @param {string} userPrompt - ユーザーからの入力テキスト
      */
     async function getAIResponse(userPrompt) {
-        displayBotMessage("..."); 
+        displaySkeletonLoader();
 
         const langMap = { ja: '日本語', en: 'English', zh: '中文' };
         
@@ -136,8 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(generatePayload)
             });
             
-            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
-            if (loadingMessage) loadingMessage.remove();
+            const skeleton = document.querySelector('.skeleton-loader-container');
+            if (skeleton) skeleton.remove();
 
             if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
             
@@ -175,18 +191,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } else {
                 console.error("Invalid AI response structure or content blocked:", result);
-                displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
+                if (isInRolePlay) {
+                    displayBotMessage(uiStrings[currentLanguage].role_play_error, { showBackToMenu: true });
+                } else {
+                    displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
+                }
             }
         } catch (error) {
             console.error('AI response fetch error:', error);
-            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
-            if (loadingMessage) loadingMessage.remove();
-            displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
+            const skeleton = document.querySelector('.skeleton-loader-container');
+            if (skeleton) skeleton.remove();
+            
+            if (isInRolePlay) {
+                displayBotMessage(uiStrings[currentLanguage].role_play_error, { showBackToMenu: true });
+            } else {
+                displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
+            }
         }
     }
+    // ▲▲▲ ここまで ▲▲▲
 
     async function getAIResponseForImage(base64ImageData, mimeType) {
-        displayBotMessage("...");
+        displaySkeletonLoader();
 
         const promptText = uiStrings[currentLanguage].image_analysis_prompt;
         const base64Data = base64ImageData.split(',')[1];
@@ -214,8 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(payload)
             });
 
-            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
-            if (loadingMessage) loadingMessage.remove();
+            const skeleton = document.querySelector('.skeleton-loader-container');
+            if (skeleton) skeleton.remove();
 
             if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
             
@@ -231,8 +257,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('AI image response fetch error:', error);
-            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
-            if (loadingMessage) loadingMessage.remove();
+            const skeleton = document.querySelector('.skeleton-loader-container');
+            if (skeleton) skeleton.remove();
             displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
         }
     }
@@ -412,6 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!inputText) return;
         displayUserMessage(inputText);
         userInput.value = '';
+        userInput.style.height = 'auto';
         setTimeout(() => {
             if (isInRolePlay) {
                 const cancelKeywords = {
@@ -469,7 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function sendInquiryToServer() {
-        displayBotMessage("...");
+        displaySkeletonLoader();
         const payload = { ...inquiryState, lang: currentLanguage };
         try {
             const response = await fetch('chatBOT/send_inquiry.php', {
@@ -478,8 +505,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(payload)
             });
             const result = await response.json();
-            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
-            if (loadingMessage) loadingMessage.remove();
+            const skeleton = document.querySelector('.skeleton-loader-container');
+            if (skeleton) skeleton.remove();
 
             if (result.success) {
                 displayBotMessage(uiStrings[currentLanguage].inquiry.complete);
@@ -489,8 +516,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Fetch API error during inquiry submission:', error);
-            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
-            if (loadingMessage) loadingMessage.remove();
+            const skeleton = document.querySelector('.skeleton-loader-container');
+            if (skeleton) skeleton.remove();
             displayBotMessage(uiStrings[currentLanguage].inquiry.send_error);
         } finally {
             resetInquiryState();
@@ -605,7 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        displayBotMessage(uiStrings[currentLanguage].summarizing);
+        displaySkeletonLoader();
 
         const langMap = { ja: '日本語', en: 'English', zh: '中文' };
         const summaryPrompt = `以下のチャットボットとユーザーの会話履歴を、重要なポイントを箇条書きで簡潔に要約してください。要約の言語は${langMap[currentLanguage]}でお願いします。\n\n---\n会話履歴:\n${conversationHistory.map(m => `${m.role === 'user' ? 'ユーザー' : 'ボット'}: ${m.parts[0].text}`).join('\n')}\n---`;
@@ -623,8 +650,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(payload)
             });
 
-            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent.includes(uiStrings[currentLanguage].summarizing));
-            if (loadingMessage) loadingMessage.remove();
+            const skeleton = document.querySelector('.skeleton-loader-container');
+            if (skeleton) skeleton.remove();
 
             if (!response.ok) throw new Error(`API request failed`);
 
@@ -640,8 +667,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Summarization fetch error:', error);
-            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent.includes(uiStrings[currentLanguage].summarizing));
-            if (loadingMessage) loadingMessage.remove();
+            const skeleton = document.querySelector('.skeleton-loader-container');
+            if (skeleton) skeleton.remove();
             displayBotMessage(uiStrings[currentLanguage].summarize_error, { showBackToMenu: true });
         }
     }
@@ -1016,22 +1043,18 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(showWelcomeMenu, 1000);
     }
     
-    // ▼▼▼【修正箇所】FAQモーダルを開く関数を修正 ▼▼▼
     function openFaqModal() {
         if (!faqList || !faqModal) return;
         faqList.innerHTML = '';
         
-        // 現在の言語設定を取得
         const strings = uiStrings[currentLanguage];
         const faqStrings = strings.faq;
         
-        // モーダルのタイトルを正しく設定
         const modalTitle = faqModal.querySelector('#faq-modal-title');
         if (modalTitle) {
             modalTitle.textContent = strings.faq_title;
         }
 
-        // 質問リストを生成
         faqStrings.questions.forEach(item => {
             const button = document.createElement('button');
             button.className = 'faq-question-btn w-full text-left p-3 bg-white rounded-lg shadow hover:bg-gray-50 transition';
@@ -1041,7 +1064,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         faqModal.classList.remove('hidden');
     }
-    // ▲▲▲ ここまで ▲▲▲
 
     function translateSettingsMenu() {
         const elementsToTranslate = document.querySelectorAll('#settings-content [data-translate], #chatbot-modal [data-translate], #pinned-modal [data-translate], #faq-modal [data-translate]');
@@ -1107,11 +1129,20 @@ document.addEventListener('DOMContentLoaded', () => {
             sendBtn.title = uiStrings[currentLanguage].send_tooltip;
             sendBtn.addEventListener('click', handleUserInput);
         }
+        
         if(userInput) {
+            userInput.addEventListener('input', () => {
+                userInput.style.height = 'auto';
+                userInput.style.height = `${userInput.scrollHeight}px`;
+            });
             userInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') handleUserInput();
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleUserInput();
+                }
             });
         }
+
         if (summarizeBtn) {
             summarizeBtn.title = uiStrings[currentLanguage].summarize_conversation;
             summarizeBtn.addEventListener('click', (e) => {

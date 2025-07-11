@@ -10,6 +10,9 @@ const uiStrings = {
         },
         role_play_prompt: 'ロールプレイシナリオ選択',
         role_play_cancel: 'ロールプレイを終了しました。',
+        // ▼▼▼【追加】ロールプレイ中のエラーメッセージ ▼▼▼
+        role_play_error: '申し訳ありません、通信に失敗しました。もう一度お話しいただけますか？',
+        // ▲▲▲ ここまで ▲▲▲
         role_play_categories: {
             restaurant: '飲食店',
             shopping: '買い物',
@@ -51,10 +54,8 @@ const uiStrings = {
         close_menu: 'メニューを閉じる',
         open_chatbot_tooltip: 'チャットボットを開く',
         close_chatbot_tooltip: 'チャットボットを閉じる',
-        // ▼▼▼【追加】画像アップロード機能用のテキスト ▼▼▼
         upload_image_tooltip: '画像をアップロード',
         image_analysis_prompt: 'この画像について、日本のマナーの観点からアドバイスをください。',
-        // ▲▲▲ ここまで ▲▲▲
         pinned_empty_title: 'お気に入りはまだありません',
         pinned_empty_desc: 'ボットの回答の右上にあるピンアイコンをクリックして、重要な情報をここに保存しましょう。',
         inquiry: {
@@ -130,6 +131,9 @@ const uiStrings = {
         },
         role_play_prompt: 'Select a Role-play Scenario',
         role_play_cancel: 'Role-play has ended.',
+        // ▼▼▼【追加】ロールプレイ中のエラーメッセージ ▼▼▼
+        role_play_error: 'Sorry, a communication error occurred. Could you please speak again?',
+        // ▲▲▲ ここまで ▲▲▲
         role_play_categories: {
             restaurant: 'Restaurants & Cafes',
             shopping: 'Shopping',
@@ -171,10 +175,8 @@ const uiStrings = {
         close_menu: 'Close menu',
         open_chatbot_tooltip: 'Open Chatbot',
         close_chatbot_tooltip: 'Close Chatbot',
-        // ▼▼▼【追加】画像アップロード機能用のテキスト ▼▼▼
         upload_image_tooltip: 'Upload Image',
         image_analysis_prompt: 'Please give me advice on this image from a manners perspective.',
-        // ▲▲▲ ここまで ▲▲▲
         pinned_empty_title: 'No Favorites Yet',
         pinned_empty_desc: 'Click the pin icon on a bot response to save important information here.',
         inquiry: {
@@ -250,6 +252,9 @@ const uiStrings = {
         },
         role_play_prompt: '选择角色扮演场景',
         role_play_cancel: '角色扮演已结束。',
+        // ▼▼▼【追加】ロールプレイ中のエラーメッセージ ▼▼▼
+        role_play_error: '抱歉，通讯时发生错误。可以请您再说一遍吗？',
+        // ▲▲▲ ここまで ▲▲▲
         role_play_categories: {
             restaurant: '餐饮店',
             shopping: '购物',
@@ -291,10 +296,8 @@ const uiStrings = {
         close_menu: '关闭菜单',
         open_chatbot_tooltip: '打开聊天机器人',
         close_chatbot_tooltip: '关闭聊天机器人',
-        // ▼▼▼【追加】画像アップロード機能用のテキスト ▼▼▼
         upload_image_tooltip: '上传图片',
         image_analysis_prompt: '请从礼仪的角度对这张图片提出建议。',
-        // ▲▲▲ ここまで ▲▲▲
         pinned_empty_title: '尚无收藏的消息',
         pinned_empty_desc: '点击机器人回复右上方的图钉图标，即可在此处保存重要信息。',
         inquiry: {
@@ -368,6 +371,7 @@ const specialFeatures = {
     en: { 'faq': { isFaq: true }, 'role-play': { isRolePlay: true }, 'quiz': { isQuiz: true }, 'contact': { isInquiry: true } },
     zh: { '常见问题': { isFaq: true }, '角色扮演': { isRolePlay: true }, '测验': { isQuiz: true }, '联系我们': { isInquiry: true } }
 };
+
 
 // --- ロールプレイングのシナリオ定義 (50個) ---
 const rolePlayingScenarios = {
