@@ -22,7 +22,7 @@
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="dropdown-content" id="dropdown-content">
-        <a href="my_page.php" data-translate="my_page_link">マイページ</a>
+        <a href="my_page.php" data-translate="my_page_link">My Page</a>
         <a href="#">contact</a>
         <a href="#">Blog</a>
     </div>
