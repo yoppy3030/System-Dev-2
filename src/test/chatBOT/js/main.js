@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let pinnedMessages = JSON.parse(localStorage.getItem('chatbot_pinned_messages')) || [];
     let recognition; // SpeechRecognition オブジェクトを保持する変数
     let isRecording = false; // 音声入力中かどうかを示すフラグ
+    // ▼▼▼【追加】APIの連続実行を防ぐためのフラグ ▼▼▼
+    let isSummarizing = false;
+    // ▲▲▲ ここまで ▲▲▲
 
     // --- DOM要素 ---
     const chatWindow = document.getElementById('chat-window');
@@ -118,11 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showWelcomeMenu();
     }
     
-    // ▼▼▼【修正箇所】ロールプレイ中のエラーハンドリングを改善 ▼▼▼
-    /**
-     * AIからの回答を取得し、表示・保存する
-     * @param {string} userPrompt - ユーザーからの入力テキスト
-     */
     async function getAIResponse(userPrompt) {
         displaySkeletonLoader();
 
@@ -209,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-    // ▲▲▲ ここまで ▲▲▲
 
     async function getAIResponseForImage(base64ImageData, mimeType) {
         displaySkeletonLoader();
@@ -599,8 +596,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ▼▼▼【修正箇所】要約機能に連続実行防止を追加 ▼▼▼
     async function summarizeConversation() {
-        if (!chatWindow) return;
+        if (isSummarizing) return; // 処理中なら何もしない
+        isSummarizing = true;
+        if (summarizeBtn) summarizeBtn.disabled = true;
+        if (summarizeMenuBtn) summarizeMenuBtn.disabled = true;
+
+        if (!chatWindow) {
+            isSummarizing = false;
+            if (summarizeBtn) summarizeBtn.disabled = false;
+            if (summarizeMenuBtn) summarizeMenuBtn.disabled = false;
+            return;
+        }
         const messages = Array.from(chatWindow.children);
         let conversationHistory = [];
 
@@ -629,6 +637,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (conversationHistory.length < 4) {
             displayBotMessage(uiStrings[currentLanguage].summarize_no_history);
             setTimeout(showWelcomeMenu, 2500);
+            isSummarizing = false;
+            if (summarizeBtn) summarizeBtn.disabled = false;
+            if (summarizeMenuBtn) summarizeMenuBtn.disabled = false;
             return;
         }
 
@@ -670,8 +681,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const skeleton = document.querySelector('.skeleton-loader-container');
             if (skeleton) skeleton.remove();
             displayBotMessage(uiStrings[currentLanguage].summarize_error, { showBackToMenu: true });
+        } finally {
+            isSummarizing = false;
+            if (summarizeBtn) summarizeBtn.disabled = false;
+            if (summarizeMenuBtn) summarizeMenuBtn.disabled = false;
         }
     }
+    // ▲▲▲ ここまで ▲▲▲
 
     function startSpeechRecognition() {
         if (!('webkitSpeechRecognition' in window)) {
