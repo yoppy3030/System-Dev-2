@@ -15,9 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let pinnedMessages = JSON.parse(localStorage.getItem('chatbot_pinned_messages')) || [];
     let recognition; // SpeechRecognition オブジェクトを保持する変数
     let isRecording = false; // 音声入力中かどうかを示すフラグ
-    // ▼▼▼【追加】APIの連続実行を防ぐためのフラグ ▼▼▼
     let isSummarizing = false;
-    // ▲▲▲ ここまで ▲▲▲
 
     // --- DOM要素 ---
     const chatWindow = document.getElementById('chat-window');
@@ -596,9 +594,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ▼▼▼【修正箇所】要約機能に連続実行防止を追加 ▼▼▼
     async function summarizeConversation() {
-        if (isSummarizing) return; // 処理中なら何もしない
+        if (isSummarizing) return; 
         isSummarizing = true;
         if (summarizeBtn) summarizeBtn.disabled = true;
         if (summarizeMenuBtn) summarizeMenuBtn.disabled = true;
@@ -687,7 +684,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (summarizeMenuBtn) summarizeMenuBtn.disabled = false;
         }
     }
-    // ▲▲▲ ここまで ▲▲▲
 
     function startSpeechRecognition() {
         if (!('webkitSpeechRecognition' in window)) {
@@ -1434,6 +1430,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         currentQuiz = null;
                         askNextQuizQuestion();
                         break;
+                    // ▼▼▼【修正箇所】クイズの不正解時に間違いノートへ保存 ▼▼▼
                     case 'quiz_option':
                         const quizData = currentQuiz;
                         if (!quizData) return;
@@ -1448,10 +1445,22 @@ document.addEventListener('DOMContentLoaded', () => {
                             resultMessage = correctMessages[currentLanguage] + quizData.explanation[currentLanguage];
                         } else {
                             resultMessage = incorrectMessages[currentLanguage] + quizData.options[currentLanguage][masterCorrectAnswerIndex] + endMessages[currentLanguage] + quizData.explanation[currentLanguage];
+                            // 間違えた問題を保存
+                            let mistakes = JSON.parse(localStorage.getItem('chatbot_mistakes')) || [];
+                            // 重複チェック
+                            const isAlreadySaved = mistakes.some(m => m.originalIndex === quizData.originalIndex && m.difficulty === currentDifficulty);
+                            if (!isAlreadySaved) {
+                                mistakes.push({
+                                    ...quizData,
+                                    difficulty: currentDifficulty
+                                });
+                                localStorage.setItem('chatbot_mistakes', JSON.stringify(mistakes));
+                            }
                         }
                         currentQuiz = null;
                         setTimeout(() => displayBotMessage(resultMessage, { quizFlow: 'continue' }), 500);
                         break;
+                    // ▲▲▲ ここまで ▲▲▲
                     case 'quick_reply':
                     default:
                         setTimeout(() => getBotResponse(replyText), 500);

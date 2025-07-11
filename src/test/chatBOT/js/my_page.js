@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // グローバル変数
     let quizScoreChart = null; 
     let currentLanguage = localStorage.getItem('mypage_language') || 'ja';
-    let learnedTopicsData = []; // トピックデータを保持する
+    let learnedTopicsData = []; 
+    let mistakesData = []; // 間違いノートのデータを保持
 
     // DOM要素
     const languageSwitcher = document.getElementById('language-switcher-mypage');
@@ -11,6 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelResetBtn = document.getElementById('cancel-reset-btn');
     const confirmResetBtn = document.getElementById('confirm-reset-btn');
     const topicSortSelect = document.getElementById('topic-sort-select');
+    // ▼▼▼【追加】間違いノート関連のDOM要素 ▼▼▼
+    const mistakeNoteList = document.getElementById('mistake-note-list');
+    const noMistakesData = document.getElementById('no-mistakes-data');
+    const mistakeRetryModal = document.getElementById('mistake-retry-modal');
+    const mistakeModalContent = document.getElementById('mistake-modal-content');
+    const mistakeModalQuestion = document.getElementById('mistake-modal-question');
+    const mistakeModalOptions = document.getElementById('mistake-modal-options');
+    const mistakeModalFeedback = document.getElementById('mistake-modal-feedback');
+    const mistakeModalCloseBtn = document.getElementById('mistake-modal-close-btn');
+    // ▲▲▲ ここまで ▲▲▲
 
     /**
      * ページ初期化
@@ -18,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializePage() {
         setupTranslation();
         renderQuizStats(); 
-        loadAndRenderTopics(); // データをロードして描画
+        loadAndRenderTopics(); 
+        loadAndRenderMistakes(); // 間違いノートのロードと描画
         renderAchievements();
         setupEventListeners();
     }
@@ -49,9 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
                  el.textContent = translation;
             }
         });
-        // 言語変更後にデータを再描画
         renderQuizStats();
-        renderLearnedTopics(); // 保持しているデータで再描画
+        renderLearnedTopics(); 
+        renderMistakeNote(); // 保持しているデータで再描画
         renderAchievements();
     }
     
@@ -98,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('chatbot_quiz_history');
             localStorage.removeItem('chatbot_learned_topics');
             localStorage.removeItem('chatbot_achievements');
+            localStorage.removeItem('chatbot_mistakes'); // 間違いノートも削除
             
             initializePage();
 
@@ -112,10 +125,28 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // ▼▼▼【追加】並び替えセレクトボックスのイベントリスナー ▼▼▼
         topicSortSelect.addEventListener('change', (e) => {
             sortAndRenderTopics(e.target.value);
         });
+
+        // ▼▼▼【追加】間違いノートのイベントリスナー ▼▼▼
+        mistakeNoteList.addEventListener('click', (e) => {
+            const button = e.target.closest('.mistake-challenge-btn');
+            if (button) {
+                const mistakeIndex = parseInt(button.dataset.index, 10);
+                openMistakeModal(mistakesData[mistakeIndex], mistakeIndex);
+            }
+        });
+
+        mistakeModalCloseBtn.addEventListener('click', () => {
+            mistakeRetryModal.classList.add('hidden');
+        });
+        mistakeRetryModal.addEventListener('click', (e) => {
+            if (e.target === mistakeRetryModal) {
+                mistakeRetryModal.classList.add('hidden');
+            }
+        });
+        // ▲▲▲ ここまで ▲▲▲
     }
 
     function renderQuizStats() {
@@ -241,14 +272,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ▼▼▼【変更】トピックのロードと描画を分離 ▼▼▼
     function loadAndRenderTopics() {
         try {
             const storedData = localStorage.getItem('chatbot_learned_topics');
-            // 各トピックにタイムスタンプを追加
             learnedTopicsData = (storedData ? JSON.parse(storedData) : []).map((topic, index) => ({
                 ...topic,
-                timestamp: Date.now() - index // 古いデータほど小さいタイムスタンプになるように仮設定
+                timestamp: Date.now() - index 
             }));
         } catch (e) { 
             console.error("Error parsing learned topics", e); 
@@ -294,35 +323,93 @@ document.addEventListener('DOMContentLoaded', () => {
             const cardContainer = document.createElement('div');
             cardContainer.className = 'flashcard';
 
-            const cardInner = document.createElement('div');
-            cardInner.className = 'flashcard-inner';
-
-            const cardFront = document.createElement('div');
-            cardFront.className = 'flashcard-front';
-            const frontIconClass = topic.type === 'faq' ? 'fas fa-check-circle text-green-500' : 'fas fa-question-circle text-sky-500';
-            cardFront.innerHTML = `
-                <i class="${frontIconClass} text-2xl mb-2"></i>
-                <p class="font-semibold text-gray-800 text-center">${topic.question}</p>
-                <p class="text-xs text-gray-400 mt-auto pt-2">${new Date(topic.timestamp).toLocaleDateString()}</p>
+            cardContainer.innerHTML = `
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <i class="${topic.type === 'faq' ? 'fas fa-check-circle text-green-500' : 'fas fa-question-circle text-sky-500'} text-2xl mb-2"></i>
+                        <p class="font-semibold text-gray-800 text-center">${topic.question}</p>
+                        <p class="text-xs text-gray-400 mt-auto pt-2">${new Date(topic.timestamp).toLocaleDateString()}</p>
+                    </div>
+                    <div class="flashcard-back">
+                        ${topic.type === 'faq' 
+                            ? `<p class="text-sm font-bold">${faqText}</p><hr class="my-2 border-gray-300 w-full"><p class="text-base">${uiStrings[currentLanguage].faq.questions.find(q => q.id === topic.id)?.a || ''}</p>`
+                            : `<p class="text-sm font-bold">${summaryText}</p><hr class="my-2 border-gray-300 w-full"><p class="text-base">${topic.summary}</p>`
+                        }
+                    </div>
+                </div>
             `;
-
-            const cardBack = document.createElement('div');
-            cardBack.className = 'flashcard-back';
-            let backContent = '';
-            if (topic.type === 'faq') {
-                const faqItem = uiStrings[currentLanguage].faq.questions.find(q => q.id === topic.id);
-                backContent = `<p class="text-sm font-bold">${faqText}</p><hr class="my-2 border-gray-300 w-full"><p class="text-base">${faqItem ? faqItem.a : ''}</p>`;
-            } else if (topic.type === 'query' && topic.summary) {
-                backContent = `<p class="text-sm font-bold">${summaryText}</p><hr class="my-2 border-gray-300 w-full"><p class="text-base">${topic.summary}</p>`;
-            }
-            cardBack.innerHTML = backContent;
-
-            cardInner.appendChild(cardFront);
-            cardInner.appendChild(cardBack);
-            cardContainer.appendChild(cardInner);
             topicsListEl.appendChild(cardContainer);
         });
     }
+    
+    // ▼▼▼【追加】間違いノート関連の関数群 ▼▼▼
+    function loadAndRenderMistakes() {
+        try {
+            mistakesData = JSON.parse(localStorage.getItem('chatbot_mistakes')) || [];
+        } catch (e) {
+            console.error("Error parsing mistakes", e);
+            mistakesData = [];
+        }
+        renderMistakeNote();
+    }
+
+    function renderMistakeNote() {
+        mistakeNoteList.innerHTML = '';
+        if (mistakesData.length === 0) {
+            noMistakesData.classList.remove('hidden');
+            return;
+        }
+        noMistakesData.classList.add('hidden');
+
+        mistakesData.forEach((mistake, index) => {
+            const li = document.createElement('li');
+            li.className = 'mistake-item';
+            li.innerHTML = `
+                <p>${mistake.question[currentLanguage]}</p>
+                <button class="mistake-challenge-btn" data-index="${index}">${getTranslation('mistake_note_challenge_btn', currentLanguage)}</button>
+            `;
+            mistakeNoteList.appendChild(li);
+        });
+    }
+
+    function openMistakeModal(mistake, index) {
+        mistakeModalQuestion.textContent = mistake.question[currentLanguage];
+        mistakeModalOptions.innerHTML = '';
+        mistakeModalFeedback.innerHTML = '';
+
+        mistake.options[currentLanguage].forEach((optionText, optionIndex) => {
+            const button = document.createElement('button');
+            button.className = 'option-btn';
+            button.textContent = optionText;
+            button.onclick = () => checkMistakeAnswer(mistake, optionIndex, index);
+            mistakeModalOptions.appendChild(button);
+        });
+
+        mistakeRetryModal.classList.remove('hidden');
+    }
+
+    function checkMistakeAnswer(mistake, selectedOptionIndex, mistakeIndex) {
+        const correct = selectedOptionIndex === mistake.correct;
+        const feedbackText = correct 
+            ? getTranslation('mistake_note_correct', currentLanguage)
+            : getTranslation('mistake_note_incorrect', currentLanguage);
+        
+        mistakeModalFeedback.textContent = feedbackText;
+        mistakeModalFeedback.className = `mt-4 text-sm font-medium ${correct ? 'text-green-600' : 'text-red-600'}`;
+
+        if (correct) {
+            // 正解したら間違いリストから削除
+            mistakesData.splice(mistakeIndex, 1);
+            localStorage.setItem('chatbot_mistakes', JSON.stringify(mistakesData));
+            
+            // 2秒後にモーダルを閉じてリストを更新
+            setTimeout(() => {
+                mistakeRetryModal.classList.add('hidden');
+                renderMistakeNote();
+            }, 2000);
+        }
+    }
+    // ▲▲▲ ここまで ▲▲▲
     
     function checkAndSaveAchievements() {
         const quizHistory = JSON.parse(localStorage.getItem('chatbot_quiz_history')) || [];

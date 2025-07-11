@@ -86,7 +86,6 @@
 
                 <!-- Learned Topics Section -->
                 <section class="bg-white p-6 rounded-2xl shadow-lg">
-                    <!-- ▼▼▼【変更】セクションタイトルに並び替え機能を追加 ▼▼▼ -->
                     <div class="flex justify-between items-center mb-6">
                         <h2 id="learned-topics-title" class="section-title !mb-0 !border-b-0" data-translate="learned_topics_title">学習したトピック</h2>
                         <div class="relative">
@@ -97,7 +96,6 @@
                             </select>
                         </div>
                     </div>
-                    <!-- ▲▲▲ ここまで ▲▲▲ -->
                     <div id="learned-topics-container">
                         <div id="learned-topics-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             <!-- 学習したトピックがフラッシュカードとしてここに表示されます -->
@@ -105,6 +103,18 @@
                         <p id="no-learned-topics-data" class="hidden text-gray-500" data-translate="no_learned_topics_data">まだ学習したトピックがありません。</p>
                     </div>
                 </section>
+
+                <!-- ▼▼▼【追加】間違いノートセクション ▼▼▼ -->
+                <section class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h2 class="section-title" data-translate="mistake_note_title">間違いノート</h2>
+                    <div id="mistake-note-container">
+                        <div id="mistake-note-list" class="space-y-3">
+                            <!-- 間違えた問題がここに表示されます -->
+                        </div>
+                        <p id="no-mistakes-data" class="hidden text-center py-8 text-gray-500" data-translate="mistake_note_empty">復習する問題はありません。素晴らしい！</p>
+                    </div>
+                </section>
+                <!-- ▲▲▲ ここまで ▲▲▲ -->
 
             </div>
 
@@ -126,6 +136,23 @@
 
         </div>
     </main>
+
+    <!-- ▼▼▼【追加】間違いノート再挑戦用モーダル ▼▼▼ -->
+    <div id="mistake-retry-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg">
+            <div id="mistake-modal-content" class="p-6">
+                <p id="mistake-modal-question" class="text-lg font-semibold text-gray-800 mb-4"></p>
+                <div id="mistake-modal-options" class="space-y-3">
+                    <!-- 選択肢がここにJSで生成されます -->
+                </div>
+                <div id="mistake-modal-feedback" class="mt-4 text-sm font-medium"></div>
+            </div>
+            <div class="bg-gray-50 px-6 py-3 rounded-b-xl">
+                <button id="mistake-modal-close-btn" class="w-full bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors" data-translate="mistake_note_close_btn">閉じる</button>
+            </div>
+        </div>
+    </div>
+    <!-- ▲▲▲ ここまで ▲▲▲ -->
 
     <!-- 確認モーダル -->
     <div id="confirm-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[1050] flex justify-center items-center hidden px-4">
