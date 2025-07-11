@@ -112,7 +112,7 @@
             <div class="blog-content">
                 <h4>Exploring the Beauty of Japan</h4>
                 <p>Discover the rich culture, stunning landscapes, and vibrant cities of Japan. From ancient temples to modern skyscrapers, Japan offers a unique blend of tradition and innovation.</p>
-                <a href="travelers_homePage.php" class="read-more">Read more</a>
+                <a href="#">Read more</a>
             </div>
         </div>
     </div>
@@ -220,6 +220,14 @@
     <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl mt-8">
         <div class="flex items-center space-x-3">
             <input type="text" id="user-input" class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition" placeholder="日本のマナーについて質問してください">
+            
+            <!-- ▼▼▼【追加】画像アップロードボタン ▼▼▼ -->
+            <button id="image-upload-btn" class="mic-btn" title="画像をアップロード">
+                <i class="fas fa-paperclip"></i>
+            </button>
+            <input type="file" id="image-upload-input" hidden accept="image/*,video/*">
+            <!-- ▲▲▲ ここまで ▲▲▲ -->
+
             <button id="mic-btn" class="mic-btn" title="マイクを使用">
                 <i class="fas fa-microphone"></i>
             </button>
@@ -257,7 +265,7 @@
     </div>
 </div>
 
-<!-- ▼▼▼【新機能】ロールプレイ選択モーダルを追加 ▼▼▼ -->
+<!-- ロールプレイ選択モーダル -->
 <div id="roleplay-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[1050] flex justify-center items-center px-4">
     <div id="roleplay-modal-content" class="bg-gray-100 rounded-lg shadow-xl w-full max-w-3xl max-h-[80vh] flex flex-col">
         <header class="p-4 border-b flex justify-between items-center bg-white rounded-t-lg sticky top-0">
@@ -269,7 +277,6 @@
         </div>
     </div>
 </div>
-<!-- ▲▲▲ ここまで ▲▲▲ -->
 
 
 <div id="chat-open-button">

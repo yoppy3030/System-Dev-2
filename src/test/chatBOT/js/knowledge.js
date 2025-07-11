@@ -49,9 +49,11 @@ const uiStrings = {
         view_pinned: 'お気に入り',
         open_menu: 'メニューを開く',
         close_menu: 'メニューを閉じる',
-        // ▼▼▼【追加】ツールチップ用のテキスト ▼▼▼
         open_chatbot_tooltip: 'チャットボットを開く',
         close_chatbot_tooltip: 'チャットボットを閉じる',
+        // ▼▼▼【追加】画像アップロード機能用のテキスト ▼▼▼
+        upload_image_tooltip: '画像をアップロード',
+        image_analysis_prompt: 'この画像について、日本のマナーの観点からアドバイスをください。',
         // ▲▲▲ ここまで ▲▲▲
         pinned_empty_title: 'お気に入りはまだありません',
         pinned_empty_desc: 'ボットの回答の右上にあるピンアイコンをクリックして、重要な情報をここに保存しましょう。',
@@ -167,9 +169,11 @@ const uiStrings = {
         view_pinned: 'Favorites',
         open_menu: 'Open menu',
         close_menu: 'Close menu',
-        // ▼▼▼【追加】ツールチップ用のテキスト ▼▼▼
         open_chatbot_tooltip: 'Open Chatbot',
         close_chatbot_tooltip: 'Close Chatbot',
+        // ▼▼▼【追加】画像アップロード機能用のテキスト ▼▼▼
+        upload_image_tooltip: 'Upload Image',
+        image_analysis_prompt: 'Please give me advice on this image from a manners perspective.',
         // ▲▲▲ ここまで ▲▲▲
         pinned_empty_title: 'No Favorites Yet',
         pinned_empty_desc: 'Click the pin icon on a bot response to save important information here.',
@@ -285,9 +289,11 @@ const uiStrings = {
         view_pinned: '收藏',
         open_menu: '打开菜单',
         close_menu: '关闭菜单',
-        // ▼▼▼【追加】ツールチップ用のテキスト ▼▼▼
         open_chatbot_tooltip: '打开聊天机器人',
         close_chatbot_tooltip: '关闭聊天机器人',
+        // ▼▼▼【追加】画像アップロード機能用のテキスト ▼▼▼
+        upload_image_tooltip: '上传图片',
+        image_analysis_prompt: '请从礼仪的角度对这张图片提出建议。',
         // ▲▲▲ ここまで ▲▲▲
         pinned_empty_title: '尚无收藏的消息',
         pinned_empty_desc: '点击机器人回复右上方的图钉图标，即可在此处保存重要信息。',

@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const userInput = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
     const micBtn = document.getElementById('mic-btn');
+    const imageUploadBtn = document.getElementById('image-upload-btn');
+    const imageUploadInput = document.getElementById('image-upload-input');
     const chatModal = document.getElementById('chatbot-modal');
     const openButton = document.getElementById('chat-open-button');
     const settingsBtn = document.getElementById('settings-btn');
@@ -183,6 +185,58 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    async function getAIResponseForImage(base64ImageData, mimeType) {
+        displayBotMessage("...");
+
+        const promptText = uiStrings[currentLanguage].image_analysis_prompt;
+        const base64Data = base64ImageData.split(',')[1];
+
+        const payload = {
+            contents: [{
+                parts: [
+                    { "text": promptText },
+                    {
+                        "inline_data": {
+                            "mime_type": mimeType,
+                            "data": base64Data
+                        }
+                    }
+                ]
+            }]
+        };
+        
+        const apiUrl = 'chatBOT/gemini_proxy.php';
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
+            if (loadingMessage) loadingMessage.remove();
+
+            if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+            
+            const result = await response.json();
+            const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+            if (aiText) {
+                displayBotMessage(aiText, { isAiResponse: true });
+            } else {
+                console.error("Invalid AI response structure or content blocked:", result);
+                displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
+            }
+
+        } catch (error) {
+            console.error('AI image response fetch error:', error);
+            const loadingMessage = Array.from(document.querySelectorAll('.bot-message-container')).find(el => el.textContent === '...');
+            if (loadingMessage) loadingMessage.remove();
+            displayBotMessage(uiStrings[currentLanguage].defaultReply, { isAiResponse: true });
+        }
+    }
+
     function removeAllQuickReplies() {
         const existingReplies = document.querySelectorAll('.quick-replies-container');
         existingReplies.forEach(container => container.remove());
@@ -195,6 +249,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const bubble = document.createElement('div');
         bubble.className = 'user-message-bubble max-w-2xl p-3 rounded-2xl shadow';
         bubble.textContent = text;
+        messageDiv.appendChild(bubble);
+        chatWindow.appendChild(messageDiv);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        saveChatHistory();
+    }
+
+    function displayUserMessageWithImage(base64ImageData) {
+        if (!chatWindow) return;
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'flex justify-end';
+        
+        const bubble = document.createElement('div');
+        bubble.className = 'user-message-bubble max-w-xs p-2 rounded-2xl shadow'; 
+        
+        const image = document.createElement('img');
+        image.src = base64ImageData;
+        image.className = 'rounded-xl';
+        
+        bubble.appendChild(image);
         messageDiv.appendChild(bubble);
         chatWindow.appendChild(messageDiv);
         chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -573,14 +646,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ▼▼▼【修正箇所】音声入力非対応時にメニューに戻る処理を追加 ▼▼▼
     function startSpeechRecognition() {
         if (!('webkitSpeechRecognition' in window)) {
             displayBotMessage(uiStrings[currentLanguage].voice_not_supported);
-            setTimeout(showWelcomeMenu, 2000); // 2秒後にウェルカムメニューを表示
+            setTimeout(showWelcomeMenu, 2000); 
             return;
         }
-    // ▲▲▲ ここまで ▲▲▲
 
         recognition = new webkitSpeechRecognition();
         recognition.continuous = false;
@@ -900,6 +971,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('header-lang-status').textContent = strings.langStatus;
         userInput.placeholder = strings.inputPlaceholder;
         
+        if(imageUploadBtn) {
+            imageUploadBtn.title = strings.upload_image_tooltip;
+        }
+        
         if (micBtn) {
             micBtn.title = isRecording ? strings.mic_tooltip_recording : strings.mic_tooltip;
         }
@@ -941,19 +1016,32 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(showWelcomeMenu, 1000);
     }
     
+    // ▼▼▼【修正箇所】FAQモーダルを開く関数を修正 ▼▼▼
     function openFaqModal() {
         if (!faqList || !faqModal) return;
         faqList.innerHTML = '';
-        const faqStrings = uiStrings[currentLanguage].faq;
-        faqModal.querySelector('#faq-modal-title').textContent = faqStrings.faq_title;
+        
+        // 現在の言語設定を取得
+        const strings = uiStrings[currentLanguage];
+        const faqStrings = strings.faq;
+        
+        // モーダルのタイトルを正しく設定
+        const modalTitle = faqModal.querySelector('#faq-modal-title');
+        if (modalTitle) {
+            modalTitle.textContent = strings.faq_title;
+        }
+
+        // 質問リストを生成
         faqStrings.questions.forEach(item => {
             const button = document.createElement('button');
             button.className = 'faq-question-btn w-full text-left p-3 bg-white rounded-lg shadow hover:bg-gray-50 transition';
             button.textContent = item.q;
             faqList.appendChild(button);
         });
+        
         faqModal.classList.remove('hidden');
     }
+    // ▲▲▲ ここまで ▲▲▲
 
     function translateSettingsMenu() {
         const elementsToTranslate = document.querySelectorAll('#settings-content [data-translate], #chatbot-modal [data-translate], #pinned-modal [data-translate], #faq-modal [data-translate]');
@@ -988,6 +1076,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     const isHidden = settingsContent.classList.contains('hidden');
                     settingsBtn.title = isHidden ? uiStrings[currentLanguage].open_menu : uiStrings[currentLanguage].close_menu;
                 }
+            });
+        }
+        
+        if (imageUploadBtn && imageUploadInput) {
+            imageUploadBtn.title = uiStrings[currentLanguage].upload_image_tooltip;
+            imageUploadBtn.addEventListener('click', () => imageUploadInput.click());
+            imageUploadInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        displayUserMessageWithImage(e.target.result);
+                        getAIResponseForImage(e.target.result, file.type);
+                    };
+                    reader.readAsDataURL(file);
+                }
+                event.target.value = '';
             });
         }
         
@@ -1344,16 +1449,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (show) {
                 chatModal.style.display = 'flex';
                 openButton.innerHTML = '<i class="fas fa-times"></i>';
-                openButton.title = closeTooltip; // ツールチップを「閉じる」に設定
+                openButton.title = closeTooltip; 
                 initializeChat();
             } else {
                 chatModal.style.display = 'none';
                 openButton.innerHTML = '<i class="far fa-comments"></i>';
-                openButton.title = openTooltip; // ツールチップを「開く」に設定
+                openButton.title = openTooltip; 
             }
         };
 
-        // ページ読み込み時に最初のツールチップを設定
         openButton.title = uiStrings[currentLanguage]?.open_chatbot_tooltip || 'Open Chatbot';
 
         openButton.addEventListener('click', (e) => {
