@@ -257,6 +257,20 @@
     </div>
 </div>
 
+<!-- ▼▼▼【新機能】ロールプレイ選択モーダルを追加 ▼▼▼ -->
+<div id="roleplay-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[1050] flex justify-center items-center px-4">
+    <div id="roleplay-modal-content" class="bg-gray-100 rounded-lg shadow-xl w-full max-w-3xl max-h-[80vh] flex flex-col">
+        <header class="p-4 border-b flex justify-between items-center bg-white rounded-t-lg sticky top-0">
+            <h2 id="roleplay-modal-title" class="text-lg font-bold text-gray-800" data-translate="role_play_prompt">ロールプレイシナリオ選択</h2>
+            <button id="roleplay-modal-close-btn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+        </header>
+        <div id="roleplay-list" class="p-6 space-y-6 overflow-y-auto">
+            <!-- カテゴリーとシナリオがここにJavaScriptで描画されます -->
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ ここまで ▲▲▲ -->
+
 
 <div id="chat-open-button">
     <i class="far fa-comments"></i>

@@ -516,3 +516,70 @@ body {
     color: #94a3b8;
 }
 /* ▲▲▲ ここまで ▲▲▲ */
+
+/* ▼▼▼【新機能】ロールプレイ選択モーダルのスタイル ▼▼▼ */
+#roleplay-list::-webkit-scrollbar { 
+    width: 8px; 
+}
+#roleplay-list::-webkit-scrollbar-track { 
+    background: #e5e7eb; 
+}
+#roleplay-list::-webkit-scrollbar-thumb { 
+    background: #9ca3af; 
+    border-radius: 4px; 
+}
+#roleplay-list::-webkit-scrollbar-thumb:hover { 
+    background: #6b7280; 
+}
+
+#roleplay-list .category-title {
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 700; /* font-bold */
+    color: #1f2937; /* gray-800 */
+    padding-bottom: 0.75rem; /* pb-3 */
+    border-bottom: 2px solid #d1d5db; /* border-b-2 border-gray-300 */
+    margin-bottom: 1rem; /* mb-4 */
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* gap-3 */
+}
+
+#roleplay-list .scenario-grid {
+    display: grid;
+    /* 画面幅に応じて列数を自動調整 */
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.75rem; /* gap-3 */
+}
+
+#roleplay-list .scenario-btn {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db; /* border-gray-300 */
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 1rem; /* p-4 */
+    text-align: left;
+    font-weight: 500;
+    color: #374151; /* gray-700 */
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+#roleplay-list .scenario-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    border-color: #3b82f6; /* blue-500 */
+    color: #1d4ed8; /* blue-800 */
+}
+
+#roleplay-list .scenario-btn .scenario-icon {
+    color: #6b7280; /* gray-500 */
+    transition: color 0.2s ease-in-out;
+}
+
+#roleplay-list .scenario-btn:hover .scenario-icon {
+    color: #3b82f6; /* blue-500 */
+}
+
