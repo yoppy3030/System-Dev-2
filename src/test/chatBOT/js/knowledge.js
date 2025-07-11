@@ -5,8 +5,8 @@ const uiStrings = {
         langStatus: '言語: 日本語',
         inputPlaceholder: '日本のマナーについて質問してください',
         welcome: {
-            message: 'こんにちは！私は日本のマナーについてお答えするAIです。どんなことでもお気軽にご質問ください。\n\n「クイズ」や「お問い合わせ」もできます。',
-            replies: ['クイズ', 'お問い合わせ']
+            message: 'こんにちは！私は日本のマナーについてお答えするAIです。どんなことでもお気軽にご質問ください。\n\n「よくある質問」「クイズ」「お問い合わせ」もできます。',
+            replies: ['よくある質問', 'クイズ', 'お問い合わせ']
         },
         quiz_prompt: 'クイズの難易度を選択してください。',
         quiz_difficulty: ['簡単', '普通', '難しい'],
@@ -37,7 +37,6 @@ const uiStrings = {
         lang_switched: '言語を日本語に切り替えました。',
         history_cleared: '会話の履歴を消去しました。',
         clear_history_button_title: '履歴をクリア',
-        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
         theme_selection: 'テーマ選択',
         language_settings: '言語設定',
         theme_simple: 'シンプル',
@@ -46,7 +45,11 @@ const uiStrings = {
         theme_autumn: '秋',
         theme_winter: '冬',
         clear_history: '履歴をクリア',
-        // ▲▲▲ ここまで ▲▲▲
+        view_pinned: 'お気に入り',
+        open_menu: 'メニューを開く',
+        close_menu: 'メニューを閉じる',
+        pinned_empty_title: 'お気に入りはまだありません',
+        pinned_empty_desc: 'ボットの回答の右上にあるピンアイコンをクリックして、重要な情報をここに保存しましょう。',
         inquiry: {
             start: 'お問い合わせですね。承知いたしました。まず、お名前を教えていただけますか？（途中で「キャンセル」と入力すると中断できます）',
             prompt_email: 'ありがとうございます。次に、ご連絡先のメールアドレスをお願いします。ご入力いただいたアドレスに確認メールをお送りします。',
@@ -56,15 +59,71 @@ const uiStrings = {
             send_error: '申し訳ありません、送信中にエラーが発生しました。時間をおいて再度お試しください。',
             cancelled: 'お問い合わせをキャンセルしました。',
             cancel_keywords: ['キャンセル', 'やめる'],
-        }
+        },
+        feedback: {
+            helpful: '役に立った',
+            unhelpful: '役に立たなかった',
+            thank_you: 'フィードバックありがとうございます！'
+        },
+        voice_listening: '話してください...',
+        voice_not_supported: '申し訳ありません、お使いのブラウザは音声入力に対応していません。',
+        voice_no_speech: '音声が検出されませんでした。もう一度お試しください。',
+        voice_permission_denied: 'マイクへのアクセスが拒否されました。ブラウザの設定で許可してください。',
+        voice_error: '音声入力でエラーが発生しました',
+        mic_tooltip: 'マイクを使用',
+        mic_tooltip_recording: '録音を停止',
+        send_tooltip: '送信',
+        summarize_conversation: '会話を要約',
+        summary_title: '会話の要約',
+        summarizing: '会話を要約しています...',
+        summarize_error: '要約中にエラーが発生しました。もう一度お試しください。',
+        summarize_no_history: '要約するには、もう少し会話が必要です。',
+        faq_title: 'よくある質問',
+        faq_prompt: '知りたい質問をタップしてください。',
+        faq: {
+            questions: [
+                { id: 'faq_greeting', q: '初対面の挨拶', a: '日本では、初対面の人にはお辞儀をするのが一般的です。丁寧な挨拶は「はじめまして。〇〇です。どうぞよろしくお願いいたします。」です。相手の目を見て、にこやかに挨拶しましょう。' },
+                { id: 'faq_dining', q: '食事のマナー', a: '食事の前には「いただきます」、後には「ごちそうさまでした」と感謝を伝えます。お箸を正しく持ち、食べ物を刺したり、お皿の上で迷ったりしないようにしましょう（「迷い箸」）。' },
+                { id: 'faq_visiting', q: '訪問時のマナー', a: '人の家を訪問する際は、約束の時間通りに行くことが大切です。玄関でコートを脱ぎ、靴を揃えて上がります。手土産を渡す場合は、部屋に通されて挨拶が終わった後が適切です。' },
+                { id: 'faq_train', q: '電車でのマナー', a: '電車内では大声での会話や電話は控え、静かに過ごします。優先席は必要としている方に譲りましょう。リュックサックは前に抱えるか、網棚に置くと周りの人の邪魔になりません。' }
+            ]
+        },
+        share_answer: '回答を共有',
+        copy_to_clipboard: 'コピー',
+        download_as_text: '保存',
+        copied_to_clipboard: 'コピーしました！',
+        my_page_title: '学習進捗ページ',
+        back_to_home: 'ホームに戻る',
+        quiz_stats_title: 'クイズ成績',
+        no_data_available: 'まだ利用可能なデータがありません。',
+        my_page_link: 'マイページ',
+        learned_topics_title: '学習したトピック',
+        no_learned_topics_data: 'まだ学習したトピックがありません。',
+        reset_progress_button: '学習データをリセット',
+        confirm_reset_title: '本当によろしいですか？',
+        confirm_reset_text: 'すべての学習進捗データ（クイズ成績、学習したトピック、アチーブメント）が完全に削除されます。この操作は元に戻せません。',
+        cancel_button: 'キャンセル',
+        reset_button: 'リセット',
+        achievements_title: '獲得したアチーブメント',
+        no_achievements_data: 'まだ獲得したアチーブメントはありません。',
+        achievements: {
+            quiz_master_easy: { title: '入門マナーマスター', desc: '難易度「簡単」のクイズを全問正解しました！' },
+            quiz_master_normal: { title: '中級マナーマスター', desc: '難易度「普通」のクイズを全問正解しました！' },
+            quiz_master_hard: { title: '上級マナーマスター', desc: '難易度「難しい」のクイズを全問正解しました！' },
+            perfect_master: { title: 'マナーの達人', desc: '全ての難易度のクイズで全問正解を達成しました！' },
+            first_quiz: { title: 'はじめの一歩', desc: '初めてクイズに挑戦しました。' },
+            topic_collector: { title: '知識コレクター', desc: '10個のトピックを学習しました。' }
+        },
+        faq_source_text: '（よくある質問より）',
+        ai_summary_text: 'AIの要約:'
     },
     en: {
         headerTitle: 'AI Manners Learning Bot',
         langStatus: 'Language: English',
         inputPlaceholder: 'Ask about Japanese manners',
         welcome: {
-            message: 'Hello! I am an AI that can answer your questions about Japanese manners. Feel free to ask me anything.\n\nYou can also try "Quiz" or "Contact".',
-            replies: ['Quiz', 'Contact']
+            message: 'Hello! I am an AI that can answer your questions about Japanese manners. Feel free to ask me anything.\n\nYou can also try "FAQ", "Quiz", or "Contact".',
+            replies: ['FAQ', 'Quiz', 'Contact']
         },
         quiz_prompt: 'Please select a quiz difficulty.',
         quiz_difficulty: ['Easy', 'Normal', 'Hard'],
@@ -95,7 +154,6 @@ const uiStrings = {
         lang_switched: 'Language switched to English.',
         history_cleared: 'Conversation history has been cleared.',
         clear_history_button_title: 'Clear History',
-        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
         theme_selection: 'Theme Selection',
         language_settings: 'Language Settings',
         theme_simple: 'Simple',
@@ -104,7 +162,11 @@ const uiStrings = {
         theme_autumn: 'Autumn',
         theme_winter: 'Winter',
         clear_history: 'Clear History',
-        // ▲▲▲ ここまで ▲▲▲
+        view_pinned: 'Favorites',
+        open_menu: 'Open menu',
+        close_menu: 'Close menu',
+        pinned_empty_title: 'No Favorites Yet',
+        pinned_empty_desc: 'Click the pin icon on a bot response to save important information here.',
         inquiry: {
             start: 'Okay, you want to make an inquiry. First, could you please tell me your name? (You can type "cancel" to stop at any time)',
             prompt_email: 'Thank you. Next, please provide your email address. A confirmation email will be sent to this address.',
@@ -114,15 +176,71 @@ const uiStrings = {
             send_error: 'Sorry, an error occurred while sending. Please try again later.',
             cancelled: 'The inquiry has been cancelled.',
             cancel_keywords: ['cancel', 'stop'],
-        }
+        },
+        feedback: {
+            helpful: 'Helpful',
+            unhelpful: 'Not Helpful',
+            thank_you: 'Thank you for your feedback!'
+        },
+        voice_listening: 'Speak now...',
+        voice_not_supported: 'Sorry, your browser does not support voice input.',
+        voice_no_speech: 'No speech was detected. Please try again.',
+        voice_permission_denied: 'Microphone access denied. Please allow access in your browser settings.',
+        voice_error: 'Voice input error',
+        mic_tooltip: 'Use microphone',
+        mic_tooltip_recording: 'Stop recording',
+        send_tooltip: 'Send',
+        summarize_conversation: 'Summarize Conversation',
+        summary_title: 'Conversation Summary',
+        summarizing: 'Summarizing the conversation...',
+        summarize_error: 'An error occurred while summarizing. Please try again.',
+        summarize_no_history: 'More conversation is needed to create a summary.',
+        faq_title: 'FAQ',
+        faq_prompt: 'Tap a question to see the answer.',
+        faq: {
+            questions: [
+                { id: 'faq_greeting', q: 'First-time Greetings', a: 'In Japan, it is common to bow when meeting someone for the first time. A polite greeting is "Hajimemashite. [Your Name] desu. Douzo yoroshiku onegaishimasu." Make eye contact and smile.' },
+                { id: 'faq_dining', q: 'Dining Etiquette', a: 'Before eating, say "Itadakimasu," and after, say "Gochisousama deshita" to show gratitude. Hold your chopsticks correctly and avoid stabbing food or hovering them over dishes ("mayoi-bashi").' },
+                { id: 'faq_visiting', q: 'Visiting Someone\'s Home', a: 'It is important to be on time for your appointment. Take off your coat at the entrance and arrange your shoes neatly. If you bring a gift, it\'s best to present it after being shown into the room and finishing greetings.' },
+                { id: 'faq_train', q: 'Train Etiquette', a: 'On the train, refrain from loud conversations or phone calls. Offer priority seats to those who need them. Hold your backpack in front of you or place it on the overhead rack to avoid bothering others.' }
+            ]
+        },
+        share_answer: 'Share Answer',
+        copy_to_clipboard: 'Copy',
+        download_as_text: 'Save',
+        copied_to_clipboard: 'Copied!',
+        my_page_title: 'Learning Progress',
+        back_to_home: 'Back to Home',
+        quiz_stats_title: 'Quiz Performance',
+        no_data_available: 'No data available yet.',
+        my_page_link: 'My Page',
+        learned_topics_title: 'Learned Topics',
+        no_learned_topics_data: 'No learned topics yet.',
+        reset_progress_button: 'Reset Progress Data',
+        confirm_reset_title: 'Are you sure?',
+        confirm_reset_text: 'All learning progress data (quiz results, learned topics, achievements) will be permanently deleted. This action cannot be undone.',
+        cancel_button: 'Cancel',
+        reset_button: 'Reset',
+        achievements_title: 'Achievements Unlocked',
+        no_achievements_data: 'No achievements unlocked yet.',
+        achievements: {
+            quiz_master_easy: { title: 'Manners Novice', desc: 'You got a perfect score on the "Easy" quiz!' },
+            quiz_master_normal: { title: 'Manners Adept', desc: 'You got a perfect score on the "Normal" quiz!' },
+            quiz_master_hard: { title: 'Manners Expert', desc: 'You got a perfect score on the "Hard" quiz!' },
+            perfect_master: { title: 'Manners Grandmaster', desc: 'Achieved a perfect score on all quiz difficulties!' },
+            first_quiz: { title: 'First Step', desc: 'You tried the quiz for the first time.' },
+            topic_collector: { title: 'Knowledge Collector', desc: 'You have learned 10 topics.' }
+        },
+        faq_source_text: '(From FAQ)',
+        ai_summary_text: 'AI Summary:'
     },
     zh: {
         headerTitle: 'AI礼仪学习机器人',
         langStatus: '语言: 中文',
         inputPlaceholder: '询问有关日本礼仪的问题',
         welcome: {
-            message: '您好！我是可以回答您关于日本礼仪问题的AI。请随时向我提问。\n\n您也可以尝试“测验”或“联系我们”。',
-            replies: ['测验', '联系我们']
+            message: '您好！我是可以回答您关于日本礼仪问题的AI。请随时向我提问。\n\n您也可以尝试“常见问题”、“测验”或“联系我们”。',
+            replies: ['常见问题', '测验', '联系我们']
         },
         quiz_prompt: '请选择测验的难度。',
         quiz_difficulty: ['简单', '普通', '困难'],
@@ -153,7 +271,6 @@ const uiStrings = {
         lang_switched: '语言已切换至中文。',
         history_cleared: '对话记录已清除。',
         clear_history_button_title: '清除记录',
-        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
         theme_selection: '主题选择',
         language_settings: '语言设定',
         theme_simple: '简约',
@@ -162,7 +279,11 @@ const uiStrings = {
         theme_autumn: '秋天',
         theme_winter: '冬天',
         clear_history: '清除记录',
-        // ▲▲▲ ここまで ▲▲▲
+        view_pinned: '收藏',
+        open_menu: '打开菜单',
+        close_menu: '关闭菜单',
+        pinned_empty_title: '尚无收藏的消息',
+        pinned_empty_desc: '点击机器人回复右上方的图钉图标，即可在此处保存重要信息。',
         inquiry: {
             start: '好的，您想进行咨询。首先，请问您的名字是？（您可以随时输入“取消”来中断）',
             prompt_email: '谢谢。接下来，请输入您的电子邮件地址。我们将向此地址发送一封确认邮件。',
@@ -172,15 +293,81 @@ const uiStrings = {
             send_error: '抱歉，发送时发生错误，请稍后再试。',
             cancelled: '咨询已取消。',
             cancel_keywords: ['取消'],
-        }
+        },
+        feedback: {
+            helpful: '有帮助',
+            unhelpful: '没有帮助',
+            thank_you: '感谢您的反馈！'
+        },
+        voice_listening: '请说话...',
+        voice_not_supported: '抱歉，您的浏览器不支持语音输入。',
+        voice_no_speech: '未检测到语音。请再试一次。',
+        voice_permission_denied: '麦克风访问被拒绝。请在浏览器设置中允许访问。',
+        voice_error: '语音输入错误',
+        mic_tooltip: '使用麦克风',
+        mic_tooltip_recording: '停止录音',
+        send_tooltip: '发送',
+        summarize_conversation: '总结对话',
+        summary_title: '对话总结',
+        summarizing: '正在总结对话...',
+        summarize_error: '总结时发生错误，请重试。',
+        summarize_no_history: '需要更多对话才能进行总结。',
+        faq_title: '常见问题',
+        faq_prompt: '点击问题查看答案。',
+        faq: {
+            questions: [
+                { id: 'faq_greeting', q: '初次见面问候', a: '在日本，初次见面时通常会鞠躬。礼貌的问候语是“初次见面，我叫[您的名字]，请多关照。”（Hajimemashite. [Your Name] desu. Douzo yoroshiku onegaishimasu.）' },
+                { id: 'faq_dining', q: '用餐礼仪', a: '饭前说“我开动了”（Itadakimasu），饭后说“我吃好了”（Gochisousama deshita）以示感谢。正确使用筷子，不要用筷子插食物或在盘子上方犹豫（“迷い箸”）。' },
+                { id: 'faq_visiting', q: '拜访礼仪', a: '拜访他人家时，准时到达很重要。在玄关脱下外套，并将鞋子摆放整齐。如果带了礼物，最好在进入房间并打完招呼后赠送。' },
+                { id: 'faq_train', q: '电车礼仪', a: '在电车内请保持安静，不要大声交谈或打电话。请将优先座位让给有需要的人。最好将背包抱在胸前或放在行李架上，以免妨碍他人。' }
+            ]
+        },
+        share_answer: '分享回答',
+        copy_to_clipboard: '复制',
+        download_as_text: '保存',
+        copied_to_clipboard: '已复制！',
+        my_page_title: '学习进度',
+        back_to_home: '返回首页',
+        quiz_stats_title: '测验成绩',
+        no_data_available: '暂无可用数据。',
+        my_page_link: '我的主页',
+        learned_topics_title: '已学主题',
+        no_learned_topics_data: '暂无已学主题。',
+        reset_progress_button: '重置学习数据',
+        confirm_reset_title: '您确定吗？',
+        confirm_reset_text: '所有学习进度数据（测验成绩、已学主题、成就）将被永久删除。此操作无法撤销。',
+        cancel_button: '取消',
+        reset_button: '重置',
+        achievements_title: '已获得的成就',
+        no_achievements_data: '尚未获得任何成就。',
+        achievements: {
+            quiz_master_easy: { title: '礼仪入门大师', desc: '您在“简单”难度的测验中全部答对！' },
+            quiz_master_normal: { title: '礼仪中级大师', desc: '您在“普通”难度的测验中全部答对！' },
+            quiz_master_hard: { title: '礼仪高级大师', desc: '您在“困难”难度的测验中全部答对！' },
+            perfect_master: { title: '礼仪宗师', desc: '在所有难度的测验中均取得满分！' },
+            first_quiz: { title: '第一步', desc: '您第一次尝试了测验。' },
+            topic_collector: { title: '知识收藏家', desc: '您已经学习了10个主题。' }
+        },
+        faq_source_text: '(来自常见问题)',
+        ai_summary_text: 'AI总结:'
     }
 };
 
-// --- ナレッジベース (特殊機能とクイズデータ) ---
+// --- ナレッジベース (特殊機能) ---
 const specialFeatures = {
-    ja: { 'クイズ': { isQuiz: true }, 'お問い合わせ': { isInquiry: true } },
-    en: { 'quiz': { isQuiz: true }, 'contact': { isInquiry: true } },
-    zh: { '测验': { isQuiz: true }, '联系我们': { isInquiry: true } }
+    ja: { 'よくある質問': { isFaq: true }, 'クイズ': { isQuiz: true }, 'お問い合わせ': { isInquiry: true } },
+    en: { 'faq': { isFaq: true }, 'quiz': { isQuiz: true }, 'contact': { isInquiry: true } },
+    zh: { '常见问题': { isFaq: true }, '测验': { isQuiz: true }, '联系我们': { isInquiry: true } }
+};
+
+// --- アチーブメント定義 ---
+const achievements = {
+    first_quiz: { icon: 'fas fa-flag-checkered', condition: (stats) => stats.totalQuizzesTaken > 0 },
+    quiz_master_easy: { icon: 'fas fa-award', condition: (stats) => stats.perfectScores.easy },
+    quiz_master_normal: { icon: 'fas fa-medal', condition: (stats) => stats.perfectScores.normal },
+    quiz_master_hard: { icon: 'fas fa-trophy', condition: (stats) => stats.perfectScores.hard },
+    perfect_master: { icon: 'fas fa-crown', condition: (stats) => stats.perfectScores.easy && stats.perfectScores.normal && stats.perfectScores.hard },
+    topic_collector: { icon: 'fas fa-book-reader', condition: (stats) => stats.learnedTopicsCount >= 10 }
 };
 
 // ★★★ クイズデータを各難易度30問、合計90問に増量 ★★★
@@ -272,7 +459,12 @@ const quizData = {
         { question: { ja: '食事の際、器の蓋はどこに置くのが正しいですか？', en: 'When dining, where is the correct place to put the lid of a bowl?', zh: '吃饭时，碗盖应该放在哪里？' }, options: { ja: ['お盆の外の右側', 'お盆の中の右側', '裏返してお椀の上'], en: ['Outside the tray on the right', 'Inside the tray on the right', 'Upside down on top of the bowl'], zh: ['餐盘外的右侧', '餐盘内的右侧', '翻过来放在碗上'] }, correct: 0, explanation: { ja: 'お椀の蓋は、お椀の右側、お盆の外に置くのが基本です。水滴が垂れないように、蓋の内側を上にして置きます。', en: 'The lid should be placed outside the tray on the right side of the bowl, with the inside facing up to prevent condensation from dripping.', zh: '碗盖的基本放法是放在餐盘外的右侧，内侧朝上以防滴水。' } },
         { question: { ja: 'ビジネスメールで、自分の名前を名乗った後、相手に「お世話になっております」と書くのは正しいですか？', en: 'In a business email, is it correct to write "Osewa ni natte orimasu" after stating your name?', zh: '在商务邮件中，报上自己名字后写“承蒙关照”正确吗？' }, options: { ja: ['はい、正しい', 'いいえ、名乗る前に書く', '初めての相手には使わない'], en: ['Yes, it is correct', 'No, write it before your name', 'Do not use it for a first-time contact'], zh: ['是的，正确', '不，要在报名前写', '不要对初次联系的人使用'] }, correct: 1, explanation: { ja: 'ビジネスメールでは、まず宛名、次に挨拶（「お世話になっております」など）、そして自分の会社名と名前を名乗るのが正しい順序です。', en: 'The correct order in a business email is: Addressee, Greeting (like "Osewa ni natte orimasu"), and then your company name and your name.', zh: '商务邮件的正确顺序是：收件人姓名、问候语（如“承蒙关照”），然后是自己的公司名和姓名。' } },
         { question: { ja: '訪問先で「つまらないものですが」と言って手土産を渡すのはなぜですか？', en: 'Why do people say "Tsumaranai mono desu ga" (It\'s a dull thing, but...) when giving a gift?', zh: '为什么在送礼时会说“一点小意思”（つまらないものですが）？' }, options: { ja: ['本当に価値がないから', '謙遜の気持ちを表すため', '決まり文句で意味はない'], en: ['Because it truly has no value', 'To express humility', 'It\'s just a set phrase with no meaning'], zh: ['因为它真的没什么价值', '为了表示谦逊', '只是没有意义的客套话'] }, correct: 1, explanation: { ja: '「立派なあなたに差し上げるには、この贈り物は大したものではありませんが」という、相手を立てる謙遜の表現です。', en: 'It is a humble expression that elevates the receiver, implying, "This gift is not much for someone as great as you."', zh: '这是一种抬高对方、表示谦逊的说法，意思是“对于尊贵的您来说，这份薄礼不成敬意”。' } },
-        { question: { ja: '和室の敷居（しきい）を踏んではいけないと言われる主な理由は何ですか？', en: 'What is the main reason it is said you should not step on the threshold (shikii) of a Japanese room?', zh: '据说不能踩在和室的门槛上，主要原因是什么？' }, options: { ja: ['家の主人の頭だから', '滑って危ないから', '単なる迷信'], en: ['Because it represents the head of the household', 'Because it is slippery and dangerous', 'It is just a superstition'], zh: ['因为它代表一家之主', '因为它很滑很危险', '只是迷信'] }, correct: 0, explanation: { ja: '敷居は、その家の内と外を分ける結界であり、またその家の主人の頭を象徴するとも言われ、踏むことは大変失礼とされています。', en: 'The threshold is a boundary separating the inside and outside of a house and is also said to symbolize the head of the household, making it very disrespectful to step on.', zh: '门槛是分隔房屋内外的结界，也象征着一家之主，因此踩踏门槛被认为是非常失礼的。' } },
+        {
+            question: { ja: '和室の敷居（しきい）を踏んではいけないと言われる主な理由は何ですか？', en: 'What is the main reason it is said you should not step on the threshold (shikii) of a Japanese room?', zh: '据说不能踩在和室的门槛上，主要原因是什么？' },
+            options: { ja: ['家の主人の頭だから', '滑って危ないから', '単なる迷信'], en: ['Because it represents the head of the household', 'Because it is slippery and dangerous', 'It is just a superstition'], zh: ['因为它代表一家之主', '因为它很滑很危险', '只是迷信'] },
+            correct: 0,
+            explanation: { ja: '敷居は、その家の内と外を分ける結界であり、またその家の主人の頭を象徴するとも言われ、踏むことは大変失礼とされています。', en: 'The threshold is a boundary separating the inside and outside of a house and is also said to symbolize the head of the household, making it very disrespectful to step on.', zh: '门槛是分隔房屋内外的结界，也象征着一家之主，因此踩踏门槛被认为是非常失礼的。' }
+        },
         { question: { ja: '食事の際、一度取り皿に取った料理を、元の大きな皿に戻しても良いですか？', en: 'During a meal, is it okay to return food from your small plate back to the large serving dish?', zh: '吃饭时，可以把自己小盘子里的菜再放回大盘子里吗？' }, options: { ja: ['はい、誰も見ていなければ', 'いいえ、絶対にしてはいけない', '少しならOK'], en: ['Yes, if no one is watching', 'No, you must never do it', 'A little is okay'], zh: ['可以，如果没人看见的话', '不，绝对不可以', '一点点なら可以'] }, correct: 1, explanation: { ja: '一度自分の皿に取ったものを共有の大皿に戻すのは、衛生的に問題があるだけでなく、重大なマナー違反（「そら箸」）です。', en: 'Returning food to a shared platter after it has been on your personal plate is a major breach of etiquette ("sora-bashi") and is also unhygienic.', zh: '把自己盘子里的食物再放回公用的大盘子里，不仅不卫生，也是严重违反礼仪的（“そら箸”）。' } },
         { question: { ja: '新築祝いに「火」を連想させる贈り物（灰皿、ライターなど）を避けるのはなぜですか？', en: 'Why are gifts that evoke "fire" (like ashtrays or lighters) avoided for a housewarming?', zh: '为什么乔迁之喜时要避免送让人联想到“火”的礼物（如烟灰缸、打火机）？' }, options: { ja: ['値段が安いから', '火事を連想させるから', '煙が出るから'], en: ['Because they are cheap', 'Because they are associated with fires', 'Because they produce smoke'], zh: ['因为便宜', '因为会让人联想到火灾', '因为会冒烟'] }, correct: 1, explanation: { ja: '新築した家が火事になることを連想させるため、灰皿、ライター、ストーブ、また赤い色の贈り物なども避けるのが一般的です。', en: 'Gifts that are associated with fire, such as ashtrays, lighters, heaters, and even red-colored items, are generally avoided as they can be associated with a house fire.', zh: '为了避免让人联想到新居发生火灾，通常会避免赠送烟灰缸、打火机、暖炉以及红色的礼物。' } },
         { question: { ja: 'エレベーターで、目上の人と二人きりの場合、どちらが先に降りますか？', en: 'When in an elevator with a superior, who gets off first?', zh: '和上级单独乘坐电梯时，谁先下？' }, options: { ja: ['目上の人が先', '自分が先', '同時に降りる'], en: ['The superior gets off first', 'I get off first', 'Get off at the same time'], zh: ['上级先下', '我先下', '同时下'] }, correct: 1, explanation: { ja: 'ドアの操作や安全確保のため、目下の者が先に降りてドアを押さえ、目上の人を安全に誘導するのが正しいマナーです。', en: 'The subordinate should get off first to hold the door and ensure the superior can exit safely. This is proper etiquette.', zh: '为了操作电梯门和确保安全，下级应该先下电梯按住开门键，引导上级安全下梯，这才是正确的礼仪。' } },

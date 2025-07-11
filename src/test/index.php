@@ -22,7 +22,7 @@
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="dropdown-content" id="dropdown-content">
-        <a href="User_page.php">My page</a>
+        <a href="my_page.php" data-translate="my_page_link">マイページ</a>
         <a href="#">contact</a>
         <a href="#">Blog</a>
     </div>
@@ -165,49 +165,98 @@
             <p id="header-lang-status" class="text-sm opacity-90">言語: 日本語</p>
         </div>
 
-        <div id="settings-dropdown" class="relative">
-            <button id="settings-btn" class="text-white focus:outline-none p-2">
-                <i class="fas fa-bars text-2xl"></i>
+        <div class="flex items-center gap-2">
+            <button id="summarize-btn" class="text-white focus:outline-none p-2" title="会話を要約">
+                <i class="fas fa-file-alt text-xl"></i>
             </button>
-            <div id="settings-content" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-xl z-20">
-                <div class="py-2 px-4">
-                    <!-- ▼▼▼【変更点】翻訳用の属性を追加 ▼▼▼ -->
-                    <p class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
-                </div>
-                <a class="cb-theme-option" data-theme="simple"><i class="fas fa-square fa-fw"></i> <span data-translate="theme_simple">シンプル</span></a>
-                <a class="cb-theme-option" data-theme="spring"><i class="fas fa-leaf fa-fw"></i> <span data-translate="theme_spring">春</span></a>
-                <a class="cb-theme-option" data-theme="summer"><i class="fas fa-sun fa-fw"></i> <span data-translate="theme_summer">夏</span></a>
-                <a class="cb-theme-option" data-theme="autumn"><i class="fas fa-fan fa-fw"></i> <span data-translate="theme_autumn">秋</span></a>
-                <a class="cb-theme-option" data-theme="winter"><i class="fas fa-snowflake fa-fw"></i> <span data-translate="theme_winter">冬</span></a>
-                
-                <div class="border-t border-gray-200 my-1"></div>
+            <div id="settings-dropdown" class="relative">
+                <button id="settings-btn" class="text-white focus:outline-none p-2" title="メニューを開く">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+                <div id="settings-content" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-xl z-20">
+                    
+                    <a href="./chatBOT/my_page.php" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-chart-line fa-fw"></i> <span data-translate="my_page_link">マイページ</span></a>
+                    <div class="border-t border-gray-200 my-1"></div>
+                    
+                    <a id="faq-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-question-circle fa-fw"></i> <span data-translate="faq_title">よくある質問</span></a>
+                    <a id="pinned-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-thumbtack fa-fw"></i> <span data-translate="view_pinned">お気に入り</span></a>
+                    <a id="summarize-menu-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-file-alt fa-fw"></i> <span data-translate="summarize_conversation">会話を要約</span></a>
+                    
+                    <div class="border-t border-gray-200 my-1"></div>
 
-                <div class="py-2 px-4">
-                    <p class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
-                </div>
-                <div id="language-switcher">
-                     <button data-lang="ja" class="ja-btn lang-switch-btn">日本語</button>
-                     <button data-lang="en" class="en-btn lang-switch-btn">EN</button>
-                     <button data-lang="zh" class="zh-btn lang-switch-btn">中文</button>
-                </div>
+                    <div class="py-2 px-4">
+                        <p class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
+                    </div>
+                    <a class="cb-theme-option" data-theme="simple"><i class="fas fa-square fa-fw"></i> <span data-translate="theme_simple">シンプル</span></a>
+                    <a class="cb-theme-option" data-theme="spring"><i class="fas fa-leaf fa-fw"></i> <span data-translate="theme_spring">春</span></a>
+                    <a class="cb-theme-option" data-theme="summer"><i class="fas fa-sun fa-fw"></i> <span data-translate="theme_summer">夏</span></a>
+                    <a class="cb-theme-option" data-theme="autumn"><i class="fas fa-fan fa-fw"></i> <span data-translate="theme_autumn">秋</span></a>
+                    <a class="cb-theme-option" data-theme="winter"><i class="fas fa-snowflake fa-fw"></i> <span data-translate="theme_winter">冬</span></a>
+                    
+                    <div class="border-t border-gray-200 my-1"></div>
 
-                <div class="border-t border-gray-200 my-1"></div>
+                    <div class="py-2 px-4">
+                        <p class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
+                    </div>
+                    <div id="language-switcher">
+                         <button data-lang="ja" class="ja-btn lang-switch-btn">日本語</button>
+                         <button data-lang="en" class="en-btn lang-switch-btn">EN</button>
+                         <button data-lang="zh" class="zh-btn lang-switch-btn">中文</button>
+                    </div>
 
-                <a id="clear-history-btn" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-trash-alt fa-fw"></i> <span data-translate="clear_history">履歴をクリア</span></a>
+                    <div class="border-t border-gray-200 my-1"></div>
+
+                    <a id="clear-history-btn" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3"><i class="fas fa-trash-alt fa-fw"></i> <span data-translate="clear_history">履歴をクリア</span></a>
+                </div>
             </div>
         </div>
 
     </header>
-    <main id="chat-window" class="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50"></main>
+    
+    <main id="chat-window" class="p-6 overflow-y-auto space-y-4 bg-gray-50">
+        <!-- Chat messages will be appended here -->
+    </main>
+    
     <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl mt-8">
         <div class="flex items-center space-x-3">
             <input type="text" id="user-input" class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition" placeholder="日本のマナーについて質問してください">
-            <button id="send-btn" class="bg-sky-600 text-white rounded-full p-3 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-transform transform hover:scale-110">
+            <button id="mic-btn" class="mic-btn" title="マイクを使用">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button id="send-btn" class="bg-sky-600 text-white rounded-full p-3 hover:bg-sky-700 focus:outline-none focus:ring-2
+                focus:ring-offset-2 focus:ring-sky-500 transition-transform transform hover:scale-110" title="送信">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
             </button>
         </div>
     </footer>
 </div>
+
+<!-- お気に入り表示用のモーダル -->
+<div id="pinned-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[1050] flex justify-center items-center">
+    <div id="pinned-modal-content" class="bg-gray-100 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+        <header class="p-4 border-b flex justify-between items-center bg-white rounded-t-lg">
+            <h2 id="pinned-modal-title" class="text-lg font-bold text-gray-800" data-translate="view_pinned">お気に入り</h2>
+            <button id="pinned-modal-close-btn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+        </header>
+        <div id="pinned-window" class="p-6 space-y-3 overflow-y-auto">
+            <!-- Pinned messages will be rendered here by JS -->
+        </div>
+    </div>
+</div>
+
+<!-- FAQモーダル -->
+<div id="faq-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[1050] flex justify-center items-center">
+    <div id="faq-modal-content" class="bg-gray-100 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+        <header class="p-4 border-b flex justify-between items-center bg-white rounded-t-lg">
+            <h2 id="faq-modal-title" class="text-lg font-bold text-gray-800" data-translate="faq_title">よくある質問</h2>
+            <button id="faq-modal-close-btn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+        </header>
+        <div id="faq-list" class="p-6 space-y-3 overflow-y-auto">
+            <!-- FAQ items will be rendered here by JS -->
+        </div>
+    </div>
+</div>
+
 
 <div id="chat-open-button">
     <i class="far fa-comments"></i>

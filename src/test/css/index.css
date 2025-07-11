@@ -747,7 +747,8 @@ footer {
     bottom: 100px;
     right: 25px;
     width: 90vw;
-    max-width: 600px;
+    /* ▼▼▼【変更点】最大幅を広げました ▼▼▼ */
+    max-width: 700px; 
     height: 82vh;
     max-height: 700px;
     z-index: 1000;
@@ -889,3 +890,34 @@ footer {
 /* =========================================
    ★★★ END: UPDATED SEASONAL THEME STYLES ★★★
    ========================================= */
+
+   
+/* 音声入力ボタンのスタイル */
+.mic-btn {
+background-color: #0ea5e9; /* Sky 500 */
+color: white;
+border-radius: 9999px; /* rounded-full */
+padding: 12px; /* p-3 */
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s ease-in-out;
+box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-sm */
+}
+
+.mic-btn:hover {
+background-color: #0284c7; /* Sky 700 */
+transform: scale(1.1);
+}
+
+.mic-btn.recording {
+background-color: #dc2626; /* Red 600 */
+animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
