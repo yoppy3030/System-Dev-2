@@ -1,0 +1,96 @@
+/* my_page.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+body {
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    background-color: #f3f4f6; /* gray-100 */
+}
+
+#faq-list li {
+    list-style: none;
+}
+
+#reset-progress-btn {
+    cursor: pointer;
+}
+
+/* ▼▼▼【変更】セクションタイトルのスタイルを統一 ▼▼▼ */
+.section-title {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 700; /* font-bold */
+    color: #1f2937; /* gray-800 */
+    padding-bottom: 0.5rem; /* pb-2 */
+    border-bottom: 2px solid #e5e7eb; /* border-b-2 border-gray-200 */
+    margin-bottom: 1.5rem; /* mb-6 */
+}
+/* ▲▲▲ ここまで ▲▲▲ */
+
+
+/* ▼▼▼【追加】難易度別成績カードのスタイル ▼▼▼ */
+.difficulty-card {
+    padding: 1rem; /* p-4 */
+    border-radius: 0.5rem; /* rounded-lg */
+    border-width: 1px;
+    transition: all 0.2s ease-in-out;
+}
+
+.difficulty-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+/* ▲▲▲ ここまで ▲▲▲ */
+
+
+/* アチーブメントシステムのスタイル */
+#achievements-list .achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb; /* gray-200 */
+    background-color: #f9fafb; /* gray-50 */
+    transition: all 0.3s ease;
+}
+
+#achievements-list .achievement-item.unlocked {
+    background-color: #fefce8; /* yellow-50 */
+    border-color: #fde047; /* yellow-400 */
+    transform: scale(1.02);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+#achievements-list .achievement-icon {
+    font-size: 2rem;
+    color: #d1d5db; /* gray-300 */
+    width: 40px;
+    text-align: center;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+#achievements-list .achievement-item.unlocked .achievement-icon {
+    color: #f59e0b; /* amber-500 */
+    transform: rotate(-10deg) scale(1.1);
+}
+
+#achievements-list .achievement-details {
+    flex-grow: 1;
+}
+
+#achievements-list .achievement-title {
+    font-weight: 600;
+    color: #9ca3af; /* gray-400 */
+}
+
+#achievements-list .achievement-item.unlocked .achievement-title {
+    color: #a16207; /* yellow-700 */
+}
+
+#achievements-list .achievement-description {
+    font-size: 0.875rem;
+    color: #d1d5db; /* gray-300 */
+}
+
+#achievements-list .achievement-item.unlocked .achievement-description {
+    color: #4b5563; /* gray-600 */
+}

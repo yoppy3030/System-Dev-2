@@ -4,9 +4,22 @@ const uiStrings = {
         headerTitle: 'AIマナー学習ボット',
         langStatus: '言語: 日本語',
         inputPlaceholder: '日本のマナーについて質問してください',
+        // ▼▼▼【変更箇所】ウェルカムメッセージと返信に「クイズ」を追加 ▼▼▼
         welcome: {
-            message: 'こんにちは！私は日本のマナーについてお答えするAIです。どんなことでもお気軽にご質問ください。\n\n「クイズ」や「お問い合わせ」もできます。',
-            replies: ['クイズ', 'お問い合わせ']
+            message: 'こんにちは！私は日本のマナーについてお答えするAIです。どんなことでもお気軽にご質問ください。\n\n「よくある質問」「ロールプレイ」「クイズ」「お問い合わせ」もできます。',
+            replies: ['よくある質問', 'ロールプレイ', 'クイズ', 'お問い合わせ']
+        },
+        // ▲▲▲ ここまで ▲▲▲
+        role_play_prompt: 'ロールプレイシナリオ選択',
+        role_play_cancel: 'ロールプレイを終了しました。',
+        role_play_categories: {
+            restaurant: '飲食店',
+            shopping: '買い物',
+            transportation: '交通',
+            daily_life: '日常生活・手続き',
+            social: '付き合い・招待',
+            business: 'ビジネス',
+            emergency: '緊急・トラブル'
         },
         quiz_prompt: 'クイズの難易度を選択してください。',
         quiz_difficulty: ['簡単', '普通', '難しい'],
@@ -21,23 +34,12 @@ const uiStrings = {
         getQuizResultMessage: (score, total) => {
             const percentage = total > 0 ? (score / total) * 100 : 0;
             let resultText = `${total}問中、${score}問正解でした！\n`;
-            if (percentage === 100) {
-                resultText += "全問正解です！素晴らしい、完璧ですね！🎉";
-            } else if (percentage >= 80) {
-                resultText += "素晴らしい成績です！よくご存知ですね。";
-            } else if (percentage >= 50) {
-                resultText += "よくできました！この調子で頑張りましょう。";
-            } else if (score > 0) {
-                resultText += "お疲れ様でした。もう一度挑戦してみましょう！";
-            } else {
-                resultText += "残念！次は頑張りましょう！";
-            }
+            if (percentage === 100) { resultText += "全問正解です！素晴らしい、完璧ですね！🎉"; } else if (percentage >= 80) { resultText += "素晴らしい成績です！よくご存知ですね。"; } else if (percentage >= 50) { resultText += "よくできました！この調子で頑張りましょう。"; } else if (score > 0) { resultText += "お疲れ様でした。もう一度挑戦してみましょう！"; } else { resultText += "残念！次は頑張りましょう！"; }
             return resultText;
         },
         lang_switched: '言語を日本語に切り替えました。',
         history_cleared: '会話の履歴を消去しました。',
         clear_history_button_title: '履歴をクリア',
-        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
         theme_selection: 'テーマ選択',
         language_settings: '言語設定',
         theme_simple: 'シンプル',
@@ -46,7 +48,11 @@ const uiStrings = {
         theme_autumn: '秋',
         theme_winter: '冬',
         clear_history: '履歴をクリア',
-        // ▲▲▲ ここまで ▲▲▲
+        view_pinned: 'お気に入り',
+        open_menu: 'メニューを開く',
+        close_menu: 'メニューを閉じる',
+        pinned_empty_title: 'お気に入りはまだありません',
+        pinned_empty_desc: 'ボットの回答の右上にあるピンアイコンをクリックして、重要な情報をここに保存しましょう。',
         inquiry: {
             start: 'お問い合わせですね。承知いたしました。まず、お名前を教えていただけますか？（途中で「キャンセル」と入力すると中断できます）',
             prompt_email: 'ありがとうございます。次に、ご連絡先のメールアドレスをお願いします。ご入力いただいたアドレスに確認メールをお送りします。',
@@ -56,15 +62,80 @@ const uiStrings = {
             send_error: '申し訳ありません、送信中にエラーが発生しました。時間をおいて再度お試しください。',
             cancelled: 'お問い合わせをキャンセルしました。',
             cancel_keywords: ['キャンセル', 'やめる'],
-        }
+        },
+        feedback: { helpful: '役に立った', unhelpful: '役に立たなかった', thank_you: 'フィードバックありがとうございます！' },
+        voice_listening: '話してください...',
+        voice_not_supported: '申し訳ありません、お使いのブラウザは音声入力に対応していません。',
+        voice_no_speech: '音声が検出されませんでした。もう一度お試しください。',
+        voice_permission_denied: 'マイクへのアクセスが拒否されました。ブラウザの設定で許可してください。',
+        voice_error: '音声入力でエラーが発生しました',
+        mic_tooltip: 'マイクを使用',
+        mic_tooltip_recording: '録音を停止',
+        send_tooltip: '送信',
+        summarize_conversation: '会話を要約',
+        summary_title: '会話の要約',
+        summarizing: '会話を要約しています...',
+        summarize_error: '要約中にエラーが発生しました。もう一度お試しください。',
+        summarize_no_history: '要約するには、もう少し会話が必要です。',
+        faq_title: 'よくある質問',
+        faq_prompt: '知りたい質問をタップしてください。',
+        faq: {
+            questions: [
+                { id: 'faq_greeting', q: '初対面の挨拶', a: '日本では、初対面の人にはお辞儀をするのが一般的です。丁寧な挨拶は「はじめまして。〇〇です。どうぞよろしくお願いいたします。」です。相手の目を見て、にこやかに挨拶しましょう。' },
+                { id: 'faq_dining', q: '食事のマナー', a: '食事の前には「いただきます」、後には「ごちそうさまでした」と感謝を伝えます。お箸を正しく持ち、食べ物を刺したり、お皿の上で迷ったりしないようにしましょう（「迷い箸」）。' },
+                { id: 'faq_visiting', q: '訪問時のマナー', a: '人の家を訪問する際は、約束の時間通りに行くことが大切です。玄関でコートを脱ぎ、靴を揃えて上がります。手土産を渡す場合は、部屋に通されて挨拶が終わった後が適切です。' },
+                { id: 'faq_train', q: '電車でのマナー', a: '電車内では大声での会話や電話は控え、静かに過ごします。優先席は必要としている方に譲りましょう。リュックサックは前に抱えるか、網棚に置くと周りの人の邪魔になりません。' }
+            ]
+        },
+        share_answer: '回答を共有',
+        copy_to_clipboard: 'コピー',
+        download_as_text: '保存',
+        copied_to_clipboard: 'コピーしました！',
+        my_page_title: '学習進捗ページ',
+        back_to_home: 'ホームに戻る',
+        quiz_stats_title: 'クイズ成績',
+        no_data_available: 'まだ利用可能なデータがありません。',
+        my_page_link: 'マイページ',
+        learned_topics_title: '学習したトピック',
+        no_learned_topics_data: 'まだ学習したトピックがありません。',
+        reset_progress_button: '学習データをリセット',
+        confirm_reset_title: '本当によろしいですか？',
+        confirm_reset_text: 'すべての学習進捗データ（クイズ成績、学習したトピック、アチーブメント）が完全に削除されます。この操作は元に戻せません。',
+        cancel_button: 'キャンセル',
+        reset_button: 'リセット',
+        achievements_title: '獲得したアチーブメント',
+        no_achievements_data: 'まだ獲得したアチーブメントはありません。',
+        achievements: {
+            quiz_master_easy: { title: '入門マナーマスター', desc: '難易度「簡単」のクイズを全問正解しました！' },
+            quiz_master_normal: { title: '中級マナーマスター', desc: '難易度「普通」のクイズを全問正解しました！' },
+            quiz_master_hard: { title: '上級マナーマスター', desc: '難易度「難しい」のクイズを全問正解しました！' },
+            perfect_master: { title: 'マナーの達人', desc: '全ての難易度のクイズで全問正解を達成しました！' },
+            first_quiz: { title: 'はじめの一歩', desc: '初めてクイズに挑戦しました。' },
+            topic_collector: { title: '知識コレクター', desc: '10個のトピックを学習しました。' }
+        },
+        faq_source_text: '（よくある質問より）',
+        ai_summary_text: 'AIの要約:'
     },
     en: {
         headerTitle: 'AI Manners Learning Bot',
         langStatus: 'Language: English',
         inputPlaceholder: 'Ask about Japanese manners',
+        // ▼▼▼【変更箇所】ウェルカムメッセージと返信に「Quiz」を追加 ▼▼▼
         welcome: {
-            message: 'Hello! I am an AI that can answer your questions about Japanese manners. Feel free to ask me anything.\n\nYou can also try "Quiz" or "Contact".',
-            replies: ['Quiz', 'Contact']
+            message: 'Hello! I am an AI that can answer your questions about Japanese manners. Feel free to ask me anything.\n\nYou can also try "FAQ", "Role-play", "Quiz", or "Contact".',
+            replies: ['FAQ', 'Role-play', 'Quiz', 'Contact']
+        },
+        // ▲▲▲ ここまで ▲▲▲
+        role_play_prompt: 'Select a Role-play Scenario',
+        role_play_cancel: 'Role-play has ended.',
+        role_play_categories: {
+            restaurant: 'Restaurants & Cafes',
+            shopping: 'Shopping',
+            transportation: 'Transportation',
+            daily_life: 'Daily Life & Procedures',
+            social: 'Socializing & Invitations',
+            business: 'Business',
+            emergency: 'Emergency & Trouble'
         },
         quiz_prompt: 'Please select a quiz difficulty.',
         quiz_difficulty: ['Easy', 'Normal', 'Hard'],
@@ -79,23 +150,12 @@ const uiStrings = {
         getQuizResultMessage: (score, total) => {
             const percentage = total > 0 ? (score / total) * 100 : 0;
             let resultText = `You answered ${score} out of ${total} questions correctly!\n`;
-            if (percentage === 100) {
-                resultText += "Perfect score! Absolutely brilliant! 🎉";
-            } else if (percentage >= 80) {
-                resultText += "Excellent work! You know your stuff.";
-            } else if (percentage >= 50) {
-                resultText += "Good job! Keep up the great work.";
-            } else if (score > 0) {
-                resultText += "Nice try. Let's try again!";
-            } else {
-                resultText += "Don't worry, let's try again!";
-            }
+            if (percentage === 100) { resultText += "Perfect score! Absolutely brilliant! 🎉"; } else if (percentage >= 80) { resultText += "Excellent work! You know your stuff."; } else if (percentage >= 50) { resultText += "Good job! Keep up the great work."; } else if (score > 0) { resultText += "Nice try. Let's try again!"; } else { resultText += "Don't worry, let's try again!"; }
             return resultText;
         },
         lang_switched: 'Language switched to English.',
         history_cleared: 'Conversation history has been cleared.',
         clear_history_button_title: 'Clear History',
-        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
         theme_selection: 'Theme Selection',
         language_settings: 'Language Settings',
         theme_simple: 'Simple',
@@ -104,7 +164,11 @@ const uiStrings = {
         theme_autumn: 'Autumn',
         theme_winter: 'Winter',
         clear_history: 'Clear History',
-        // ▲▲▲ ここまで ▲▲▲
+        view_pinned: 'Favorites',
+        open_menu: 'Open menu',
+        close_menu: 'Close menu',
+        pinned_empty_title: 'No Favorites Yet',
+        pinned_empty_desc: 'Click the pin icon on a bot response to save important information here.',
         inquiry: {
             start: 'Okay, you want to make an inquiry. First, could you please tell me your name? (You can type "cancel" to stop at any time)',
             prompt_email: 'Thank you. Next, please provide your email address. A confirmation email will be sent to this address.',
@@ -114,15 +178,80 @@ const uiStrings = {
             send_error: 'Sorry, an error occurred while sending. Please try again later.',
             cancelled: 'The inquiry has been cancelled.',
             cancel_keywords: ['cancel', 'stop'],
-        }
+        },
+        feedback: { helpful: 'Helpful', unhelpful: 'Not Helpful', thank_you: 'Thank you for your feedback!' },
+        voice_listening: 'Speak now...',
+        voice_not_supported: 'Sorry, your browser does not support voice input.',
+        voice_no_speech: 'No speech was detected. Please try again.',
+        voice_permission_denied: 'Microphone access denied. Please allow access in your browser settings.',
+        voice_error: 'Voice input error',
+        mic_tooltip: 'Use microphone',
+        mic_tooltip_recording: 'Stop recording',
+        send_tooltip: 'Send',
+        summarize_conversation: 'Summarize Conversation',
+        summary_title: 'Conversation Summary',
+        summarizing: 'Summarizing the conversation...',
+        summarize_error: 'An error occurred while summarizing. Please try again.',
+        summarize_no_history: 'More conversation is needed to create a summary.',
+        faq_title: 'FAQ',
+        faq_prompt: 'Tap a question to see the answer.',
+        faq: {
+            questions: [
+                { id: 'faq_greeting', q: 'First-time Greetings', a: 'In Japan, it is common to bow when meeting someone for the first time. A polite greeting is "Hajimemashite. [Your Name] desu. Douzo yoroshiku onegaishimasu." Make eye contact and smile.' },
+                { id: 'faq_dining', q: 'Dining Etiquette', a: 'Before eating, say "Itadakimasu," and after, say "Gochisousama deshita" to show gratitude. Hold your chopsticks correctly and avoid stabbing food or hovering them over dishes ("mayoi-bashi").' },
+                { id: 'faq_visiting', q: 'Visiting Someone\'s Home', a: 'It is important to be on time for your appointment. Take off your coat at the entrance and arrange your shoes neatly. If you bring a gift, it\'s best to present it after being shown into the room and finishing greetings.' },
+                { id: 'faq_train', q: 'Train Etiquette', a: 'On the train, refrain from loud conversations or phone calls. Offer priority seats to those who need them. Hold your backpack in front of you or place it on the overhead rack to avoid bothering others.' }
+            ]
+        },
+        share_answer: 'Share Answer',
+        copy_to_clipboard: 'Copy',
+        download_as_text: 'Save',
+        copied_to_clipboard: 'Copied!',
+        my_page_title: 'Learning Progress',
+        back_to_home: 'Back to Home',
+        quiz_stats_title: 'Quiz Performance',
+        no_data_available: 'No data available yet.',
+        my_page_link: 'My Page',
+        learned_topics_title: 'Learned Topics',
+        no_learned_topics_data: 'No learned topics yet.',
+        reset_progress_button: 'Reset Progress Data',
+        confirm_reset_title: 'Are you sure?',
+        confirm_reset_text: 'All learning progress data (quiz results, learned topics, achievements) will be permanently deleted. This action cannot be undone.',
+        cancel_button: 'Cancel',
+        reset_button: 'Reset',
+        achievements_title: 'Achievements Unlocked',
+        no_achievements_data: 'No achievements unlocked yet.',
+        achievements: {
+            quiz_master_easy: { title: 'Manners Novice', desc: 'You got a perfect score on the "Easy" quiz!' },
+            quiz_master_normal: { title: 'Manners Adept', desc: 'You got a perfect score on the "Normal" quiz!' },
+            quiz_master_hard: { title: 'Manners Expert', desc: 'You got a perfect score on the "Hard" quiz!' },
+            perfect_master: { title: 'Manners Grandmaster', desc: 'Achieved a perfect score on all quiz difficulties!' },
+            first_quiz: { title: 'First Step', desc: 'You tried the quiz for the first time.' },
+            topic_collector: { title: 'Knowledge Collector', desc: 'You have learned 10 topics.' }
+        },
+        faq_source_text: '(From FAQ)',
+        ai_summary_text: 'AI Summary:'
     },
     zh: {
         headerTitle: 'AI礼仪学习机器人',
         langStatus: '语言: 中文',
         inputPlaceholder: '询问有关日本礼仪的问题',
+        // ▼▼▼【変更箇所】ウェルカムメッセージと返信に「测验」を追加 ▼▼▼
         welcome: {
-            message: '您好！我是可以回答您关于日本礼仪问题的AI。请随时向我提问。\n\n您也可以尝试“测验”或“联系我们”。',
-            replies: ['测验', '联系我们']
+            message: '您好！我是可以回答您关于日本礼仪问题的AI。请随时向我提问。\n\n您也可以尝试“常见问题”、“角色扮演”、“测验”或“联系我们”。',
+            replies: ['常见问题', '角色扮演', '测验', '联系我们']
+        },
+        // ▲▲▲ ここまで ▲▲▲
+        role_play_prompt: '选择角色扮演场景',
+        role_play_cancel: '角色扮演已结束。',
+        role_play_categories: {
+            restaurant: '餐饮店',
+            shopping: '购物',
+            transportation: '交通',
+            daily_life: '日常生活与手续',
+            social: '社交与邀请',
+            business: '商务',
+            emergency: '紧急情况与纠纷'
         },
         quiz_prompt: '请选择测验的难度。',
         quiz_difficulty: ['简单', '普通', '困难'],
@@ -137,23 +266,12 @@ const uiStrings = {
         getQuizResultMessage: (score, total) => {
             const percentage = total > 0 ? (score / total) * 100 : 0;
             let resultText = `您在${total}题中答对了${score}题！\n`;
-            if (percentage === 100) {
-                resultText += "全部正确！太棒了，完美！🎉";
-            } else if (percentage >= 80) {
-                resultText += "非常棒的成绩！您非常了解。";
-            } else if (percentage >= 50) {
-                resultText += "做得很好！再接再厉。";
-            } else if (score > 0) {
-                resultText += "辛苦了。再挑战一次吧！";
-            } else {
-                resultText += "很遗憾！下次加油吧！";
-            }
+            if (percentage === 100) { resultText += "全部正确！太棒了，完美！🎉"; } else if (percentage >= 80) { resultText += "非常棒的成绩！您非常了解。"; } else if (percentage >= 50) { resultText += "做得很好！再接再厉。"; } else if (score > 0) { resultText += "辛苦了。再挑战一次吧！"; } else { resultText += "很遗憾！下次加油吧！"; }
             return resultText;
         },
         lang_switched: '语言已切换至中文。',
         history_cleared: '对话记录已清除。',
         clear_history_button_title: '清除记录',
-        // ▼▼▼【変更点】設定メニューの翻訳テキストを追加 ▼▼▼
         theme_selection: '主题选择',
         language_settings: '语言设定',
         theme_simple: '简约',
@@ -162,7 +280,11 @@ const uiStrings = {
         theme_autumn: '秋天',
         theme_winter: '冬天',
         clear_history: '清除记录',
-        // ▲▲▲ ここまで ▲▲▲
+        view_pinned: '收藏',
+        open_menu: '打开菜单',
+        close_menu: '关闭菜单',
+        pinned_empty_title: '尚无收藏的消息',
+        pinned_empty_desc: '点击机器人回复右上方的图钉图标，即可在此处保存重要信息。',
         inquiry: {
             start: '好的，您想进行咨询。首先，请问您的名字是？（您可以随时输入“取消”来中断）',
             prompt_email: '谢谢。接下来，请输入您的电子邮件地址。我们将向此地址发送一封确认邮件。',
@@ -172,15 +294,220 @@ const uiStrings = {
             send_error: '抱歉，发送时发生错误，请稍后再试。',
             cancelled: '咨询已取消。',
             cancel_keywords: ['取消'],
-        }
+        },
+        feedback: { helpful: '有帮助', unhelpful: '没有帮助', thank_you: '感谢您的反馈！' },
+        voice_listening: '请说话...',
+        voice_not_supported: '抱歉，您的浏览器不支持语音输入。',
+        voice_no_speech: '未检测到语音。请再试一次。',
+        voice_permission_denied: '麦克风访问被拒绝。请在浏览器设置中允许访问。',
+        voice_error: '语音输入错误',
+        mic_tooltip: '使用麦克风',
+        mic_tooltip_recording: '停止录音',
+        send_tooltip: '发送',
+        summarize_conversation: '总结对话',
+        summary_title: '对话总结',
+        summarizing: '正在总结对话...',
+        summarize_error: '总结时发生错误，请重试。',
+        summarize_no_history: '需要更多对话才能进行总结。',
+        faq_title: '常见问题',
+        faq_prompt: '点击问题查看答案。',
+        faq: {
+            questions: [
+                { id: 'faq_greeting', q: '初次见面问候', a: '在日本，初次见面时通常会鞠躬。礼貌的问候语是“初次见面，我叫[您的名字]，请多关照。”（Hajimemashite. [Your Name] desu. Douzo yoroshiku onegaishimasu.）' },
+                { id: 'faq_dining', q: '用餐礼仪', a: '饭前说“我开动了”（Itadakimasu），饭后说“我吃好了”（Gochisousama deshita）以示感谢。正确使用筷子，不要用筷子插食物或在盘子上方犹豫（“迷い箸”）。' },
+                { id: 'faq_visiting', q: '拜访礼仪', a: '拜访他人家时，准时到达很重要。在玄关脱下外套，并将鞋子摆放整齐。如果带了礼物，最好在进入房间并打完招呼后赠送。' },
+                { id: 'faq_train', q: '电车礼仪', a: '在电车内请保持安静，不要大声交谈或打电话。请将优先座位让给有需要的人。最好将背包抱在胸前或放在行李架上，以免妨碍他人。' }
+            ]
+        },
+        share_answer: '分享回答',
+        copy_to_clipboard: '复制',
+        download_as_text: '保存',
+        copied_to_clipboard: '已复制！',
+        my_page_title: '学习进度',
+        back_to_home: '返回首页',
+        quiz_stats_title: '测验成绩',
+        no_data_available: '暂无可用数据。',
+        my_page_link: '我的主页',
+        learned_topics_title: '已学主题',
+        no_learned_topics_data: '暂无已学主题。',
+        reset_progress_button: '重置学习数据',
+        confirm_reset_title: '您确定吗？',
+        confirm_reset_text: '所有学习进度数据（测验成绩、已学主题、成就）将被永久删除。此操作无法撤销。',
+        cancel_button: '取消',
+        reset_button: '重置',
+        achievements_title: '已获得的成就',
+        no_achievements_data: '尚未获得任何成就。',
+        achievements: {
+            quiz_master_easy: { title: '礼仪入门大师', desc: '您在“简单”难度的测验中全部答对！' },
+            quiz_master_normal: { title: '礼仪中级大师', desc: '您在“普通”难度的测验中全部答对！' },
+            quiz_master_hard: { title: '礼仪高级大师', desc: '您在“困难”难度的测验中全部答对！' },
+            perfect_master: { title: '礼仪宗师', desc: '在所有难度的测验中均取得满分！' },
+            first_quiz: { title: '第一步', desc: '您第一次尝试了测验。' },
+            topic_collector: { title: '知识收藏家', desc: '您已经学习了10个主题。' }
+        },
+        faq_source_text: '(来自常见问题)',
+        ai_summary_text: 'AI总结:'
     }
 };
 
-// --- ナレッジベース (特殊機能とクイズデータ) ---
+// --- ナレッジベース (特殊機能) ---
+// ▼▼▼【変更箇所】各言語にクイズ機能のトリガーを追加 ▼▼▼
 const specialFeatures = {
-    ja: { 'クイズ': { isQuiz: true }, 'お問い合わせ': { isInquiry: true } },
-    en: { 'quiz': { isQuiz: true }, 'contact': { isInquiry: true } },
-    zh: { '测验': { isQuiz: true }, '联系我们': { isInquiry: true } }
+    ja: { 'よくある質問': { isFaq: true }, 'ロールプレイ': { isRolePlay: true }, 'クイズ': { isQuiz: true }, 'お問い合わせ': { isInquiry: true } },
+    en: { 'faq': { isFaq: true }, 'role-play': { isRolePlay: true }, 'quiz': { isQuiz: true }, 'contact': { isInquiry: true } },
+    zh: { '常见问题': { isFaq: true }, '角色扮演': { isRolePlay: true }, '测验': { isQuiz: true }, '联系我们': { isInquiry: true } }
+};
+
+// --- ロールプレイングのシナリオ定義 (50個) ---
+const rolePlayingScenarios = {
+    ja: {
+        restaurant_order: { title: 'レストランでの注文', category: 'restaurant', icon: 'fas fa-utensils', initial_prompt: '「いらっしゃいませ。お席へどうぞ。ご注文はお決まりですか？」', ai_role: 'あなたは日本のレストランの丁寧な店員です。お客様の注文を受け、相槌を打ちながら自然な会話を続けてください。もしお客様の言葉遣いが不自然だったり、失礼だったりした場合は、会話の最後に「ワンポイントアドバイス」として優しく指摘してください。' },
+        cafe_order: { title: 'カフェで注文する', category: 'restaurant', icon: 'fas fa-coffee', initial_prompt: '「いらっしゃいませ。カウンターでご注文をどうぞ。」', ai_role: 'あなたは日本のカフェの明るい店員です。「店内でお召し上がりですか、お持ち帰りですか？」と尋ねるなど、自然な接客をしてください。お客様の返答に対して、適切に会話を進めてください。' },
+        izakaya_order: { title: '居酒屋で注文する', category: 'restaurant', icon: 'fas fa-beer', initial_prompt: '「へい、いらっしゃい！お飲み物何にしましょう？」', ai_role: 'あなたは日本の活気ある居酒屋の店員です。元気よく注文を取り、おすすめの料理などを提案しながら、お客様との会話を盛り上げてください。' },
+        allergy_info: { title: 'アレルギーについて伝える', category: 'restaurant', icon: 'fas fa-allergies', initial_prompt: '「ご注文は以上でよろしいでしょうか？」', ai_role: 'あなたはレストランの店員です。お客様からアレルギーに関する質問を受けました。厨房に確認し、どのメニューが安全か、または変更可能かなどを丁寧に説明してください。' },
+        ask_for_bill: { title: '会計をお願いする', category: 'restaurant', icon: 'fas fa-yen-sign', initial_prompt: '「ごゆっくりどうぞ。」', ai_role: 'あなたはレストランの店員です。お客様から会計の合図を受けました。「お会計はご一緒でよろしいですか、別々になさいますか？」と尋ね、スムーズに会計処理を行ってください。' },
+        try_on_clothes: { title: '服の試着をお願いする', category: 'shopping', icon: 'fas fa-tshirt', initial_prompt: '「いらっしゃいませ。何かお探しですか？」', ai_role: 'あなたはアパレルショップの店員です。お客様から試着の希望を受けました。「フィッティングルームへご案内します。何点お持ちですか？」と尋ね、丁寧に対応してください。' },
+        find_product: { title: '商品の場所を尋ねる', category: 'shopping', icon: 'fas fa-search-location', initial_prompt: '「いらっしゃいませ。ごゆっくりご覧ください。」', ai_role: 'あなたはデパートの店員です。お客様から特定の商品がどこにあるか尋ねられました。売り場の場所を分かりやすく案内してください。もし取り扱いがなければ、その旨を丁寧に伝えてください。' },
+        gift_wrapping: { title: 'プレゼント用の包装を頼む', category: 'shopping', icon: 'fas fa-gift', initial_prompt: '「お会計、以上でよろしいでしょうか？」', ai_role: 'あなたは雑貨店の店員です。お客様からギフト包装を頼まれました。「リボンの色はどうなさいますか？」などと尋ねながら、綺麗に包装するまでの対応をしてください。' },
+        return_item: { title: '商品を返品・交換する', category: 'shopping', icon: 'fas fa-exchange-alt', initial_prompt: '「いらっしゃいませ。本日はどうなさいましたか？」', ai_role: 'あなたは家電量販店のカスタマーサービスの担当者です。お客様から商品の返品または交換の申し出を受けました。レシートの有無や商品の状態を確認し、規定に従って冷静かつ丁寧に対応してください。' },
+        supermarket_checkout: { title: 'スーパーのレジでの会話', category: 'shopping', icon: 'fas fa-shopping-cart', initial_prompt: '「次でお待ちのお客様、こちらのレジへどうぞ。ポイントカードはお持ちですか？」', ai_role: 'あなたはスーパーのレジ係です。「袋はお持ちですか？」「〇〇円のお返しです」といった一連のレジでの会話を、正確かつ手際よく行ってください。' },
+        buy_ticket: { title: '駅で切符を買う', category: 'transportation', icon: 'fas fa-ticket-alt', initial_prompt: '「こんにちは。」', ai_role: 'あなたは駅の券売機の前にいる駅員です。お客様から切符の買い方が分からないと尋ねられました。行き先と人数を聞き、券売機の操作方法を一つ一つ丁寧に教えてください。' },
+        ask_directions_station: { title: '駅で道を尋ねる', category: 'transportation', icon: 'fas fa-directions', initial_prompt: '「すみません、何かお困りですか？」', ai_role: 'あなたは日本の駅の親切な駅員です。お客様から目的地への行き方を尋ねられました。丁寧な言葉で、何番線の電車に乗るか、乗り換えはどこかなどを分かりやすく案内してください。' },
+        taxi_destination: { title: 'タクシーで行き先を告げる', category: 'transportation', icon: 'fas fa-taxi', initial_prompt: '（ドアが自動で開く）「どうぞ。」', ai_role: 'あなたはタクシーの運転手です。お客様が乗車しました。行き先を尋ね、「かしこまりました」と返事をして、安全運転で目的地に向かうまでの会話をしてください。' },
+        charge_ic_card: { title: 'ICカードをチャージする', category: 'transportation', icon: 'fas fa-wallet', initial_prompt: '「どうなさいましたか？」', ai_role: 'あなたは駅員です。お客様が券売機でICカードのチャージ方法が分からず困っています。チャージ金額の選択から入金まで、手順を分かりやすく説明してください。' },
+        report_lost_item_station: { title: '駅で忘れ物をしたと伝える', category: 'transportation', icon: 'fas fa-search', initial_prompt: '「こんにちは。どうなさいましたか？」', ai_role: 'あなたは駅の遺失物係の担当者です。お客様から電車内に忘れ物をしたと申告がありました。いつ、どの電車か、忘れた物の特徴などを冷静に聞き取り、捜索の手続きを行ってください。' },
+        post_office_parcel: { title: '郵便局で荷物を送る', category: 'daily_life', icon: 'fas fa-box', initial_prompt: '「いらっしゃいませ。ご用件をどうぞ。」', ai_role: 'あなたは郵便局の窓口担当者です。お客様が荷物を送りたいようです。送り先の住所を聞き、元払いか着払いか、配達希望日などを確認しながら、手続きを進めてください。' },
+        bank_open_account: { title: '銀行で口座を開設する', category: 'daily_life', icon: 'fas fa-university', initial_prompt: '「いらっしゃいませ。ご用件は何でしょうか？」', ai_role: 'あなたは銀行の窓口担当者です。お客様から口座開設の希望を受けました。身分証明書（在留カードなど）や印鑑が必要なことを伝え、申込用紙の記入を案内してください。' },
+        hair_salon_booking: { title: '美容院の予約をする', category: 'daily_life', icon: 'fas fa-cut', initial_prompt: '「お電話ありがとうございます。ヘアサロン〇〇です。」', ai_role: 'あなたは美容院の受付です。お客様から予約の電話がありました。希望の日時、担当者の指名の有無、メニュー（カット、カラーなど）を確認し、予約を完了させてください。' },
+        hospital_reception: { title: '病院の受付', category: 'daily_life', icon: 'fas fa-hospital', initial_prompt: '「こんにちは。どうなさいましたか？」', ai_role: 'あなたは病院の受付スタッフです。初めて来院した患者さんに対応します。「保険証はお持ちですか？」「こちらの問診票にご記入ください」など、必要な手続きを順を追って案内してください。' },
+        greeting_neighbor: { title: '近所の人への挨拶', category: 'daily_life', icon: 'fas fa-handshake', initial_prompt: '（エレベーターで一緒になる）「こんにちは。」', ai_role: 'あなたはマンションの住人です。同じマンションに住む顔見知りの人と会いました。「良いお天気ですね」などの簡単な世間話をしながら、自然で感じの良い挨拶を交わしてください。' },
+        invite_friend: { title: '友人をご飯に誘う', category: 'social', icon: 'fas fa-user-friends', initial_prompt: '「元気？最近どうしてる？」', ai_role: 'あなたは日本の友人です。相手を食事に誘います。「今度、新しくできたイタリアンに行かない？」のように具体的な提案をし、相手の都合を聞きながら日程を調整してください。' },
+        decline_invitation: { title: 'パーティーへの招待を断る', category: 'social', icon: 'fas fa-comment-slash', initial_prompt: '「今度の週末、ホームパーティーをするんだけど、来ない？」', ai_role: 'あなたは友人からパーティーに招待されましたが、残念ながら先約があります。「誘ってくれてありがとう！でも、その日はどうしても外せない用事があって…」のように、感謝と謝罪の気持ちを伝えつつ、角が立たないように断ってください。' },
+        home_party_guest: { title: 'ホームパーティーに招待された', category: 'social', icon: 'fas fa-home', initial_prompt: '「いらっしゃい！よく来てくれたね！」', ai_role: 'あなたは友人のホームパーティーに招待された客です。玄関先で「お邪魔します」と挨拶し、手土産を渡しながら「これ、よかったらみんなで食べて」と言い、ホストへの感謝を伝えてください。' },
+        pour_drink_superior: { title: '上司にお酌をする', category: 'social', icon: 'fas fa-wine-bottle', initial_prompt: '（上司のグラスが空いている状況）', ai_role: 'あなたは会社の飲み会に参加している部下です。上司のグラスが空になっていることに気づきました。「部長、何かお注ぎします」と声をかけ、ビール瓶のラベルを上にして丁寧にお酌をしてください。' },
+        give_souvenir: { title: 'お土産を渡す', category: 'social', icon: 'fas fa-gifts', initial_prompt: '「〇〇さん、おはようございます。」', ai_role: 'あなたは旅行から帰ってきた同僚です。休暇中に買ってきたお土産を相手に渡します。「先日はお休みをいただきありがとうございました。これ、旅行のお土産です。つまらないものですが、皆さんでどうぞ」と謙遜しながら渡してください。' },
+        business_call_appointment: { title: '電話でアポイントを取る', category: 'business', icon: 'fas fa-phone-alt', initial_prompt: '「お電話ありがとうございます。株式会社〇〇でございます。」', ai_role: 'あなたは取引先の担当者です。電話をかけてきた相手から、営業部長との面会のアポイントを取りたいと依頼されました。相手の会社名と名前、要件を確認し、部長のスケジュールを確認して候補日を提案してください。' },
+        report_delay_meeting: { title: '会議に遅れることを報告する', category: 'business', icon: 'fas fa-running', initial_prompt: '（電話が鳴る）「はい、〇〇です。」', ai_role: 'あなたは会議で相手を待っている上司です。部下から「電車が遅れていて、会議に15分ほど遅れます」と電話がありました。「わかった。気をつけて来てください」と状況を理解し、冷静に指示を出してください。' },
+        exchange_business_cards: { title: '名刺交換をする', category: 'business', icon: 'fas fa-id-card', initial_prompt: '「はじめまして。株式会社△△の〇〇と申します。」', ai_role: 'あなたはクライアント企業の担当者です。相手から名刺を差し出されました。同様に自己紹介をしながら、相手の名刺を両手で受け取り、「頂戴いたします」と言い、自分の名刺も渡してください。' },
+        ask_for_clarification_meeting: { title: '会議で不明点を確認する', category: 'business', icon: 'fas fa-question-circle', initial_prompt: '「…というわけで、このプロジェクトを進めたいと考えています。何か質問はありますか？」', ai_role: 'あなたは会議の参加者です。発表者の説明に不明な点がありました。「恐れ入ります、一つよろしいでしょうか。先ほどの〇〇という部分について、もう少し詳しくご説明いただけますでしょうか」と丁寧に質問してください。' },
+        apologize_to_client: { title: '顧客にミスを謝罪する', category: 'business', icon: 'fas fa-headset', initial_prompt: '「お世話になっております。株式会社〇〇です。」', ai_role: 'あなたはクライアント企業の担当者です。納品した製品に不備があったと連絡を受けました。「この度は、私どもの不手際で大変ご迷惑をおかけし、誠に申し訳ございません」と真摯に謝罪し、今後の対応策（交換、修理など）を提示してください。' },
+        ask_directions_police_box: { title: '交番で道を尋ねる', category: 'emergency', icon: 'fas fa-map-marked-alt', initial_prompt: '「はい、こんにちは。どうしました？」', ai_role: 'あなたはお巡りさんです。交番にやってきた人から、特定の場所への行き方を尋ねられました。地図を指し示しながら、目印などを交えて分かりやすく道を教えてください。' },
+        feeling_unwell: { title: '気分が悪いと伝える', category: 'emergency', icon: 'fas fa-dizzy', initial_prompt: '「〇〇さん、顔色が悪いようですが、大丈夫ですか？」', ai_role: 'あなたは職場の同僚です。相手が明らかに体調が悪そうです。心配の気持ちを伝え、「少し休みますか？」「早退しますか？」など、相手を気遣う言葉をかけてください。' },
+        report_lost_wallet_police: { title: '財布を落としたと警察に届ける', category: 'emergency', icon: 'fas fa-user-secret', initial_prompt: '「どうしましたか？」', ai_role: 'あなたはお巡りさんです。人が財布を落として困っています。いつ、どこで失くしたか、財布の特徴（色、形、中身）などを聞き取り、遺失物届の書類作成を手伝ってください。' },
+        deal_with_wrong_order: { title: '注文と違う料理が来た', category: 'emergency', icon: 'fas fa-exclamation-triangle', initial_prompt: '「お待たせいたしました。ご注文のハンバーグです。」', ai_role: 'あなたはレストランの店員です。お客様から「すみません、私が頼んだのはチキンカレーなのですが…」と指摘されました。「大変失礼いたしました！すぐに作り直します」と丁寧に謝罪し、迅速に対応してください。' },
+        handling_noisy_neighbor: { title: '隣人の騒音について伝える', category: 'emergency', icon: 'fas fa-volume-mute', initial_prompt: '（隣の部屋のドアをノックする）', ai_role: 'あなたは騒音に悩むマンションの住人です。相手を刺激しないように、「夜分に申し訳ありません。少し音が響いているようなので、もう少しだけご配慮いただけると助かります」と、丁寧かつ低姿勢でお願いします。' },
+        real_estate_search: { title: '不動産屋で部屋を探す', category: 'daily_life', icon: 'fas fa-city', initial_prompt: '「いらっしゃいませ。どのようなお部屋をお探しですか？」', ai_role: 'あなたは不動産屋の営業担当です。お客様の希望（家賃、間取り、エリアなど）をヒアリングし、条件に合った物件をいくつか提案してください。' },
+        library_card: { title: '図書館で利用カードを作る', category: 'daily_life', icon: 'fas fa-book-reader', initial_prompt: '「こんにちは。何かお探しですか？」', ai_role: 'あなたは図書館の司書です。初めて来た利用者に、図書カードの作り方を案内します。申込書の記入や、住所が確認できる身分証が必要なことを説明してください。' },
+        rent_a_car: { title: 'レンタカーを借りる', category: 'daily_life', icon: 'fas fa-car', initial_prompt: '「ご予約の〇〇様ですね。お待ちしておりました。」', ai_role: 'あなたはレンタカー会社の店員です。予約したお客様の対応をします。免許証と予約内容を確認し、車の使い方や注意事項（ガソリンの種類など）を説明してください。' },
+        gym_membership: { title: 'ジムの入会手続き', category: 'daily_life', icon: 'fas fa-dumbbell', initial_prompt: '「ご見学ですか？それとも入会手続きでしょうか？」', ai_role: 'あなたはスポーツジムの受付スタッフです。入会希望のお客様に、料金プランや施設の使い方を説明し、必要な書類の記入を案内してください。' },
+        asking_about_trash_rules: { title: 'ゴミの出し方について聞く', category: 'daily_life', icon: 'fas fa-trash-alt', initial_prompt: '「こんにちは、お隣に越してきた〇〇です。よろしくお願いします。」', ai_role: 'あなたは地域に長く住んでいる住人です。新しく引っ越してきた人から、ゴミの分別や収集日について質問されました。分別ルール（燃えるゴミ、プラスチックなど）やカレンダーの見方を親切に教えてあげてください。' },
+        hotel_check_in: { title: 'ホテルでチェックインする', category: 'daily_life', icon: 'fas fa-concierge-bell', initial_prompt: '「いらっしゃいませ。チェックインでございますか？」', ai_role: 'あなたはホテルのフロントクラークです。お客様から予約名を聞き、宿泊者カードへの記入をお願いします。朝食の時間やWi-Fiのパスワードなど、館内の案内も行ってください。' },
+        cancel_appointment: { title: '病院の予約をキャンセルする', category: 'daily_life', icon: 'fas fa-calendar-times', initial_prompt: '「お電話ありがとうございます。〇〇クリニックです。」', ai_role: 'あなたは病院の受付です。患者さんから予約のキャンセルと再予約の希望の電話がありました。診察券番号と名前を確認し、丁寧に対応してください。' },
+        requesting_day_off: { title: '会社に休暇を申請する', category: 'business', icon: 'fas fa-calendar-check', initial_prompt: '「部長、今少しよろしいでしょうか。」', ai_role: 'あなたは会社の上司です。部下から「来月、2日間お休みをいただきたいのですが」と休暇の相談を受けました。理由を尋ね、仕事の引き継ぎなどを確認した上で、許可を出してください。' },
+        leaving_voicemail: { title: '留守番電話にメッセージを残す', category: 'business', icon: 'fas fa-voicemail', initial_prompt: '「ピーという発信音の後に、メッセージをどうぞ。」', ai_role: 'あなたは電話を受けた側です（留守電モード）。相手がメッセージを残します。あなたは何も話す必要はありません。' }
+    },
+    en: {
+        restaurant_order: { title: 'Ordering at a Restaurant', category: 'restaurant', icon: 'fas fa-utensils', initial_prompt: '"Welcome. Please have a seat. Are you ready to order?"', ai_role: 'You are a polite waiter at a Japanese restaurant. Take the customer\'s order and maintain a natural conversation. If the customer\'s phrasing is unnatural or rude, gently point it out as a "Quick Tip" at the end of the conversation.' },
+        cafe_order: { title: 'Ordering at a Cafe', category: 'restaurant', icon: 'fas fa-coffee', initial_prompt: '"Welcome. Please order at the counter."', ai_role: 'You are a cheerful cafe staff in Japan. Please provide natural customer service, such as asking, "For here or to go?" and proceed with the conversation appropriately based on the customer\'s response.' },
+        izakaya_order: { title: 'Ordering at an Izakaya', category: 'restaurant', icon: 'fas fa-beer', initial_prompt: '"Hey, welcome! What can I get you to drink?"', ai_role: 'You are a staff member at a lively Japanese izakaya. Take orders energetically, suggest recommended dishes, and liven up the conversation with the customer.' },
+        allergy_info: { title: 'Informing about Allergies', category: 'restaurant', icon: 'fas fa-allergies', initial_prompt: '"Will that be all for your order?"', ai_role: 'You are a restaurant waiter. A customer has asked about allergies. Please check with the kitchen and politely explain which menu items are safe or can be modified.' },
+        ask_for_bill: { title: 'Asking for the Bill', category: 'restaurant', icon: 'fas fa-yen-sign', initial_prompt: '"Please enjoy your meal."', ai_role: 'You are a restaurant waiter. A customer has signaled for the check. Please ask, "Will you be paying together or separately?" and handle the payment process smoothly.' },
+        try_on_clothes: { title: 'Trying on Clothes', category: 'shopping', icon: 'fas fa-tshirt', initial_prompt: '"Welcome. Are you looking for anything in particular?"', ai_role: 'You are a staff member at a clothing store. A customer wants to try on some clothes. Politely guide them by saying, "I\'ll show you to the fitting room. How many items do you have?"' },
+        find_product: { title: 'Finding a Product', category: 'shopping', icon: 'fas fa-search-location', initial_prompt: '"Welcome. Please take your time to look around."', ai_role: 'You are a department store employee. A customer has asked where to find a specific product. Please provide clear directions to the section. If the item is not available, inform them politely.' },
+        gift_wrapping: { title: 'Requesting Gift Wrapping', category: 'shopping', icon: 'fas fa-gift', initial_prompt: '"Will this be all for you today?"', ai_role: 'You are a clerk at a general store. A customer has requested gift wrapping. Please handle the process beautifully, asking questions like, "What color ribbon would you like?"' },
+        return_item: { title: 'Returning/Exchanging an Item', category: 'shopping', icon: 'fas fa-exchange-alt', initial_prompt: '"Welcome. How may I help you today?"', ai_role: 'You are a customer service representative at an electronics store. A customer wishes to return or exchange an item. Check for the receipt and the item\'s condition, and handle the request calmly and politely according to policy.' },
+        supermarket_checkout: { title: 'Supermarket Checkout Conversation', category: 'shopping', icon: 'fas fa-shopping-cart', initial_prompt: '"Next customer, please. This way. Do you have a point card?"', ai_role: 'You are a supermarket cashier. Please conduct the entire checkout conversation accurately and efficiently, including asking, "Do you need a bag?" and stating, "Your change is [amount] yen."' },
+        buy_ticket: { title: 'Buying a Ticket at the Station', category: 'transportation', icon: 'fas fa-ticket-alt', initial_prompt: '"Hello."', ai_role: 'You are a station staff member in front of a ticket machine. A customer doesn\'t know how to buy a ticket. Ask for their destination and the number of people, and politely explain how to use the machine step-by-step.' },
+        ask_directions_station: { title: 'Asking for Directions at a Station', category: 'transportation', icon: 'fas fa-directions', initial_prompt: '"Excuse me, do you need any help?"', ai_role: 'You are a kind station attendant in Japan. A customer is asking for directions. Politely and clearly explain which platform to go to, where to transfer, etc.' },
+        taxi_destination: { title: 'Telling a Taxi Driver the Destination', category: 'transportation', icon: 'fas fa-taxi', initial_prompt: '(The door opens automatically) "Please get in."', ai_role: 'You are a taxi driver. A customer has just gotten in. Ask for their destination, reply with "Certainly," and conduct the conversation until you safely head to the destination.' },
+        charge_ic_card: { title: 'Charging an IC Card', category: 'transportation', icon: 'fas fa-wallet', initial_prompt: '"How can I help you?"', ai_role: 'You are a station attendant. A customer is having trouble charging their IC card at the ticket machine. Clearly explain the steps, from selecting the charge amount to inserting money.' },
+        report_lost_item_station: { title: 'Reporting a Lost Item at the Station', category: 'transportation', icon: 'fas fa-search', initial_prompt: '"Hello. How can I assist you?"', ai_role: 'You are in charge of the lost and found at a station. A customer reports having lost an item on the train. Calmly ask when and on which train they lost it, and for the item\'s features, then proceed with the search process.' },
+        post_office_parcel: { title: 'Sending a Parcel at the Post Office', category: 'daily_life', icon: 'fas fa-box', initial_prompt: '"Welcome. How may I help you?"', ai_role: 'You are a post office counter staff. A customer wants to send a parcel. Ask for the destination address and proceed with the process, confirming details like prepaid or cash on delivery, and desired delivery date.' },
+        bank_open_account: { title: 'Opening a Bank Account', category: 'daily_life', icon: 'fas fa-university', initial_prompt: '"Welcome. How can I help you today?"', ai_role: 'You are a bank teller. A customer wants to open an account. Explain that they need an ID (like a residence card) and a personal seal (inkan), and guide them through filling out the application form.' },
+        hair_salon_booking: { title: 'Booking a Hair Salon Appointment', category: 'daily_life', icon: 'fas fa-cut', initial_prompt: '"Thank you for calling Hair Salon [Name]."', ai_role: 'You are a hair salon receptionist. A customer calls to make a reservation. Confirm their desired date and time, if they have a preferred stylist, and the service (cut, color, etc.) to complete the booking.' },
+        hospital_reception: { title: 'At the Hospital Reception', category: 'daily_life', icon: 'fas fa-hospital', initial_prompt: '"Hello. How may I help you?"', ai_role: 'You are a hospital receptionist. You are assisting a first-time patient. Guide them through the necessary procedures step-by-step, such as asking, "Do you have your health insurance card?" and "Please fill out this medical questionnaire."' },
+        greeting_neighbor: { title: 'Greeting a Neighbor', category: 'daily_life', icon: 'fas fa-handshake', initial_prompt: '(Meeting in an elevator) "Hello."', ai_role: 'You are a resident of an apartment building. You meet a neighbor you know. Exchange a natural and pleasant greeting, perhaps with some small talk like, "Nice weather today, isn\'t it?"' },
+        invite_friend: { title: 'Inviting a Friend for a Meal', category: 'social', icon: 'fas fa-user-friends', initial_prompt: '"Hey! How have you been?"', ai_role: 'You are a Japanese friend. You want to invite the other person for a meal. Make a specific suggestion like, "Do you want to check out that new Italian place?" and coordinate a schedule based on their availability.' },
+        decline_invitation: { title: 'Declining a Party Invitation', category: 'social', icon: 'fas fa-comment-slash', initial_prompt: '"I\'m having a house party this weekend, want to come?"', ai_role: 'You have been invited to a friend\'s party, but unfortunately, you have a prior engagement. Politely decline without causing offense by expressing gratitude and apology, such as, "Thanks so much for the invite! But I have something I can\'t miss on that day..."' },
+        home_party_guest: { title: 'Being a Guest at a Home Party', category: 'social', icon: 'fas fa-home', initial_prompt: '"Welcome! So glad you could make it!"', ai_role: 'You are a guest at a friend\'s house party. Greet them at the door with "Ojama-shimasu," present a small gift saying, "This is for everyone," and express your thanks to the host.' },
+        pour_drink_superior: { title: 'Pouring a Drink for a Superior', category: 'social', icon: 'fas fa-wine-bottle', initial_prompt: '(Your boss\'s glass is empty.)', ai_role: 'You are a subordinate at a company drinking party. You notice your boss\'s glass is empty. Politely offer by saying, "Director, may I pour you another drink?" and pour carefully, keeping the beer bottle label facing up.' },
+        give_souvenir: { title: 'Giving a Souvenir', category: 'social', icon: 'fas fa-gifts', initial_prompt: '"Good morning, [Name]-san."', ai_role: 'You are a colleague who has just returned from a trip. You are giving a souvenir you bought. Hand it over humbly, saying, "Thank you for covering for me while I was away. This is a little something from my trip for everyone."' },
+        business_call_appointment: { title: 'Making an Appointment by Phone', category: 'business', icon: 'fas fa-phone-alt', initial_prompt: '"Thank you for calling [Company Name]."', ai_role: 'You are a representative of a client company. The caller wants to make an appointment with the sales director. Confirm their company name, name, and purpose, then check the director\'s schedule and propose some available dates.' },
+        report_delay_meeting: { title: 'Reporting a Delay for a Meeting', category: 'business', icon: 'fas fa-running', initial_prompt: '(The phone rings) "Hello, this is [Name]."', ai_role: 'You are a manager waiting for a subordinate for a meeting. They call and say, "The train is delayed, I\'ll be about 15 minutes late." Understand the situation and respond calmly, "Got it. Please come safely."' },
+        exchange_business_cards: { title: 'Exchanging Business Cards', category: 'business', icon: 'fas fa-id-card', initial_prompt: '"Nice to meet you. I\'m [Name] from [Company A]."', ai_role: 'You are a representative of a client company. The other person has offered their business card. Introduce yourself similarly, accept their card with both hands saying, "Choudai-itashimasu," and offer your card.' },
+        ask_for_clarification_meeting: { title: 'Asking for Clarification in a Meeting', category: 'business', icon: 'fas fa-question-circle', initial_prompt: '"...and that is why we want to proceed with this project. Are there any questions?"', ai_role: 'You are a meeting participant. You have a question about the presentation. Politely ask, "Excuse me, may I ask a question? Could you please explain the part about [topic] in a little more detail?"' },
+        apologize_to_client: { title: 'Apologizing to a Client for a Mistake', category: 'business', icon: 'fas fa-headset', initial_prompt: '"Thank you for your continued business. This is [Company Name]."', ai_role: 'You are a client representative. You have received a complaint about a faulty product. Sincerely apologize, "We are truly sorry for the inconvenience caused by our oversight," and present a solution (e.g., replacement, repair).' },
+        ask_directions_police_box: { title: 'Asking for Directions at a Police Box (Koban)', category: 'emergency', icon: 'fas fa-map-marked-alt', initial_prompt: '"Yes, hello. What can I do for you?"', ai_role: 'You are a police officer. Someone has come to the koban to ask for directions. Provide clear instructions, pointing to a map and mentioning landmarks.' },
+        feeling_unwell: { title: 'Saying You Feel Unwell', category: 'emergency', icon: 'fas fa-dizzy', initial_prompt: '"[Name]-san, you look pale. Are you okay?"', ai_role: 'You are a coworker. The other person is clearly not feeling well. Express your concern and offer support by saying things like, "Do you want to rest for a bit?" or "Should you go home early?"' },
+        report_lost_wallet_police: { title: 'Reporting a Lost Wallet to the Police', category: 'emergency', icon: 'fas fa-user-secret', initial_prompt: '"What happened?"', ai_role: 'You are a police officer. A person is distressed because they lost their wallet. Take down the details—when and where they lost it, its features (color, shape, contents)—and help them fill out a lost item report.' },
+        deal_with_wrong_order: { title: 'Dealing with a Wrong Order at a Restaurant', category: 'emergency', icon: 'fas fa-exclamation-triangle', initial_prompt: '"Here is your hamburger steak."', ai_role: 'You are a restaurant waiter. A customer points out, "Excuse me, but I ordered the chicken curry." Apologize politely, "I am so sorry for the mistake! I will have it remade immediately," and act promptly.' },
+        handling_noisy_neighbor: { title: 'Politely Addressing a Noisy Neighbor', category: 'emergency', icon: 'fas fa-volume-mute', initial_prompt: '(Knocking on the neighbor\'s door)', ai_role: 'You are a resident troubled by noise. To avoid confrontation, politely and humbly say, "I\'m sorry to bother you this late, but the sound is a bit loud, and I would appreciate it if you could be a little more considerate."' },
+        real_estate_search: { title: 'Searching for an Apartment', category: 'daily_life', icon: 'fas fa-city', initial_prompt: '"Welcome. What kind of apartment are you looking for?"', ai_role: 'You are a real estate agent. Listen to the customer\'s preferences (rent, layout, area, etc.) and suggest a few properties that match their criteria.' },
+        library_card: { title: 'Getting a Library Card', category: 'daily_life', icon: 'fas fa-book-reader', initial_prompt: '"Hello. Can I help you find something?"', ai_role: 'You are a librarian. You are guiding a new visitor on how to get a library card. Explain that they need to fill out an application and show an ID with their address.' },
+        rent_a_car: { title: 'Renting a Car', category: 'daily_life', icon: 'fas fa-car', initial_prompt: '"Mr./Ms. [Name], we\'ve been expecting you."', ai_role: 'You are a rental car company employee. You are assisting a customer with a reservation. Confirm their driver\'s license and reservation details, and explain how to use the car and other important points (e.g., fuel type).' },
+        gym_membership: { title: 'Signing up for a Gym Membership', category: 'daily_life', icon: 'fas fa-dumbbell', initial_prompt: '"Are you here for a tour, or would you like to sign up?"', ai_role: 'You are a gym receptionist. Explain the membership plans and how to use the facilities to a prospective member, and guide them through the necessary paperwork.' },
+        asking_about_trash_rules: { title: 'Asking about Garbage Disposal Rules', category: 'daily_life', icon: 'fas fa-trash-alt', initial_prompt: '"Hello, I\'m [Name], your new neighbor. It\'s nice to meet you."', ai_role: 'You are a long-time resident. A new neighbor has asked about garbage separation and collection days. Kindly explain the rules (burnable, plastics, etc.) and how to read the collection calendar.' },
+        hotel_check_in: { title: 'Checking in at a Hotel', category: 'daily_life', icon: 'fas fa-concierge-bell', initial_prompt: '"Welcome. Are you checking in?"', ai_role: 'You are a hotel front desk clerk. Ask for the customer\'s reservation name and have them fill out the registration card. Also, provide information about the hotel, such as breakfast times and the Wi-Fi password.' },
+        cancel_appointment: { title: 'Canceling a Hospital Appointment', category: 'daily_life', icon: 'fas fa-calendar-times', initial_prompt: '"Thank you for calling [Clinic Name]."', ai_role: 'You are a clinic receptionist. A patient calls to cancel and reschedule an appointment. Confirm their patient ID number and name, and respond politely.' },
+        requesting_day_off: { title: 'Requesting a Day Off from Work', category: 'business', icon: 'fas fa-calendar-check', initial_prompt: '"Excuse me, Director. Do you have a moment?"', ai_role: 'You are a manager at a company. A subordinate asks for time off, "I would like to request two days off next month." Ask for the reason, confirm work handover procedures, and then grant permission.' },
+        leaving_voicemail: { title: 'Leaving a Voicemail', category: 'business', icon: 'fas fa-voicemail', initial_prompt: '"Please leave a message after the beep."', ai_role: 'You are the person receiving the call (in voicemail mode). The other person will leave a message. You do not need to say anything.' }
+    },
+    zh: {
+        restaurant_order: { title: '在餐厅点餐', category: 'restaurant', icon: 'fas fa-utensils', initial_prompt: '“欢迎光临。请坐。请问您要点什么？”', ai_role: '你是一家日本餐厅里有礼貌的服务员。接受顾客的点餐，并通过附和来维持自然的对话。如果顾客的用词不自然或不礼貌，请在对话结束时以“一个小建议”的形式温和地指出。' },
+        cafe_order: { title: '在咖啡馆点餐', category: 'restaurant', icon: 'fas fa-coffee', initial_prompt: '“欢迎光临，请在柜台点餐。”', ai_role: '你是一家日本咖啡馆里开朗的店员。请进行自然的接待，例如询问“请问是内用还是外带？”，并根据顾客的回答适当地进行对话。' },
+        izakaya_order: { title: '在居酒屋点餐', category: 'restaurant', icon: 'fas fa-beer', initial_prompt: '“嘿，欢迎光临！请问要喝点什么？”', ai_role: '你是一家充满活力的日本居酒屋的店员。请精神饱满地接受点餐，并推荐招牌菜等，与顾客愉快地交谈。' },
+        allergy_info: { title: '告知过敏情况', category: 'restaurant', icon: 'fas fa-allergies', initial_prompt: '“您点的餐点就这些吗？”', ai_role: '你是餐厅的服务员。有位顾客询问有关过敏的问题。请向厨房确认，并礼貌地说明哪些菜单是安全的，或者是否可以做调整。' },
+        ask_for_bill: { title: '结账', category: 'restaurant', icon: 'fas fa-yen-sign', initial_prompt: '“请慢用。”', ai_role: '你是餐厅的服务员。顾客示意要结账。请询问“请问是一起结账还是分开结账？”，然后顺利地完成结账程序。' },
+        try_on_clothes: { title: '试穿衣服', category: 'shopping', icon: 'fas fa-tshirt', initial_prompt: '“欢迎光临，请问您在找什么？”', ai_role: '你是一家服装店的店员。有位顾客想试穿衣服。请礼貌地引导说：“我带您去试衣间。请问有几件？”' },
+        find_product: { title: '寻找商品', category: 'shopping', icon: 'fas fa-search-location', initial_prompt: '“欢迎光临，请慢慢看。”', ai_role: '你是百货公司的店员。有位顾客询问特定商品的位置。请清楚地指引他到卖场。如果店里没有，也请礼貌地告知。' },
+        gift_wrapping: { title: '要求礼品包装', category: 'shopping', icon: 'fas fa-gift', initial_prompt: '“请问结账就这些吗？”', ai_role: '你是一家杂货店的店员。顾客要求礼品包装。请一边询问“您想要什么颜色的缎带？”一边漂亮地完成包装。' },
+        return_item: { title: '退换商品', category: 'shopping', icon: 'fas fa-exchange-alt', initial_prompt: '“欢迎光临，今天有什么事吗？”', ai_role: '你是家电卖场的客服人员。顾客提出要退货或换货。请确认收据和商品状况，并根据规定冷静礼貌地处理。' },
+        supermarket_checkout: { title: '在超市结账', category: 'shopping', icon: 'fas fa-shopping-cart', initial_prompt: '“下一位客人，请到这边。请问您有会员卡吗？”', ai_role: '你是超市的收银员。请准确迅速地完成“需要袋子吗？”、“找您〇〇元”等一系列结账对话。' },
+        buy_ticket: { title: '在车站买票', category: 'transportation', icon: 'fas fa-ticket-alt', initial_prompt: '“您好。”', ai_role: '你是在售票机前的车站工作人员。一位乘客问你如何买票。请询问目的地和人数，并耐心地一步步教他如何操作售票机。' },
+        ask_directions_station: { title: '在车站问路', category: 'transportation', icon: 'fas fa-directions', initial_prompt: '“不好意思，请问有什么需要帮忙的吗？”', ai_role: '你是一位日本车站里热心的站务员。有位顾客向你询问去目的地的路。请用礼貌的语言，清晰地指路，告诉他该搭几号线的电车、在哪里换车等。' },
+        taxi_destination: { title: '告诉出租车司机目的地', category: 'transportation', icon: 'fas fa-taxi', initial_prompt: '（车门自动打开）“请上车。”', ai_role: '你是出租车司机。乘客上车了。请询问目的地，回答“好的，明白了”，然后进行到安全驾驶前往目的地为止的对话。' },
+        charge_ic_card: { title: '给IC卡充值', category: 'transportation', icon: 'fas fa-wallet', initial_prompt: '“请问有什么事吗？”', ai_role: '你是车站工作人员。一位乘客在售票机前不知道如何给IC卡充值。请清楚地说明从选择充值金额到付款的步骤。' },
+        report_lost_item_station: { title: '在车站报告失物', category: 'transportation', icon: 'fas fa-search', initial_prompt: '“您好，请问有什么事？”', ai_role: '你是车站失物招领处的工作人员。一位乘客报称在电车上遗失了物品。请冷静地询问遗失的时间、车次和物品特征，并协助办理失物登记。' },
+        post_office_parcel: { title: '在邮局寄包裹', category: 'daily_life', icon: 'fas fa-box', initial_prompt: '“欢迎光临，请问要办理什么业务？”', ai_role: '你是邮局的柜台人员。一位顾客要寄包裹。请询问收件地址，并确认是寄付还是到付、希望的配送日期等，然后办理手续。' },
+        bank_open_account: { title: '在银行开户', category: 'daily_life', icon: 'fas fa-university', initial_prompt: '“欢迎光临，请问您需要什么服务？”', ai_role: '你是银行的柜台人员。一位顾客想开户。请告知他需要身份证（如在留卡）和印章，并引导他填写申请表。' },
+        hair_salon_booking: { title: '预约理发店', category: 'daily_life', icon: 'fas fa-cut', initial_prompt: '“您好，这里是〇〇美发沙龙。”', ai_role: '你是美发沙龙的接待员。一位顾客打电话来预约。请确认他希望的日期时间、是否指定设计师以及服务项目（剪发、染发等），然后完成预约。' },
+        hospital_reception: { title: '在医院挂号', category: 'daily_life', icon: 'fas fa-hospital', initial_prompt: '“您好，请问哪里不舒服？”', ai_role: '你是医院的挂号人员。你正在为初诊患者服务。请依序引导他完成必要程序，例如“请问有带健保卡吗？”、“请填写这张初诊单”。' },
+        greeting_neighbor: { title: '和邻居打招呼', category: 'daily_life', icon: 'fas fa-handshake', initial_prompt: '（在电梯里遇到）“您好。”', ai_role: '你是公寓的住户。你遇到了住在同一栋公寓的熟人。请一边聊着“今天天气真好”之类的话题，一边自然地打个招呼。' },
+        invite_friend: { title: '约朋友吃饭', category: 'social', icon: 'fas fa-user-friends', initial_prompt: '“嗨，最近好吗？”', ai_role: '你是日本的朋友。你想约对方吃饭。请提出具体建议，例如“下次要不要去新开的那家意大利餐厅？”，并询问对方的方便时间来敲定日期。' },
+        decline_invitation: { title: '拒绝派对邀请', category: 'social', icon: 'fas fa-comment-slash', initial_prompt: '“这个周末我要办个家庭派对，要来吗？”', ai_role: '你收到了朋友的派对邀请，但很不巧已经有约了。请表达感谢和歉意，并委婉地拒绝，例如“谢谢你约我！但那天我正好有事，去不了了…”' },
+        home_party_guest: { title: '受邀参加家庭派对', category: 'social', icon: 'fas fa-home', initial_prompt: '“欢迎欢迎！你来啦！”', ai_role: '你是受邀参加朋友家庭派对的客人。请在门口打招呼说“打扰了”，并送上伴手礼说“这个给大家吃”，以表达对主人的感谢。' },
+        pour_drink_superior: { title: '为上司倒酒', category: 'social', icon: 'fas fa-wine-bottle', initial_prompt: '（上司的杯子空了）', ai_role: '你是在公司聚餐的下属。你发现上司的杯子空了。请上前询问“部长，要不要再来一杯？”，并礼貌地将啤酒瓶标签朝上为他倒酒。' },
+        give_souvenir: { title: '送伴手礼', category: 'social', icon: 'fas fa-gifts', initial_prompt: '“〇〇，早安。”', ai_role: '你是刚旅行回来的同事。你正在把假期买的伴手礼送给对方。请谦虚地说：“前阵子谢谢你帮忙。这个是旅行的伴手礼，一点小意思，请大家尝尝。”' },
+        business_call_appointment: { title: '打电话预约', category: 'business', icon: 'fas fa-phone-alt', initial_prompt: '“您好，这里是〇〇股份有限公司。”', ai_role: '你是客户公司的负责人。来电者想和营业部长预约会面。请确认对方的公司名称、姓名和事由，然后查看部长行程并提议几个可行的日期。' },
+        report_delay_meeting: { title: '报告会议迟到', category: 'business', icon: 'fas fa-running', initial_prompt: '（电话铃响）“喂，我是〇〇。”', ai_role: '你是在会议中等人的上司。下属打电话来说“因为电车误点，会议会迟到15分钟左右”。请表示理解并冷静地指示说：“知道了，路上小心。”' },
+        exchange_business_cards: { title: '交换名片', category: 'business', icon: 'fas fa-id-card', initial_prompt: '“初次见面，我是△△公司的〇〇。”', ai_role: '你是客户公司的负责人。对方递出了名片。请一边同样地自我介绍，一边用双手收下对方的名片说“非常感谢”，并递出自己的名片。' },
+        ask_for_clarification_meeting: { title: '在会议中请求说明', category: 'business', icon: 'fas fa-question-circle', initial_prompt: '“……因此，我们希望推进这个项目。请问有什么问题吗？”', ai_role: '你是会议的参与者。你对发表者的说明有不清楚的地方。请礼貌地提问：“不好意思，请教一下。关于刚才提到的〇〇部分，能再详细说明一下吗？”' },
+        apologize_to_client: { title: '向客户为失误道歉', category: 'business', icon: 'fas fa-headset', initial_prompt: '“承蒙关照，这里是〇〇公司。”', ai_role: '你是客户公司的负责人。你接到通知说交货的产品有瑕疵。请诚挚地道歉说：“这次因为我们的疏失给您造成了极大的困扰，真的非常抱歉”，并提出后续的处理方案（换货、修理等）。' },
+        ask_directions_police_box: { title: '在派出所问路', category: 'emergency', icon: 'fas fa-map-marked-alt', initial_prompt: '“您好，有什么事吗？”', ai_role: '你是警察。有人来派出所问路。请一边指着地图，一边穿插地标，清楚地说明路线。' },
+        feeling_unwell: { title: '告知身体不适', category: 'emergency', icon: 'fas fa-dizzy', initial_prompt: '“〇〇，你脸色不太好，没事吧？”', ai_role: '你是公司的同事。对方明显身体不适。请表达关心，并体贴地问候说“要不要休息一下？”或“要不要早点回去？”' },
+        report_lost_wallet_police: { title: '向警察报案钱包遗失', category: 'emergency', icon: 'fas fa-user-secret', initial_prompt: '“怎么了？”', ai_role: '你是警察。有人因为掉了钱包而着急。请询问遗失的时间、地点和钱包的特征（颜色、形状、内容物），并协助填写遗失物申报单。' },
+        deal_with_wrong_order: { title: '处理餐厅送错餐', category: 'emergency', icon: 'fas fa-exclamation-triangle', initial_prompt: '“让您久等了，这是您点的汉堡排。”', ai_role: '你是餐厅的服务员。顾客向你反映说：“不好意思，我点的是咖喱鸡饭…”请礼貌地道歉说：“非常抱歉！我马上为您重做”，并迅速处理。' },
+        handling_noisy_neighbor: { title: '委婉地告知邻居噪音问题', category: 'emergency', icon: 'fas fa-volume-mute', initial_prompt: '（敲邻居的门）', ai_role: '你是为噪音所苦的公寓住户。为了不激怒对方，请礼貌且低姿态地请求：“不好意思这么晚打扰您。好像有点声音，如果能再小声一点就太好了。”' },
+        real_estate_search: { title: '在房产中介找房子', category: 'daily_life', icon: 'fas fa-city', initial_prompt: '“欢迎光临，请问您想找什么样的房子？”', ai_role: '你是房产中介的业务员。请听取顾客的需求（租金、格局、地区等），并推荐几个符合条件的物件。' },
+        library_card: { title: '在图书馆办借书证', category: 'daily_life', icon: 'fas fa-book-reader', initial_prompt: '“您好，请问在找什么吗？”', ai_role: '你是图书馆的馆员。你正在为初次到馆的读者说明如何办理借书证。请说明需要填写申请表，并出示可确认地址的身份证件。' },
+        rent_a_car: { title: '租车', category: 'daily_life', icon: 'fas fa-car', initial_prompt: '“是预约的〇〇先生/小姐吗？我们等您很久了。”', ai_role: '你是租车公司的店员。你正在为预约的顾客服务。请确认驾照和预约内容，并说明车辆的使用方法和注意事项（例如汽油种类）。' },
+        gym_membership: { title: '办理健身房入会', category: 'daily_life', icon: 'fas fa-dumbbell', initial_prompt: '“请问是来参观，还是办理入会手续？”', ai_role: '你是健身房的柜台人员。你正在为想入会的顾客说明费用方案和设施使用方法，并引导他填写必要的文件。' },
+        asking_about_trash_rules: { title: '询问垃圾分类规则', category: 'daily_life', icon: 'fas fa-trash-alt', initial_prompt: '“您好，我是刚搬到隔壁的〇〇，请多指教。”', ai_role: '你是住在该地区很久的居民。新搬来的邻居向你询问垃圾分类和收集日。请亲切地告诉他分类规则（可燃、塑料等）和如何看日历。' },
+        hotel_check_in: { title: '在饭店办理入住', category: 'daily_life', icon: 'fas fa-concierge-bell', initial_prompt: '“欢迎光临，请问是办理入住吗？”', ai_role: '你是饭店的柜台人员。请询问顾客的预约姓名，并请他填写住宿登记卡。同时也要说明早餐时间和Wi-Fi密码等馆内资讯。' },
+        cancel_appointment: { title: '取消医院预约', category: 'daily_life', icon: 'fas fa-calendar-times', initial_prompt: '“您好，这里是〇〇诊所。”', ai_role: '你是医院的柜台人员。一位病患打电话来想取消并重新预约。请确认他的病历号码和姓名，并礼貌地应对。' },
+        requesting_day_off: { title: '向公司请假', category: 'business', icon: 'fas fa-calendar-check', initial_prompt: '“部长，现在方便吗？”', ai_role: '你是公司的上司。下属来找你商量：“下个月想请两天假。”请询问理由，并在确认工作交接等事项后批准。' },
+        leaving_voicemail: { title: '在语音信箱留言', category: 'business', icon: 'fas fa-voicemail', initial_prompt: '“请在哔声后留言。”', ai_role: '你是接听电话的一方（在语音信箱模式下）。对方会留言。你不需要说任何话。' }
+    }
+};
+
+// --- アチーブメント定義 ---
+const achievements = {
+    first_quiz: { icon: 'fas fa-flag-checkered', condition: (stats) => stats.totalQuizzesTaken > 0 },
+    quiz_master_easy: { icon: 'fas fa-award', condition: (stats) => stats.perfectScores.easy },
+    quiz_master_normal: { icon: 'fas fa-medal', condition: (stats) => stats.perfectScores.normal },
+    quiz_master_hard: { icon: 'fas fa-trophy', condition: (stats) => stats.perfectScores.hard },
+    perfect_master: { icon: 'fas fa-crown', condition: (stats) => stats.perfectScores.easy && stats.perfectScores.normal && stats.perfectScores.hard },
+    topic_collector: { icon: 'fas fa-book-reader', condition: (stats) => stats.learnedTopicsCount >= 10 }
 };
 
 // ★★★ クイズデータを各難易度30問、合計90問に増量 ★★★
@@ -272,7 +599,12 @@ const quizData = {
         { question: { ja: '食事の際、器の蓋はどこに置くのが正しいですか？', en: 'When dining, where is the correct place to put the lid of a bowl?', zh: '吃饭时，碗盖应该放在哪里？' }, options: { ja: ['お盆の外の右側', 'お盆の中の右側', '裏返してお椀の上'], en: ['Outside the tray on the right', 'Inside the tray on the right', 'Upside down on top of the bowl'], zh: ['餐盘外的右侧', '餐盘内的右侧', '翻过来放在碗上'] }, correct: 0, explanation: { ja: 'お椀の蓋は、お椀の右側、お盆の外に置くのが基本です。水滴が垂れないように、蓋の内側を上にして置きます。', en: 'The lid should be placed outside the tray on the right side of the bowl, with the inside facing up to prevent condensation from dripping.', zh: '碗盖的基本放法是放在餐盘外的右侧，内侧朝上以防滴水。' } },
         { question: { ja: 'ビジネスメールで、自分の名前を名乗った後、相手に「お世話になっております」と書くのは正しいですか？', en: 'In a business email, is it correct to write "Osewa ni natte orimasu" after stating your name?', zh: '在商务邮件中，报上自己名字后写“承蒙关照”正确吗？' }, options: { ja: ['はい、正しい', 'いいえ、名乗る前に書く', '初めての相手には使わない'], en: ['Yes, it is correct', 'No, write it before your name', 'Do not use it for a first-time contact'], zh: ['是的，正确', '不，要在报名前写', '不要对初次联系的人使用'] }, correct: 1, explanation: { ja: 'ビジネスメールでは、まず宛名、次に挨拶（「お世話になっております」など）、そして自分の会社名と名前を名乗るのが正しい順序です。', en: 'The correct order in a business email is: Addressee, Greeting (like "Osewa ni natte orimasu"), and then your company name and your name.', zh: '商务邮件的正确顺序是：收件人姓名、问候语（如“承蒙关照”），然后是自己的公司名和姓名。' } },
         { question: { ja: '訪問先で「つまらないものですが」と言って手土産を渡すのはなぜですか？', en: 'Why do people say "Tsumaranai mono desu ga" (It\'s a dull thing, but...) when giving a gift?', zh: '为什么在送礼时会说“一点小意思”（つまらないものですが）？' }, options: { ja: ['本当に価値がないから', '謙遜の気持ちを表すため', '決まり文句で意味はない'], en: ['Because it truly has no value', 'To express humility', 'It\'s just a set phrase with no meaning'], zh: ['因为它真的没什么价值', '为了表示谦逊', '只是没有意义的客套话'] }, correct: 1, explanation: { ja: '「立派なあなたに差し上げるには、この贈り物は大したものではありませんが」という、相手を立てる謙遜の表現です。', en: 'It is a humble expression that elevates the receiver, implying, "This gift is not much for someone as great as you."', zh: '这是一种抬高对方、表示谦逊的说法，意思是“对于尊贵的您来说，这份薄礼不成敬意”。' } },
-        { question: { ja: '和室の敷居（しきい）を踏んではいけないと言われる主な理由は何ですか？', en: 'What is the main reason it is said you should not step on the threshold (shikii) of a Japanese room?', zh: '据说不能踩在和室的门槛上，主要原因是什么？' }, options: { ja: ['家の主人の頭だから', '滑って危ないから', '単なる迷信'], en: ['Because it represents the head of the household', 'Because it is slippery and dangerous', 'It is just a superstition'], zh: ['因为它代表一家之主', '因为它很滑很危险', '只是迷信'] }, correct: 0, explanation: { ja: '敷居は、その家の内と外を分ける結界であり、またその家の主人の頭を象徴するとも言われ、踏むことは大変失礼とされています。', en: 'The threshold is a boundary separating the inside and outside of a house and is also said to symbolize the head of the household, making it very disrespectful to step on.', zh: '门槛是分隔房屋内外的结界，也象征着一家之主，因此踩踏门槛被认为是非常失礼的。' } },
+        {
+            question: { ja: '和室の敷居（しきい）を踏んではいけないと言われる主な理由は何ですか？', en: 'What is the main reason it is said you should not step on the threshold (shikii) of a Japanese room?', zh: '据说不能踩在和室的门槛上，主要原因是什么？' },
+            options: { ja: ['家の主人の頭だから', '滑って危ないから', '単なる迷信'], en: ['Because it represents the head of the household', 'Because it is slippery and dangerous', 'It is just a superstition'], zh: ['因为它代表一家之主', '因为它很滑很危险', '只是迷信'] },
+            correct: 0,
+            explanation: { ja: '敷居は、その家の内と外を分ける結界であり、またその家の主人の頭を象徴するとも言われ、踏むことは大変失礼とされています。', en: 'The threshold is a boundary separating the inside and outside of a house and is also said to symbolize the head of the household, making it very disrespectful to step on.', zh: '门槛是分隔房屋内外的结界，也象征着一家之主，因此踩踏门槛被认为是非常失礼的。' }
+        },
         { question: { ja: '食事の際、一度取り皿に取った料理を、元の大きな皿に戻しても良いですか？', en: 'During a meal, is it okay to return food from your small plate back to the large serving dish?', zh: '吃饭时，可以把自己小盘子里的菜再放回大盘子里吗？' }, options: { ja: ['はい、誰も見ていなければ', 'いいえ、絶対にしてはいけない', '少しならOK'], en: ['Yes, if no one is watching', 'No, you must never do it', 'A little is okay'], zh: ['可以，如果没人看见的话', '不，绝对不可以', '一点点なら可以'] }, correct: 1, explanation: { ja: '一度自分の皿に取ったものを共有の大皿に戻すのは、衛生的に問題があるだけでなく、重大なマナー違反（「そら箸」）です。', en: 'Returning food to a shared platter after it has been on your personal plate is a major breach of etiquette ("sora-bashi") and is also unhygienic.', zh: '把自己盘子里的食物再放回公用的大盘子里，不仅不卫生，也是严重违反礼仪的（“そら箸”）。' } },
         { question: { ja: '新築祝いに「火」を連想させる贈り物（灰皿、ライターなど）を避けるのはなぜですか？', en: 'Why are gifts that evoke "fire" (like ashtrays or lighters) avoided for a housewarming?', zh: '为什么乔迁之喜时要避免送让人联想到“火”的礼物（如烟灰缸、打火机）？' }, options: { ja: ['値段が安いから', '火事を連想させるから', '煙が出るから'], en: ['Because they are cheap', 'Because they are associated with fires', 'Because they produce smoke'], zh: ['因为便宜', '因为会让人联想到火灾', '因为会冒烟'] }, correct: 1, explanation: { ja: '新築した家が火事になることを連想させるため、灰皿、ライター、ストーブ、また赤い色の贈り物なども避けるのが一般的です。', en: 'Gifts that are associated with fire, such as ashtrays, lighters, heaters, and even red-colored items, are generally avoided as they can be associated with a house fire.', zh: '为了避免让人联想到新居发生火灾，通常会避免赠送烟灰缸、打火机、暖炉以及红色的礼物。' } },
         { question: { ja: 'エレベーターで、目上の人と二人きりの場合、どちらが先に降りますか？', en: 'When in an elevator with a superior, who gets off first?', zh: '和上级单独乘坐电梯时，谁先下？' }, options: { ja: ['目上の人が先', '自分が先', '同時に降りる'], en: ['The superior gets off first', 'I get off first', 'Get off at the same time'], zh: ['上级先下', '我先下', '同时下'] }, correct: 1, explanation: { ja: 'ドアの操作や安全確保のため、目下の者が先に降りてドアを押さえ、目上の人を安全に誘導するのが正しいマナーです。', en: 'The subordinate should get off first to hold the door and ensure the superior can exit safely. This is proper etiquette.', zh: '为了操作电梯门和确保安全，下级应该先下电梯按住开门键，引导上级安全下梯，这才是正确的礼仪。' } },
