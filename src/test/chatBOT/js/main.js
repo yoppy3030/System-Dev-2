@@ -271,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const replyBtn = document.createElement('button');
                 replyBtn.textContent = replyText;
                 
-                // ▼▼▼【修正箇所】ボタンのアクションを正しく設定するロジック ▼▼▼
                 let actionType;
                 if (options.quizOptions) {
                     actionType = 'quiz_option';
@@ -293,7 +292,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         actionType = 'quick_reply';
                     }
                 }
-                // ▲▲▲ ここまで ▲▲▲
                 
                 replyBtn.className = 'quick-reply-btn bg-white border border-sky-500 text-sky-500 text-sm font-semibold py-1 px-4 rounded-full hover:bg-sky-500 hover:text-white transition';
                 replyBtn.dataset.action = actionType;
@@ -575,11 +573,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ▼▼▼【修正箇所】音声入力非対応時にメニューに戻る処理を追加 ▼▼▼
     function startSpeechRecognition() {
         if (!('webkitSpeechRecognition' in window)) {
             displayBotMessage(uiStrings[currentLanguage].voice_not_supported);
+            setTimeout(showWelcomeMenu, 2000); // 2秒後にウェルカムメニューを表示
             return;
         }
+    // ▲▲▲ ここまで ▲▲▲
 
         recognition = new webkitSpeechRecognition();
         recognition.continuous = false;
@@ -926,6 +927,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const isHidden = settingsContent.classList.contains('hidden');
             settingsBtn.title = isHidden ? uiStrings[currentLanguage].open_menu : uiStrings[currentLanguage].close_menu;
         }
+        
+        if (openButton && chatModal) {
+            const isVisible = chatModal.style.display === 'flex';
+            if (isVisible) {
+                openButton.title = uiStrings[lang]?.close_chatbot_tooltip || 'Close Chatbot';
+            } else {
+                openButton.title = uiStrings[lang]?.open_chatbot_tooltip || 'Open Chatbot';
+            }
+        }
 
         displayBotMessage(uiStrings[currentLanguage].lang_switched);
         setTimeout(showWelcomeMenu, 1000);
@@ -1232,7 +1242,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayUserMessage(replyText);
                 removeAllQuickReplies();
                 
-                // ▼▼▼【修正箇所】クイズのアクションを正しく処理するswitch文 ▼▼▼
                 switch (action) {
                     case 'show_roleplay_scenarios':
                         openRolePlayModal();
@@ -1296,7 +1305,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(() => getBotResponse(replyText), 500);
                         break;
                 }
-                // ▲▲▲ ここまで ▲▲▲
             });
         }
 
@@ -1330,15 +1338,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // メインの実行ロジック
     if (openButton && chatModal) {
         const toggleChat = (show) => {
+            const openTooltip = uiStrings[currentLanguage]?.open_chatbot_tooltip || 'Open Chatbot';
+            const closeTooltip = uiStrings[currentLanguage]?.close_chatbot_tooltip || 'Close Chatbot';
+
             if (show) {
                 chatModal.style.display = 'flex';
                 openButton.innerHTML = '<i class="fas fa-times"></i>';
+                openButton.title = closeTooltip; // ツールチップを「閉じる」に設定
                 initializeChat();
             } else {
                 chatModal.style.display = 'none';
                 openButton.innerHTML = '<i class="far fa-comments"></i>';
+                openButton.title = openTooltip; // ツールチップを「開く」に設定
             }
         };
+
+        // ページ読み込み時に最初のツールチップを設定
+        openButton.title = uiStrings[currentLanguage]?.open_chatbot_tooltip || 'Open Chatbot';
 
         openButton.addEventListener('click', (e) => {
             e.stopPropagation();

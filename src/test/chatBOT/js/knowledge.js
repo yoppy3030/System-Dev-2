@@ -4,12 +4,10 @@ const uiStrings = {
         headerTitle: 'AIマナー学習ボット',
         langStatus: '言語: 日本語',
         inputPlaceholder: '日本のマナーについて質問してください',
-        // ▼▼▼【変更箇所】ウェルカムメッセージと返信に「クイズ」を追加 ▼▼▼
         welcome: {
             message: 'こんにちは！私は日本のマナーについてお答えするAIです。どんなことでもお気軽にご質問ください。\n\n「よくある質問」「ロールプレイ」「クイズ」「お問い合わせ」もできます。',
             replies: ['よくある質問', 'ロールプレイ', 'クイズ', 'お問い合わせ']
         },
-        // ▲▲▲ ここまで ▲▲▲
         role_play_prompt: 'ロールプレイシナリオ選択',
         role_play_cancel: 'ロールプレイを終了しました。',
         role_play_categories: {
@@ -51,6 +49,10 @@ const uiStrings = {
         view_pinned: 'お気に入り',
         open_menu: 'メニューを開く',
         close_menu: 'メニューを閉じる',
+        // ▼▼▼【追加】ツールチップ用のテキスト ▼▼▼
+        open_chatbot_tooltip: 'チャットボットを開く',
+        close_chatbot_tooltip: 'チャットボットを閉じる',
+        // ▲▲▲ ここまで ▲▲▲
         pinned_empty_title: 'お気に入りはまだありません',
         pinned_empty_desc: 'ボットの回答の右上にあるピンアイコンをクリックして、重要な情報をここに保存しましょう。',
         inquiry: {
@@ -120,12 +122,10 @@ const uiStrings = {
         headerTitle: 'AI Manners Learning Bot',
         langStatus: 'Language: English',
         inputPlaceholder: 'Ask about Japanese manners',
-        // ▼▼▼【変更箇所】ウェルカムメッセージと返信に「Quiz」を追加 ▼▼▼
         welcome: {
             message: 'Hello! I am an AI that can answer your questions about Japanese manners. Feel free to ask me anything.\n\nYou can also try "FAQ", "Role-play", "Quiz", or "Contact".',
             replies: ['FAQ', 'Role-play', 'Quiz', 'Contact']
         },
-        // ▲▲▲ ここまで ▲▲▲
         role_play_prompt: 'Select a Role-play Scenario',
         role_play_cancel: 'Role-play has ended.',
         role_play_categories: {
@@ -167,6 +167,10 @@ const uiStrings = {
         view_pinned: 'Favorites',
         open_menu: 'Open menu',
         close_menu: 'Close menu',
+        // ▼▼▼【追加】ツールチップ用のテキスト ▼▼▼
+        open_chatbot_tooltip: 'Open Chatbot',
+        close_chatbot_tooltip: 'Close Chatbot',
+        // ▲▲▲ ここまで ▲▲▲
         pinned_empty_title: 'No Favorites Yet',
         pinned_empty_desc: 'Click the pin icon on a bot response to save important information here.',
         inquiry: {
@@ -236,12 +240,10 @@ const uiStrings = {
         headerTitle: 'AI礼仪学习机器人',
         langStatus: '语言: 中文',
         inputPlaceholder: '询问有关日本礼仪的问题',
-        // ▼▼▼【変更箇所】ウェルカムメッセージと返信に「测验」を追加 ▼▼▼
         welcome: {
             message: '您好！我是可以回答您关于日本礼仪问题的AI。请随时向我提问。\n\n您也可以尝试“常见问题”、“角色扮演”、“测验”或“联系我们”。',
             replies: ['常见问题', '角色扮演', '测验', '联系我们']
         },
-        // ▲▲▲ ここまで ▲▲▲
         role_play_prompt: '选择角色扮演场景',
         role_play_cancel: '角色扮演已结束。',
         role_play_categories: {
@@ -283,6 +285,10 @@ const uiStrings = {
         view_pinned: '收藏',
         open_menu: '打开菜单',
         close_menu: '关闭菜单',
+        // ▼▼▼【追加】ツールチップ用のテキスト ▼▼▼
+        open_chatbot_tooltip: '打开聊天机器人',
+        close_chatbot_tooltip: '关闭聊天机器人',
+        // ▲▲▲ ここまで ▲▲▲
         pinned_empty_title: '尚无收藏的消息',
         pinned_empty_desc: '点击机器人回复右上方的图钉图标，即可在此处保存重要信息。',
         inquiry: {
@@ -351,7 +357,6 @@ const uiStrings = {
 };
 
 // --- ナレッジベース (特殊機能) ---
-// ▼▼▼【変更箇所】各言語にクイズ機能のトリガーを追加 ▼▼▼
 const specialFeatures = {
     ja: { 'よくある質問': { isFaq: true }, 'ロールプレイ': { isRolePlay: true }, 'クイズ': { isQuiz: true }, 'お問い合わせ': { isInquiry: true } },
     en: { 'faq': { isFaq: true }, 'role-play': { isRolePlay: true }, 'quiz': { isQuiz: true }, 'contact': { isInquiry: true } },
