@@ -69,8 +69,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit">Login</button>
     </form>
 
-    <p><a href="forgot_password.php">Forgot password?</a></p>
+    <p><a href="#" id="toggle-forgot">Forgot password?</a></p>
     <p>Don't have an account? <a href="register.php">Register here</a></p>
+    <!-- Include the reset password form if the token is set dialog -->
+    <div class="reset-password" id="forgot-password-form" style="display: none;">
+        <h2>Reset Password</h2>
+        <p>Please enter your email address to receive a password reset link.</p>
+    <form method="POST" action="backend/forgot_password.php">
+        <label>Email :
+            <input type="email" name="email" required placeholder="Enter your email" autocomplete="email">
+        </label>
+        <button type="submit">Send Reset Link</button>
+    </form>
 </div>
 </body>
+<script>
+    document.getElementById('toggle-forgot').addEventListener('click', function(e) {
+        e.preventDefault();
+        const form = document.getElementById('forgot-password-form');
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    });
+</script>
 </html>

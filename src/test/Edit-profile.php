@@ -21,6 +21,35 @@ if (isset($_GET['id']) && (int)$_GET['id'] !== $user_id) {
     header("Location: Edit-profile.php"); // Redirige sans le paramètre ID si c'est un autre ID
     exit();
 }
+// Puis traitement mot de passe uniquement si rempli
+    $success = null; 
+    $current_password = $_POST['current_password'] ?? '';
+    $new_password = $_POST['new_password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
+
+    if ($current_password || $new_password || $confirm_password) {
+        // Vérification des 3 champs remplis
+        if (empty($current_password) || empty($new_password) || empty($confirm_password)) {
+            $errors[] = "Pour changer le mot de passe, remplissez tous les champs.";
+        } elseif ($new_password !== $confirm_password) {
+            $errors[] = "Le nouveau mot de passe et sa confirmation ne correspondent pas.";
+        } else {
+            // Vérifier mot de passe actuel dans la base
+            $stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
+            $stmt->execute([$user_id]);
+            $user = $stmt->fetch();
+
+            if (!$user || !password_verify($current_password, $user['password'])) {
+                $errors[] = "Le mot de passe actuel est incorrect.";
+            } else {
+                // Mettre à jour le mot de passe
+                $hashed = password_hash($new_password, PASSWORD_DEFAULT);
+                $update = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
+                $update->execute([$hashed, $user_id]);
+                $success = "Mot de passe mis à jour avec succès.";
+            }
+        }
+    }
 
 // Récupérer les données actuelles de l’utilisateur AVANT le traitement POST
 // Cela garantit que $user contient les données les plus récentes même si le POST échoue ou si on affiche juste le formulaire.
@@ -43,7 +72,7 @@ try {
 } catch (PDOException $e) {
     error_log("Error fetching user data in Edit-profile.php: " . $e->getMessage());
     set_flash_message('Erreur du serveur lors du chargement des données de l\'utilisateur.', 'error');
-    header('Location: User_page.php'); // Redirige en cas d'erreur de DB
+   // header('Location: User_page.php'); // Redirige en cas d'erreur de DB
     exit();
 }
 
@@ -138,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Insertion des nouveaux contacts (ou des contacts mis à jour)
             if (is_array($platforms) && is_array($links)) {
-                $insert_contact_stmt = $pdo->prepare("INSERT INTO contacts (user_id, platform, link) VALUES (?, ?, ?)");
+                $insert_contact_stmt = $pdo->prepare("INSERT INTO contacts (user_id, name, platform, link) VALUES (?, ?, ?, ?)");
 
                 foreach ($platforms as $index => $platform_value) {
                     $link_value = $links[$index] ?? ''; // S'assurer qu'il y a un lien pour chaque plateforme
@@ -147,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     // Valider l'URL avant insertion
                     if (!empty($platform_clean) && filter_var($link_clean, FILTER_VALIDATE_URL)) {
-                        $insert_contact_stmt->execute([$user_id, $platform_clean, $link_clean]);
+                        $insert_contact_stmt->execute([$user_id, $name, $platform_clean, $link_clean]);
                     }
                 }
             }
@@ -163,9 +192,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
             $stmt->execute([$user_id]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            // $stmt_contacts = $pdo->prepare("SELECT * FROM contacts WHERE user_id = ?");
-            // $stmt_contacts->execute([$user_id]);
-            // $contacts = $stmt_contacts->fetchAll(PDO::FETCH_ASSOC);
+            $stmt_contacts = $pdo->prepare("SELECT * FROM contacts WHERE user_id = ?");
+            $stmt_contacts->execute([$user_id]);
+            $contacts = $stmt_contacts->fetchAll(PDO::FETCH_ASSOC);
         }
     } else {
         // Si des erreurs de validation, les afficher sur la page
@@ -211,14 +240,14 @@ if (isset($_SESSION['flash_message'])) {
                     <img id="avatarPreview" src="<?= htmlspecialchars($user['avatar'] ? $user['avatar'] : 'images/default-avatar.png') ?>" alt="avatar" width="100">
                 </div>
                 <label for="avatarInput" class="upload-button">
-                    <i class="fas fa-camera"></i> Changer la photo
+                    <i class="fas fa-camera"></i> Change photo
                 </label>
                 <input type="file" id="avatarInput" name="avatar" accept="image/*" style="display: none;">
             </div>
 
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username'] ?? '') ?>" required>
+                <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username'] ?? '') ?>" required autocomplete="username">
             </div>
 
             <div class="form-group">
@@ -258,9 +287,29 @@ if (isset($_SESSION['flash_message'])) {
                     ?>
                 </div>
             </div>
+            <?php if (!empty($errors)): ?>
+                <div class="alert error"><?= implode('<br>', $errors) ?></div>
+            <?php elseif ($success): ?>
+                <div class="alert success"><?= $success ?></div>
+            <?php endif; ?>
+            <div class="form-group">
+                <h3>Change Password</h3>
+                <p>Leave the fields empty if you don't want to change your password.</p>
+                  <label>Current Password:</label>
+                  <input type="password" name="current_password" autocomplete="current-password">
 
-            <!-- <div class="form-group" id="social-container">
-                <label>Réseaux sociaux</label>
+    
+                  <label>New Password:</label>
+                  <input type="password" name="new_password" autocomplete="new-password">
+
+                  <label>Confirm New Password:</label>
+                  <input type="password" name="confirm_password" autocomplete="new-password">
+                
+            </div>
+
+
+            <div class="form-group" id="social-container">
+                <label>Social Media Links</label>
                 <?php
                 $socials_options = ['Github', 'LinkedIn', 'Twitter', 'Facebook', 'Instagram', 'Personal Website', 'Other']; // Options possibles pour les plateformes
 
@@ -291,8 +340,7 @@ if (isset($_SESSION['flash_message'])) {
                 }
                 ?>
                 <button type="button" id="add-social-link" class="add-button"><i class="fas fa-plus"></i> Ajouter un lien social</button>
-            </div> -->
-
+            </div>
             <div class="form-actions">
                 <a href="User_page.php" class="cancel-btn">Cancel</a>
                 <button type="submit" class="save-btn">Save</button>

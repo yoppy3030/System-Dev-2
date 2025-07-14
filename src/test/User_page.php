@@ -39,11 +39,16 @@ $user_bio = $user['bio'] ?? '';
 $user_location = $user['location'] ?? '';
 $user_country = $user['country'] ?? '';
 $user_activity = $user['activity'] ?? '';
+// If user has no activity, set a default value
+if (empty($user_activity)) {
+    $user_activity = 'Unknown';
+}
 
 // Get social links
 $stmt = $pdo->prepare("SELECT platform, link FROM contacts WHERE user_id = ?");
 $stmt->execute([$user_id]);
 $social_links = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 // Get posts with user info
 $stmt = $pdo->prepare("
@@ -140,7 +145,7 @@ try {
             <div class="dropdown-content" id="dropdown-content">
                 <a href="blog.php"><i class="fas fa-blog"></i> Blog</a>
                 <a href="#"><i class="fas fa-envelope"></i> Contact</a>
-                <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+                <a href="#"><i class="fas fa-cog"></i> Settings</a>
             </div>
         </div>
 
@@ -177,7 +182,7 @@ try {
         </div>
 
         <div class="menu-item">
-            <a href="">
+            <a href="logout.php" id="logout-link">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 <p>LogOut</p>
             </a>
@@ -207,13 +212,30 @@ try {
                     <?php endif; ?>
                     <p id="user-bio"><span>Bio:</span> <?= nl2br(htmlspecialchars($user_bio)) ?></p>
                     
-                    <div class="social-icons">
-                        <a href=""><i class="fab fa-facebook-f"></i></a>
-                        <a href=""><i class="fab fa-twitter"></i></a>
-                        <a href=""><i class="fab fa-instagram"></i></a>
-                        <a href=""><i class="fab fa-linkedin-in"></i></a>
-                        <a href=""><i class="fab fa-github"></i></a>
-                    </div>
+                    <?php if (!empty($social_links)) : ?>
+                        <div class="social-icons-container">
+                            <div class="social-icons"> <!-- ✅ Ajout de la classe manquante ici -->
+                                <?php foreach ($social_links as $social) : 
+                                    $platform = strtolower($social['platform']);
+                                    $icons = [
+                                        'facebook' => 'fab fa-facebook-f',
+                                        'twitter' => 'fab fa-twitter',
+                                        'linkedin' => 'fab fa-linkedin-in',
+                                        'github' => 'fab fa-github',
+                                        'instagram' => 'fab fa-instagram',
+                                        'youtube' => 'fab fa-youtube',
+                                        'tiktok' => 'fab fa-tiktok',
+                                    ];
+                                    $iconClass = $icons[$platform] ?? 'fas fa-link';
+                                ?>
+                                    <a href="<?= htmlspecialchars($social['link']) ?>" target="_blank" title="<?= ucfirst($platform) ?>">
+                                        <i class="<?= $iconClass ?>"></i>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
 
                     <a id="edit-profile-btn" href="Edit-profile.php?id=<?= $user_id ?>" class="edit-profile-btn">
                         <i class="fas fa-edit"></i> Edit Profile
