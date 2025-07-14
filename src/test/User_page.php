@@ -89,43 +89,63 @@ function renderComments($comments_array) {
         echo '</div></div>';
     }
 }
-try {
-    $sql_posts = "SELECT p.*, u.username, u.avatar 
-                  FROM posts p 
-                  JOIN users u ON p.user_id = u.id";
-    $params = [];
+// Ajouter les likes, dislikes et commentaires pour CHAQUE post de l'utilisateur
+foreach ($posts as &$post) {
+    $post_id = $post['id'];
 
-    if (!empty($search_query)) {
-        $sql_posts .= " WHERE p.content LIKE ? OR p.title LIKE ?";
-        $params[] = '%' . $search_query . '%';
-        $params[] = '%' . $search_query . '%';
-    }
+    // Nombre de commentaires
+    $stmt_comment_count = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE post_id = ?");
+    $stmt_comment_count->execute([$post_id]);
+    $post['comment_count'] = $stmt_comment_count->fetchColumn() ?? 0;
 
-    $sql_posts .= " ORDER BY p.created_at DESC";
+    // Likes
+    $stmt_likes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 1");
+    $stmt_likes->execute([$post_id]);
+    $post['likes_count'] = $stmt_likes->fetchColumn() ?? 0;
 
-    $stmt_posts = $pdo->prepare($sql_posts);
-    $stmt_posts->execute($params);
-    $posts = $stmt_posts->fetchAll(PDO::FETCH_ASSOC);
-
-    foreach ($posts as &$post) {
-        $post_id = $post['id'];
-
-        $stmt_comment_count = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE post_id = ?");
-        $stmt_comment_count->execute([$post_id]);
-        $post['comment_count'] = $stmt_comment_count->fetchColumn() ?? 0;
-
-        $stmt_likes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 1");
-        $stmt_likes->execute([$post_id]);
-        $post['likes_count'] = $stmt_likes->fetchColumn() ?? 0;
-
-        $stmt_dislikes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 0");
-        $stmt_dislikes->execute([$post_id]);
-        $post['dislikes_count'] = $stmt_dislikes->fetchColumn() ?? 0;
-    }
-} catch (PDOException $e) {
-    error_log("Error fetching posts: " . $e->getMessage());
-    $posts = [];
+    // Dislikes
+    $stmt_dislikes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 0");
+    $stmt_dislikes->execute([$post_id]);
+    $post['dislikes_count'] = $stmt_dislikes->fetchColumn() ?? 0;
 }
+
+// try {
+//     $sql_posts = "SELECT p.*, u.username, u.avatar 
+//                   FROM posts p 
+//                   JOIN users u ON p.user_id = u.id";
+//     $params = [];
+
+//     if (!empty($search_query)) {
+//         $sql_posts .= " WHERE p.content LIKE ? OR p.title LIKE ?";
+//         $params[] = '%' . $search_query . '%';
+//         $params[] = '%' . $search_query . '%';
+//     }
+
+//     $sql_posts .= " ORDER BY p.created_at DESC";
+
+//     $stmt_posts = $pdo->prepare($sql_posts);
+//     $stmt_posts->execute($params);
+//     $posts = $stmt_posts->fetchAll(PDO::FETCH_ASSOC);
+
+//     foreach ($posts as &$post) {
+//         $post_id = $post['id'];
+
+//         $stmt_comment_count = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE post_id = ?");
+//         $stmt_comment_count->execute([$post_id]);
+//         $post['comment_count'] = $stmt_comment_count->fetchColumn() ?? 0;
+
+//         $stmt_likes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 1");
+//         $stmt_likes->execute([$post_id]);
+//         $post['likes_count'] = $stmt_likes->fetchColumn() ?? 0;
+
+//         $stmt_dislikes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 0");
+//         $stmt_dislikes->execute([$post_id]);
+//         $post['dislikes_count'] = $stmt_dislikes->fetchColumn() ?? 0;
+//     }
+// } catch (PDOException $e) {
+//     error_log("Error fetching posts: " . $e->getMessage());
+//     $posts = [];
+// }
 ?>
 
 <!DOCTYPE html>
