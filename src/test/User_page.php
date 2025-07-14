@@ -4,9 +4,10 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
-require __DIR__ . '/backend/config.php';
+// ★★★ 修正点: backendフォルダにあるconfig.phpを読み込む ★★★
+require_once __DIR__ . '/backend/config.php';
 
-// Flash message functions
+// Flash message functions (この機能はそのまま利用します)
 function set_flash_message($message, $type = 'success') {
     $_SESSION['flash_message'] = ['message' => $message, 'type' => $type];
 }
@@ -22,7 +23,9 @@ function get_flash_message() {
 
 // Get user info
 $user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+// ★★★ 修正点: 'users'テーブルを'Accounts'に、'id'を'ID'に修正 ★★★
+// ★★★ 修正点: 存在しないカラム(avatar, bio, location)の代わりに存在するカラムを取得 ★★★
+$stmt = $pdo->prepare("SELECT ID, Name, Email, Country, Current_location, UserType FROM Accounts WHERE ID = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -33,33 +36,57 @@ if (!$user) {
 }
 
 // Set user data
-$user_avatar = $user['avatar'] ?? 'images/default-avatar.png';
-$user_username = $user['username'];
-$user_bio = $user['bio'] ?? '';
-$user_location = $user['location'] ?? '';
-$user_country = $user['country'] ?? '';
-$user_activity = $user['activity'] ?? '';
+// ★★★ 修正点: 正しいカラム名からデータをセットする ★★★
+$user_avatar = 'images/default-avatar.png'; // avatarカラムは存在しないため、デフォルト値を設定
+$user_username = $user['Name'];
+$user_bio = ''; // bioカラムは存在しないため、空に設定
+$user_location = $user['Current_location'];
+$user_country = $user['Country'];
+$user_activity = $user['UserType'];
+
 // If user has no activity, set a default value
 if (empty($user_activity)) {
     $user_activity = 'Unknown';
 }
 
-// Get social links
-$stmt = $pdo->prepare("SELECT platform, link FROM contacts WHERE user_id = ?");
-$stmt->execute([$user_id]);
-$social_links = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Get social links (この部分はcontactsテーブルに依存するため、そのままにします)
+// もしcontactsテーブルも存在しない場合は、別途エラーが発生します
+try {
+    $stmt_social = $pdo->prepare("SELECT platform, link FROM contacts WHERE user_id = ?");
+    $stmt_social->execute([$user_id]);
+    $social_links = $stmt_social->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // contactsテーブルが存在しない場合のエラーをハンドル
+    $social_links = [];
+    // error_log("Social links table error: " . $e->getMessage());
+}
 
 
 // Get posts with user info
-$stmt = $pdo->prepare("
-    SELECT posts.*, users.username, users.avatar 
-    FROM posts 
-    JOIN users ON posts.user_id = users.id
-    WHERE posts.user_id = ?
-    ORDER BY posts.created_at DESC
-");
-$stmt->execute([$user_id]);
-$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// ★★★ 修正点: JOINするテーブルを'users'から'Accounts'に、カラム名を修正 ★★★
+try {
+    $stmt_posts = $pdo->prepare("
+        SELECT posts.*, Accounts.Name as username
+        FROM posts 
+        JOIN Accounts ON posts.user_id = Accounts.ID
+        WHERE posts.user_id = ?
+        ORDER BY posts.created_at DESC
+    ");
+    $stmt_posts->execute([$user_id]);
+    $posts = $stmt_posts->fetchAll(PDO::FETCH_ASSOC);
+
+    // 各投稿にアバターパスを追加
+    foreach ($posts as &$post) {
+        $post['avatar'] = 'images/default-avatar.png'; // デフォルトアバターを設定
+    }
+    unset($post); // ループ後の参照を解除
+
+} catch (PDOException $e) {
+    // postsテーブルが存在しない場合のエラーをハンドル
+    $posts = [];
+    // error_log("Posts table error: " . $e->getMessage());
+}
+
 
 $flash_message = get_flash_message();
 

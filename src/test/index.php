@@ -1,3 +1,7 @@
+<?php
+// ★★★ 追加: セッションを開始して、ログイン状態を読み込めるようにします ★★★
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,10 +26,22 @@
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="dropdown-content" id="dropdown-content">
+<<<<<<< HEAD
         <a href="User_page.php" data-translate="my_page_link">My Page</a>
         <a href="#">Contact</a>
         <a href="explore.php">Events</a>
         <a href="login.php">Login</a>
+=======
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="User_page.php" data-translate="my_page_link">user_page</a>
+            <a href="logout.php">logout</a>
+        <?php else: ?>
+            <a href="login.php">login</a>
+            <a href="register.php">Sign Up</a>
+        <?php endif; ?>
+        <a href="#">Contact</a>
+        <a href="./explore.php">Blog</a>
+>>>>>>> d100b323914b10d96dfea7818d1ecfb716dc44cf
     </div>
 </div>
    
@@ -46,9 +62,21 @@
     <div class="menu-item">
       <a href="travelers_homePage.php"><i class="fa-solid fa-person-walking-luggage" style="font-size:25px;"></i><p>Travellers</p></a>
     </div>
-    <div class="menu-item">
-      <a href="register.php"><i class="fas fa-user-plus icon"></i><p>Sign Up</p></a>
-    </div>
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <div class="menu-item">
+            <a href="User_page.php"><i class="fas fa-user-circle icon"></i><p>user_page</p></a>
+        </div>
+        <div class="menu-item">
+            <a href="logout.php"><i class="fas fa-sign-out-alt icon"></i><p>logout</p></a>
+        </div>
+    <?php else: ?>
+        <div class="menu-item">
+            <a href="login.php"><i class="fas fa-sign-in-alt icon"></i><p>login</p></a>
+        </div>
+        <div class="menu-item">
+          <a href="register.php"><i class="fas fa-user-plus icon"></i><p>Sign Up</p></a>
+        </div>
+    <?php endif; ?>
     <div class="language-selector">
         <button id="translateBtn" class="translate-btn">🌐 Translate</button>
         <div class="language-dropdown">
