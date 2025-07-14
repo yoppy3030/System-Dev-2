@@ -104,7 +104,7 @@
                     </div>
                 </section>
 
-                <!-- ▼▼▼【追加】間違いノートセクション ▼▼▼ -->
+                <!-- 間違いノートセクション -->
                 <section class="bg-white p-6 rounded-2xl shadow-lg">
                     <h2 class="section-title" data-translate="mistake_note_title">間違いノート</h2>
                     <div id="mistake-note-container">
@@ -114,7 +114,6 @@
                         <p id="no-mistakes-data" class="hidden text-center py-8 text-gray-500" data-translate="mistake_note_empty">復習する問題はありません。素晴らしい！</p>
                     </div>
                 </section>
-                <!-- ▲▲▲ ここまで ▲▲▲ -->
 
             </div>
 
@@ -137,7 +136,7 @@
         </div>
     </main>
 
-    <!-- ▼▼▼【追加】間違いノート再挑戦用モーダル ▼▼▼ -->
+    <!-- 間違いノート再挑戦用モーダル -->
     <div id="mistake-retry-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg">
             <div id="mistake-modal-content" class="p-6">
@@ -152,7 +151,6 @@
             </div>
         </div>
     </div>
-    <!-- ▲▲▲ ここまで ▲▲▲ -->
 
     <!-- 確認モーダル -->
     <div id="confirm-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[1050] flex justify-center items-center hidden px-4">

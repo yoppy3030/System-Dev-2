@@ -82,6 +82,7 @@ body {
 .flashcard-front {
     background-color: #ffffff;
     border: 1px solid #e5e7eb;
+    position: relative; /* For positioning the delete button */
 }
 
 .flashcard-back {
@@ -98,7 +99,37 @@ body {
     width: 100%;
 }
 
-/* ▼▼▼【追加】間違いノートのスタイル ▼▼▼ */
+/* ▼▼▼【追加】トピック削除ボタンのスタイル ▼▼▼ */
+.delete-topic-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(200, 200, 200, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    z-index: 10;
+}
+
+.flashcard:hover .delete-topic-btn {
+    opacity: 1;
+}
+
+.delete-topic-btn:hover {
+    background-color: #ef4444; /* red-500 */
+}
+/* ▲▲▲ ここまで ▲▲▲ */
+
+
+/* 間違いノートのスタイル */
 .mistake-item {
     display: flex;
     justify-content: space-between;
@@ -154,7 +185,6 @@ body {
     border-color: #f87171; /* red-400 */
     color: #991b1b; /* red-800 */
 }
-/* ▲▲▲ ここまで ▲▲▲ */
 
 
 /* アチーブメントシステムのスタイル */

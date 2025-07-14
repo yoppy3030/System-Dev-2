@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelResetBtn = document.getElementById('cancel-reset-btn');
     const confirmResetBtn = document.getElementById('confirm-reset-btn');
     const topicSortSelect = document.getElementById('topic-sort-select');
-    // ▼▼▼【追加】間違いノート関連のDOM要素 ▼▼▼
     const mistakeNoteList = document.getElementById('mistake-note-list');
     const noMistakesData = document.getElementById('no-mistakes-data');
     const mistakeRetryModal = document.getElementById('mistake-retry-modal');
@@ -21,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mistakeModalOptions = document.getElementById('mistake-modal-options');
     const mistakeModalFeedback = document.getElementById('mistake-modal-feedback');
     const mistakeModalCloseBtn = document.getElementById('mistake-modal-close-btn');
-    // ▲▲▲ ここまで ▲▲▲
+    const topicsListEl = document.getElementById('learned-topics-list');
 
     /**
      * ページ初期化
@@ -30,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setupTranslation();
         renderQuizStats(); 
         loadAndRenderTopics(); 
-        loadAndRenderMistakes(); // 間違いノートのロードと描画
+        loadAndRenderMistakes();
         renderAchievements();
         setupEventListeners();
     }
@@ -63,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         renderQuizStats();
         renderLearnedTopics(); 
-        renderMistakeNote(); // 保持しているデータで再描画
+        renderMistakeNote();
         renderAchievements();
     }
     
@@ -110,26 +109,42 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('chatbot_quiz_history');
             localStorage.removeItem('chatbot_learned_topics');
             localStorage.removeItem('chatbot_achievements');
-            localStorage.removeItem('chatbot_mistakes'); // 間違いノートも削除
+            localStorage.removeItem('chatbot_mistakes');
             
             initializePage();
 
             confirmModal.classList.add('hidden');
         });
 
-        const topicsListEl = document.getElementById('learned-topics-list');
+        // ▼▼▼【変更】イベントリスナーを更新 ▼▼▼
         topicsListEl.addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('.delete-topic-btn');
+            if (deleteBtn) {
+                e.stopPropagation(); // カードが裏返るのを防ぐ
+                const topicIdToDelete = deleteBtn.dataset.topicId;
+                
+                // データからトピックを削除
+                learnedTopicsData = learnedTopicsData.filter(topic => (topic.id || topic.question) !== topicIdToDelete);
+                
+                // localStorageを更新
+                localStorage.setItem('chatbot_learned_topics', JSON.stringify(learnedTopicsData));
+                
+                // 表示を再描画
+                renderLearnedTopics();
+                return;
+            }
+
             const card = e.target.closest('.flashcard');
             if (card) {
                 card.classList.toggle('is-flipped');
             }
         });
+        // ▲▲▲ ここまで ▲▲▲
 
         topicSortSelect.addEventListener('change', (e) => {
             sortAndRenderTopics(e.target.value);
         });
 
-        // ▼▼▼【追加】間違いノートのイベントリスナー ▼▼▼
         mistakeNoteList.addEventListener('click', (e) => {
             const button = e.target.closest('.mistake-challenge-btn');
             if (button) {
@@ -146,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 mistakeRetryModal.classList.add('hidden');
             }
         });
-        // ▲▲▲ ここまで ▲▲▲
     }
 
     function renderQuizStats() {
@@ -277,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const storedData = localStorage.getItem('chatbot_learned_topics');
             learnedTopicsData = (storedData ? JSON.parse(storedData) : []).map((topic, index) => ({
                 ...topic,
-                timestamp: Date.now() - index 
+                timestamp: topic.timestamp || (Date.now() - index) // タイムスタンプがない場合に備える
             }));
         } catch (e) { 
             console.error("Error parsing learned topics", e); 
@@ -301,8 +315,8 @@ document.addEventListener('DOMContentLoaded', () => {
         renderLearnedTopics();
     }
     
+    // ▼▼▼【変更】renderLearnedTopics関数を更新 ▼▼▼
     function renderLearnedTopics() {
-        const topicsListEl = document.getElementById('learned-topics-list');
         const noDataEl = document.getElementById('no-learned-topics-data');
 
         topicsListEl.innerHTML = '';
@@ -322,10 +336,16 @@ document.addEventListener('DOMContentLoaded', () => {
         learnedTopicsData.forEach(topic => {
             const cardContainer = document.createElement('div');
             cardContainer.className = 'flashcard';
+            
+            // 各トピックにユニークなIDを設定
+            const topicId = topic.id || topic.question;
 
             cardContainer.innerHTML = `
                 <div class="flashcard-inner">
                     <div class="flashcard-front">
+                        <button class="delete-topic-btn" data-topic-id="${topicId}" title="削除">
+                            <i class="fas fa-times"></i>
+                        </button>
                         <i class="${topic.type === 'faq' ? 'fas fa-check-circle text-green-500' : 'fas fa-question-circle text-sky-500'} text-2xl mb-2"></i>
                         <p class="font-semibold text-gray-800 text-center">${topic.question}</p>
                         <p class="text-xs text-gray-400 mt-auto pt-2">${new Date(topic.timestamp).toLocaleDateString()}</p>
@@ -341,8 +361,8 @@ document.addEventListener('DOMContentLoaded', () => {
             topicsListEl.appendChild(cardContainer);
         });
     }
+    // ▲▲▲ ここまで ▲▲▲
     
-    // ▼▼▼【追加】間違いノート関連の関数群 ▼▼▼
     function loadAndRenderMistakes() {
         try {
             mistakesData = JSON.parse(localStorage.getItem('chatbot_mistakes')) || [];
@@ -398,18 +418,15 @@ document.addEventListener('DOMContentLoaded', () => {
         mistakeModalFeedback.className = `mt-4 text-sm font-medium ${correct ? 'text-green-600' : 'text-red-600'}`;
 
         if (correct) {
-            // 正解したら間違いリストから削除
             mistakesData.splice(mistakeIndex, 1);
             localStorage.setItem('chatbot_mistakes', JSON.stringify(mistakesData));
             
-            // 2秒後にモーダルを閉じてリストを更新
             setTimeout(() => {
                 mistakeRetryModal.classList.add('hidden');
                 renderMistakeNote();
             }, 2000);
         }
     }
-    // ▲▲▲ ここまで ▲▲▲
     
     function checkAndSaveAchievements() {
         const quizHistory = JSON.parse(localStorage.getItem('chatbot_quiz_history')) || [];
