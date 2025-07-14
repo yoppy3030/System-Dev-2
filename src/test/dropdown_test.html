@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown Test</title>
+  <link rel="stylesheet" href="./css/professional.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">JAPAN Life Manual</div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li class="dropdown">
+          <a href="#">Others ▾</a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Japanese Culture</a></li>
+            <li><a href="#">Daily Life</a></li>
+            <li><a href="#">Visa Guide</a></li>
+            <li><a href="#">Job Search Platforms</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Student</a></li>
+        <li><a href="#">Traveler</a></li>
+        <li><a href="#">Professional</a></li>
+        <li class="language-selector">
+          <button id="translateBtn" class="translate-btn">🌐 Translate</button>
+          <div class="language-dropdown">
+            <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
+            <button class="language-option" data-lang="en">🇺🇸 English</button>
+            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <h1>Dropdown Test Page</h1>
+    <p>Test the dropdown functionality:</p>
+    <ul>
+      <li>Click "Others ▾" to open/close the dropdown menu</li>
+      <li>Click "🌐 Translate" to open/close the language dropdown</li>
+      <li>Click outside to close dropdowns</li>
+      <li>Press Escape key to close all dropdowns</li>
+    </ul>
+  </main>
+
+  <script>
+    console.log('Dropdown test page loaded');
+    
+    // Test dropdown functionality
+    const dropdowns = document.querySelectorAll('.dropdown');
+    
+    dropdowns.forEach(dropdown => {
+        const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+        const dropdownToggle = dropdown.querySelector('a');
+        
+        // Ensure dropdown is hidden by default
+        if (dropdownMenu) {
+            dropdownMenu.classList.remove('show');
+            console.log('Dropdown hidden by default');
+        }
+        
+        if (dropdownToggle && dropdownMenu) {
+            dropdownToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Dropdown clicked');
+                
+                // Close all other dropdowns first
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    if (menu !== dropdownMenu) {
+                        menu.classList.remove('show');
+                    }
+                });
+                
+                dropdownMenu.classList.toggle('show');
+                console.log('Dropdown toggled:', dropdownMenu.classList.contains('show'));
+            });
+        }
+    });
+    
+    // Language dropdown
+    const translateBtn = document.getElementById('translateBtn');
+    const languageDropdown = document.querySelector('.language-dropdown');
+    
+    if (translateBtn && languageDropdown) {
+        // Ensure language dropdown is hidden by default
+        languageDropdown.classList.remove('show');
+        
+        translateBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
+            console.log('Language dropdown toggled:', languageDropdown.classList.contains('show'));
+        });
+    }
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.dropdown') && !e.target.closest('.language-selector')) {
+            document.querySelectorAll('.dropdown-menu, .language-dropdown').forEach(menu => {
+                menu.classList.remove('show');
+            });
+            console.log('Dropdowns closed by outside click');
+        }
+    });
+    
+    // Close dropdowns when pressing Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.dropdown-menu, .language-dropdown').forEach(menu => {
+                menu.classList.remove('show');
+            });
+            console.log('Dropdowns closed by Escape key');
+        }
+    });
+  </script>
+</body>
+</html> 

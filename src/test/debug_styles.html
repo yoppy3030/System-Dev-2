@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug Styles</title>
+  <link rel="stylesheet" href="./css/professional.css">
+  <style>
+    /* Debug styles to see if CSS is loading */
+    .debug-info {
+      background: #f0f0f0;
+      padding: 20px;
+      margin: 20px;
+      border: 2px solid #333;
+    }
+    .css-test {
+      background: var(--primary-color);
+      color: var(--light-text);
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="debug-info">
+    <h1>CSS Debug Page</h1>
+    <p>This page is to test if CSS variables and styles are working.</p>
+    
+    <div class="css-test">
+      This should be red background with white text if CSS variables are working.
+    </div>
+    
+    <div class="info-block">
+      <h2>Test Info Block</h2>
+      <p>This should have a red left border and hover effects.</p>
+      <a href="#" class="details-button">Test Button</a>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="logo">JAPAN Life Manual</div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li class="dropdown">
+          <a href="#">Others ▾</a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Japanese Culture</a></li>
+            <li><a href="#">Daily Life</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Student</a></li>
+        <li><a href="#">Traveler</a></li>
+        <li><a href="#">Professional</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <script>
+    // Debug script to check CSS variables
+    console.log('Debug page loaded');
+    
+    // Check if CSS variables are working
+    const root = document.documentElement;
+    const primaryColor = getComputedStyle(root).getPropertyValue('--primary-color');
+    console.log('Primary color:', primaryColor);
+    
+    // Check if CSS file is loaded
+    const stylesheets = document.styleSheets;
+    console.log('Number of stylesheets:', stylesheets.length);
+    
+    for (let i = 0; i < stylesheets.length; i++) {
+      try {
+        const rules = stylesheets[i].cssRules || stylesheets[i].rules;
+        console.log(`Stylesheet ${i}:`, stylesheets[i].href, 'Rules:', rules.length);
+      } catch (e) {
+        console.log(`Stylesheet ${i}:`, stylesheets[i].href, 'Error accessing rules');
+      }
+    }
+    
+    // Test dropdown functionality
+    document.querySelectorAll('.dropdown').forEach(dropdown => {
+      const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+      const dropdownToggle = dropdown.querySelector('a');
+      
+      if (dropdownToggle && dropdownMenu) {
+        dropdownToggle.addEventListener('click', (e) => {
+          e.preventDefault();
+          dropdownMenu.classList.toggle('show');
+          console.log('Dropdown toggled');
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

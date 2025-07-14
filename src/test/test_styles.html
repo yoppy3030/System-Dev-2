@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Test Page</title>
+  <link rel="stylesheet" href="./css/professional.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">JAPAN Life Manual</div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li class="dropdown">
+          <a href="#">Others ▾</a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Japanese Culture</a></li>
+            <li><a href="#">Daily Life</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Student</a></li>
+        <li><a href="#">Traveler</a></li>
+        <li><a href="#">Professional</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero" style="background-image: url('./img/namba.jpg');">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>CSS Test Page</h1>
+      <p>Testing if styles are working properly</p>
+    </div>
+  </section>
+
+  <main class="main-content">
+    <section class="overview-section">
+      <h2><i class="fas fa-star"></i> Test Overview</h2>
+      <p>This is a test to see if the CSS styles are working properly.</p>
+    </section>
+
+    <div class="topics-grid">
+      <div class="info-block">
+        <h2><i class="fas fa-briefcase"></i> Test Block 1</h2>
+        <p>This should have a red left border and hover effects.</p>
+        <a href="#" class="details-button">Test Button</a>
+      </div>
+
+      <div class="info-block">
+        <h2><i class="fas fa-clock"></i> Test Block 2</h2>
+        <p>This should also have styling applied.</p>
+        <a href="#" class="details-button">Test Button</a>
+      </div>
+    </div>
+
+    <section class="job-search-section">
+      <h2><i class="fas fa-search"></i> Job Search Test</h2>
+      <div class="job-resources-grid">
+        <div class="info-block">
+          <h3><i class="fas fa-globe"></i> Test Platform</h3>
+          <p>This should have a green left border.</p>
+          <a href="#" class="details-button">Test Link</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <h2>Test Footer</h2>
+      <p>&copy; 2025 Test Page</p>
+    </div>
+  </footer>
+
+  <script>
+    // Test if JavaScript is working
+    console.log('Test page loaded');
+    
+    // Test dropdown functionality
+    document.querySelectorAll('.dropdown').forEach(dropdown => {
+      const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+      const dropdownToggle = dropdown.querySelector('a');
+      
+      if (dropdownToggle && dropdownMenu) {
+        dropdownToggle.addEventListener('click', (e) => {
+          e.preventDefault();
+          dropdownMenu.classList.toggle('show');
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

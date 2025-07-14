@@ -308,8 +308,4 @@ footer a:hover {
   background-color: var(--hover-color);
 }
 
-.dropdown:hover .dropdown-menu {
-  display: block;
-  opacity: 1;
-  pointer-events: auto;
-}
+/* Hover effect removed - dropdowns now work on click only */

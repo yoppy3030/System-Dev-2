@@ -1,27 +1,28 @@
-/* =========================================
-   変数定義
+﻿/* =========================================
+   CSS Variables
    ========================================= */
 :root {
-  --primary-color: #b71c1c;    /* メインカラー（赤） */
-  --secondary-color: #654a4a;  /* セカンダリカラー（茶色） */
-  --light-text: #ffffff;       /* 明るいテキスト色 */
-  --dark-text: #333333;        /* 暗いテキスト色 */
-  --border-color: #eeeeee;     /* ボーダーカラー */
-  --hover-color: #8b8b8b;      /* ホバー時の色 */
+  --primary-color: #b71c1c;    /* Main color (red) */
+  --secondary-color: #654a4a;  /* Secondary color (brown) */
+  --light-text: #ffffff;       /* Light text color */
+  --dark-text: #333333;        /* Dark text color */
+  --border-color: #eeeeee;     /* Border color */
+  --hover-color: #8b8b8b;      /* Hover color */
 }
 
 /* =========================================
-   基本スタイル
+   Basic Styles
    ========================================= */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f8f9fa;
   color: var(--dark-text);
+  line-height: 1.6;
 }
 
 /* =========================================
-   ヘッダーとナビゲーション
+   Header and Navigation
    ========================================= */
 .site-header {
   background: var(--primary-color);
@@ -30,6 +31,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 16px 32px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .logo {
@@ -38,12 +40,22 @@ body {
   margin-left: 22px;
 }
 
+.main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .main-nav a {
   margin: 0 10px;
   text-decoration: none;
   color: white;
   font-weight: 500;
   position: relative;
+  transition: color 0.3s ease;
 }
 
 .main-nav a::after {
@@ -62,7 +74,54 @@ body {
 }
 
 /* =========================================
-   言語選択ドロップダウン
+   Dropdown Menu
+   ========================================= */
+.main-nav ul li {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--primary-color);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: 200px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  border-radius: 4px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.dropdown-menu.show {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.dropdown-menu li a {
+  display: block;
+  padding: 12px 16px;
+  color: var(--light-text);
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-menu li a:hover {
+  background-color: var(--secondary-color);
+}
+
+/* =========================================
+   Language Selector Dropdown
    ========================================= */
 .language-selector {
   position: relative;
@@ -73,13 +132,14 @@ body {
   background-color: var(--light-text);
   color: var(--dark-text);
   border: none;
-  padding: 5px 10px;
+  padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   display: flex;
   align-items: center;
   gap: 5px;
+  transition: background-color 0.3s ease;
 }
 
 .translate-btn:hover {
@@ -97,10 +157,19 @@ body {
   border-radius: 4px;
   z-index: 1000;
   margin-top: 5px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
 }
 
 .language-dropdown.show {
   display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .language-option {
@@ -113,6 +182,7 @@ body {
   cursor: pointer;
   font-size: 14px;
   color: var(--dark-text);
+  transition: background-color 0.3s ease;
 }
 
 .language-option:hover,
@@ -122,11 +192,10 @@ body {
 }
 
 /* =========================================
-   メインコンテンツ
+   Hero Section
    ========================================= */
 .hero {
   position: relative;
-  background-image: url('https://images.unsplash.com/photo-1587502537745-76f3c0ba7945');
   background-size: cover;
   background-position: center;
   height: 300px;
@@ -165,30 +234,126 @@ body {
   font-size: 1.25rem;
 }
 
+/* =========================================
+   Main Content
+   ========================================= */
 .main-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
   padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+/* Overview Section */
+.overview-section {
+  background: var(--light-text);
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.overview-section h2 {
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.overview-section p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--dark-text);
+}
+
+/* Topics Grid */
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+/* Info Blocks */
 .info-block {
   background-color: var(--light-text);
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   transition: transform 0.2s ease-in-out;
+  border-left: 4px solid var(--primary-color);
 }
 
 .info-block:hover {
   transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
 .info-block h2 {
   color: var(--primary-color);
   margin-bottom: 0.5rem;
+  font-size: 1.3rem;
 }
 
+.info-block h3 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.info-block p {
+  color: var(--dark-text);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+/* Section Headers */
+.job-search-section,
+.culture-section,
+.career-section,
+.industry-section {
+  margin-bottom: 3rem;
+}
+
+.job-search-section h2,
+.culture-section h2,
+.career-section h2,
+.industry-section h2 {
+  color: var(--primary-color);
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border-bottom: 3px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+}
+
+/* Grid Layouts */
+.job-resources-grid,
+.culture-grid,
+.career-grid,
+.industry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Section-specific styling */
+.job-search-section .info-block {
+  border-left-color: #4CAF50;
+}
+
+.culture-section .info-block {
+  border-left-color: #FF9800;
+}
+
+.career-section .info-block {
+  border-left-color: #2196F3;
+}
+
+.industry-section .info-block {
+  border-left-color: #9C27B0;
+}
+
+/* Sections */
 .section {
   background: var(--light-text);
   margin-bottom: 1.5rem;
@@ -203,13 +368,259 @@ body {
 }
 
 /* =========================================
-   フッター
+   Job Platforms Page Specific Styles
+   ========================================= */
+
+/* Quick Navigation */
+.quick-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  background: var(--primary-color);
+  color: var(--light-text);
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.nav-link:hover {
+  background: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Platform Grid */
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.platform-card {
+  background: var(--light-text);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease-in-out;
+  border-left: 4px solid var(--primary-color);
+}
+
+.platform-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.platform-card h3 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.platform-card h3 a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.platform-card h3 a:hover {
+  text-decoration: underline;
+}
+
+.platform-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.tag {
+  background: var(--secondary-color);
+  color: var(--light-text);
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Tips Grid */
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.tip-card {
+  background: var(--light-text);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-top: 4px solid var(--primary-color);
+}
+
+.tip-card h4 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.tip-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.tip-card li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tip-card li:last-child {
+  border-bottom: none;
+}
+
+/* User Guide */
+.user-guide {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.user-type {
+  background: var(--light-text);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-right: 4px solid var(--primary-color);
+}
+
+.user-type h3 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.recommended-platforms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.platform-badge {
+  background: var(--primary-color);
+  color: var(--light-text);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Specialized Grid */
+.specialized-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.specialized-card {
+  background: var(--light-text);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-bottom: 4px solid var(--primary-color);
+}
+
+.specialized-card h3 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.specialized-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.specialized-card li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.specialized-card li:last-child {
+  border-bottom: none;
+}
+
+.specialized-card a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.specialized-card a:hover {
+  text-decoration: underline;
+}
+
+/* Advice Grid */
+.advice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.advice-card {
+  background: var(--light-text);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-left: 4px solid var(--secondary-color);
+}
+
+.advice-card h4 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.advice-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.advice-card li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.advice-card li:before {
+  content: "•";
+  color: var(--primary-color);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.advice-card li:last-child {
+  border-bottom: none;
+}
+
+/* =========================================
+   Footer
    ========================================= */
 footer {
   background-color: #b71c1c;
   color: var(--light-text);
   padding: 2rem;
   text-align: center;
+  margin-top: 3rem;
 }
 
 .footer-content a {
@@ -221,119 +632,111 @@ footer {
   text-decoration: underline;
 }
 
-
 /* =========================================
-   ドロップダウンメニュー
-   ========================================= */
-.main-nav ul li {
-  position: relative;
-}
-
-.main-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;           /* Makes list items line up horizontally */
-  align-items: center;     /* Vertically center items */
-  gap: 15px;               /* Space between items */
-}
-
-
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: var(--primary-color);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  min-width: 160px;
-  border-radius: 4px;
-  overflow: hidden;
-  z-index: 1000;
-  white-space: nowrap; /* Prevent horizontal wrapping */
-  transition: opacity 0.3s ease;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.dropdown-menu.show {
-  display: block;
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.dropdown-menu li a {
-  display: block;
-  padding: 12px 16px;
-  color: var(--light-text);
-  text-decoration: none;
-}
-
-.dropdown-menu li a:hover {
-  background-color: var(--hover-color);
-}
-
-/* Hero Section for Daily Life Page */
-.hero.daily-hero {
-  background-image: url('../img/train_jpn_1.jpg'); /* Make sure the image exists in this path */
-  background-size: cover;
-  background-position: center;
-  height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  text-align: center;
-  position: relative;
-}
-
-.hero.daily-hero::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: rgba(0, 0, 0, 0.5); /* dark overlay for text readability */
-}
-
-.hero.daily-hero .hero-text {
-  position: relative;
-  z-index: 1;
-}
-
-.hero.daily-hero h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-}
-
-.hero.daily-hero p {
-  font-size: 1.2rem;
-}
-
-/* =========================================
-   詳細ボタン (Details Button)
+   Buttons
    ========================================= */
 .details-button {
+  display: inline-block;
   background-color: var(--primary-color);
   color: var(--light-text);
-  border: none;
-  padding: 10px 18px;
-  font-size: 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  display: inline-block;
+  padding: 0.75rem 1.5rem;
   text-decoration: none;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
 }
 
 .details-button:hover {
-  background-color: var(--hover-color);
+  background-color: var(--secondary-color);
   transform: translateY(-2px);
+}
+
+.back-button-container {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.back-button {
+  display: inline-block;
+  background-color: var(--secondary-color);
+  color: var(--light-text);
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   Responsive Design
+   ========================================= */
+@media (max-width: 768px) {
+  .site-header {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .main-nav ul {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-content p {
+    font-size: 1rem;
+  }
+  
+  .main-content {
+    padding: 1rem;
+  }
+  
+  .quick-nav {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-link {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .platform-grid,
+  .tips-grid,
+  .user-guide,
+  .specialized-grid,
+  .advice-grid,
+  .topics-grid,
+  .job-resources-grid,
+  .culture-grid,
+  .career-grid,
+  .industry-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .platform-tags,
+  .recommended-platforms {
+    justify-content: center;
+  }
+  
+  .overview-section h2 {
+    font-size: 1.5rem;
+  }
+  
+  .job-search-section h2,
+  .culture-section h2,
+  .career-section h2,
+  .industry-section h2 {
+    font-size: 1.5rem;
+  }
 }
 
 

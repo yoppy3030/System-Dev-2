@@ -1,5 +1,5 @@
 /* =========================================
-   professional_comment_sec.js 
+   job_platforms.js 
    ========================================= */
 
 // Global state variables
@@ -11,7 +11,6 @@ let translations = { ja: null, zh: null };
 document.addEventListener('DOMContentLoaded', () => {
     loadTranslations();
     setupEventListeners();
-    setupDropdowns();
     setupInteractiveFeatures();
 });
 
@@ -40,9 +39,7 @@ function setupEventListeners() {
             changeLanguage(targetLang);
         });
     });
-}
-
-function setupDropdowns() {
+    
     // Setup dropdown menus
     const dropdowns = document.querySelectorAll('.dropdown');
     
@@ -87,47 +84,38 @@ function setupDropdowns() {
             document.querySelectorAll('.dropdown-menu').forEach(menu => {
                 menu.classList.remove('show');
             });
+            languageDropdown.classList.remove('show');
         }
     });
 }
 
 function setupInteractiveFeatures() {
-    // Add hover effects to info blocks
-    const infoBlocks = document.querySelectorAll('.info-block');
-    infoBlocks.forEach(block => {
-        block.addEventListener('mouseenter', () => {
-            block.style.transform = 'translateY(-5px)';
+    // Add hover effects to job platform links
+    const platformLinks = document.querySelectorAll('.section a[target="_blank"]');
+    platformLinks.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            link.style.transform = 'scale(1.05)';
+            link.style.transition = 'transform 0.2s ease';
         });
         
-        block.addEventListener('mouseleave', () => {
-            block.style.transform = 'translateY(0)';
+        link.addEventListener('mouseleave', () => {
+            link.style.transform = 'scale(1)';
         });
     });
 
-    // Add smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-
-    // Add hover effects to platform cards
-    const platformCards = document.querySelectorAll('.platform-card');
-    platformCards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-5px)';
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'translateY(0)';
-        });
+    // Add collapsible sections for mobile
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        const heading = section.querySelector('h2');
+        if (heading) {
+            heading.style.cursor = 'pointer';
+            heading.addEventListener('click', () => {
+                const content = section.querySelector('ul');
+                if (content) {
+                    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                }
+            });
+        }
     });
 }
 
@@ -144,8 +132,8 @@ function changeLanguage(targetLang) {
 async function loadTranslations() {
     try {
         const [jaData, zhData] = await Promise.all([
-            fetch('./js/translations/professional-ja.json').then(res => res.json()).catch(() => ({ translations: {} })),
-            fetch('./js/translations/professional-zh.json').then(res => res.json()).catch(() => ({ translations: {} }))
+            fetch('./js/translations/job_platforms-ja.json').then(res => res.json()).catch(() => ({ translations: {} })),
+            fetch('./js/translations/job_platforms-zh.json').then(res => res.json()).catch(() => ({ translations: {} }))
         ]);
         translations.ja = jaData.translations;
         translations.zh = zhData.translations;
@@ -178,21 +166,16 @@ function translatePage() {
     if (activeOption) activeOption.classList.add('active');
 }
 
-// Add comment functionality (if needed)
-function addComment() {
-    const commentText = document.getElementById('commentText').value;
-    if (commentText.trim() === '') return;
-    
-    const commentSection = document.getElementById('comments');
-    const newComment = document.createElement('div');
-    newComment.className = 'comment';
-    newComment.innerHTML = `
-        <p><strong>User:</strong> ${commentText}</p>
-        <small>${new Date().toLocaleString()}</small>
-    `;
-    
-    commentSection.appendChild(newComment);
-    document.getElementById('commentText').value = '';
-}
-
- 
+// Add smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+}); 
