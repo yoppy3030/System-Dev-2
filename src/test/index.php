@@ -24,7 +24,7 @@
     <div class="dropdown-content" id="dropdown-content">
         <a href="my_page.php" data-translate="my_page_link">マイページ</a>
         <a href="#">contact</a>
-        <a href="#">Blog</a>
+        <a href="explore.php">Blog</a>
     </div>
 </div>
    
