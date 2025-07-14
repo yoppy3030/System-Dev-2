@@ -6,15 +6,10 @@ body {
     background-color: #f3f4f6; /* gray-100 */
 }
 
-#faq-list li {
-    list-style: none;
-}
-
 #reset-progress-btn {
     cursor: pointer;
 }
 
-/* ▼▼▼【変更】セクションタイトルのスタイルを統一 ▼▼▼ */
 .section-title {
     font-size: 1.25rem; /* text-xl */
     font-weight: 700; /* font-bold */
@@ -23,10 +18,14 @@ body {
     border-bottom: 2px solid #e5e7eb; /* border-b-2 border-gray-200 */
     margin-bottom: 1.5rem; /* mb-6 */
 }
-/* ▲▲▲ ここまで ▲▲▲ */
 
+.section-title.\!mb-0 {
+    margin-bottom: 0 !important;
+}
+.section-title.\!border-b-0 {
+    border-bottom: 0 !important;
+}
 
-/* ▼▼▼【追加】難易度別成績カードのスタイル ▼▼▼ */
 .difficulty-card {
     padding: 1rem; /* p-4 */
     border-radius: 0.5rem; /* rounded-lg */
@@ -37,6 +36,123 @@ body {
 .difficulty-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.flashcard {
+    background-color: transparent;
+    aspect-ratio: 3 / 2;
+    perspective: 1000px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.flashcard:hover {
+    transform: translateY(-5px);
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+    border-radius: 0.75rem; /* rounded-xl */
+}
+
+.flashcard.is-flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 0.75rem; /* rounded-xl */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.flashcard-front {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+}
+
+.flashcard-back {
+    background-color: #f3f4f6; /* gray-100 */
+    color: #1f2937;
+    transform: rotateY(180deg);
+    overflow-y: auto;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.flashcard-back p {
+    width: 100%;
+}
+
+/* ▼▼▼【追加】間違いノートのスタイル ▼▼▼ */
+.mistake-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: #fef2f2; /* red-50 */
+    border: 1px solid #fecaca; /* red-200 */
+    border-radius: 0.5rem; /* rounded-lg */
+}
+
+.mistake-item p {
+    color: #991b1b; /* red-800 */
+    font-weight: 500;
+}
+
+.mistake-challenge-btn {
+    background-color: #ef4444; /* red-500 */
+    color: white;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem; /* rounded-md */
+    transition: background-color 0.2s;
+}
+
+.mistake-challenge-btn:hover {
+    background-color: #dc2626; /* red-600 */
+}
+
+#mistake-modal-options .option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    transition: all 0.2s;
+}
+
+#mistake-modal-options .option-btn:hover {
+    background-color: #f9fafb;
+    border-color: #3b82f6;
+}
+
+#mistake-modal-options .option-btn.correct {
+    background-color: #dcfce7; /* green-100 */
+    border-color: #4ade80; /* green-400 */
+    color: #166534; /* green-800 */
+}
+
+#mistake-modal-options .option-btn.incorrect {
+    background-color: #fee2e2; /* red-100 */
+    border-color: #f87171; /* red-400 */
+    color: #991b1b; /* red-800 */
 }
 /* ▲▲▲ ここまで ▲▲▲ */
 

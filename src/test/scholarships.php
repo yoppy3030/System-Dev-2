@@ -31,28 +31,8 @@
     </div>
   </section>
 
-  <section class="scholarship-list">
-    <div class="scholarship-card">
-      <h2>MEXT Scholarship (Monbukagakusho)</h2>
-      <p><strong>Who:</strong> Government-funded for undergraduate & graduate students</p>
-      <p><strong>Includes:</strong> Tuition, airfare, monthly stipend</p>
-      <a href="https://www.studyinjapan.go.jp/en/planning/scholarship/" target="_blank" class="btn">Learn More</a>
-    </div>
-
-    <div class="scholarship-card">
-      <h2>JASSO Scholarship</h2>
-      <p><strong>Who:</strong> For short-term or exchange students</p>
-      <p><strong>Includes:</strong> Monthly stipend (~¥80,000)</p>
-      <a href="https://www.jasso.go.jp/en/ryugaku/scholarship_j/index.html" target="_blank" class="btn">Apply Now</a>
-    </div>
-
-    <div class="scholarship-card">
-      <h2>University-specific Scholarships</h2>
-      <p><strong>Who:</strong> Offered by many private/public universities</p>
-      <p><strong>How:</strong> Apply directly through the school</p>
-      <a href="https://www.studyinjapan.go.jp/en/_mt/2025/04/EN_2025-2026Scholarship_Pamphlet.pdf" target="_blank" class="btn">Explore</a>
-    </div>
-  </section>
+  <section class="scholarship-list" id="scholarship-list-container">
+    </section>
 
   <footer style="background-color: #b71c1c; color: white; padding: 3rem 0; text-align: center;">
   <h2>Contact Us</h2>

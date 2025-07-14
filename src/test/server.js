@@ -207,3 +207,155 @@ app.get('/events', async (req, res) => {
 app.listen(port, () => {
     console.log(`Node.js proxy server is running at http://localhost:${port}`);
 });
+
+// server.js (REPLACE these two blocks)
+
+async function processScholarshipsWithGemini(searchResults, geminiApiKey, lang = 'en') {
+    if (!searchResults || searchResults.length === 0) {
+        return [];
+    }
+
+    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
+    
+    // --- Language Instruction for the AI ---
+    let languageInstruction = "Provide all string values in the final JSON response in English.";
+    if (lang === 'ja') {
+        languageInstruction = "IMPORTANT: Provide all string values in the final JSON response in natural Japanese.";
+    } else if (lang === 'zh') {
+        languageInstruction = "IMPORTANT: Provide all string values in the final JSON response in standard Mandarin Chinese.";
+    }
+
+    const prompt = `
+        You are an expert data extractor for a student website. Based ONLY on the following Google Search results, create a JSON array of scholarship objects.
+        Each object must have these exact properties: "name", "organization", "amount", "deadline", "eligibility", "link".
+        - "name": string (The official name of the scholarship).
+        - "organization": string (The name of the funding body, e.g., "JASSO", "MEXT", or a university name).
+        - "amount": string (Summarize the financial award, e.g., "Monthly stipend of ¥80,000" or "Full tuition coverage").
+        - "deadline": string (Find the application deadline. If not available, state "Varies" or "Check official site").
+        - "eligibility": string (Briefly summarize who can apply, e.g., "Undergraduate & graduate students").
+        - "link": string (The provided link to the scholarship page).
+        Ignore any results that are not specific scholarships.
+        ${languageInstruction} // <-- The new instruction is added here
+        Respond with ONLY the raw JSON array.
+
+        Search Results:
+        ${searchResults.map(item => `Title: ${item.title}\nSnippet: ${item.snippet}\nLink: ${item.link}`).join('\n')}
+    `;
+    
+    const payload = { contents: [{ parts: [{ text: prompt }] }] };
+
+    try {
+        const geminiResponse = await axios.post(geminiApiUrl, payload, { headers: { 'Content-Type': 'application/json' } });
+        let scholarshipText = geminiResponse.data.candidates[0].content.parts[0].text;
+        scholarshipText = scholarshipText.replace(/```json/g, '').replace(/```/g, '').trim();
+        return JSON.parse(scholarshipText);
+    } catch (error) {
+        console.error("Error processing scholarships with Gemini:", error.response ? error.response.data : error.message);
+        return [];
+    }
+}
+
+
+app.get('/scholarships', async (req, res) => {
+    try {
+        const { lang } = req.query; // Get language from the request
+        const googleApiKey = process.env.Google_Search_API_KEY;
+        const searchEngineId = process.env.SEARCH_ENGINE_ID;
+        const geminiApiKey = process.env.GEMINI_API_KEY;
+
+        const searchQuery = "scholarships for international students in Japan 2025 deadline";
+        const searchUrl = `https://www.googleapis.com/customsearch/v1?key=${googleApiKey}&cx=${searchEngineId}&q=${encodeURIComponent(searchQuery)}`;
+
+        const searchResponse = await axios.get(searchUrl);
+        const searchResults = searchResponse.data.items?.slice(0, 8) || [];
+
+        // Pass the requested language to the Gemini helper function
+        const scholarships = await processScholarshipsWithGemini(searchResults, geminiApiKey, lang);
+
+        res.json({ scholarships });
+
+    } catch (error) {
+        console.error("Scholarships Endpoint Error:", error.response ? error.response.data.error : error.message);
+        res.status(500).json({ message: 'Could not fetch real-time scholarship data.' });
+    }
+});
+
+// ==============================================================
+// === NEW: REAL-TIME JOBS ENDPOINT for types_of_jobs.php     ===
+// ==============================================================
+
+/**
+ * Processes job search results with Gemini to create structured data.
+ * @param {Array} searchResults - Raw results from Google Custom Search.
+ * @param {string} geminiApiKey - Your Gemini API key.
+ * @param {string} lang - The target language ('en', 'ja', 'zh').
+ * @param {string} jobType - The type of job ('Internship' or 'Full-time').
+ * @returns {Promise<Array>} - A promise resolving to an array of job objects.
+ */
+async function processJobsWithGemini(searchResults, geminiApiKey, lang, jobType) {
+    if (!searchResults || searchResults.length === 0) return [];
+
+    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
+    
+    let languageInstruction = "Provide all string values in the final JSON response in English.";
+    if (lang === 'ja') languageInstruction = "IMPORTANT: Provide all string values in the final JSON response in natural Japanese.";
+    if (lang === 'zh') languageInstruction = "IMPORTANT: Provide all string values in the final JSON response in standard Mandarin Chinese.";
+
+    const prompt = `
+        You are a job board curator. From the Google Search results below, create a JSON array of job objects.
+        Each object must have these properties: "title", "company", "location", "description", "type", "link".
+        - "title": string (The job title).
+        - "company": string (The hiring company's name).
+        - "location": string (Extract the city, e.g., "Osaka". Default to "Kansai Area" if not found).
+        - "description": string (Create a new, single engaging sentence from the snippet, summarizing the role).
+        - "type": string (Assign this exact value: "${jobType}").
+        - "link": string (The provided link).
+        ${languageInstruction}
+        Respond ONLY with the raw JSON array.
+
+        Search Results:
+        ${searchResults.map(item => `Title: ${item.title}\nSnippet: ${item.snippet}\nLink: ${item.link}`).join('\n')}
+    `;
+
+    try {
+        const response = await axios.post(geminiApiUrl, { contents: [{ parts: [{ text: prompt }] }] }, { headers: { 'Content-Type': 'application/json' } });
+        let jobsText = response.data.candidates[0].content.parts[0].text;
+        jobsText = jobsText.replace(/```json/g, '').replace(/```/g, '').trim();
+        return JSON.parse(jobsText);
+    } catch (error) {
+        console.error(`Error processing ${jobType} jobs with Gemini:`, error.response ? error.response.data : error.message);
+        return [];
+    }
+}
+
+app.get('/jobs', async (req, res) => {
+    try {
+        const { lang = 'en' } = req.query;
+        const googleApiKey = process.env.Google_Search_API_KEY;
+        const searchEngineId = process.env.SEARCH_ENGINE_ID;
+        const geminiApiKey = process.env.GEMINI_API_KEY;
+
+        // Specific searches for an IT student in Osaka
+        const internshipQuery = "インターンシップ 大阪 IT"; // "Internship Osaka IT"
+        const fullTimeQuery = "大阪 外国人歓迎 IT求人";   // "Osaka foreigner-welcome IT jobs"
+
+        const internshipUrl = `https://www.googleapis.com/customsearch/v1?key=${googleApiKey}&cx=${searchEngineId}&q=${encodeURIComponent(internshipQuery)}`;
+        const fullTimeUrl = `https://www.googleapis.com/customsearch/v1?key=${googleApiKey}&cx=${searchEngineId}&q=${encodeURIComponent(fullTimeQuery)}`;
+
+        const [internshipResponse, fullTimeResponse] = await Promise.all([
+            axios.get(internshipUrl),
+            axios.get(fullTimeUrl)
+        ]);
+
+        const [internships, fullTimeJobs] = await Promise.all([
+            processJobsWithGemini(internshipResponse.data.items?.slice(0, 4) || [], geminiApiKey, lang, 'Internship'),
+            processJobsWithGemini(fullTimeResponse.data.items?.slice(0, 4) || [], geminiApiKey, lang, 'Full-time')
+        ]);
+
+        res.json({ internships, fullTimeJobs });
+
+    } catch (error) {
+        console.error("Jobs Endpoint Error:", error.response ? error.response.data.error : error.message);
+        res.status(500).json({ message: 'Could not fetch job data.' });
+    }
+});

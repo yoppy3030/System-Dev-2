@@ -25,6 +25,56 @@ body {
     background: #64748b; 
 }
 
+#user-input {
+    line-height: 1.5;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+
+/* ▼▼▼【修正】ローディング表示（スケルトン）のスタイル ▼▼▼ */
+.skeleton-loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 1rem; 
+    margin-top: 0.5rem;
+}
+.skeleton-bubble {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 1rem;
+    background-color: #e5e7eb; /* bg-gray-200 */
+    border-radius: 1rem; /* rounded-2xl */
+    width: 80%;
+    max-width: 20rem; /* max-w-sm */
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.skeleton-line {
+    height: 1rem; /* h-4 */
+    background-color: #d1d5db; /* bg-gray-300 */
+    border-radius: 0.25rem; /* rounded-md */
+}
+.skeleton-bubble .skeleton-line:nth-child(1) {
+    width: 75%;
+}
+.skeleton-bubble .skeleton-line:nth-child(2) {
+    width: 100%;
+}
+.skeleton-bubble .skeleton-line:nth-child(3) {
+    width: 83.333333%;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: .5;
+  }
+}
+/* ▲▲▲ ここまで ▲▲▲ */
+
+
 .bot-response-dos { 
     color: #16a34a; /* Green */ 
 }
@@ -173,7 +223,6 @@ body {
     color: #9ca3af;
 }
 
-/* ▼▼▼【新機能】ピン留めアニメーションを追加 ▼▼▼ */
 @keyframes pin-pop {
     0% {
         transform: scale(1);
@@ -190,7 +239,6 @@ body {
 .pin-animation {
     animation: pin-pop 0.3s ease-in-out;
 }
-/* ▲▲▲ ここまで ▲▲▲ */
 
 
 /* === テーマの基本設定 === */
@@ -459,7 +507,7 @@ body {
     }
 }
 
-/* ▼▼▼【新機能】フィードバック機能のスタイルを追加 ▼▼▼ */
+/* フィードバック機能のスタイル */
 .feedback-container {
     margin-top: 12px;
     display: flex;
@@ -515,4 +563,68 @@ body {
 .theme-night .feedback-thank-you {
     color: #94a3b8;
 }
-/* ▲▲▲ ここまで ▲▲▲ */
+
+/* ロールプレイ選択モーダルのスタイル */
+#roleplay-list::-webkit-scrollbar { 
+    width: 8px; 
+}
+#roleplay-list::-webkit-scrollbar-track { 
+    background: #e5e7eb; 
+}
+#roleplay-list::-webkit-scrollbar-thumb { 
+    background: #9ca3af; 
+    border-radius: 4px; 
+}
+#roleplay-list::-webkit-scrollbar-thumb:hover { 
+    background: #6b7280; 
+}
+
+#roleplay-list .category-title {
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 700; /* font-bold */
+    color: #1f2937; /* gray-800 */
+    padding-bottom: 0.75rem; /* pb-3 */
+    border-bottom: 2px solid #d1d5db; /* border-b-2 border-gray-300 */
+    margin-bottom: 1rem; /* mb-4 */
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* gap-3 */
+}
+
+#roleplay-list .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.75rem; /* gap-3 */
+}
+
+#roleplay-list .scenario-btn {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db; /* border-gray-300 */
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 1rem; /* p-4 */
+    text-align: left;
+    font-weight: 500;
+    color: #374151; /* gray-700 */
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+#roleplay-list .scenario-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    border-color: #3b82f6; /* blue-500 */
+    color: #1d4ed8; /* blue-800 */
+}
+
+#roleplay-list .scenario-btn .scenario-icon {
+    color: #6b7280; /* gray-500 */
+    transition: color 0.2s ease-in-out;
+}
+
+#roleplay-list .scenario-btn:hover .scenario-icon {
+    color: #3b82f6; /* blue-500 */
+}

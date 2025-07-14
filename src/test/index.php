@@ -218,8 +218,16 @@
     </main>
     
     <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl mt-8">
-        <div class="flex items-center space-x-3">
-            <input type="text" id="user-input" class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition" placeholder="日本のマナーについて質問してください">
+        <div class="flex items-end space-x-3">
+            <!-- ▼▼▼【変更】inputをtextareaに変更し、自動高さ調整に対応 ▼▼▼ -->
+            <textarea id="user-input" class="flex-1 p-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500 transition resize-none" placeholder="日本のマナーについて質問してください" rows="1" style="max-height: 120px;"></textarea>
+            <!-- ▲▲▲ ここまで ▲▲▲ -->
+            
+            <button id="image-upload-btn" class="mic-btn" title="画像をアップロード">
+                <i class="fas fa-paperclip"></i>
+            </button>
+            <input type="file" id="image-upload-input" hidden accept="image/*,video/*">
+
             <button id="mic-btn" class="mic-btn" title="マイクを使用">
                 <i class="fas fa-microphone"></i>
             </button>
@@ -253,6 +261,19 @@
         </header>
         <div id="faq-list" class="p-6 space-y-3 overflow-y-auto">
             <!-- FAQ items will be rendered here by JS -->
+        </div>
+    </div>
+</div>
+
+<!-- ロールプレイ選択モーダル -->
+<div id="roleplay-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[1050] flex justify-center items-center px-4">
+    <div id="roleplay-modal-content" class="bg-gray-100 rounded-lg shadow-xl w-full max-w-3xl max-h-[80vh] flex flex-col">
+        <header class="p-4 border-b flex justify-between items-center bg-white rounded-t-lg sticky top-0">
+            <h2 id="roleplay-modal-title" class="text-lg font-bold text-gray-800" data-translate="role_play_prompt">ロールプレイシナリオ選択</h2>
+            <button id="roleplay-modal-close-btn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+        </header>
+        <div id="roleplay-list" class="p-6 space-y-6 overflow-y-auto">
+            <!-- カテゴリーとシナリオがここにJavaScriptで描画されます -->
         </div>
     </div>
 </div>

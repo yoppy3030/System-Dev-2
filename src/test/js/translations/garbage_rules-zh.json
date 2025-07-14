@@ -1,9 +1,12 @@
 {
+<<<<<<< HEAD
+
+=======
+>>>>>>> c2af194834888b291b3bce3ab9dbfd9a5896506c
   "translations": {
     "🌐 Translate": "🌐 翻译",
-    "HOME": "首页",
+    "Home": "首页",
     "StudentHome": "学生主页",
-    "Garbage Disposal Rules in Japan": "日本垃圾分类规则",
     "Garbage Disposal Rules": "垃圾分类规则",
     "A guide for foreign residents in Japan": "面向外国居民的日本垃圾分类指南",
     "Personalized Local Guide": "个性化本地指南",
@@ -39,3 +42,7 @@
     "Garbage should be put out on the morning of collection day (usually by 8 AM), not the night before, to prevent pests.": "请在收集日当天早上（通常8点前）投放，避免前一晚投放以防止害虫。"
   }
 }
+<<<<<<< HEAD
+
+=======
+>>>>>>> c2af194834888b291b3bce3ab9dbfd9a5896506c
