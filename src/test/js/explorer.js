@@ -1,93 +1,158 @@
 console.log("Script chargé !");
 
 document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('search-form');
+    const input = document.getElementById('search-input');
+    const postsFeed = document.querySelector('.posts-feed');
+    const noResults = document.getElementById('no-results');
 
-    // === Gestion Like/Dislike ===
-    document.querySelectorAll('.actions').forEach(action => {
-        const postId = action.dataset.postId;
-        const likeBtn = action.querySelector('.like-btn');
-        const dislikeBtn = action.querySelector('.dislike-btn');
-        const likeCount = action.querySelector('.like-count');
-        const dislikeCount = action.querySelector('.dislike-count');
+    if (form && input && postsFeed && noResults) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const query = input.value.trim();
 
-        function updateCounts() {
-            if (!postId) return;
-            fetch(`http://localhost/challengers/System-Dev-2/src/test/backend/like_dislike.php?target_id=${postId}&target_type=post`)
+            fetch(`search_posts.php?search=${encodeURIComponent(query)}`)
                 .then(res => res.json())
-                .then(data => {
-                    likeCount.textContent = data.likes ?? 0;
-                    dislikeCount.textContent = data.dislikes ?? 0;
+                .then(posts => {
+                    postsFeed.innerHTML = '';
+
+                    if (posts.length === 0) {
+                        noResults.style.display = 'block';
+                    } else {
+                        noResults.style.display = 'none';
+                        posts.forEach(post => {
+                            const postEl = document.createElement('div');
+                            postEl.className = 'post';
+                            postEl.innerHTML = `
+                                <div class="post-header">
+                                    <img src="${post.avatar}" class="post-avatar">
+                                    <span class="post-author">${post.username}</span>
+                                    <span class="post-date">${new Date(post.created_at).toLocaleString()}</span>
+                                </div>
+                                <div class="post-content">
+                                    <p>${post.content}</p>
+                                    ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
+                                </div>
+                                <div class="post-interactions">
+                                    <div class="actions" data-post-id="${post.id}">
+                                        <button class="like-btn"><i class="fas fa-thumbs-up"></i> Like</button>
+                                        <span class="like-count">${post.likes_count}</span>
+                                        <button class="dislike-btn"><i class="fas fa-thumbs-down"></i> Dislike</button>
+                                        <span class="dislike-count">${post.dislikes_count}</span>
+                                        <span><i class="fas fa-comments"></i> ${post.comment_count}</span>
+                                    </div>
+                                </div>
+                                <div class="add-comment">
+                                    <textarea id="comment-input-${post.id}" placeholder="Add a comment..."></textarea>
+                                    <button onclick="addComment(${post.id})">Add comment</button>
+                                </div>
+                                <div id="comments-${post.id}" class="comments" style="display: none;"></div>
+                            `;
+                            postsFeed.appendChild(postEl);
+                        });
+
+                        reloadLikeDislike();
+                        bindToggleComments();
+                    }
                 })
-                .catch(err => console.error("Erreur like/dislike:", err));
-        }
-
-        likeBtn?.addEventListener('click', () => {
-            fetch('http://localhost/challengers/System-Dev-2/src/test/backend/like_dislike.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `target_id=${postId}&target_type=post&is_like=1`
-            }).then(updateCounts);
+                .catch(err => {
+                    console.error('Erreur de recherche :', err);
+                    noResults.style.display = 'block';
+                    postsFeed.innerHTML = '';
+                });
         });
+    }
 
-        dislikeBtn?.addEventListener('click', () => {
-            fetch('http://localhost/challengers/System-Dev-2/src/test/backend/like_dislike.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `target_id=${postId}&target_type=post&is_like=0`
-            }).then(updateCounts);
+    function reloadLikeDislike() {
+        document.querySelectorAll('.actions').forEach(action => {
+            const postId = action.dataset.postId;
+            const likeBtn = action.querySelector('.like-btn');
+            const dislikeBtn = action.querySelector('.dislike-btn');
+            const likeCount = action.querySelector('.like-count');
+            const dislikeCount = action.querySelector('.dislike-count');
+
+            function updateCounts() {
+                fetch(`backend/like_dislike.php?target_id=${postId}&target_type=post`)
+                    .then(res => res.json())
+                    .then(data => {
+                        likeCount.textContent = data.likes ?? 0;
+                        dislikeCount.textContent = data.dislikes ?? 0;
+                    });
+            }
+
+            likeBtn?.addEventListener('click', () => {
+                fetch('backend/like_dislike.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `target_id=${postId}&target_type=post&is_like=1`
+                }).then(updateCounts);
+            });
+
+            dislikeBtn?.addEventListener('click', () => {
+                fetch('backend/like_dislike.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `target_id=${postId}&target_type=post&is_like=0`
+                }).then(updateCounts);
+            });
+
+            updateCounts();
         });
+    }
 
-        updateCounts();
-    });
+    function bindToggleComments() {
+        document.querySelectorAll('.post').forEach(post => {
+            const commentsSection = post.querySelector('.comments');
+            const addCommentSection = post.querySelector('.add-comment');
+            const postId = post.querySelector('.actions')?.dataset.postId;
 
-    // === Boutons toggle commentaires ===
-    document.querySelectorAll('.post').forEach(post => {
-    const commentsSection = post.querySelector('.comments');
-    const addCommentSection = post.querySelector('.add-comment');
+            if (!commentsSection || !addCommentSection || !postId) return;
 
-    if (!commentsSection || !addCommentSection) return;
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'toggle-comments-btn';
+            toggleBtn.innerHTML = '<i class="fas fa-comments"></i> <span>Show Comments</span>';
+            commentsSection.parentNode.insertBefore(toggleBtn, commentsSection);
 
-    const postId = post.querySelector('.actions')?.dataset.postId;
+            let commentsLoaded = false;
 
-    const toggleBtn = document.createElement('button');
-    toggleBtn.className = 'toggle-comments-btn';
-    toggleBtn.innerHTML = '<i class="fas fa-comments"></i> <span>Show Comments</span>';
+            toggleBtn.addEventListener('click', function () {
+                const isVisible = commentsSection.style.display === 'block';
 
-    commentsSection.parentNode.insertBefore(toggleBtn, commentsSection);
+                if (!isVisible && !commentsLoaded) {
+                    loadComments(postId);
+                    commentsLoaded = true;
+                }
 
-    let commentsLoaded = false;
+                commentsSection.style.display = isVisible ? 'none' : 'block';
+                addCommentSection.style.display = isVisible ? 'none' : 'flex';
 
-    toggleBtn.addEventListener('click', function () {
-        const isVisible = commentsSection.style.display === 'block';
+                const icon = this.querySelector('i');
+                const text = this.querySelector('span');
+                icon.className = isVisible ? 'fas fa-comments' : 'fas fa-chevron-up';
+                text.textContent = isVisible ? 'Show Comments' : 'Hide Comments';
+            });
+        });
+    }
 
-        if (!isVisible && !commentsLoaded) {
-            loadComments(postId);
-            commentsLoaded = true;
-        }
-
-        commentsSection.style.display = isVisible ? 'none' : 'block';
-        addCommentSection.style.display = isVisible ? 'none' : 'flex';
-
-        const icon = this.querySelector('i');
-        const text = this.querySelector('span');
-
-        if (!isVisible) {
-            icon.classList.replace('fa-comments', 'fa-chevron-up');
-            text.textContent = 'Hide Comments';
-        } else {
-            icon.classList.replace('fa-chevron-up', 'fa-comments');
-            text.textContent = 'Show Comments';
+    document.getElementById('search-input')?.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('search-btn')?.click();
         }
     });
 });
 
-
-    // === Charger tous les commentaires au chargement ===
-    // document.querySelectorAll('.comments').forEach(c => {
-    //     const postId = c.id?.split('-')[1];
-    //     if (postId) loadComments(postId);
-    // });
-});
+function loadComments(postId) {
+    fetch(`http://localhost/challengers/System-Dev-2/src/test/backend/get_comments.php?post_id=${postId}`)
+        .then(res => res.json())
+        .then(data => {
+            const commentsContainer = document.getElementById(`comments-${postId}`);
+            if (!commentsContainer) return;
+            commentsContainer.innerHTML = renderComments(data);
+            bindReplyButtons();
+        })
+        .catch(err => console.error("Erreur chargement commentaires:", err));
+}
 
 function renderComments(comments, parentId = null) {
     let html = '';
@@ -113,33 +178,15 @@ function renderComments(comments, parentId = null) {
 }
 
 function bindReplyButtons() {
-    document.querySelectorAll('.reply-btn').forEach(replyBtn => {
-        replyBtn.addEventListener('click', function () {
+    document.querySelectorAll('.reply-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
             const commentDiv = this.closest('.comment');
-            const replyForm = commentDiv?.querySelector('.reply-form');
-            const replies = commentDiv?.querySelector('.replies');
-
-            if (replyForm) {
-                replyForm.style.display = (replyForm.style.display === 'none' || replyForm.style.display === '') ? 'flex' : 'none';
-            }
-
-            if (replies) {
-                replies.style.display = (replies.style.display === 'none' || replies.style.display === '') ? 'block' : 'none';
-            }
+            const replyForm = commentDiv.querySelector('.reply-form');
+            const replies = commentDiv.querySelector('.replies');
+            replyForm.style.display = replyForm.style.display === 'flex' ? 'none' : 'flex';
+            replies.style.display = replies.style.display === 'block' ? 'none' : 'block';
         });
     });
-}
-
-function loadComments(postId) {
-    fetch(`http://localhost/challengers/System-Dev-2/src/test/backend/get_comments.php?post_id=${postId}`)
-        .then(res => res.json())
-        .then(data => {
-            const commentsContainer = document.getElementById(`comments-${postId}`);
-            if (!commentsContainer) return;
-            commentsContainer.innerHTML = renderComments(data);
-            bindReplyButtons();
-        })
-        .catch(err => console.error("Erreur chargement commentaires:", err));
 }
 
 function addComment(postId, parentCommentId = null) {
@@ -148,7 +195,7 @@ function addComment(postId, parentCommentId = null) {
     if (!input) return;
 
     const content = input.value.trim();
-    if (content === '') return;
+    if (!content) return;
 
     const formData = new URLSearchParams();
     formData.append('post_id', postId);

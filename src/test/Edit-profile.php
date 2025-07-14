@@ -154,27 +154,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         try {
-            // Update de la table users
+            // ユーザー情報の更新
             $stmt = $pdo->prepare("UPDATE users SET username=?, email=?, bio=?, location=?, activity=?, avatar=? WHERE id=?");
             $stmt->execute([$username, $email, $bio, $location, $activity, $avatar_path, $user_id]);
 
-            // Gestion contacts
+            // コンタクト情報の更新
             $platforms = $_POST['platforms'] ?? [];
             $links = $_POST['links'] ?? [];
 
-            // Supprimer TOUS les contacts existants de l'utilisateur
+            // コンタクト情報の削除
             $pdo->prepare("DELETE FROM contacts WHERE user_id = ?")->execute([$user_id]);
 
-            // Insertion des nouveaux contacts (ou des contacts mis à jour)
+            // 新しいコンタクト情報の挿入
             if (is_array($platforms) && is_array($links)) {
                 $insert_contact_stmt = $pdo->prepare("INSERT INTO contacts (user_id, name, platform, link) VALUES (?, ?, ?, ?)");
 
                 foreach ($platforms as $index => $platform_value) {
-                    $link_value = $links[$index] ?? ''; // S'assurer qu'il y a un lien pour chaque plateforme
+                    $link_value = $links[$index] ?? ''; // プラットフォーム　リンクがない場合は空文字
                     $platform_clean = trim(filter_var($platform_value, FILTER_SANITIZE_FULL_SPECIAL_CHARS));
                     $link_clean = trim(filter_var($link_value, FILTER_SANITIZE_URL));
 
-                    // Valider l'URL avant insertion
+                    // プラットフォームとリンクが空でない場合のみ挿入
                     if (!empty($platform_clean) && filter_var($link_clean, FILTER_VALIDATE_URL)) {
                         $insert_contact_stmt->execute([$user_id, $name, $platform_clean, $link_clean]);
                     }

@@ -10,15 +10,29 @@ $search_query = $_GET['search'] ?? '';
 $posts = [];
 
 try {
-    $sql_posts = "SELECT p.*, u.username, u.avatar 
-                  FROM posts p 
-                  JOIN users u ON p.user_id = u.id";
+   $sql_posts = "SELECT p.*, u.username, u.avatar 
+              FROM posts p 
+              JOIN users u ON p.user_id = u.id 
+              WHERE p.content LIKE ? OR p.title LIKE ? OR u.username LIKE ?
+              ORDER BY p.created_at DESC";
+     $conditions = [];
     $params = [];
 
     if (!empty($search_query)) {
-        $sql_posts .= " WHERE p.content LIKE ? OR p.title LIKE ?";
-        $params[] = '%' . $search_query . '%';
-        $params[] = '%' . $search_query . '%';
+        $words = explode(' ', $search_query); // découper les mots
+        foreach ($words as $word) {
+            $word = trim($word);
+            if ($word !== '') {
+                $conditions[] = "(p.content LIKE ? OR p.title LIKE ? OR u.username LIKE ?)";
+                $params[] = '%' . $word . '%';
+                $params[] = '%' . $word . '%';
+                $params[] = '%' . $word . '%';
+            }
+        }
+    }
+
+   if (!empty($conditions)) {
+        $sql_posts .= " WHERE " . implode(" AND ", $conditions);
     }
 
     $sql_posts .= " ORDER BY p.created_at DESC";
@@ -26,6 +40,18 @@ try {
     $stmt_posts = $pdo->prepare($sql_posts);
     $stmt_posts->execute($params);
     $posts = $stmt_posts->fetchAll(PDO::FETCH_ASSOC);
+    // Si pas de recherche, on affiche les 50 derniers posts
+    // if (empty($search_query)) {
+    //     $sql_posts .= " LIMIT 50";
+    // } else {
+    //     $sql_posts .= " LIMIT 100"; // Limiter à 100 résultats si recherche
+    // }
+
+    // $sql_posts .= " ORDER BY p.created_at DESC";
+
+    // $stmt_posts = $pdo->prepare($sql_posts);
+    // $stmt_posts->execute($params);
+    // $posts = $stmt_posts->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($posts as &$post) {
         $post_id = $post['id'];
@@ -57,46 +83,40 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-<header>
-    <a href="User_page.php" class="back-button"><i class="fas fa-arrow-left"></i>Go back to profile</a>
-</header>
+<header></header>
 
 <main>
-       <div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <img src="images/logo.png" alt="Japan Life Manual Logo" class="logo">
-        <h1>Japan Life Manual</h1>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="images/logo.png" alt="Japan Life Manual Logo" class="logo">
+            <h1>Japan Life Manual</h1>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="User_page.php"><i class="fas fa-arrow-left"></i>Back to profile</a></li>
+            <li><a href="#"><i class="fas fa-chart-line"></i> Popular</a></li>
+            <li><a href="#"><i class="fas fa-fire"></i> Trending</a></li>
+            <li><a href="#"><i class="fas fa-users"></i> Communities</a></li>
+            <li><a href="#"><i class="fas fa-calendar-alt"></i> Events</a></li>
+            <li class="section-title">TOPICS</li>
+            <li><a href="#"><i class="fas fa-microchip"></i> Technology</a></li>
+            <li><a href="#"><i class="fas fa-star"></i> Pop Culture</a></li>
+            <li><a href="#"><i class="fas fa-film"></i> Movies & TV</a></li>
+            <li class="section-title">RESOURCES</li>
+            <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="#"><i class="fas fa-flask"></i> More Settings <span class="beta">in DEV</span></a></li>
+        </ul>
     </div>
-    <ul class="sidebar-menu">
-        <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="#"><i class="fas fa-chart-line"></i> Popular</a></li>
-        <li><a href="#"><i class="fas fa-question-circle"></i> Answers <span class="beta">BETA</span></a></li>
-        <li class="section-title">TOPICS</li>
-        <li><a href="#"><i class="fas fa-globe"></i> Internet Culture</a></li>
-        <li><a href="#"><i class="fas fa-gamepad"></i> Games</a></li>
-        <li><a href="#"><i class="fas fa-comments"></i> Q&As</a></li>
-        <li><a href="#"><i class="fas fa-microchip"></i> Technology</a></li>
-        <li><a href="#"><i class="fas fa-star"></i> Pop Culture</a></li>
-        <li><a href="#"><i class="fas fa-film"></i> Movies & TV</a></li>
-        <li class="section-title">RESOURCES</li>
-        <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
-        <li><a href="#"><i class="fas fa-bullhorn"></i> Advertise</a></li>
-        <li><a href="#"><i class="fas fa-flask"></i> More Settings <span class="beta">BETA</span></a></li>
-    </ul>
-</div>
 
-    <div class="blog-feed-container">
         <section class="posts-section">
             <h2><?php echo !empty($search_query) ? 'Search Results' : 'Explore Posts'; ?></h2>
 
             <div class="search-container">
-                <form action="explorer.php" method="GET">
-                    <input type="text" name="search" placeholder="Search posts..." value="<?php echo htmlspecialchars($search_query); ?>">
+                <form action="explore.php" method="GET">
+                    <input type="text" name="search" placeholder="Search posts..." value="">
                     <button type="submit"><i class="fas fa-search"></i> Search</button>
                 </form>
-                <?php if (!empty($search_query)): ?>
-                    <a href="explorer.php" class="clear-search-btn"><i class="fas fa-times"></i> Clear</a>
-                <?php endif; ?>
+                
+                    <a href="explore.php" class="clear-search-btn"><i class="fas fa-times"></i> Clear</a>
             </div>
 
             <?php if (!empty($search_query) && empty($posts)): ?>
@@ -132,7 +152,7 @@ try {
                                     <span class="dislike-count"><?php echo $post['dislikes_count']; ?></span>
                                     <span><i class="fas fa-comments"></i> <?php echo $post['comment_count']; ?></span>
                                 </div>
-                            </div> 
+                            </div>
 
                             <div class="add-comment">
                                 <textarea id="comment-input-<?php echo $post['id']; ?>" placeholder="Add a comment..."></textarea>

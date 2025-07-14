@@ -287,7 +287,7 @@ foreach ($posts as &$post) {
                     <h3>My Posts</h3>
                     <?php foreach ($posts as $post): ?>
                             <div class="post" data-post-id="<?= $post['id'] ?>">
-                                <a href=""><i class="fa-solid fa-trash"></i></a>
+                                <a href="backend/delete_post.php" class="delete-post-btn" data-post-id="<?= $post['id'] ?>"><i class="fa-solid fa-trash"></i></a>
                             <div class="post-header">
                                 <img src="<?= htmlspecialchars($post['avatar'] ?? '/uploads/default_avatar.jpg') ?>" class="post-avatar">
                                 <span class="post-author"><?= htmlspecialchars($post['username']) ?></span>
@@ -672,6 +672,33 @@ function addComment(postId, parentCommentId, content, callback) {
         alert('Error adding comment. See console.');
     });
 }
+// Delete post functionality
+    document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.delete-post-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const postId = btn.dataset.postId;
+            if (!confirm("Are you sure you want to delete this post?")) return;
+
+            fetch('backend/delete_post.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `post_id=${postId}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    btn.closest('.post').remove();
+                } else {
+                    alert(data.error || 'Failed to delete post');
+                }
+            })
+            .catch(err => {
+                console.error("Delete error:", err);
+                alert("An error occurred");
+            });
+        });
+    });
+});
 
     </script>
 </body>

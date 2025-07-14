@@ -22,9 +22,10 @@
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="dropdown-content" id="dropdown-content">
-        <a href="my_page.php" data-translate="my_page_link">マイページ</a>
-        <a href="#">contact</a>
-        <a href="#">Blog</a>
+        <a href="User_page.php" data-translate="my_page_link">My Page</a>
+        <a href="#">Contact</a>
+        <a href="explore.php">Events</a>
+        <a href="login.php">Login</a>
     </div>
 </div>
    
@@ -105,11 +106,11 @@
             <img src="./img/ChatGPT Image 2025年5月26日 14_01_39.png" alt="コンサートのイメージ">
         </div>
     </div>
-    <div class="blog">
-        <h3>Blog</h3>
-        <div class="blog-post">
-            <img src="./img/ChatGPT Image 2025年5月26日 15_06_32.png" alt="ブログ投稿の画像">
-            <div class="blog-content">
+    <div class="events">
+        <h3>Events</h3>
+        <div class="events-post">
+            <img src="./img/ChatGPT Image 2025年5月26日 15_06_32.png" alt="イベントの画像">
+            <div class="events-content">
                 <h4>Exploring the Beauty of Japan</h4>
                 <p>Discover the rich culture, stunning landscapes, and vibrant cities of Japan. From ancient temples to modern skyscrapers, Japan offers a unique blend of tradition and innovation.</p>
                 <a href="#">Read more</a>
