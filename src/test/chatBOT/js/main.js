@@ -1,4 +1,5 @@
-// ページ全体のDOMが読み込まれてからスクリプトを実行
+// main.js (データベース連携・ゲスト対応版)
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- グローバル変数 ---
@@ -12,10 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let quizScore = 0;
     let quizLength = 0;
     let isChatInitialized = false;
-    let pinnedMessages = JSON.parse(localStorage.getItem('chatbot_pinned_messages')) || [];
-    let recognition; // SpeechRecognition オブジェクトを保持する変数
-    let isRecording = false; // 音声入力中かどうかを示すフラグ
+    let pinnedMessages = [];
+    let recognition; 
+    let isRecording = false;
     let isSummarizing = false;
+
+    // ★★★ 新しい変数: ユーザー/ゲスト識別子 ★★★
+    let sessionIdentifier = { type: 'guest', id: null }; 
 
     // --- DOM要素 ---
     const chatWindow = document.getElementById('chat-window');
@@ -45,8 +49,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const roleplayModalCloseBtn = document.getElementById('roleplay-modal-close-btn');
     const roleplayList = document.getElementById('roleplay-list');
     
-    // --- 関数定義 ---
-    
+    // --- API通信ラッパー ---
+    const api = {
+        async request(endpoint, options = {}) {
+            const url = `./chatBOT/chat_api.php?action=${endpoint}`;
+            const body = options.body ? JSON.stringify(options.body) : null;
+            
+            // ゲストIDをすべてのリクエストに追加
+            if (sessionIdentifier.type === 'guest' && sessionIdentifier.id) {
+                if (options.method === 'POST') {
+                    options.body.guest_session_id = sessionIdentifier.id;
+                }
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: options.method || 'GET',
+                    headers: { 'Content-Type': 'application/json', ...options.headers },
+                    body: options.body ? JSON.stringify(options.body) : null
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            } catch (error) {
+                console.error(`API request to ${endpoint} failed:`, error);
+                // エラーをユーザーに通知するUI処理をここに追加可能
+                throw error;
+            }
+        },
+        getSessionInfo: () => api.request('get_session_info'),
+        getAllChatData: () => api.request(`get_all_chat_data&guest_session_id=${sessionIdentifier.id}`),
+        saveHistory: (history_html) => api.request('save_history', { method: 'POST', body: { history_html } }),
+        savePinnedMessages: (messages) => api.request('save_pinned_messages', { method: 'POST', body: { pinned_messages: messages } }),
+        saveQuizResult: (result) => api.request('save_quiz_result', { method: 'POST', body: result }),
+        saveLearnedTopic: (topic) => api.request('save_learned_topic', { method: 'POST', body: topic }),
+        saveMistake: (mistake) => api.request('save_mistake', { method: 'POST', body: mistake }),
+        clearHistory: () => api.request('clear_history', { method: 'POST', body: {} })
+    };
+
+    // --- メイン関数 ---
+
     function displaySkeletonLoader() {
         if (!chatWindow) return;
         const loaderContainer = document.createElement('div');
@@ -62,36 +106,14 @@ document.addEventListener('DOMContentLoaded', () => {
         chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    /**
-     * 学習したトピックをlocalStorageに保存する
-     * @param {object} topic - 保存するトピックオブジェクト {type: 'faq' | 'query', id?: string, question: string, summary?: string}
-     */
     async function saveLearnedTopic(topic) {
         try {
-            let learnedTopics = [];
-            const existingData = localStorage.getItem('chatbot_learned_topics');
-            if (existingData) {
-                const parsed = JSON.parse(existingData);
-                if (Array.isArray(parsed)) {
-                    learnedTopics = parsed;
-                }
-            }
-            learnedTopics.push(topic);
-            
-            const uniqueTopics = Array.from(new Map(learnedTopics.map(item => [item.id || item.question, item])).values());
-
-            localStorage.setItem('chatbot_learned_topics', JSON.stringify(uniqueTopics));
+            await api.saveLearnedTopic(topic);
         } catch (error) {
-            console.error('Failed to save learned topic:', error);
-            localStorage.setItem('chatbot_learned_topics', JSON.stringify([topic]));
+            console.error('Failed to save learned topic via API:', error);
         }
     }
 
-    /**
-     * Markdown形式のテキストをHTMLに変換する
-     * @param {string} text - 変換するテキスト
-     * @returns {string} HTML文字列
-     */
     function markdownToHtml(text) {
         if (!text) return '';
         let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -107,16 +129,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return html;
     }
 
-    /**
-     * チャットボットの会話履歴のみをクリアする
-     */
-    function clearChatHistory() {
-        localStorage.removeItem('chatbot_history');
-        if (chatWindow) {
-            chatWindow.innerHTML = ''; 
+    async function clearChatHistory() {
+        try {
+            await api.clearHistory();
+            if (chatWindow) chatWindow.innerHTML = ''; 
+            displayBotMessage(uiStrings[currentLanguage].history_cleared);
+            showWelcomeMenu();
+        } catch(error) {
+            console.error("Failed to clear history:", error);
+            displayBotMessage("履歴のクリアに失敗しました。");
         }
-        displayBotMessage(uiStrings[currentLanguage].history_cleared);
-        showWelcomeMenu();
     }
     
     async function getAIResponse(userPrompt) {
@@ -131,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
             systemInstruction = `あなたは日本の文化とマナーについて教える専門家です。ユーザーからの質問に対して、${langMap[currentLanguage]}で、親切かつ詳細に、箇条書きやステップ・バイ・ステップの説明などを活用して分かりやすく答えてください。`;
         }
         
-        const apiUrl = 'chatBOT/gemini_proxy.php';
+        const apiUrl = './chatBOT/gemini_proxy.php';
         
         const generatePayload = {
             contents: [
@@ -226,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }]
         };
         
-        const apiUrl = 'chatBOT/gemini_proxy.php';
+        const apiUrl = './chatBOT/gemini_proxy.php';
 
         try {
             const response = await fetch(apiUrl, {
@@ -273,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageDiv.appendChild(bubble);
         chatWindow.appendChild(messageDiv);
         chatWindow.scrollTop = chatWindow.scrollHeight;
-        saveChatHistory();
+        api.saveHistory(chatWindow.innerHTML).catch(e => console.error(e));
     }
 
     function displayUserMessageWithImage(base64ImageData) {
@@ -292,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageDiv.appendChild(bubble);
         chatWindow.appendChild(messageDiv);
         chatWindow.scrollTop = chatWindow.scrollHeight;
-        saveChatHistory();
+        api.saveHistory(chatWindow.innerHTML).catch(e => console.error(e));
     }
 
     function displayBotMessage(text, options = {}) {
@@ -324,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pinBtn.className = 'action-btn pin-btn';
         pinBtn.title = uiStrings[currentLanguage].view_pinned;
         pinBtn.innerHTML = '<i class="fas fa-thumbtack fa-xs"></i>';
-        if (pinnedMessages.some(p => p.id === messageId)) {
+        if (pinnedMessages.some(p => p.message_id === messageId)) {
             pinBtn.classList.add('pinned');
         }
         
@@ -424,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageContainer.appendChild(messageWrapper);
         chatWindow.appendChild(messageContainer);
         chatWindow.scrollTop = chatWindow.scrollHeight;
-        saveChatHistory();
+        api.saveHistory(chatWindow.innerHTML).catch(e => console.error(e));
     }
 
     function handleUserInput() {
@@ -494,7 +516,8 @@ document.addEventListener('DOMContentLoaded', () => {
         displaySkeletonLoader();
         const payload = { ...inquiryState, lang: currentLanguage };
         try {
-            const response = await fetch('chatBOT/send_inquiry.php', {
+            // 注意: このPHPファイルのパスは環境に合わせて調整してください
+            const response = await fetch('./chatBOT/send_inquiry.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -529,14 +552,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const resultMessage = uiStrings[currentLanguage].getQuizResultMessage(quizScore, quizLength);
             displayBotMessage(uiStrings[currentLanguage].quiz_complete + "\n" + resultMessage, { quizFlow: 'end' });
             
-            const quizHistory = JSON.parse(localStorage.getItem('chatbot_quiz_history')) || [];
-            quizHistory.push({
+            api.saveQuizResult({
                 difficulty: currentDifficulty,
                 score: quizScore,
-                total: quizLength,
-                date: new Date().toISOString()
-            });
-            localStorage.setItem('chatbot_quiz_history', JSON.stringify(quizHistory));
+                total: quizLength
+            }).catch(e => console.error(e));
+            
             return;
         }
 
@@ -649,7 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
             contents: [{ "role": "user", "parts": [{ "text": summaryPrompt }] }]
         };
 
-        const apiUrl = 'chatBOT/gemini_proxy.php';
+        const apiUrl = './chatBOT/gemini_proxy.php';
 
         try {
             const response = await fetch(apiUrl, {
@@ -754,33 +775,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function saveChatHistory() {
-        if (chatWindow && chatWindow.innerHTML) {
-            localStorage.setItem('chatbot_history', chatWindow.innerHTML);
-        }
-    }
-
-    function loadChatHistory() {
+    async function loadChatData() {
         if (!chatWindow) return false;
-        const savedHistory = localStorage.getItem('chatbot_history');
-        if (savedHistory) {
-            chatWindow.innerHTML = savedHistory;
-            const messageElements = chatWindow.querySelectorAll('.bot-message-container[data-message-id]');
-            messageElements.forEach(el => {
-                const messageId = el.dataset.messageId;
-                if (pinnedMessages.some(p => p.id === messageId)) {
-                    const pinBtn = el.querySelector('.pin-btn');
-                    if(pinBtn) pinBtn.classList.add('pinned');
-                }
-            });
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-            return true; 
+        try {
+            const data = await api.getAllChatData();
+            if (data.history) {
+                chatWindow.innerHTML = data.history;
+                // ピンの状態を復元
+                const messageElements = chatWindow.querySelectorAll('.bot-message-container[data-message-id]');
+                messageElements.forEach(el => {
+                    const messageId = el.dataset.messageId;
+                    if (data.pinned_messages.some(p => p.message_id === messageId)) {
+                        const pinBtn = el.querySelector('.pin-btn');
+                        if (pinBtn) pinBtn.classList.add('pinned');
+                    }
+                });
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error("Failed to load chat data:", error);
+            // ログインしていない場合401エラーが返るが、これは正常な動作
+            return false;
         }
-        return false; 
-    }
-
-    function savePinnedMessages() {
-        localStorage.setItem('chatbot_pinned_messages', JSON.stringify(pinnedMessages));
     }
 
     function renderPinnedWindow() {
@@ -795,15 +813,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="text-sm">${strings.pinned_empty_desc}</p>
                 </div>
             `;
+
         } else {
             pinnedMessages.forEach(msg => {
                 const card = document.createElement('div');
                 card.className = 'pinned-message-card';
-                card.dataset.messageId = msg.id;
+                card.dataset.messageId = msg.message_id;
                 
                 const textP = document.createElement('p');
                 textP.className = 'pinned-message-text';
-                textP.innerHTML = markdownToHtml(msg.text);
+                textP.innerHTML = markdownToHtml(msg.message_text);
                 
                 const unpinBtn = document.createElement('button');
                 unpinBtn.className = 'unpin-btn';
@@ -823,13 +842,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const bubble = messageContainer.querySelector('.bg-white');
         const messageText = bubble.querySelector('p').innerText;
 
-        const isPinned = pinnedMessages.some(p => p.id === messageId);
+        const isPinned = pinnedMessages.some(p => p.message_id === messageId);
 
         if (isPinned) {
-            pinnedMessages = pinnedMessages.filter(p => p.id !== messageId);
+            pinnedMessages = pinnedMessages.filter(p => p.message_id !== messageId);
             pinBtn.classList.remove('pinned');
         } else {
-            pinnedMessages.push({ id: messageId, text: messageText });
+            pinnedMessages.push({ message_id: messageId, message_text: messageText });
             pinBtn.classList.add('pinned');
             
             pinBtn.classList.add('pin-animation');
@@ -838,7 +857,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, { once: true });
         }
 
-        savePinnedMessages();
+        api.savePinnedMessages(pinnedMessages).catch(e => console.error(e));
         if (pinnedModal && !pinnedModal.classList.contains('hidden')) {
             renderPinnedWindow();
         }
@@ -1003,6 +1022,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function switchLanguage(lang) {
         if (currentLanguage === lang) return;
         currentLanguage = lang;
+        // localStorageに言語設定を保存
         localStorage.setItem('chatbot_language', currentLanguage);
         resetAllStates();
         const strings = uiStrings[lang];
@@ -1010,27 +1030,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('header-lang-status').textContent = strings.langStatus;
         userInput.placeholder = strings.inputPlaceholder;
         
-        if(imageUploadBtn) {
-            imageUploadBtn.title = strings.upload_image_tooltip;
-        }
-        
-        if (micBtn) {
-            micBtn.title = isRecording ? strings.mic_tooltip_recording : strings.mic_tooltip;
-        }
-        if (sendBtn) {
-            sendBtn.title = strings.send_tooltip;
-        }
-        if (summarizeBtn) {
-            summarizeBtn.title = strings.summarize_conversation;
-        }
+        if(imageUploadBtn) imageUploadBtn.title = strings.upload_image_tooltip;
+        if (micBtn) micBtn.title = isRecording ? strings.mic_tooltip_recording : strings.mic_tooltip;
+        if (sendBtn) sendBtn.title = strings.send_tooltip;
+        if (summarizeBtn) summarizeBtn.title = strings.summarize_conversation;
         
         if (langSwitcher) {
             const buttons = langSwitcher.querySelectorAll('button.lang-switch-btn');
             buttons.forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.dataset.lang === lang) {
-                    btn.classList.add('active');
-                }
+                if (btn.dataset.lang === lang) btn.classList.add('active');
             });
         }
         
@@ -1044,14 +1053,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (openButton && chatModal) {
             const isVisible = chatModal.style.display === 'flex';
-            if (isVisible) {
-                openButton.title = uiStrings[lang]?.close_chatbot_tooltip || 'Close Chatbot';
-            } else {
-                openButton.title = uiStrings[lang]?.open_chatbot_tooltip || 'Open Chatbot';
-            }
+            openButton.title = isVisible ? strings.close_chatbot_tooltip : strings.open_chatbot_tooltip;
         }
 
-        displayBotMessage(uiStrings[currentLanguage].lang_switched);
+        displayBotMessage(strings.lang_switched);
         setTimeout(showWelcomeMenu, 1000);
     }
     
@@ -1063,9 +1068,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const faqStrings = strings.faq;
         
         const modalTitle = faqModal.querySelector('#faq-modal-title');
-        if (modalTitle) {
-            modalTitle.textContent = strings.faq_title;
-        }
+        if (modalTitle) modalTitle.textContent = strings.faq_title;
 
         faqStrings.questions.forEach(item => {
             const button = document.createElement('button');
@@ -1090,12 +1093,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 初期化処理 ---
     
-    function initializeChat() {
+    async function initializeChat() {
         if (isChatInitialized) return;
         isChatInitialized = true;
 
-        if(chatWindow) chatWindow.classList.add('min-h-0');
-        
+        // 1. セッション情報を取得
+        try {
+            const sessionInfo = await api.getSessionInfo();
+            if (sessionInfo.status === 'logged_in') {
+                sessionIdentifier = { type: 'user', id: sessionInfo.user_id };
+            } else {
+                // ゲストIDをlocalStorageから読み込むか、新規作成
+                let guestId = localStorage.getItem('chatbot_guest_session_id');
+                if (!guestId) {
+                    guestId = sessionInfo.guest_session_id;
+                    localStorage.setItem('chatbot_guest_session_id', guestId);
+                }
+                sessionIdentifier = { type: 'guest', id: guestId };
+            }
+        } catch (error) {
+            console.error("Could not initialize session. Chat may not be saved.", error);
+            // フォールバックとして一時的なIDを生成
+            sessionIdentifier = { type: 'guest', id: localStorage.getItem('chatbot_guest_session_id') || `temp_${Date.now()}` };
+        }
+
+        // 2. 言語設定を読み込む
+        currentLanguage = localStorage.getItem('chatbot_language') || 'ja';
+        switchLanguage(currentLanguage); // UIを更新
+
+        // 3. イベントリスナーをセットアップ
+        setupEventListeners();
+
+        // 4. チャット履歴を読み込む
+        const historyLoaded = await loadChatData();
+        if (!historyLoaded) {
+            showWelcomeMenu();
+        }
+    }
+
+    function setupEventListeners() {
         preventParentScroll(chatWindow);
         preventParentScroll(pinnedWindow);
         preventParentScroll(faqList);
@@ -1371,11 +1407,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const feedback = feedbackBtn.dataset.feedback;
                     const container = feedbackBtn.parentElement;
                     const messageId = container.dataset.messageId;
-                    const messageElement = document.querySelector(`.bot-message-container[data-message-id="${messageId}"] p`);
-                    const messageText = messageElement ? messageElement.innerText : '';
-                    console.log({ messageId, feedback, message: messageText, language: currentLanguage });
+                    // ここでフィードバックをサーバーに送信する処理を追加できます
+                    console.log({ messageId, feedback, language: currentLanguage });
                     container.innerHTML = `<p class="feedback-thank-you">${uiStrings[currentLanguage].feedback.thank_you}</p>`;
-                    saveChatHistory();
+                    api.saveHistory(chatWindow.innerHTML).catch(e => console.error(e));
                     return; 
                 }
 
@@ -1430,7 +1465,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         currentQuiz = null;
                         askNextQuizQuestion();
                         break;
-                    // ▼▼▼【修正箇所】クイズの不正解時に間違いノートへ保存 ▼▼▼
                     case 'quiz_option':
                         const quizData = currentQuiz;
                         if (!quizData) return;
@@ -1445,22 +1479,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             resultMessage = correctMessages[currentLanguage] + quizData.explanation[currentLanguage];
                         } else {
                             resultMessage = incorrectMessages[currentLanguage] + quizData.options[currentLanguage][masterCorrectAnswerIndex] + endMessages[currentLanguage] + quizData.explanation[currentLanguage];
-                            // 間違えた問題を保存
-                            let mistakes = JSON.parse(localStorage.getItem('chatbot_mistakes')) || [];
-                            // 重複チェック
-                            const isAlreadySaved = mistakes.some(m => m.originalIndex === quizData.originalIndex && m.difficulty === currentDifficulty);
-                            if (!isAlreadySaved) {
-                                mistakes.push({
-                                    ...quizData,
-                                    difficulty: currentDifficulty
-                                });
-                                localStorage.setItem('chatbot_mistakes', JSON.stringify(mistakes));
-                            }
+                            // 間違えた問題をAPI経由で保存
+                            api.saveMistake({
+                                ...quizData,
+                                difficulty: currentDifficulty
+                            }).catch(e => console.error(e));
                         }
                         currentQuiz = null;
                         setTimeout(() => displayBotMessage(resultMessage, { quizFlow: 'continue' }), 500);
                         break;
-                    // ▲▲▲ ここまで ▲▲▲
                     case 'quick_reply':
                     default:
                         setTimeout(() => getBotResponse(replyText), 500);
@@ -1476,8 +1503,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const card = unpinBtn.closest('.pinned-message-card');
                     const messageId = card.dataset.messageId;
                     
-                    pinnedMessages = pinnedMessages.filter(p => p.id !== messageId);
-                    savePinnedMessages();
+                    pinnedMessages = pinnedMessages.filter(p => p.message_id !== messageId);
+                    api.savePinnedMessages(pinnedMessages).catch(e => console.error(e));
                     
                     const originalMessagePinBtn = document.querySelector(`.bot-message-container[data-message-id="${messageId}"] .pin-btn`);
                     if (originalMessagePinBtn) {
@@ -1487,12 +1514,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderPinnedWindow();
                 }
             });
-        }
-
-        translateSettingsMenu();
-        const historyLoaded = loadChatHistory();
-        if (!historyLoaded) {
-            showWelcomeMenu();
         }
     }
 
@@ -1506,7 +1527,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 chatModal.style.display = 'flex';
                 openButton.innerHTML = '<i class="fas fa-times"></i>';
                 openButton.title = closeTooltip; 
-                initializeChat();
+                if (!isChatInitialized) {
+                    initializeChat();
+                }
             } else {
                 chatModal.style.display = 'none';
                 openButton.innerHTML = '<i class="far fa-comments"></i>';

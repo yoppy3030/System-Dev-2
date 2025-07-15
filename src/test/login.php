@@ -81,8 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit">Login</button>
     </form>
 
-    <p>パスワードを忘れましたか？ <a href="forgot_password.php">こちらへ</a></p>
-    <p>アカウントをお持ちでないですか？ <a href="register.php">こちらで登録</a></p>
+    <p>Forgot your password? <a href="forgot_password.php">Click here</a></p>
+    <p>Don't have an account? <a href="register.php">Register here</a></p>
 </div>
 
 <script>
