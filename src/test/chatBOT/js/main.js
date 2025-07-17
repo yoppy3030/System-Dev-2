@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let recognition; 
     let isRecording = false;
     let isSummarizing = false;
+    // ▼▼▼【セキュリティ修正】CSRFトークンを保持する変数を追加 ▼▼▼
+    let csrfToken = '';
 
     // ユーザー/ゲスト識別子
     let sessionIdentifier = { type: 'guest', id: null }; 
@@ -54,12 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
         async request(endpoint, options = {}) {
             const url = `./chatBOT/chat_api.php?action=${endpoint}`;
             
-            // POSTリクエストの場合、ボディにセッションIDを追加
             if (options.method === 'POST') {
                 options.body = options.body || {};
                 if (sessionIdentifier.type === 'guest' && sessionIdentifier.id) {
                     options.body.guest_session_id = sessionIdentifier.id;
                 }
+                // ▼▼▼【セキュリティ修正】POSTリクエストにCSRFトークンを付与 ▼▼▼
+                options.body.csrf_token = csrfToken;
             }
 
             try {
@@ -82,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
         getAllChatData: () => {
             let endpoint = 'get_all_chat_data';
             if (sessionIdentifier.type === 'guest' && sessionIdentifier.id) {
-                // GETリクエストの場合はURLにパラメータを追加
                 endpoint += `&guest_session_id=${sessionIdentifier.id}`;
             }
             return api.request(endpoint);
@@ -106,6 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const sessionInfo = await api.getSessionInfo();
             const guestIdInStorage = localStorage.getItem('chatbot_guest_session_id');
 
+            // ▼▼▼【セキュリティ修正】セッション情報からCSRFトークンを取得 ▼▼▼
+            if (sessionInfo.csrf_token) {
+                csrfToken = sessionInfo.csrf_token;
+            }
+
             if (sessionInfo.status === 'logged_in') {
                 sessionIdentifier = { type: 'user', id: sessionInfo.user_id };
                 if (guestIdInStorage) {
@@ -124,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         currentLanguage = localStorage.getItem('chatbot_language') || 'ja';
-        switchLanguage(currentLanguage, true); // isInitialLoad = true
+        switchLanguage(currentLanguage, true);
         setupEventListeners();
 
         const dataLoaded = await loadChatData();
@@ -158,32 +165,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ▼▼▼【セキュリティ修正】XSS対策を強化したHTML変換関数 ▼▼▼
     function markdownToHtml(text) {
         if (!text) return '';
-        let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // 1. 一時的なdiv要素を作成し、textContentに設定することで、ブラウザにHTMLエスケープさせる
+        const tempDiv = document.createElement('div');
+        tempDiv.textContent = text;
+        
+        // 2. エスケープされた文字列を取得
+        let escapedHtml = tempDiv.innerHTML;
+
+        // 3. 安全なMarkdown記法（太字、改行）をHTMLタグに変換
+        escapedHtml = escapedHtml
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+        
+        // 4. 画像URLをimgタグに変換（この時点ではURL自体はエスケープされているが、src属性としては有効）
         const markdownImageRegex = /!\[(.*?)\]\((.*?)\)/g;
-        html = html.replace(markdownImageRegex, (match, alt, src) => {
-            return `<img src="${src}" alt="${alt || '関連画像'}" class="bot-response-image">`;
-        });
-        const urlRegex = /(?<!src=")(https?:\/\/[^\s]+\.(?:png|jpg|jpeg|gif|webp|svg))/g;
-        html = html.replace(urlRegex, (url) => {
-             return `<img src="${url}" alt="関連画像" class="bot-response-image">`;
-        });
-        html = html.replace(/\n/g, '<br>');
-        return html;
+        escapedHtml = escapedHtml.replace(markdownImageRegex, '<img src="$2" alt="$1" class="bot-response-image">');
+        
+        const urlRegex = /(?<!src=")(https?:\/\/[^\s<>]+\.(?:png|jpg|jpeg|gif|webp|svg))/g;
+        escapedHtml = escapedHtml.replace(urlRegex, '<img src="$1" alt="関連画像" class="bot-response-image">');
+
+        return escapedHtml;
     }
 
     async function clearChatHistory() {
         try {
             await api.clearHistory();
             if (chatWindow) chatWindow.innerHTML = ''; 
+            pinnedMessages = []; // フロントエンドのお気に入りもクリア
             displayBotMessage(uiStrings[currentLanguage].history_cleared);
             showWelcomeMenu();
         } catch(error) {
             console.error("Failed to clear history:", error);
-            // ▼▼▼【修正】エラーメッセージを表示し、メニューに戻るように修正 ▼▼▼
-            displayBotMessage(uiStrings[currentLanguage].defaultReply); // より汎用的なエラーメッセージに変更
-            setTimeout(showWelcomeMenu, 2000); // 2秒後にメニュー表示
+            displayBotMessage(uiStrings[currentLanguage].defaultReply);
+            setTimeout(showWelcomeMenu, 2000);
         }
     }
     
@@ -337,6 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageDiv.className = 'flex justify-end mb-4';
         const bubble = document.createElement('div');
         bubble.className = 'user-message-bubble max-w-2xl p-3 rounded-2xl shadow';
+        // XSS対策: textContent を使用してテキストを安全に設定
         bubble.textContent = text;
         messageDiv.appendChild(bubble);
         chatWindow.appendChild(messageDiv);
@@ -377,6 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const bubble = document.createElement('div');
         bubble.className = 'max-w-2xl p-4 rounded-2xl shadow bg-white text-gray-800 relative';
         const mainText = document.createElement('p');
+        // XSS対策済みの関数を使用
         mainText.innerHTML = markdownToHtml(text);
         bubble.appendChild(mainText);
         
@@ -495,6 +515,10 @@ document.addEventListener('DOMContentLoaded', () => {
         api.saveHistory(chatWindow.innerHTML).catch(e => console.error(e));
     }
 
+    // (以降のコードは変更なし)
+    // ...
+    // The rest of the main.js file remains the same.
+    // ...
     function handleUserInput() {
         if (!userInput) return;
         const inputText = userInput.value.trim();
@@ -886,8 +910,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageContainer = pinBtn.closest('.bot-message-container');
         const messageId = messageContainer.dataset.messageId;
         const bubble = messageContainer.querySelector('.bg-white');
-        // HTMLではなく、元のテキストを保存
-        const messageText = bubble.querySelector('p').innerText; 
+        const messageText = bubble.querySelector('p').innerText;
 
         const isPinned = pinnedMessages.some(p => p.message_id === messageId);
 
@@ -1134,7 +1157,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const elementsToTranslate = document.querySelectorAll('[data-translate]');
         elementsToTranslate.forEach(element => {
             const key = element.dataset.translate;
-            // ネストされたキー（例: achievements.first_quiz.title）を解決
             const keys = key.split('.');
             let translation = uiStrings[currentLanguage];
             try {
@@ -1145,7 +1167,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     element.textContent = translation;
                 }
             } catch (e) {
-                // 翻訳が見つからない場合はキーをそのまま表示
                 element.textContent = key;
             }
         });
@@ -1535,7 +1556,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // メインの実行ロジック
     if (openButton && chatModal) {
         const toggleChat = (show) => {
             const openTooltip = uiStrings[currentLanguage]?.open_chatbot_tooltip || 'Open Chatbot';

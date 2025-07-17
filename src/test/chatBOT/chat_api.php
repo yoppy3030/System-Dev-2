@@ -1,5 +1,5 @@
 <?php
-// chat_api.php (データベース連携・ゲスト対応版)
+// chat_api.php (データベース連携・ゲスト対応・セキュリティ強化版)
 
 // エラーハンドリングとヘッダー設定
 header('Content-Type: application/json; charset=utf-8');
@@ -26,6 +26,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// ▼▼▼【セキュリティ修正】CSRFトークンがなければ生成 ▼▼▼
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 try {
     // データベース設定ファイルを読み込む
     require_once dirname(__DIR__) . '/backend/config.php';
@@ -48,6 +53,12 @@ try {
     } elseif ($method === 'POST') {
         if (json_last_error() !== JSON_ERROR_NONE && $action !== 'send_inquiry') {
             throw new Exception('Invalid JSON data provided.', 400);
+        }
+        // ▼▼▼【セキュリティ修正】POSTリクエストのCSRFトークンを検証 ▼▼▼
+        if (!isset($data['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $data['csrf_token'])) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Invalid CSRF token.']);
+            exit;
         }
         handlePostRequest($pdo, $userId, $guestId, $action, $data);
     } else {
@@ -82,6 +93,8 @@ function handleGetRequest($pdo, $userId, $guestId, $action) {
             } else {
                 $response = ['status' => 'guest', 'guest_session_id' => session_id()];
             }
+            // ▼▼▼【セキュリティ修正】セッション情報にCSRFトークンを含める ▼▼▼
+            $response['csrf_token'] = $_SESSION['csrf_token'];
             break;
         case 'get_all_chat_data':
             $clause = getUserClause($userId, $guestId);
@@ -152,6 +165,13 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                 $pdo->prepare("UPDATE QuizResults SET user_id = ?, guest_session_id = NULL WHERE guest_session_id = ?")->execute([$userId, $guestIdToMigrate]);
                 break;
 
+            case 'clear_history':
+                $tablesToClear = ['ChatHistories', 'PinnedMessages'];
+                foreach ($tablesToClear as $table) {
+                    $stmt = $pdo->prepare("DELETE FROM {$table} WHERE {$clause['where_clause']}");
+                    $stmt->execute($clause['params']);
+                }
+                break;
             case 'save_history':
                 $stmt = $pdo->prepare("INSERT INTO ChatHistories ({$idField}, history_html) VALUES (?, ?) ON DUPLICATE KEY UPDATE history_html = VALUES(history_html)");
                 $stmt->execute([$idValue, $data['history_html'] ?? '']);
@@ -168,15 +188,6 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                     }
                 }
                 break;
-            // ▼▼▼【修正】履歴削除の処理を追加 ▼▼▼
-            case 'clear_history':
-                $tablesToClear = ['ChatHistories', 'PinnedMessages'];
-                foreach ($tablesToClear as $table) {
-                    $stmt = $pdo->prepare("DELETE FROM {$table} WHERE {$clause['where_clause']}");
-                    $stmt->execute($clause['params']);
-                }
-                break;
-            // ▲▲▲ ここまで ▲▲▲
             case 'save_quiz_result':
                 if (!$userId) break;
                 $stmt = $pdo->prepare("INSERT INTO QuizResults (user_id, difficulty, score, total) VALUES (?, ?, ?, ?)");
@@ -305,5 +316,4 @@ function checkAndGrantAchievements($pdo, $userId) {
         }
     }
 }
-
 ?>
