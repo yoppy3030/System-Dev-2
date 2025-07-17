@@ -36,8 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_id'] = $user['ID'];
                 $_SESSION['username'] = $user['Name'];
                 session_regenerate_id(true);
-                // ログイン成功後はUser_page.phpへ
-                header("Location: User_page.php");
+                // ログイン成功後はindex.phpへ
+                header("Location: index.php");
                 exit();
             } else {
                 $error = "ユーザー名（またはEmail）またはパスワードが間違っています。";

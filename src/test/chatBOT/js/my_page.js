@@ -30,7 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- API通信ラッパー ---
     const api = {
         async request(endpoint, options = {}) {
-            const url = `./chatBOT/chat_api.php?action=${endpoint}`;
+            // ★★★ 修正点: APIへのパスを修正 ★★★
+            // my_page.php と chat_api.php は同じ階層にあるため、パスを `./chat_api.php` に修正しました。
+            const url = `./chat_api.php?action=${endpoint}`;
             try {
                 const response = await fetch(url, {
                     method: options.method || 'GET',
@@ -42,14 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     // 403 (Forbidden) はログインしていないことを示すので、ログインページにリダイレクト
                     if (response.status === 403 || response.status === 401) {
                         alert(responseData.error || 'このページを表示するにはログインが必要です。');
-                        window.location.href = '../../login.php'; 
+                        window.location.href = '../login.php'; 
                     }
                     throw new Error(responseData.error || `HTTP error! status: ${response.status}`);
                 }
                 return responseData;
             } catch (error) {
                 console.error(`API request to ${endpoint} failed:`, error);
-                // ★★★ 修正点: ユーザーにエラーを通知 ★★★
+                // ユーザーにエラーを通知
                 const mainContent = document.querySelector('main');
                 if(mainContent) {
                     mainContent.innerHTML = `<div class="text-center p-8 bg-red-100 border border-red-400 text-red-700 rounded-lg">
@@ -75,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         switchLanguage(currentLanguage); // UI翻訳を先に実行
         
         try {
-            // ★★★ 修正点: APIから取得したデータをグローバル変数に格納 ★★★
+            // APIから取得したデータをグローバル変数に格納
             myPageData = await api.getMyPageData();
             console.log("APIから取得したデータ:", myPageData); // デバッグ用ログ
             renderAllComponents();
@@ -231,11 +233,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         quizHistory.forEach(item => {
-            stats.totalScore += item.score;
-            stats.totalQuestions += item.total;
+            stats.totalScore += parseInt(item.score);
+            stats.totalQuestions += parseInt(item.total);
             if (stats[item.difficulty]) {
-                stats[item.difficulty].score += item.score;
-                stats[item.difficulty].questions += item.total;
+                stats[item.difficulty].score += parseInt(item.score);
+                stats[item.difficulty].questions += parseInt(item.total);
                 stats[item.difficulty].attempts++;
             }
         });

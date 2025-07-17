@@ -2,7 +2,7 @@
 // セッションを開始
 session_start();
 
-// ★★★ 修正点: ログイン状態を確認 ★★★
+// ログイン状態を確認
 // セッションに 'user_id' が存在しない場合、ログインページにリダイレクト
 if (!isset($_SESSION['user_id'])) {
     // Locationヘッダーでリダイレクト
@@ -16,11 +16,9 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- ★★★ 修正点: ユーザー名をタイトルに表示 ★★★ -->
     <title><?php echo htmlspecialchars($_SESSION['username'] ?? 'Guest'); ?>さんのマイページ - Japan Life Manual</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- ★★★ 修正点: CSSとJSのパスをルートからの相対パスに修正 ★★★ -->
     <link rel="stylesheet" href="./css/my_page.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -184,7 +182,8 @@ if (!isset($_SESSION['user_id'])) {
     </div>
 
     <!-- ★★★ 修正点: JSのパスを修正 ★★★ -->
-    <script src="./chatBOT/js/knowledge.js"></script>
+    <!-- my_page.php と同じ階層にある js フォルダ内のファイルを指すように修正しました -->
+    <script src="./js/knowledge.js"></script>
     <script src="./js/my_page.js"></script>
 </body>
-</html>
+</html> 
