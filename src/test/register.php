@@ -65,10 +65,10 @@ if (empty($_SESSION['csrf_token'])) {
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
         
         <label>Username:
-            <input type="text" name="username" placeholder="ECC 太郎" minlength="3" required>
+            <input type="text" name="username"  minlength="3" required>
         </label>
 
-        <label>Email:
+        <label>Email:placeholder="ECC 太郎"
             <input type="email" name="email" placeholder="example@gmail.com" required>
         </label>
 
@@ -90,7 +90,7 @@ if (empty($_SESSION['csrf_token'])) {
         </label>
 
         <label>Country:
-            <input type="text" name="country" required>
+            <input type="text" name="country" placeholder="Japan" required>
         </label>
 
         <label>Current Location:
