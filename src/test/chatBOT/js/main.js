@@ -1,4 +1,4 @@
-// main.js (データベース連携・ゲスト対応版)
+// main.js (データベース連携・ゲスト対応・データ移行改善版)
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let recognition; 
     let isRecording = false;
     let isSummarizing = false;
-    // ▼▼▼【セキュリティ修正】CSRFトークンを保持する変数を追加 ▼▼▼
     let csrfToken = '';
 
     // ユーザー/ゲスト識別子
@@ -61,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (sessionIdentifier.type === 'guest' && sessionIdentifier.id) {
                     options.body.guest_session_id = sessionIdentifier.id;
                 }
-                // ▼▼▼【セキュリティ修正】POSTリクエストにCSRFトークンを付与 ▼▼▼
                 options.body.csrf_token = csrfToken;
             }
 
@@ -108,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const sessionInfo = await api.getSessionInfo();
             const guestIdInStorage = localStorage.getItem('chatbot_guest_session_id');
 
-            // ▼▼▼【セキュリティ修正】セッション情報からCSRFトークンを取得 ▼▼▼
             if (sessionInfo.csrf_token) {
                 csrfToken = sessionInfo.csrf_token;
             }
@@ -118,6 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (guestIdInStorage) {
                     await api.migrateGuestData(guestIdInStorage);
                     localStorage.removeItem('chatbot_guest_session_id');
+                    // ★★★ 改善点: ログイン成功を他のタブに通知 ★★★
+                    localStorage.setItem('chatbot_login_status', 'logged_in_' + Date.now());
                 }
             } else {
                 let guestId = guestIdInStorage || sessionInfo.guest_session_id;
@@ -141,6 +140,34 @@ document.addEventListener('DOMContentLoaded', () => {
              chatWindow.scrollTop = chatWindow.scrollHeight;
         }
     }
+
+    // ★★★ 改善点: 複数タブの同期処理 ★★★
+    /**
+     * 別のタブでログイン/ログアウトが起きたことを検知し、現在のタブの状態を更新する
+     * @param {StorageEvent} e - ストレージイベント
+     */
+    function handleStorageChange(e) {
+        if (e.key === 'chatbot_login_status' && e.newValue) {
+            // ログインが検知された
+            console.log('Login detected in another tab. Reloading session...');
+            // 少し遅延させて、サーバー側のセッションが確実に更新されるのを待つ
+            setTimeout(async () => {
+                try {
+                    const sessionInfo = await api.getSessionInfo();
+                    if (sessionInfo.status === 'logged_in') {
+                        sessionIdentifier = { type: 'user', id: sessionInfo.user_id };
+                        csrfToken = sessionInfo.csrf_token;
+                        // データを再読み込みしてUIを更新
+                        await loadChatData();
+                        console.log('Session updated to logged in user.');
+                    }
+                } catch (error) {
+                    console.error('Failed to update session after detecting login:', error);
+                }
+            }, 500);
+        }
+    }
+    // ★★★ ここまで ★★★
 
     function displaySkeletonLoader() {
         if (!chatWindow) return;
@@ -1113,17 +1140,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (btn.dataset.lang === lang) btn.classList.add('active');
             });
         }
-
-        // ★★★ 修正点: IDで直接要素を取得して翻訳するコードを追加 ★★★
-        const themeLabel = document.getElementById('theme-selection-label');
-        if (themeLabel && strings.theme_selection) {
-            themeLabel.textContent = strings.theme_selection;
-        }
-        const langLabel = document.getElementById('language-settings-label');
-        if (langLabel && strings.language_settings) {
-            langLabel.textContent = strings.language_settings;
-        }
-        // ★★★ ここまで ★★★
         
         translateSettingsMenu();
         renderPinnedWindow();

@@ -8,6 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
         mistakes: [],
         achievements: []
     };
+    // ★★★ 修正点: グローバルスコープからCSRFトークンを取得 ★★★
+    // my_page.phpで定義された `CSRF_TOKEN` 変数を読み込みます。
+    const csrfToken = typeof CSRF_TOKEN !== 'undefined' ? CSRF_TOKEN : '';
+
 
     // --- DOM要素 ---
     const languageSwitcher = document.getElementById('language-switcher-mypage');
@@ -30,9 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- API通信ラッパー ---
     const api = {
         async request(endpoint, options = {}) {
-            // ★★★ 修正点: APIへのパスを修正 ★★★
-            // my_page.php と chat_api.php は同じ階層にあるため、パスを `./chat_api.php` に修正しました。
             const url = `./chat_api.php?action=${endpoint}`;
+            
+            // ★★★ 修正点: POSTリクエストにCSRFトークンを自動的に含める ★★★
+            if (options.method === 'POST') {
+                options.body = options.body || {};
+                options.body.csrf_token = csrfToken;
+            }
+
             try {
                 const response = await fetch(url, {
                     method: options.method || 'GET',
@@ -41,9 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const responseData = await response.json();
                 if (!response.ok) {
-                    // 403 (Forbidden) はログインしていないことを示すので、ログインページにリダイレクト
+                    // ★★★ 修正点: エラーハンドリングを改善 ★★★
                     if (response.status === 403 || response.status === 401) {
-                        alert(responseData.error || 'このページを表示するにはログインが必要です。');
+                        // 403はCSRFエラーや権限エラーの可能性がある
+                        alert(responseData.error || 'セッションが無効か、権限がありません。再度ログインしてください。');
                         window.location.href = '../login.php'; 
                     }
                     throw new Error(responseData.error || `HTTP error! status: ${response.status}`);
@@ -51,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return responseData;
             } catch (error) {
                 console.error(`API request to ${endpoint} failed:`, error);
-                // ユーザーにエラーを通知
                 const mainContent = document.querySelector('main');
                 if(mainContent) {
                     mainContent.innerHTML = `<div class="text-center p-8 bg-red-100 border border-red-400 text-red-700 rounded-lg">
@@ -64,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
         getMyPageData: () => api.request('get_my_page_data'),
-        resetAllData: () => api.request('reset_all_data', { method: 'POST', body: {} }),
+        resetAllData: () => api.request('reset_all_data', { method: 'POST' }), // bodyはapi.requestが自動で設定
         deleteLearnedTopic: (topic_key) => api.request('delete_learned_topic', { method: 'POST', body: { topic_key } }),
         deleteMistake: (id) => api.request('delete_mistake', { method: 'POST', body: { id } })
     };
@@ -73,6 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
      * ページ初期化
      */
     async function initializePage() {
+        if (!csrfToken) {
+            console.error('CSRF token is missing. Actions will fail.');
+            alert('セキュリティトークンが読み込めませんでした。ページを再読み込みしてください。');
+        }
         setupEventListeners();
         switchLanguage(currentLanguage); // UI翻訳を先に実行
         

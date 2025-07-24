@@ -10,6 +10,12 @@ if (!isset($_SESSION['user_id'])) {
     // リダイレクト後にスクリプトの実行を確実に終了する
     exit;
 }
+
+// ★★★ 修正点: CSRFトークンを生成または取得 ★★★
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -23,6 +29,11 @@ if (!isset($_SESSION['user_id'])) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-100">
+
+    <!-- ★★★ 修正点: CSRFトークンをJavaScriptに渡すためのscriptタグを追加 ★★★ -->
+    <script>
+        const CSRF_TOKEN = '<?php echo $csrfToken; ?>';
+    </script>
 
     <header class="bg-white shadow-sm">
         <div class="container mx-auto flex justify-between items-center p-4">
@@ -181,9 +192,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
 
-    <!-- ★★★ 修正点: JSのパスを修正 ★★★ -->
-    <!-- my_page.php と同じ階層にある js フォルダ内のファイルを指すように修正しました -->
     <script src="./js/knowledge.js"></script>
     <script src="./js/my_page.js"></script>
 </body>
-</html> 
+</html>
