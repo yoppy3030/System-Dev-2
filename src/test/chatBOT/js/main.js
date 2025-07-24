@@ -1113,6 +1113,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (btn.dataset.lang === lang) btn.classList.add('active');
             });
         }
+
+        // ★★★ 修正点: IDで直接要素を取得して翻訳するコードを追加 ★★★
+        const themeLabel = document.getElementById('theme-selection-label');
+        if (themeLabel && strings.theme_selection) {
+            themeLabel.textContent = strings.theme_selection;
+        }
+        const langLabel = document.getElementById('language-settings-label');
+        if (langLabel && strings.language_settings) {
+            langLabel.textContent = strings.language_settings;
+        }
+        // ★★★ ここまで ★★★
         
         translateSettingsMenu();
         renderPinnedWindow();
