@@ -49,7 +49,7 @@
   </a>
   <a class="submenu-item" href="useful_materials.php">
     <strong>Useful Materials</strong><br>
-    <small>Garbage rules,Rental and etc</small>
+    <small>Navigation , Rental and etc</small>
   </a>
 </section>
   <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">↑</button>

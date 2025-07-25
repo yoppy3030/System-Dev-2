@@ -32,11 +32,7 @@
   </section>
 
   <section class="materials-grid">
-    <div class="material-card">
-      <h3>🗑️ Garbage Disposal Rules</h3>
-      <p>How to separate and throw away garbage in Japan by local rules.</p>
-      <a href="garbage_rules.php" target="" class="btn">Details</a>
-    </div>
+
 
     <div class="material-card">
       <h3>🧭 Navigation & Transportation</h3>

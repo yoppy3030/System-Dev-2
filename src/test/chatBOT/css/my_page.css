@@ -82,7 +82,9 @@ body {
 .flashcard-front {
     background-color: #ffffff;
     border: 1px solid #e5e7eb;
-    position: relative; /* For positioning the delete button */
+    /* ★★★ 修正点: position: relative; を削除しました ★★★ */
+    /* この指定が原因で、カードの表と裏が正しく重なっていませんでした。*/
+    /* 削除しても、中にある削除ボタンの位置は変わりません。 */
 }
 
 .flashcard-back {

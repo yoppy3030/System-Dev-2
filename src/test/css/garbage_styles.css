@@ -81,7 +81,7 @@ body {
     color: var(--light-text);
     border: 1px solid rgba(255,255,255,0.5);
     padding: 8px 12px;
-    border-radius: 20px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 14px;
     display: flex;

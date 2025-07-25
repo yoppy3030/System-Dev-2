@@ -26,6 +26,11 @@ session_start();
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="dropdown-content" id="dropdown-content">
+<<<<<<< HEAD
+        <a href="my_page.php" data-translate="my_page_link">My Page</a>
+        <a href="#">contact</a>
+        <a href="#">Blog</a>
+=======
         <?php if (isset($_SESSION['user_id'])): ?>
             <a href="User_page.php" data-translate="my_page_link">user_page</a>
             <a href="logout.php">logout</a>
@@ -35,6 +40,7 @@ session_start();
         <?php endif; ?>
         <a href="#">Contact</a>
         <a href="./explore.php">Blog</a>
+>>>>>>> 06b5911cb5c9a9dbadc5e92d80542cfd362f79b3
     </div>
 </div>
    
@@ -55,6 +61,15 @@ session_start();
     <div class="menu-item">
       <a href="travelers_homePage.php"><i class="fa-solid fa-person-walking-luggage" style="font-size:25px;"></i><p>Travellers</p></a>
     </div>
+<<<<<<< HEAD
+    <div class="menu-item">
+      <a href="register.php"><i class="fas fa-user-plus icon"></i><p>Sign Up</p></a>
+    </div>
+    <div class="menu-item">
+      <a href="garbage_rules.php"><i class="fa-duotone fa-solid fa-recycle" style="font-size:26px"></i><p>Garbage_rules</p></a>
+
+    </div>
+=======
     <?php if (isset($_SESSION['user_id'])): ?>
         <div class="menu-item">
             <a href="User_page.php"><i class="fas fa-user-circle icon"></i><p>user_page</p></a>
@@ -70,6 +85,7 @@ session_start();
           <a href="register.php"><i class="fas fa-user-plus icon"></i><p>Sign Up</p></a>
         </div>
     <?php endif; ?>
+>>>>>>> 06b5911cb5c9a9dbadc5e92d80542cfd362f79b3
     <div class="language-selector">
         <button id="translateBtn" class="translate-btn">🌐 Translate</button>
         <div class="language-dropdown">
@@ -207,7 +223,8 @@ session_start();
                     <div class="border-t border-gray-200 my-1"></div>
 
                     <div class="py-2 px-4">
-                        <p class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
+                        <!-- ★★★ 修正点: pタグにIDを追加 ★★★ -->
+                        <p id="theme-selection-label" class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
                     </div>
                     <a class="cb-theme-option" data-theme="simple"><i class="fas fa-square fa-fw"></i> <span data-translate="theme_simple">シンプル</span></a>
                     <a class="cb-theme-option" data-theme="spring"><i class="fas fa-leaf fa-fw"></i> <span data-translate="theme_spring">春</span></a>
@@ -218,7 +235,8 @@ session_start();
                     <div class="border-t border-gray-200 my-1"></div>
 
                     <div class="py-2 px-4">
-                        <p class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
+                        <!-- ★★★ 修正点: pタグにIDを追加 ★★★ -->
+                        <p id="language-settings-label" class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
                     </div>
                     <div id="language-switcher">
                          <button data-lang="ja" class="ja-btn lang-switch-btn">日本語</button>

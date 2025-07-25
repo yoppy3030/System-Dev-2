@@ -27,8 +27,8 @@
 </header>
 
 <main class="content">
-  <h1>💼 Types of Jobs</h1>
-  <p>Explore job options suitable for international students, from global companies to startups in Japan.</p>
+  <h1 data-translate="Types of Jobs">💼 Types of Jobs</h1>
+  <p data-translate="Explore job options suitable for international students, from global companies to startups in Japan">Explore job options suitable for international students, from global companies to startups in Japan.</p>
 
   <section class="steps" id="job-listings-container">
   </section>

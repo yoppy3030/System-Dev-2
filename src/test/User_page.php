@@ -208,14 +208,14 @@ foreach ($posts as &$post) {
         </div>
 
         <div class="menu-item">
-            <a href="">
+            <a href="studenthome.php">
                 <i class="fas fa-user-graduate icon"></i>
                 <p>Student</p>
             </a>
         </div>
 
         <div class="menu-item">
-            <a href="">
+            <a href="professional.php">
                 <i class="fas fa-briefcase icon"></i>
                 <p>Professional</p>
             </a>
@@ -229,6 +229,10 @@ foreach ($posts as &$post) {
         </div>
 
         <div class="menu-item">
+
+            <a href="register.php">
+                <i class="fas fa-user-plus icon"></i>
+                <p>Sign Up</p>
             <a href="logout.php" id="logout-link">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 <p>LogOut</p>
@@ -237,13 +241,6 @@ foreach ($posts as &$post) {
     </header>
 
     <main>
-        <div id="message-container">
-            <?php if ($flash_message): ?>
-                <div class="flash-message flash-message-<?= htmlspecialchars($flash_message['type']) ?>">
-                    <?= htmlspecialchars($flash_message['message']) ?>
-                </div>
-            <?php endif; ?>
-        </div>
 <div class="explorer-layout">
         <div class="user-profile-container">
             <div class="profile-section">

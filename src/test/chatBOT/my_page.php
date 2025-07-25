@@ -1,15 +1,39 @@
+<?php
+// セッションを開始
+session_start();
+
+// ログイン状態を確認
+// セッションに 'user_id' が存在しない場合、ログインページにリダイレクト
+if (!isset($_SESSION['user_id'])) {
+    // Locationヘッダーでリダイレクト
+    header('Location: ../login.php');
+    // リダイレクト後にスクリプトの実行を確実に終了する
+    exit;
+}
+
+// ★★★ 修正点: CSRFトークンを生成または取得 ★★★
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>マイページ - Japan Life Manual</title>
+    <title><?php echo htmlspecialchars($_SESSION['username'] ?? 'Guest'); ?>さんのマイページ - Japan Life Manual</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./css/my_page.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-100">
+
+    <!-- ★★★ 修正点: CSRFトークンをJavaScriptに渡すためのscriptタグを追加 ★★★ -->
+    <script>
+        const CSRF_TOKEN = '<?php echo $csrfToken; ?>';
+    </script>
 
     <header class="bg-white shadow-sm">
         <div class="container mx-auto flex justify-between items-center p-4">

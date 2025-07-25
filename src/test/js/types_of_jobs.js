@@ -134,16 +134,27 @@ function translatePage() {
 
     // Translate all elements with the 'data-translate' attribute
     document.querySelectorAll('[data-translate]').forEach(element => {
-        if (!originalTexts.has(element)) {
-            originalTexts.set(element, element.textContent);
-        }
-        const originalText = originalTexts.get(element);
-        if (lang === 'en') {
-            element.textContent = originalText;
-        } else if (targetDict[originalText]) {
-            element.textContent = targetDict[originalText];
-        }
-    });
+    const key = element.dataset.translate || element.textContent.trim();
+    if (!originalTexts.has(element)) {
+        originalTexts.set(element, element.textContent);
+    }
+    if (lang === 'en') {
+        element.textContent = originalTexts.get(element);
+    } else if (targetDict[key]) {
+        element.textContent = targetDict[key];
+    }
+});
+    // document.querySelectorAll('[data-translate]').forEach(element => {
+    //     if (!originalTexts.has(element)) {
+    //         originalTexts.set(element, element.textContent);
+    //     }
+    //     const originalText = originalTexts.get(element);
+    //     if (lang === 'en') {
+    //         element.textContent = originalText;
+    //     } else if (targetDict[originalText]) {
+    //         element.textContent = targetDict[originalText];
+    //     }
+    // });
 
     // Update active language button
     document.querySelectorAll('.language-option').forEach(btn => btn.classList.remove('active'));
