@@ -48,6 +48,10 @@
     <div class="menu-item">
       <a href="register.php"><i class="fas fa-user-plus icon"></i><p>Sign Up</p></a>
     </div>
+    <div class="menu-item">
+      <a href="garbage_rules.php"><i class="fa-duotone fa-solid fa-recycle" style="font-size:26px"></i><p>Garbage_rules</p></a>
+
+    </div>
     <div class="language-selector">
         <button id="translateBtn" class="translate-btn">🌐 Translate</button>
         <div class="language-dropdown">

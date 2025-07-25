@@ -27,8 +27,8 @@
 
   <section class="hero">
     <div class="hero-content">
-      <h1 data-translate>Upcoming Student Events And Other Events</h1>
-      <p data-translate>Stay updated with student-focused events and other events in Japan</p>
+      <h1 data-translate="Upcoming Student Events">Upcoming Student Events And Other Events</h1>
+      <p data-translate="Stay updated with student-focused events in Japan">Stay updated with student-focused events and other events in Japan</p>
     </div>
   </section>
 

@@ -120,14 +120,14 @@ function renderComments($comments_array) {
         </div>
 
         <div class="menu-item">
-            <a href="">
+            <a href="studenthome.php">
                 <i class="fas fa-user-graduate icon"></i>
                 <p>Student</p>
             </a>
         </div>
 
         <div class="menu-item">
-            <a href="">
+            <a href="professional.php">
                 <i class="fas fa-briefcase icon"></i>
                 <p>Professional</p>
             </a>
@@ -141,7 +141,7 @@ function renderComments($comments_array) {
         </div>
 
         <div class="menu-item">
-            <a href="">
+            <a href="register.php">
                 <i class="fas fa-user-plus icon"></i>
                 <p>Sign Up</p>
             </a>
@@ -149,13 +149,6 @@ function renderComments($comments_array) {
     </header>
 
     <main>
-        <div id="message-container">
-            <?php if ($flash_message): ?>
-                <div class="flash-message flash-message-<?= htmlspecialchars($flash_message['type']) ?>">
-                    <?= htmlspecialchars($flash_message['message']) ?>
-                </div>
-            <?php endif; ?>
-        </div>
 <div class="explorer-layout">
         <div class="user-profile-container">
             <div class="profile-section">
