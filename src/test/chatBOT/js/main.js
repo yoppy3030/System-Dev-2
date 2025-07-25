@@ -1,4 +1,4 @@
-// main.js (データベース連携・ゲスト対応・データ移行改善・ファイルアップロード検証・モーダル改善版)
+// main.js (データベース連携・ゲスト対応・データ移行改善・ファイルアップロード検証・モーダル改善最終版)
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -1342,7 +1342,7 @@ document.addEventListener('DOMContentLoaded', () => {
             pinnedWindow.addEventListener('click', function(e) {
                 const unpinBtn = e.target.closest('.unpin-btn');
                 if (unpinBtn) {
-                    e.stopPropagation(); // ★★★ 追加: イベントの伝播を停止 ★★★
+                    e.stopPropagation();
                     const card = unpinBtn.closest('.pinned-message-card');
                     const messageId = card.dataset.messageId;
                     
@@ -1360,7 +1360,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // メインの実行ロジック
     if (openButton && chatModal) {
         const toggleChat = (show) => {
             const openTooltip = uiStrings[currentLanguage]?.open_chatbot_tooltip || 'Open Chatbot';
@@ -1370,9 +1369,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 chatModal.style.display = 'flex';
                 openButton.innerHTML = '<i class="fas fa-times"></i>';
                 openButton.title = closeTooltip; 
-                if (!isChatInitialized) {
-                    initializeChat();
-                }
+                if (!isChatInitialized) initializeChat();
             } else {
                 chatModal.style.display = 'none';
                 openButton.innerHTML = '<i class="far fa-comments"></i>';
@@ -1381,41 +1378,52 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         openButton.title = uiStrings[currentLanguage]?.open_chatbot_tooltip || 'Open Chatbot';
-
         openButton.addEventListener('click', (e) => {
             e.stopPropagation();
             const isVisible = chatModal.style.display === 'flex';
             toggleChat(!isVisible);
         });
         
+        // ★★★★★ ここからが修正箇所 ★★★★★
         document.addEventListener('click', (e) => {
+            // --- 設定メニューを閉じるロジック ---
             if (settingsBtn && settingsContent && !settingsContent.classList.contains('hidden')) {
-                const isClickInsideMenu = settingsContent.contains(e.target);
-                const isClickOnSettingsBtn = settingsBtn.contains(e.target);
-
-                if (!isClickInsideMenu && !isClickOnSettingsBtn) {
+                if (!settingsContent.contains(e.target) && !settingsBtn.contains(e.target)) {
                     settingsContent.classList.add('hidden');
                     settingsBtn.title = uiStrings[currentLanguage].open_menu;
                 }
             }
-
+        
+            // --- モーダルを閉じるロジック ---
+            // クリックがモーダル本体（背景）で行われた場合、そのモーダルを閉じる
+            if (!pinnedModal.classList.contains('hidden') && e.target === pinnedModal) {
+                pinnedModal.classList.add('hidden');
+                return; // ★★★ 追加: これ以降の処理を中断
+            }
+            if (!faqModal.classList.contains('hidden') && e.target === faqModal) {
+                faqModal.classList.add('hidden');
+                showWelcomeMenu();
+                return; // ★★★ 追加: これ以降の処理を中断
+            }
+            if (!roleplayModal.classList.contains('hidden') && e.target === roleplayModal) {
+                roleplayModal.classList.add('hidden');
+                endRolePlay();
+                return; // ★★★ 追加: これ以降の処理を中断
+            }
+        
+            // --- チャットボット本体を閉じるロジック ---
             if (chatModal.style.display !== 'flex') return;
-
+        
+            // クリックがチャットボット本体の内側か、オープンボタンかを確認
             const isClickInsideChat = chatModal.contains(e.target);
             const isClickOnOpenButton = openButton.contains(e.target);
             
+            // モーダルが開いている場合は、このロジックはすでにreturnされているはず
+            // そのため、ここではチャットボットの外側がクリックされたかどうかだけを判定すれば良い
             if (!isClickInsideChat && !isClickOnOpenButton) {
-                const modals = document.querySelectorAll('.fixed.inset-0');
-                let clickInsideModal = false;
-                modals.forEach(modal => {
-                    if(modal.contains(e.target) && !modal.classList.contains('hidden')) {
-                        clickInsideModal = true;
-                    }
-                });
-                if(!clickInsideModal) {
-                   toggleChat(false);
-                }
+                toggleChat(false);
             }
         });
+        // ★★★★★ ここまでが修正箇所 ★★★★★
     }
 });
