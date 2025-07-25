@@ -26,12 +26,6 @@ session_start();
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="dropdown-content" id="dropdown-content">
-<<<<<<< HEAD
-        <a href="User_page.php" data-translate="my_page_link">My Page</a>
-        <a href="#">Contact</a>
-        <a href="explore.php">Events</a>
-        <a href="login.php">Login</a>
-=======
         <?php if (isset($_SESSION['user_id'])): ?>
             <a href="User_page.php" data-translate="my_page_link">user_page</a>
             <a href="logout.php">logout</a>
@@ -41,7 +35,6 @@ session_start();
         <?php endif; ?>
         <a href="#">Contact</a>
         <a href="./explore.php">Blog</a>
->>>>>>> d100b323914b10d96dfea7818d1ecfb716dc44cf
     </div>
 </div>
    
