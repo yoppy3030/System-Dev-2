@@ -1,5 +1,5 @@
 <?php
-// chat_api.php (データベース連携・ゲスト対応・セキュリティ強化版)
+// chat_api.php (データベース連携・ゲスト対応・セキュリティ強化・データ移行改善版)
 
 // エラーハンドリングとヘッダー設定
 header('Content-Type: application/json; charset=utf-8');
@@ -26,7 +26,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ▼▼▼【セキュリティ修正】CSRFトークンがなければ生成 ▼▼▼
+// CSRFトークンがなければ生成
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -54,7 +54,7 @@ try {
         if (json_last_error() !== JSON_ERROR_NONE && $action !== 'send_inquiry') {
             throw new Exception('Invalid JSON data provided.', 400);
         }
-        // ▼▼▼【セキュリティ修正】POSTリクエストのCSRFトークンを検証 ▼▼▼
+        // POSTリクエストのCSRFトークンを検証
         if (!isset($data['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $data['csrf_token'])) {
             http_response_code(403);
             echo json_encode(['error' => 'Invalid CSRF token.']);
@@ -93,7 +93,6 @@ function handleGetRequest($pdo, $userId, $guestId, $action) {
             } else {
                 $response = ['status' => 'guest', 'guest_session_id' => session_id()];
             }
-            // ▼▼▼【セキュリティ修正】セッション情報にCSRFトークンを含める ▼▼▼
             $response['csrf_token'] = $_SESSION['csrf_token'];
             break;
         case 'get_all_chat_data':
@@ -150,19 +149,41 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                 if (!$userId || !isset($data['guest_session_id'])) throw new Exception('User and guest must be identified for migration.', 400);
                 $guestIdToMigrate = $data['guest_session_id'];
                 
-                $userHistoryExists = $pdo->prepare("SELECT COUNT(*) FROM ChatHistories WHERE user_id = ?");
-                $userHistoryExists->execute([$userId]);
-                if ($userHistoryExists->fetchColumn() > 0) {
-                    $pdo->prepare("DELETE FROM ChatHistories WHERE guest_session_id = ?")->execute([$guestIdToMigrate]);
-                } else {
-                    $pdo->prepare("UPDATE ChatHistories SET user_id = ?, guest_session_id = NULL WHERE guest_session_id = ?")->execute([$userId, $guestIdToMigrate]);
-                }
+                // ★★★ 改善点: チャット履歴の統合処理 ★★★
+                $guestHistoryStmt = $pdo->prepare("SELECT history_html FROM ChatHistories WHERE guest_session_id = ?");
+                $guestHistoryStmt->execute([$guestIdToMigrate]);
+                $guestHistory = $guestHistoryStmt->fetchColumn();
 
+                if ($guestHistory) {
+                    $userHistoryStmt = $pdo->prepare("SELECT history_html FROM ChatHistories WHERE user_id = ?");
+                    $userHistoryStmt->execute([$userId]);
+                    $userHistory = $userHistoryStmt->fetchColumn();
+                    
+                    // ユーザー履歴とゲスト履歴を結合
+                    $separator = '<div style="text-align:center; color: #888; margin: 10px 0; font-size: 12px;">--- 以前のゲストセッションの履歴 ---</div>';
+                    $mergedHistory = $userHistory . $separator . $guestHistory;
+
+                    // 結合した履歴でユーザーのレコードを更新（なければ新規作成）
+                    $upsertStmt = $pdo->prepare(
+                        "INSERT INTO ChatHistories (user_id, history_html) VALUES (?, ?)
+                         ON DUPLICATE KEY UPDATE history_html = VALUES(history_html)"
+                    );
+                    $upsertStmt->execute([$userId, $mergedHistory]);
+                    
+                    // 移行元のゲスト履歴を削除
+                    $pdo->prepare("DELETE FROM ChatHistories WHERE guest_session_id = ?")->execute([$guestIdToMigrate]);
+                }
+                // ★★★ ここまで ★★★
+
+                // 他のデータは重複を避けつつ移行
                 migrateUniqueData($pdo, 'PinnedMessages', 'message_id', $userId, $guestIdToMigrate);
                 migrateUniqueData($pdo, 'LearnedTopics', 'topic_key', $userId, $guestIdToMigrate);
                 migrateUniqueData($pdo, 'MistakeNotes', 'question_hash', $userId, $guestIdToMigrate);
 
+                // クイズ結果はそのままユーザーIDに紐付ける
                 $pdo->prepare("UPDATE QuizResults SET user_id = ?, guest_session_id = NULL WHERE guest_session_id = ?")->execute([$userId, $guestIdToMigrate]);
+                
+                $response['message'] = 'Data migration successful.';
                 break;
 
             case 'clear_history':
@@ -254,7 +275,11 @@ function migrateUniqueData($pdo, $tableName, $uniqueColumn, $userId, $guestId) {
             $guestRow['user_id'] = $userId;
             $guestRow['guest_session_id'] = null;
             $columns = array_keys($guestRow);
-            unset($columns[array_search('id', $columns)]);
+            // 'id' は自動採番なのでINSERT文から除外
+            $id_index = array_search('id', $columns);
+            if ($id_index !== false) {
+                unset($columns[$id_index]);
+            }
             $colsStr = implode(', ', $columns);
             $placeholders = implode(', ', array_fill(0, count($columns), '?'));
             $insertStmt = $pdo->prepare("INSERT INTO {$tableName} ({$colsStr}) VALUES ({$placeholders})");

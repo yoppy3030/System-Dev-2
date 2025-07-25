@@ -207,7 +207,8 @@ session_start();
                     <div class="border-t border-gray-200 my-1"></div>
 
                     <div class="py-2 px-4">
-                        <p class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
+                        <!-- ★★★ 修正点: pタグにIDを追加 ★★★ -->
+                        <p id="theme-selection-label" class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
                     </div>
                     <a class="cb-theme-option" data-theme="simple"><i class="fas fa-square fa-fw"></i> <span data-translate="theme_simple">シンプル</span></a>
                     <a class="cb-theme-option" data-theme="spring"><i class="fas fa-leaf fa-fw"></i> <span data-translate="theme_spring">春</span></a>
@@ -218,7 +219,8 @@ session_start();
                     <div class="border-t border-gray-200 my-1"></div>
 
                     <div class="py-2 px-4">
-                        <p class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
+                        <!-- ★★★ 修正点: pタグにIDを追加 ★★★ -->
+                        <p id="language-settings-label" class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
                     </div>
                     <div id="language-switcher">
                          <button data-lang="ja" class="ja-btn lang-switch-btn">日本語</button>
