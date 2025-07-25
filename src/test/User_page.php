@@ -25,7 +25,8 @@ function get_flash_message() {
 $user_id = $_SESSION['user_id'];
 // ★★★ 修正点: 'users'テーブルを'Accounts'に、'id'を'ID'に修正 ★★★
 // ★★★ 修正点: 存在しないカラム(avatar, bio, location)の代わりに存在するカラムを取得 ★★★
-$stmt = $pdo->prepare("SELECT ID, Name, Email, Country, Current_location, UserType FROM Accounts WHERE ID = ?");
+$user_id = $_SESSION['user_id'];
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -37,14 +38,15 @@ if (!$user) {
 
 // Set user data
 // ★★★ 修正点: 正しいカラム名からデータをセットする ★★★
-$user_avatar = 'images/default-avatar.png'; // avatarカラムは存在しないため、デフォルト値を設定
-$user_username = $user['Name'];
-$user_bio = ''; // bioカラムは存在しないため、空に設定
-$user_location = $user['Current_location'];
-$user_country = $user['Country'];
-$user_activity = $user['UserType'];
+// Set user data
+$user_avatar = $user['avatar'] ?? 'images/default-avatar.png';
+$user_username = $user['username'];
+$user_bio = $user['bio'] ?? '';
+$user_location = $user['location'] ?? '';
+$user_country = $user['country'] ?? '';
+$user_activity = $user['activity'] ?? '';
 
-// If user has no activity, set a default value
+// ユーザーのアクティビティが空の場合はデフォルト値を設定
 if (empty($user_activity)) {
     $user_activity = 'Unknown';
 }
@@ -62,35 +64,22 @@ try {
 }
 
 
-// Get posts with user info
-// ★★★ 修正点: JOINするテーブルを'users'から'Accounts'に、カラム名を修正 ★★★
-try {
-    $stmt_posts = $pdo->prepare("
-        SELECT posts.*, Accounts.Name as username
-        FROM posts 
-        JOIN Accounts ON posts.user_id = Accounts.ID
-        WHERE posts.user_id = ?
-        ORDER BY posts.created_at DESC
-    ");
-    $stmt_posts->execute([$user_id]);
-    $posts = $stmt_posts->fetchAll(PDO::FETCH_ASSOC);
-
-    // 各投稿にアバターパスを追加
-    foreach ($posts as &$post) {
-        $post['avatar'] = 'images/default-avatar.png'; // デフォルトアバターを設定
-    }
-    unset($post); // ループ後の参照を解除
-
-} catch (PDOException $e) {
-    // postsテーブルが存在しない場合のエラーをハンドル
-    $posts = [];
-    // error_log("Posts table error: " . $e->getMessage());
-}
-
+// ★★★ 修正点: ユーザーの投稿を取得するためのSQLクエリを修正 ★★★
+// ★★★ Correction: JOIN table from 'users' to 'Accounts', correct column names ★★★
+// Fetch user posts
+$stmt = $pdo->prepare("
+    SELECT posts.*, users.username, users.avatar 
+    FROM posts 
+    JOIN users ON posts.user_id = users.id
+    WHERE posts.user_id = ?
+    ORDER BY posts.created_at DESC
+");
+$stmt->execute([$user_id]);
+$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $flash_message = get_flash_message();
 
-// Function to render comments recursively
+// ファンクション　コメントを再帰的にレンダリング
 function renderComments($comments_array) {
     foreach ($comments_array as $comment) {
         $comment_avatar_path = $comment['avatar'] ? $comment['avatar'] : 'images/default-avatar.png';
@@ -116,21 +105,21 @@ function renderComments($comments_array) {
         echo '</div></div>';
     }
 }
-// Ajouter les likes, dislikes et commentaires pour CHAQUE post de l'utilisateur
+// ユーザーの投稿に対するいいね、よくないね、コメントを追加
 foreach ($posts as &$post) {
     $post_id = $post['id'];
 
-    // Nombre de commentaires
+    // コメント数
     $stmt_comment_count = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE post_id = ?");
     $stmt_comment_count->execute([$post_id]);
     $post['comment_count'] = $stmt_comment_count->fetchColumn() ?? 0;
 
-    // Likes
+    // likes数
     $stmt_likes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 1");
     $stmt_likes->execute([$post_id]);
     $post['likes_count'] = $stmt_likes->fetchColumn() ?? 0;
 
-    // Dislikes
+    // dislikes数
     $stmt_dislikes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 0");
     $stmt_dislikes->execute([$post_id]);
     $post['dislikes_count'] = $stmt_dislikes->fetchColumn() ?? 0;
@@ -172,7 +161,36 @@ foreach ($posts as &$post) {
 // } catch (PDOException $e) {
 //     error_log("Error fetching posts: " . $e->getMessage());
 //     $posts = [];
+// // }
+// $flash_message = get_flash_message();
+
+// // Function to render comments recursively (This function is fine)
+// // (Duplicate declaration removed)
+
+// // Ajouter les likes, dislikes et commentaires pour CHAQUE post de l'utilisateur
+// // This block is correct and should be kept. Make sure it processes the $posts array
+// // that was correctly filtered by user_id from the first fetching block.
+// foreach ($posts as &$post) {
+//     $post_id = $post['id'];
+
+//     // Nombre de commentaires
+//     $stmt_comment_count = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE post_id = ?");
+//     $stmt_comment_count->execute([$post_id]);
+//     $post['comment_count'] = $stmt_comment_count->fetchColumn() ?? 0;
+
+//     // Likes
+//     $stmt_likes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 1");
+//     $stmt_likes->execute([$post_id]);
+//     $post['likes_count'] = $stmt_likes->fetchColumn() ?? 0;
+
+//     // Dislikes
+//     $stmt_dislikes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 0");
+//     $stmt_dislikes->execute([$post_id]);
+//     $post['dislikes_count'] = $stmt_dislikes->fetchColumn() ?? 0;
 // }
+// // Unset reference after loop
+// unset($post);
+
 ?>
 
 <!DOCTYPE html>
@@ -261,7 +279,7 @@ foreach ($posts as &$post) {
                     
                     <?php if (!empty($social_links)) : ?>
                         <div class="social-icons-container">
-                            <div class="social-icons"> <!-- ✅ Ajout de la classe manquante ici -->
+                            <div class="social-icons"> <!-- ソーシャルリンクのアイコンを表示 -->
                                 <?php foreach ($social_links as $social) : 
                                     $platform = strtolower($social['platform']);
                                     $icons = [
@@ -638,38 +656,38 @@ function renderComments(comments, parentId = null) {
 });
 
 // AJAX function to load comments and render them
-function loadComments(postId) {
-    fetch(`backend/get_comments.php?post_id=${postId}`)
-        .then(res => res.json())
-        .then(data => {
-            const container = document.getElementById(`comments-${postId}`);
-            container.innerHTML = renderComments(data);
-        })
-        .catch(err => console.error('Error loading comments:', err));
-}
+// function loadComments(postId) {
+//     fetch(`backend/get_comments.php?post_id=${postId}`)
+//         .then(res => res.json())
+//         .then(data => {
+//             const container = document.getElementById(`comments-${postId}`);
+//             container.innerHTML = renderComments(data);
+//         })
+//         .catch(err => console.error('Error loading comments:', err));
+// }
 
-// Render comments recursively as HTML string
-function renderComments(comments, parentId = null) {
-    let html = '';
-    comments.filter(c => c.parent_comment_id == parentId).forEach(comment => {
-        html += `
-            <div class="comment" data-comment-id="${comment.id}">
-                <img src="${comment.avatar || 'images/default-avatar.png'}" class="comment-avatar">
-                <div class="comment-content">
-                    <strong>${comment.username}</strong>
-                    <p>${comment.content.replace(/\n/g, '<br>')}</p>
-                    <button class="reply-btn">Reply</button>
-                    <div class="reply-form" id="reply-form-${comment.id}" style="display:none; margin-top: 10px;">
-                        <textarea id="reply-input-${comment.id}" placeholder="Write a reply..."></textarea>
-                        <button class="post-reply-btn" data-comment-id="${comment.id}" data-post-id="${comment.post_id}">Post Reply</button>
-                    </div>
-                    ${renderComments(comments, comment.id)}
-                </div>
-            </div>
-        `;
-    });
-    return html;
-}
+// // Render comments recursively as HTML string
+// function renderComments(comments, parentId = null) {
+//     let html = '';
+//     comments.filter(c => c.parent_comment_id == parentId).forEach(comment => {
+//         html += `
+//             <div class="comment" data-comment-id="${comment.id}">
+//                 <img src="${comment.avatar || 'images/default-avatar.png'}" class="comment-avatar">
+//                 <div class="comment-content">
+//                     <strong>${comment.username}</strong>
+//                     <p>${comment.content.replace(/\n/g, '<br>')}</p>
+//                     <button class="reply-btn">Reply</button>
+//                     <div class="reply-form" id="reply-form-${comment.id}" style="display:none; margin-top: 10px;">
+//                         <textarea id="reply-input-${comment.id}" placeholder="Write a reply..."></textarea>
+//                         <button class="post-reply-btn" data-comment-id="${comment.id}" data-post-id="${comment.post_id}">Post Reply</button>
+//                     </div>
+//                     ${renderComments(comments, comment.id)}
+//                 </div>
+//             </div>
+//         `;
+//     });
+//     return html;
+// }
 
 // AJAX function to add a comment or reply
 function addComment(postId, parentCommentId, content, callback) {

@@ -1,51 +1,57 @@
 <?php
 session_start();
-require __DIR__ . '/config.php';
+require __DIR__ . '/config.php'; // Assurez-vous que ce chemin est correct et que $pdo est disponible
 
 header('Content-Type: application/json');
 
 $user_id = $_SESSION['user_id'] ?? null;
 
-$target_id = $_POST['target_id'] ?? $_GET['target_id'] ?? null;
-$target_type = $_POST['target_type'] ?? $_GET['target_type'] ?? null;
+// Récupère target_id et target_type depuis POST ou GET, selon la méthode
+$target_id = $_REQUEST['target_id'] ?? null; // $_REQUEST inclut GET et POST
+$target_type = $_REQUEST['target_type'] ?? null;
+
+// is_like n'est pertinent que pour les requêtes POST
 $is_like = isset($_POST['is_like']) ? (int) $_POST['is_like'] : null;
 
+// Vérification essentielle des paramètres pour toute requête (GET ou POST)
 if (!$target_id || !$target_type) {
-    echo json_encode(['error' => 'Missing target_id or target_type']);
+    echo json_encode(['error' => 'Missing target_id or target_type.']);
     exit;
 }
 
 try {
-    // Si c'est une requête POST (ajout ou suppression)
+    // --- Logique de Like/Dislike (UNIQUEMENT pour les requêtes POST) ---
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$user_id) {
-            echo json_encode(['error' => 'You must be logged in.']);
+            echo json_encode(['error' => 'You must be logged in to like/dislike.']);
             exit;
         }
 
-        // Vérifie s'il y a déjà un like/dislike
-        $stmt = $pdo->prepare("SELECT * FROM likes WHERE user_id = ? AND target_id = ? AND target_type = ?");
+        // Vérifie si l'utilisateur a déjà réagi (like ou dislike) à cette cible
+        $stmt = $pdo->prepare("SELECT id, is_like FROM likes WHERE user_id = ? AND target_id = ? AND target_type = ?");
         $stmt->execute([$user_id, $target_id, $target_type]);
-        $existing = $stmt->fetch();
+        $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($existing) {
+            // L'utilisateur a déjà une réaction
             if ((int)$existing['is_like'] === $is_like) {
-                // Supprimer si même réaction (toggle off)
+                // Si la nouvelle réaction est la même que l'existante, on la supprime (toggle off)
                 $stmt = $pdo->prepare("DELETE FROM likes WHERE id = ?");
                 $stmt->execute([$existing['id']]);
             } else {
-                // Mettre à jour la réaction
+                // Si la nouvelle réaction est différente, on la met à jour
                 $stmt = $pdo->prepare("UPDATE likes SET is_like = ? WHERE id = ?");
                 $stmt->execute([$is_like, $existing['id']]);
             }
         } else {
-            // Nouveau like/dislike
+            // Pas de réaction existante, on l'insère
             $stmt = $pdo->prepare("INSERT INTO likes (user_id, target_id, target_type, is_like) VALUES (?, ?, ?, ?)");
             $stmt->execute([$user_id, $target_id, $target_type, $is_like]);
         }
     }
 
-    // Dans tous les cas, renvoyer les nouveaux comptes
+    // --- Récupération des NOUVEAUX comptes (pour les requêtes GET et POST) ---
+    // Cette partie est exécutée après toute action POST, ou directement pour une requête GET
     $stmt = $pdo->prepare("
         SELECT
             SUM(CASE WHEN is_like = 1 THEN 1 ELSE 0 END) AS likes,
@@ -56,11 +62,19 @@ try {
     $stmt->execute([$target_id, $target_type]);
     $counts = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    // Gérer le cas où il n'y a aucun like/dislike (SUM retourne null)
+    $likes = (int)($counts['likes'] ?? 0);
+    $dislikes = (int)($counts['dislikes'] ?? 0);
+
     echo json_encode([
-        'likes' => (int)$counts['likes'],
-        'dislikes' => (int)$counts['dislikes']
+        'likes' => $likes,
+        'dislikes' => $dislikes
     ]);
+
 } catch (PDOException $e) {
-    echo json_encode(['error' => 'Database error', 'details' => $e->getMessage()]);
+    // Log l'erreur pour le débogage et renvoie un message générique à l'utilisateur
+    error_log("Database error in like_dislike.php: " . $e->getMessage());
+    http_response_code(500); // Code d'erreur interne du serveur
+    echo json_encode(['error' => 'An internal server error occurred.', 'details' => $e->getMessage()]);
 }
 ?>
