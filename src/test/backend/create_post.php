@@ -20,10 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $targetFile = $uploadDir . $filename;
 
         if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
-            $imagePath = './uploads/' . $filename; // chemin relatif pour frontend
+            $imagePath = './uploads/' . $filename; // フロントエンドでアクセス可能なパス
         } else {
             http_response_code(500);
-            echo json_encode(['error' => 'Erreur upload image']);
+            echo json_encode(['error' => '画像のアップロードエラー']);
             exit;
         }
     }

@@ -20,14 +20,16 @@
         "Japan life Manual": "日本生活マニュアル",
         "All rights reserved.": "無断転載を禁じます。",
         "Menu": "メニュー",
-        "My page": "マイページ",
-        "contact": "お問い合わせ",
+        "Contact": "お問い合わせ",
         "Blog": "ブログ",
         "HOME": "ホーム",
         "Student": "学生の方へ",
         "Professional": "社会人の方へ",
         "Travellers": "旅行者の方へ",
         "Garbage_rules":"ゴミルール",
+        "user_page": "ユーザーページ",
+        "login": "ログイン",
+        "logout": "ログアウト",
         "Sign Up": "新規登録",
         "Translate": "翻訳"
     }

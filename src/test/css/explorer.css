@@ -7,10 +7,32 @@
     --light-text: #f8f8f8;
 }
 
-/* ============================================= */
-/*              EXPLORE PAGE STYLES              */
-/* ============================================= */
+/* ========== RESET & BASE STYLES ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+img:not([src]),
+img:broken {
+    display: none;
+}
+
+body {
+
+    font-family: system-ui, -apple-system, sans-serif;
+    color: var(--dark-text);
+    background-color: #fff;
+    transition: margin-left 0.3s ease;
+    margin-left: 260px; 
+}
+
+/* body.sidebar-open {
+    overflow: hidden;
+} */
+
+/* ========== EXPLORE PAGE STYLES ========== */
 .back-button {
     display: inline-flex;
     align-items: center;
@@ -104,6 +126,7 @@
     color: #d32f2f;
 }
 
+/* ========== POST STYLES ========== */
 .posts-feed {
     display: flex;
     flex-direction: column;
@@ -116,8 +139,9 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 1.5rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 40%;
+    width: 50%;
     max-width: 800px;
+    margin: 0 auto;
 }
 
 .post:hover {
@@ -165,7 +189,7 @@
 }
 
 .post-image {
-    width: 80%;
+    width: 100%;
     max-height: 500px;
     object-fit: contain;
     border-radius: 8px;
@@ -173,7 +197,7 @@
     border: 1px solid #eee;
 }
 
-/* Post Interactions */
+/* ========== POST INTERACTIONS ========== */
 .post-interactions {
     display: flex;
     justify-content: space-between;
@@ -201,6 +225,7 @@
     padding: 0.5rem 0.8rem;
     border-radius: 20px;
     transition: all 0.3s ease;
+    transform-origin: center;
 }
 
 .like-btn {
@@ -221,35 +246,35 @@
     background-color: rgba(0, 0, 0, 0.1);
 }
 
+.like-btn:active, .dislike-btn:active {
+    transform: scale(0.92);
+}
+
 .like-count, .dislike-count {
     font-weight: 600;
     min-width: 20px;
     text-align: center;
 }
 
-.actions span:last-child {
+/* ========== COMMENT SECTION ========== */
+.comment {
     display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    color: #666;
-    cursor: pointer;
-    transition: color 0.3s ease;
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: rgba(232, 192, 125, 0.05);
+    border-radius: 8px;
+    border-left: 3px solid var(--secondary-color);
+    margin-left: 0.5rem;
+    flex-direction: column;
 }
 
-.actions span:last-child:hover {
+.comment b {
     color: var(--primary-color);
 }
 
-/* ============================================= */
-/*              COMMENT SECTION STYLES           */
-/* ============================================= */
-
-.comments {
-    display: none;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    animation: fadeIn 0.3s ease-out;
+.comment .comment {
+    margin-left: 2rem;
 }
 
 .comments.visible {
@@ -275,10 +300,6 @@
     color: var(--accent-color);
 }
 
-.toggle-comments-btn i {
-    transition: transform 0.3s ease;
-}
-
 .add-comment {
     display: none;
     margin-top: 1rem;
@@ -295,7 +316,7 @@
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 1rem;
-    resize: vertical;
+    resize: none;
 }
 
 .add-comment button {
@@ -314,73 +335,67 @@
     background-color: var(--accent-color);
 }
 
-.comment {
-    display: flex;
-    gap: 1rem;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background-color: rgba(232, 192, 125, 0.05);
-    border-radius: 8px;
+.reply {
+    margin-left: 3rem;
+    margin-top: 0.6rem;
+    padding: 0.8rem 1rem;
+    background-color: rgba(232, 192, 125, 0.08);
     border-left: 3px solid var(--secondary-color);
-    margin-left: 0.5rem;
-}
-
-.comment b {
-    color: var(--primary-color);
-}
-
-.comment .comment {
-    margin-left: 2rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--dark-text);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
 }
 
 .reply-btn {
-    display: none;
     background: none;
     border: none;
-    color: var(--secondary-color);
-    font-size: 0.85rem;
+    color: var(--accent-color);
     cursor: pointer;
-    margin-top: 0.5rem;
-    padding: 0.3rem 0;
-    transition: color 0.3s ease;
-}
-
-.comment:hover .reply-btn {
-    display: block;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    padding: 0;
+    font-weight: 600;
+    transition: color 0.2s ease;
 }
 
 .reply-btn:hover {
-    color: var(--accent-color);
+    color: var(--primary-color);
 }
 
-.reply {
-    display: flex;
+.reply-form {
+    display: none;
     flex-direction: column;
     gap: 0.5rem;
     margin-top: 0.8rem;
 }
 
-.reply textarea {
+.reply-form.visible {
+    display: flex;
+}
+
+.reply-form textarea {
+    width: 100%;
+    border-radius: 8px;
     padding: 0.6rem;
-    border-radius: 6px;
     border: 1px solid #ccc;
-    resize: vertical;
+    resize: none;
+    font-family: inherit;
     font-size: 0.95rem;
 }
 
-.reply button {
-    align-self: flex-start;
-    padding: 0.4rem 0.8rem;
+.reply-form button {
     background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 4px;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-weight: 600;
     transition: background 0.3s ease;
 }
 
-.reply button:hover {
+.reply-form button:hover {
     background: var(--accent-color);
 }
 
@@ -392,46 +407,146 @@
     border: 1px solid var(--secondary-color);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
+
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    background-color: var(--light-bg);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #e2e2e2;
+    padding: 1.5rem 1rem;
+    transform: translateX(0); /* TOUJOURS VISIBLE */
+    z-index: 999;
+    overflow-y: auto;
 }
 
-/* ============================================= */
-/*               RESPONSIVE DESIGN               */
-/* ============================================= */
 
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-header h1 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+/* .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--accent-color);
+    transition: transform 0.2s ease;
+} */
+
+.close-btn:hover {
+    transform: scale(1.1);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin: 0.7rem 0;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-menu a:hover {
+    background-color: rgba(103, 107, 86, 0.1);
+    color: var(--accent-color);
+}
+
+.sidebar-menu .section-title {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    padding-left: 0.5rem;
+}
+
+.beta {
+    font-size: 0.7rem;
+    background: var(--accent-color);
+    color: white;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    margin-left: auto;
+}
+
+
+.menu-toggle:hover {
+    background-color: var(--accent-color);
+}
+
+.menu-toggle:active {
+    transform: scale(0.95);
+}
+
+.menu-toggle:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* ========== RESPONSIVE STYLES ========== */
 @media (max-width: 768px) {
     .blog-feed-container {
         padding: 0 1rem;
     }
-    
+
     .search-container {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .search-container form {
         flex-direction: column;
     }
-    
+
     .post-header {
         flex-wrap: wrap;
     }
-    
+
     .post-date {
         margin-left: 0;
         width: 100%;
     }
-    
+
     .actions {
         flex-wrap: wrap;
         gap: 0.5rem;
     }
-    
+
     .like-btn, .dislike-btn {
         padding: 0.4rem 0.6rem;
         font-size: 0.85rem;
+    }
+
+    .sidebar {
+        width: 280px;
     }
 }
 
@@ -439,12 +554,18 @@
     .post {
         padding: 1rem;
     }
-    
-    .comment {
-        flex-direction: column;
+
+    .comment,
+    .reply {
+        margin-left: 0.5rem;
     }
-    
+
     .avatar-mini {
         align-self: center;
     }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }

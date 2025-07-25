@@ -1,3 +1,7 @@
+<?php
+// ★★★ 追加: セッションを開始して、ログイン状態を読み込めるようにします ★★★
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,9 +26,21 @@
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="dropdown-content" id="dropdown-content">
+<<<<<<< HEAD
         <a href="my_page.php" data-translate="my_page_link">My Page</a>
         <a href="#">contact</a>
         <a href="#">Blog</a>
+=======
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="User_page.php" data-translate="my_page_link">user_page</a>
+            <a href="logout.php">logout</a>
+        <?php else: ?>
+            <a href="login.php">login</a>
+            <a href="register.php">Sign Up</a>
+        <?php endif; ?>
+        <a href="#">Contact</a>
+        <a href="./explore.php">Blog</a>
+>>>>>>> 06b5911cb5c9a9dbadc5e92d80542cfd362f79b3
     </div>
 </div>
    
@@ -45,6 +61,7 @@
     <div class="menu-item">
       <a href="travelers_homePage.php"><i class="fa-solid fa-person-walking-luggage" style="font-size:25px;"></i><p>Travellers</p></a>
     </div>
+<<<<<<< HEAD
     <div class="menu-item">
       <a href="register.php"><i class="fas fa-user-plus icon"></i><p>Sign Up</p></a>
     </div>
@@ -52,6 +69,23 @@
       <a href="garbage_rules.php"><i class="fa-duotone fa-solid fa-recycle" style="font-size:26px"></i><p>Garbage_rules</p></a>
 
     </div>
+=======
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <div class="menu-item">
+            <a href="User_page.php"><i class="fas fa-user-circle icon"></i><p>user_page</p></a>
+        </div>
+        <div class="menu-item">
+            <a href="logout.php"><i class="fas fa-sign-out-alt icon"></i><p>logout</p></a>
+        </div>
+    <?php else: ?>
+        <div class="menu-item">
+            <a href="login.php"><i class="fas fa-sign-in-alt icon"></i><p>login</p></a>
+        </div>
+        <div class="menu-item">
+          <a href="register.php"><i class="fas fa-user-plus icon"></i><p>Sign Up</p></a>
+        </div>
+    <?php endif; ?>
+>>>>>>> 06b5911cb5c9a9dbadc5e92d80542cfd362f79b3
     <div class="language-selector">
         <button id="translateBtn" class="translate-btn">🌐 Translate</button>
         <div class="language-dropdown">
@@ -116,7 +150,7 @@
             <div class="blog-content">
                 <h4>Exploring the Beauty of Japan</h4>
                 <p>Discover the rich culture, stunning landscapes, and vibrant cities of Japan. From ancient temples to modern skyscrapers, Japan offers a unique blend of tradition and innovation.</p>
-                <a href="travelers_homePage.php" class="read-more">Read more</a>
+                <a href="#">Read more</a>
             </div>
         </div>
     </div>
@@ -189,7 +223,8 @@
                     <div class="border-t border-gray-200 my-1"></div>
 
                     <div class="py-2 px-4">
-                        <p class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
+                        <!-- ★★★ 修正点: pタグにIDを追加 ★★★ -->
+                        <p id="theme-selection-label" class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
                     </div>
                     <a class="cb-theme-option" data-theme="simple"><i class="fas fa-square fa-fw"></i> <span data-translate="theme_simple">シンプル</span></a>
                     <a class="cb-theme-option" data-theme="spring"><i class="fas fa-leaf fa-fw"></i> <span data-translate="theme_spring">春</span></a>
@@ -200,7 +235,8 @@
                     <div class="border-t border-gray-200 my-1"></div>
 
                     <div class="py-2 px-4">
-                        <p class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
+                        <!-- ★★★ 修正点: pタグにIDを追加 ★★★ -->
+                        <p id="language-settings-label" class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
                     </div>
                     <div id="language-switcher">
                          <button data-lang="ja" class="ja-btn lang-switch-btn">日本語</button>
@@ -222,8 +258,16 @@
     </main>
     
     <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl mt-8">
-        <div class="flex items-center space-x-3">
-            <input type="text" id="user-input" class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition" placeholder="日本のマナーについて質問してください">
+        <div class="flex items-end space-x-3">
+            <!-- ▼▼▼【変更】inputをtextareaに変更し、自動高さ調整に対応 ▼▼▼ -->
+            <textarea id="user-input" class="flex-1 p-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500 transition resize-none" placeholder="日本のマナーについて質問してください" rows="1" style="max-height: 120px;"></textarea>
+            <!-- ▲▲▲ ここまで ▲▲▲ -->
+            
+            <button id="image-upload-btn" class="mic-btn" title="画像をアップロード">
+                <i class="fas fa-paperclip"></i>
+            </button>
+            <input type="file" id="image-upload-input" hidden accept="image/*,video/*">
+
             <button id="mic-btn" class="mic-btn" title="マイクを使用">
                 <i class="fas fa-microphone"></i>
             </button>
@@ -261,7 +305,7 @@
     </div>
 </div>
 
-<!-- ▼▼▼【新機能】ロールプレイ選択モーダルを追加 ▼▼▼ -->
+<!-- ロールプレイ選択モーダル -->
 <div id="roleplay-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[1050] flex justify-center items-center px-4">
     <div id="roleplay-modal-content" class="bg-gray-100 rounded-lg shadow-xl w-full max-w-3xl max-h-[80vh] flex flex-col">
         <header class="p-4 border-b flex justify-between items-center bg-white rounded-t-lg sticky top-0">
@@ -273,7 +317,6 @@
         </div>
     </div>
 </div>
-<!-- ▲▲▲ ここまで ▲▲▲ -->
 
 
 <div id="chat-open-button">

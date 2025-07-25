@@ -4,9 +4,10 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
-require __DIR__ . '/backend/config.php';
+// ★★★ 修正点: backendフォルダにあるconfig.phpを読み込む ★★★
+require_once __DIR__ . '/backend/config.php';
 
-// Flash message functions
+// Flash message functions (この機能はそのまま利用します)
 function set_flash_message($message, $type = 'success') {
     $_SESSION['flash_message'] = ['message' => $message, 'type' => $type];
 }
@@ -22,7 +23,9 @@ function get_flash_message() {
 
 // Get user info
 $user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+// ★★★ 修正点: 'users'テーブルを'Accounts'に、'id'を'ID'に修正 ★★★
+// ★★★ 修正点: 存在しないカラム(avatar, bio, location)の代わりに存在するカラムを取得 ★★★
+$stmt = $pdo->prepare("SELECT ID, Name, Email, Country, Current_location, UserType FROM Accounts WHERE ID = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -33,28 +36,57 @@ if (!$user) {
 }
 
 // Set user data
-$user_avatar = $user['avatar'] ?? 'images/default-avatar.png';
-$user_username = $user['username'];
-$user_bio = $user['bio'] ?? '';
-$user_location = $user['location'] ?? '';
-$user_country = $user['country'] ?? '';
-$user_activity = $user['activity'] ?? '';
+// ★★★ 修正点: 正しいカラム名からデータをセットする ★★★
+$user_avatar = 'images/default-avatar.png'; // avatarカラムは存在しないため、デフォルト値を設定
+$user_username = $user['Name'];
+$user_bio = ''; // bioカラムは存在しないため、空に設定
+$user_location = $user['Current_location'];
+$user_country = $user['Country'];
+$user_activity = $user['UserType'];
 
-// Get social links
-$stmt = $pdo->prepare("SELECT platform, link FROM contacts WHERE user_id = ?");
-$stmt->execute([$user_id]);
-$social_links = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// If user has no activity, set a default value
+if (empty($user_activity)) {
+    $user_activity = 'Unknown';
+}
+
+// Get social links (この部分はcontactsテーブルに依存するため、そのままにします)
+// もしcontactsテーブルも存在しない場合は、別途エラーが発生します
+try {
+    $stmt_social = $pdo->prepare("SELECT platform, link FROM contacts WHERE user_id = ?");
+    $stmt_social->execute([$user_id]);
+    $social_links = $stmt_social->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // contactsテーブルが存在しない場合のエラーをハンドル
+    $social_links = [];
+    // error_log("Social links table error: " . $e->getMessage());
+}
+
 
 // Get posts with user info
-$stmt = $pdo->prepare("
-    SELECT posts.*, users.username, users.avatar 
-    FROM posts 
-    JOIN users ON posts.user_id = users.id
-    WHERE posts.user_id = ?
-    ORDER BY posts.created_at DESC
-");
-$stmt->execute([$user_id]);
-$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// ★★★ 修正点: JOINするテーブルを'users'から'Accounts'に、カラム名を修正 ★★★
+try {
+    $stmt_posts = $pdo->prepare("
+        SELECT posts.*, Accounts.Name as username
+        FROM posts 
+        JOIN Accounts ON posts.user_id = Accounts.ID
+        WHERE posts.user_id = ?
+        ORDER BY posts.created_at DESC
+    ");
+    $stmt_posts->execute([$user_id]);
+    $posts = $stmt_posts->fetchAll(PDO::FETCH_ASSOC);
+
+    // 各投稿にアバターパスを追加
+    foreach ($posts as &$post) {
+        $post['avatar'] = 'images/default-avatar.png'; // デフォルトアバターを設定
+    }
+    unset($post); // ループ後の参照を解除
+
+} catch (PDOException $e) {
+    // postsテーブルが存在しない場合のエラーをハンドル
+    $posts = [];
+    // error_log("Posts table error: " . $e->getMessage());
+}
+
 
 $flash_message = get_flash_message();
 
@@ -84,6 +116,63 @@ function renderComments($comments_array) {
         echo '</div></div>';
     }
 }
+// Ajouter les likes, dislikes et commentaires pour CHAQUE post de l'utilisateur
+foreach ($posts as &$post) {
+    $post_id = $post['id'];
+
+    // Nombre de commentaires
+    $stmt_comment_count = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE post_id = ?");
+    $stmt_comment_count->execute([$post_id]);
+    $post['comment_count'] = $stmt_comment_count->fetchColumn() ?? 0;
+
+    // Likes
+    $stmt_likes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 1");
+    $stmt_likes->execute([$post_id]);
+    $post['likes_count'] = $stmt_likes->fetchColumn() ?? 0;
+
+    // Dislikes
+    $stmt_dislikes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 0");
+    $stmt_dislikes->execute([$post_id]);
+    $post['dislikes_count'] = $stmt_dislikes->fetchColumn() ?? 0;
+}
+
+// try {
+//     $sql_posts = "SELECT p.*, u.username, u.avatar 
+//                   FROM posts p 
+//                   JOIN users u ON p.user_id = u.id";
+//     $params = [];
+
+//     if (!empty($search_query)) {
+//         $sql_posts .= " WHERE p.content LIKE ? OR p.title LIKE ?";
+//         $params[] = '%' . $search_query . '%';
+//         $params[] = '%' . $search_query . '%';
+//     }
+
+//     $sql_posts .= " ORDER BY p.created_at DESC";
+
+//     $stmt_posts = $pdo->prepare($sql_posts);
+//     $stmt_posts->execute($params);
+//     $posts = $stmt_posts->fetchAll(PDO::FETCH_ASSOC);
+
+//     foreach ($posts as &$post) {
+//         $post_id = $post['id'];
+
+//         $stmt_comment_count = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE post_id = ?");
+//         $stmt_comment_count->execute([$post_id]);
+//         $post['comment_count'] = $stmt_comment_count->fetchColumn() ?? 0;
+
+//         $stmt_likes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 1");
+//         $stmt_likes->execute([$post_id]);
+//         $post['likes_count'] = $stmt_likes->fetchColumn() ?? 0;
+
+//         $stmt_dislikes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 0");
+//         $stmt_dislikes->execute([$post_id]);
+//         $post['dislikes_count'] = $stmt_dislikes->fetchColumn() ?? 0;
+//     }
+// } catch (PDOException $e) {
+//     error_log("Error fetching posts: " . $e->getMessage());
+//     $posts = [];
+// }
 ?>
 
 <!DOCTYPE html>
@@ -93,8 +182,7 @@ function renderComments($comments_array) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile</title>
     <link rel="stylesheet" href="./css/user_page.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></head>
 <body>
     <header>
         <div class="dropdown-menu">
@@ -104,7 +192,7 @@ function renderComments($comments_array) {
             <div class="dropdown-content" id="dropdown-content">
                 <a href="blog.php"><i class="fas fa-blog"></i> Blog</a>
                 <a href="#"><i class="fas fa-envelope"></i> Contact</a>
-                <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+                <a href="#"><i class="fas fa-cog"></i> Settings</a>
             </div>
         </div>
 
@@ -141,9 +229,13 @@ function renderComments($comments_array) {
         </div>
 
         <div class="menu-item">
+
             <a href="register.php">
                 <i class="fas fa-user-plus icon"></i>
                 <p>Sign Up</p>
+            <a href="logout.php" id="logout-link">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <p>LogOut</p>
             </a>
         </div>
     </header>
@@ -163,14 +255,31 @@ function renderComments($comments_array) {
                         <p id="user_status">Statut: <span><?= htmlspecialchars($user_activity) ?></span></p>
                     <?php endif; ?>
                     <p id="user-bio"><span>Bio:</span> <?= nl2br(htmlspecialchars($user_bio)) ?></p>
+                    
+                    <?php if (!empty($social_links)) : ?>
+                        <div class="social-icons-container">
+                            <div class="social-icons"> <!-- ✅ Ajout de la classe manquante ici -->
+                                <?php foreach ($social_links as $social) : 
+                                    $platform = strtolower($social['platform']);
+                                    $icons = [
+                                        'facebook' => 'fab fa-facebook-f',
+                                        'twitter' => 'fab fa-twitter',
+                                        'linkedin' => 'fab fa-linkedin-in',
+                                        'github' => 'fab fa-github',
+                                        'instagram' => 'fab fa-instagram',
+                                        'youtube' => 'fab fa-youtube',
+                                        'tiktok' => 'fab fa-tiktok',
+                                    ];
+                                    $iconClass = $icons[$platform] ?? 'fas fa-link';
+                                ?>
+                                    <a href="<?= htmlspecialchars($social['link']) ?>" target="_blank" title="<?= ucfirst($platform) ?>">
+                                        <i class="<?= $iconClass ?>"></i>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
 
-                    <div class="social-icons">
-                        <?php foreach ($social_links as $contact): ?>
-                            <a href="<?= htmlspecialchars($contact['link']) ?>" target="_blank" title="<?= htmlspecialchars($contact['platform']) ?>">
-                                <i class="<?= getSocialIconClass($contact['platform']) ?>"></i>
-                            </a>
-                        <?php endforeach; ?>
-                    </div>
 
                     <a id="edit-profile-btn" href="Edit-profile.php?id=<?= $user_id ?>" class="edit-profile-btn">
                         <i class="fas fa-edit"></i> Edit Profile
@@ -202,6 +311,7 @@ function renderComments($comments_array) {
                     <h3>My Posts</h3>
                     <?php foreach ($posts as $post): ?>
                             <div class="post" data-post-id="<?= $post['id'] ?>">
+                                <a href=""><i class="fa-solid fa-trash"></i></a>
                             <div class="post-header">
                                 <img src="<?= htmlspecialchars($post['avatar'] ?? '/uploads/default_avatar.jpg') ?>" class="post-avatar">
                                 <span class="post-author"><?= htmlspecialchars($post['username']) ?></span>
@@ -216,6 +326,16 @@ function renderComments($comments_array) {
                             </div>
                         
                             <div class="post-interactions">
+                            <div class="post-actions">
+                                <div class="actions" data-post-id="<?php echo $post['id']; ?>">
+                                    <button class="like-btn"><i class="fas fa-thumbs-up"></i> Like</button>
+                                    <span class="like-count"><?php echo $post['likes_count']; ?></span>
+                                    <button class="dislike-btn"><i class="fas fa-thumbs-down"></i> Dislike</button>
+                                    <span class="dislike-count"><?php echo $post['dislikes_count']; ?></span>
+                                    <span><i class="fas fa-comments"></i> <?php echo $post['comment_count']; ?></span>
+                                </div>
+                            </div>
+                            
                                 <button class="toggle-comments-btn">
                                     <i class="fas fa-comments fa-chevron-down"></i>
                                     <span>Show Comments</span>
@@ -247,7 +367,7 @@ function renderComments($comments_array) {
                                                             <textarea placeholder="Write a reply..."></textarea>
                                                             <button onclick="addComment(<?= $post['id'] ?>, <?= $comment['id'] ?>)">Post Reply</button>
                                                         </div>
-                                                        
+
                                                         <!-- Réponses imbriquées -->
                                                         <?php if (!empty($comment['replies'])): ?>
                                                             <div class="replies">
@@ -370,7 +490,7 @@ document.querySelectorAll('.reply-btn').forEach(btn => {
     });
 });
 
-// Comment system functions
+// Comment functions
 function renderComments(comments, parentId = null) {
     let html = '';
     comments.filter(c => c.parent_comment_id == parentId).forEach(comment => {

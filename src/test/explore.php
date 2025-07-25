@@ -4,7 +4,7 @@ require __DIR__ . '/backend/config.php';
 
 $user_id = $_SESSION['user_id'] ?? null;
 $user_username = $_SESSION['username'] ?? 'Guest';
-$user_avatar = $_SESSION['avatar'] ?? './uploads/default_avatar.jpg';
+$user_avatar = $_SESSION['avatar'] ?? '/uploads/default_avatar.jpg';
 
 $search_query = $_GET['search'] ?? '';
 $posts = [];
@@ -62,6 +62,29 @@ try {
 </header>
 
 <main>
+       <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <img src="images/logo.png" alt="Japan Life Manual Logo" class="logo">
+        <h1>Japan Life Manual</h1>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="#"><i class="fas fa-chart-line"></i> Popular</a></li>
+        <li><a href="#"><i class="fas fa-question-circle"></i> Answers <span class="beta">BETA</span></a></li>
+        <li class="section-title">TOPICS</li>
+        <li><a href="#"><i class="fas fa-globe"></i> Internet Culture</a></li>
+        <li><a href="#"><i class="fas fa-gamepad"></i> Games</a></li>
+        <li><a href="#"><i class="fas fa-comments"></i> Q&As</a></li>
+        <li><a href="#"><i class="fas fa-microchip"></i> Technology</a></li>
+        <li><a href="#"><i class="fas fa-star"></i> Pop Culture</a></li>
+        <li><a href="#"><i class="fas fa-film"></i> Movies & TV</a></li>
+        <li class="section-title">RESOURCES</li>
+        <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="#"><i class="fas fa-bullhorn"></i> Advertise</a></li>
+        <li><a href="#"><i class="fas fa-flask"></i> More Settings <span class="beta">BETA</span></a></li>
+    </ul>
+</div>
+
     <div class="blog-feed-container">
         <section class="posts-section">
             <h2><?php echo !empty($search_query) ? 'Search Results' : 'Explore Posts'; ?></h2>
@@ -89,7 +112,7 @@ try {
                     <?php foreach ($posts as $post): ?>
                         <div class="post">
                             <div class="post-header">
-                                <img src="<?php echo htmlspecialchars($post['avatar'] ?? 'assets/default_avatar.jpg'); ?>" class="post-avatar">
+                                <img src="<?php echo htmlspecialchars($post['avatar'] ?? 'uploads/default_avatar.jpg'); ?>" class="post-avatar">
                                 <span class="post-author"><?php echo htmlspecialchars($post['username']); ?></span>
                                 <span class="post-date"><?php echo date('F j, Y, g:i a', strtotime($post['created_at'])); ?></span>
                             </div>
@@ -101,7 +124,7 @@ try {
                                 <?php endif; ?>
                             </div>
 
-                            <!-- <div class="post-interactions">
+                            <div class="post-interactions">
                                 <div class="actions" data-post-id="<?php echo $post['id']; ?>">
                                     <button class="like-btn"><i class="fas fa-thumbs-up"></i> Like</button>
                                     <span class="like-count"><?php echo $post['likes_count']; ?></span>
@@ -109,7 +132,7 @@ try {
                                     <span class="dislike-count"><?php echo $post['dislikes_count']; ?></span>
                                     <span><i class="fas fa-comments"></i> <?php echo $post['comment_count']; ?></span>
                                 </div>
-                            </div> -->
+                            </div> 
 
                             <div class="add-comment">
                                 <textarea id="comment-input-<?php echo $post['id']; ?>" placeholder="Add a comment..."></textarea>
@@ -123,151 +146,6 @@ try {
             </div>
         </section>
     </div>
-
-<script>
-// Gestion Like Dislike
-document.querySelectorAll('.actions').forEach(action => {
-    const postId = action.dataset.postId;
-    const likeBtn = action.querySelector('.like-btn');
-    const dislikeBtn = action.querySelector('.dislike-btn');
-    const likeCount = action.querySelector('.like-count');
-    const dislikeCount = action.querySelector('.dislike-count');
-
-    function updateCounts() {
-        fetch(`http://localhost/projet2.1/backend/get_likes.php?target_id=${postId}&target_type=post`)
-        .then(res => res.json())
-        .then(data => {
-            likeCount.textContent = data.likes;
-            dislikeCount.textContent = data.dislikes;
-        });
-    }
-
-    likeBtn.addEventListener('click', () => {
-        fetch('http://localhost/projet2.1/backend/like.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `target_id=${postId}&target_type=post&is_like=1`
-        }).then(updateCounts);
-    });
-
-    dislikeBtn.addEventListener('click', () => {
-        fetch('http://localhost/projet2.1/backend/like.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `target_id=${postId}&target_type=post&is_like=0`
-        }).then(updateCounts);
-    });
-
-    updateCounts();
-});
-
-
-// Au chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
-    // Ajouter les boutons toggle à chaque post
-    document.querySelectorAll('.post').forEach(post => {
-        const commentsSection = post.querySelector('.comments');
-        const addCommentSection = post.querySelector('.add-comment');
-        
-        // Créer le bouton toggle
-        const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'toggle-comments-btn';
-        toggleBtn.innerHTML = '<i class="fas fa-comments"></i> <span>Show Comments</span>';
-        
-        // Insérer avant la section commentaires
-        commentsSection.parentNode.insertBefore(toggleBtn, commentsSection);
-        
-        // Gestion du click
-        toggleBtn.addEventListener('click', function() {
-            const isHidden = commentsSection.style.display === 'none';
-            
-            commentsSection.classList.toggle('visible');
-            addCommentSection.classList.toggle('visible');
-            
-            const icon = this.querySelector('i');
-            const text = this.querySelector('span');
-            
-            if (commentsSection.classList.contains('visible')) {
-                icon.classList.replace('fa-comments', 'fa-chevron-up');
-                text.textContent = 'Hide Comments';
-            } else {
-                icon.classList.replace('fa-chevron-up', 'fa-comments');
-                text.textContent = 'Show Comments';
-            }
-        });
-    });
-
-    // Gestion des réponses
-    document.querySelectorAll('.comment').forEach(comment => {
-        const replyBtn = document.createElement('button');
-        replyBtn.className = 'reply-btn';
-        replyBtn.textContent = 'Reply';
-        
-        const replyForm = comment.querySelector('.reply-form');
-        comment.querySelector('.comment-content').appendChild(replyBtn);
-        
-        replyBtn.addEventListener('click', function() {
-            replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
-        });
-    });
-});
-
-// Vos fonctions existantes (loadComments, addComment, etc.) restent inchangées
-
-// Gestion des commentaires avec les réponses imbriquées
-function renderComments(comments, parentId = null) {
-    let html = '';
-    comments.filter(c => c.parent_comment_id == parentId).forEach(comment => {
-        html += `
-            <div class="comment">
-                <img src="${comment.avatar}" class="avatar-mini">
-                <b>${comment.username}</b>: ${comment.content}
-                <div class="reply">
-                    <textarea id="reply-input-${comment.id}" placeholder="Reply..."></textarea>
-                    <button onclick="addComment(${comment.post_id}, ${comment.id})">Reply</button>
-                </div>
-                ${renderComments(comments, comment.id)}
-            </div>
-        `;
-    });
-    return html;
-}
-
-function loadComments(postId) {
-    fetch(`../backend/get_comments.php?post_id=${postId}`)
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById(`comments-${postId}`).innerHTML = renderComments(data);
-    });
-}
-
-function addComment(postId, parentCommentId = null) {
-    const inputId = parentCommentId ? `reply-input-${parentCommentId}` : `comment-input-${postId}`;
-    const content = document.getElementById(inputId).value.trim();
-    if (content === '') return;
-
-    const formData = new URLSearchParams();
-    formData.append('post_id', postId);
-    formData.append('content', content);
-    if (parentCommentId) formData.append('parent_comment_id', parentCommentId);
-
-    fetch('../backend/add_comment.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: formData.toString()
-    }).then(() => {
-        loadComments(postId);
-        document.getElementById(inputId).value = '';
-    });
-}
-
-window.onload = () => {
-    document.querySelectorAll('.comments').forEach(c => {
-        const postId = c.id.split('-')[1];
-        loadComments(postId);
-    });
-};
-</script>
-
+    <script src="js/explorer.js"></script>
 </body>
 </html>

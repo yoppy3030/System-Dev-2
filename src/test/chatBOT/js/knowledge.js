@@ -4,14 +4,13 @@ const uiStrings = {
         headerTitle: 'AIマナー学習ボット',
         langStatus: '言語: 日本語',
         inputPlaceholder: '日本のマナーについて質問してください',
-        // ▼▼▼【変更箇所】ウェルカムメッセージと返信に「クイズ」を追加 ▼▼▼
         welcome: {
             message: 'こんにちは！私は日本のマナーについてお答えするAIです。どんなことでもお気軽にご質問ください。\n\n「よくある質問」「ロールプレイ」「クイズ」「お問い合わせ」もできます。',
             replies: ['よくある質問', 'ロールプレイ', 'クイズ', 'お問い合わせ']
         },
-        // ▲▲▲ ここまで ▲▲▲
         role_play_prompt: 'ロールプレイシナリオ選択',
         role_play_cancel: 'ロールプレイを終了しました。',
+        role_play_error: '申し訳ありません、通信に失敗しました。もう一度お話しいただけますか？',
         role_play_categories: {
             restaurant: '飲食店',
             shopping: '買い物',
@@ -51,6 +50,10 @@ const uiStrings = {
         view_pinned: 'お気に入り',
         open_menu: 'メニューを開く',
         close_menu: 'メニューを閉じる',
+        open_chatbot_tooltip: 'チャットボットを開く',
+        close_chatbot_tooltip: 'チャットボットを閉じる',
+        upload_image_tooltip: '画像をアップロード',
+        image_analysis_prompt: 'この画像について、日本のマナーの観点からアドバイスをください。',
         pinned_empty_title: 'お気に入りはまだありません',
         pinned_empty_desc: 'ボットの回答の右上にあるピンアイコンをクリックして、重要な情報をここに保存しましょう。',
         inquiry: {
@@ -114,20 +117,30 @@ const uiStrings = {
             topic_collector: { title: '知識コレクター', desc: '10個のトピックを学習しました。' }
         },
         faq_source_text: '（よくある質問より）',
-        ai_summary_text: 'AIの要約:'
+        ai_summary_text: 'AIの要約:',
+        // ▼▼▼【追加】間違いノート機能用のテキスト ▼▼▼
+        mistake_note_title: '間違いノート',
+        mistake_note_empty: '復習する問題はありません。素晴らしい！',
+        mistake_note_challenge_btn: '再挑戦する',
+        mistake_note_correct: '正解です！ノートから削除しました。',
+        mistake_note_incorrect: '残念、不正解です。もう一度挑戦しましょう。',
+        mistake_note_close_btn: '閉じる',
+        sort_newest: '新しい順',
+        sort_oldest: '古い順',
+        sort_type: '種類別'
+        // ▲▲▲ ここまで ▲▲▲
     },
     en: {
         headerTitle: 'AI Manners Learning Bot',
         langStatus: 'Language: English',
         inputPlaceholder: 'Ask about Japanese manners',
-        // ▼▼▼【変更箇所】ウェルカムメッセージと返信に「Quiz」を追加 ▼▼▼
         welcome: {
             message: 'Hello! I am an AI that can answer your questions about Japanese manners. Feel free to ask me anything.\n\nYou can also try "FAQ", "Role-play", "Quiz", or "Contact".',
             replies: ['FAQ', 'Role-play', 'Quiz', 'Contact']
         },
-        // ▲▲▲ ここまで ▲▲▲
         role_play_prompt: 'Select a Role-play Scenario',
         role_play_cancel: 'Role-play has ended.',
+        role_play_error: 'Sorry, a communication error occurred. Could you please speak again?',
         role_play_categories: {
             restaurant: 'Restaurants & Cafes',
             shopping: 'Shopping',
@@ -167,6 +180,10 @@ const uiStrings = {
         view_pinned: 'Favorites',
         open_menu: 'Open menu',
         close_menu: 'Close menu',
+        open_chatbot_tooltip: 'Open Chatbot',
+        close_chatbot_tooltip: 'Close Chatbot',
+        upload_image_tooltip: 'Upload Image',
+        image_analysis_prompt: 'Please give me advice on this image from a manners perspective.',
         pinned_empty_title: 'No Favorites Yet',
         pinned_empty_desc: 'Click the pin icon on a bot response to save important information here.',
         inquiry: {
@@ -230,20 +247,30 @@ const uiStrings = {
             topic_collector: { title: 'Knowledge Collector', desc: 'You have learned 10 topics.' }
         },
         faq_source_text: '(From FAQ)',
-        ai_summary_text: 'AI Summary:'
+        ai_summary_text: 'AI Summary:',
+        // ▼▼▼【追加】間違いノート機能用のテキスト ▼▼▼
+        mistake_note_title: 'Mistake Notebook',
+        mistake_note_empty: 'No questions to review. Great job!',
+        mistake_note_challenge_btn: 'Try Again',
+        mistake_note_correct: 'Correct! Removed from your notebook.',
+        mistake_note_incorrect: 'Incorrect. Let\'s try again.',
+        mistake_note_close_btn: 'Close',
+        sort_newest: 'Newest First',
+        sort_oldest: 'Oldest First',
+        sort_type: 'By Type'
+        // ▲▲▲ ここまで ▲▲▲
     },
     zh: {
         headerTitle: 'AI礼仪学习机器人',
         langStatus: '语言: 中文',
         inputPlaceholder: '询问有关日本礼仪的问题',
-        // ▼▼▼【変更箇所】ウェルカムメッセージと返信に「测验」を追加 ▼▼▼
         welcome: {
             message: '您好！我是可以回答您关于日本礼仪问题的AI。请随时向我提问。\n\n您也可以尝试“常见问题”、“角色扮演”、“测验”或“联系我们”。',
             replies: ['常见问题', '角色扮演', '测验', '联系我们']
         },
-        // ▲▲▲ ここまで ▲▲▲
         role_play_prompt: '选择角色扮演场景',
         role_play_cancel: '角色扮演已结束。',
+        role_play_error: '抱歉，通讯时发生错误。可以请您再说一遍吗？',
         role_play_categories: {
             restaurant: '餐饮店',
             shopping: '购物',
@@ -283,6 +310,10 @@ const uiStrings = {
         view_pinned: '收藏',
         open_menu: '打开菜单',
         close_menu: '关闭菜单',
+        open_chatbot_tooltip: '打开聊天机器人',
+        close_chatbot_tooltip: '关闭聊天机器人',
+        upload_image_tooltip: '上传图片',
+        image_analysis_prompt: '请从礼仪的角度对这张图片提出建议。',
         pinned_empty_title: '尚无收藏的消息',
         pinned_empty_desc: '点击机器人回复右上方的图钉图标，即可在此处保存重要信息。',
         inquiry: {
@@ -328,7 +359,7 @@ const uiStrings = {
         quiz_stats_title: '测验成绩',
         no_data_available: '暂无可用数据。',
         my_page_link: '我的主页',
-        learned_topics_title: '已学主题',
+        learned_topics_title: '学习的主题',
         no_learned_topics_data: '暂无已学主题。',
         reset_progress_button: '重置学习数据',
         confirm_reset_title: '您确定吗？',
@@ -346,17 +377,28 @@ const uiStrings = {
             topic_collector: { title: '知识收藏家', desc: '您已经学习了10个主题。' }
         },
         faq_source_text: '(来自常见问题)',
-        ai_summary_text: 'AI总结:'
+        ai_summary_text: 'AI总结:',
+        // ▼▼▼【追加】間違いノート機能用のテキスト ▼▼▼
+        mistake_note_title: '错题本',
+        mistake_note_empty: '没有需要复习的题目。太棒了！',
+        mistake_note_challenge_btn: '再次挑战',
+        mistake_note_correct: '回答正确！已从错题本中移除。',
+        mistake_note_incorrect: '回答错误，再试一次吧。',
+        mistake_note_close_btn: '关闭',
+        sort_newest: '最新',
+        sort_oldest: '最早',
+        sort_type: '按类型'
+        // ▲▲▲ ここまで ▲▲▲
     }
 };
 
 // --- ナレッジベース (特殊機能) ---
-// ▼▼▼【変更箇所】各言語にクイズ機能のトリガーを追加 ▼▼▼
 const specialFeatures = {
     ja: { 'よくある質問': { isFaq: true }, 'ロールプレイ': { isRolePlay: true }, 'クイズ': { isQuiz: true }, 'お問い合わせ': { isInquiry: true } },
     en: { 'faq': { isFaq: true }, 'role-play': { isRolePlay: true }, 'quiz': { isQuiz: true }, 'contact': { isInquiry: true } },
     zh: { '常见问题': { isFaq: true }, '角色扮演': { isRolePlay: true }, '测验': { isQuiz: true }, '联系我们': { isInquiry: true } }
 };
+
 
 // --- ロールプレイングのシナリオ定義 (50個) ---
 const rolePlayingScenarios = {
