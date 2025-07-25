@@ -126,6 +126,8 @@ Promise.all([
     console.error('翻訳データの読み込みに失敗しました:', error);
 });
 
+// translate 
+
 function translatePage(targetLang) {
     if (!translations || !translationsZh) {
         console.error('翻訳データが読み込まれていません');
@@ -141,19 +143,17 @@ function translatePage(targetLang) {
             originalTexts.set(element, element.textContent);
         }
 
+        // data-translate 属性があればそれをキーに使う
+        const key = element.dataset.translate || normalizeText(originalTexts.get(element));
+        const translation = targetLang === 'ja' ? translations[key] : translationsZh[key];
+        
         if (targetLang === 'en') {
             element.textContent = originalTexts.get(element);
-            return;
-        }
-
-        const normalizedText = normalizeText(originalTexts.get(element));
-        const translation = targetLang === 'ja' ? translations[normalizedText] : translationsZh[normalizedText];
-        
-        if (translation) {
+        } else if (translation) {
             element.textContent = translation;
         }
     });
-    
+
     document.querySelectorAll('.language-option').forEach(btn => {
         btn.classList.remove('active');
     });
