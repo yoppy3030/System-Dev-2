@@ -26,11 +26,6 @@ session_start();
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="dropdown-content" id="dropdown-content">
-<<<<<<< HEAD
-        <a href="my_page.php" data-translate="my_page_link">My Page</a>
-        <a href="#">contact</a>
-        <a href="#">Blog</a>
-=======
         <?php if (isset($_SESSION['user_id'])): ?>
             <a href="User_page.php" data-translate="my_page_link">user_page</a>
             <a href="logout.php">logout</a>
@@ -40,7 +35,6 @@ session_start();
         <?php endif; ?>
         <a href="#">Contact</a>
         <a href="./explore.php">Blog</a>
->>>>>>> 06b5911cb5c9a9dbadc5e92d80542cfd362f79b3
     </div>
 </div>
    
@@ -61,15 +55,11 @@ session_start();
     <div class="menu-item">
       <a href="travelers_homePage.php"><i class="fa-solid fa-person-walking-luggage" style="font-size:25px;"></i><p>Travellers</p></a>
     </div>
-<<<<<<< HEAD
-    <div class="menu-item">
-      <a href="register.php"><i class="fas fa-user-plus icon"></i><p>Sign Up</p></a>
-    </div>
+
     <div class="menu-item">
       <a href="garbage_rules.php"><i class="fa-duotone fa-solid fa-recycle" style="font-size:26px"></i><p>Garbage_rules</p></a>
 
     </div>
-=======
     <?php if (isset($_SESSION['user_id'])): ?>
         <div class="menu-item">
             <a href="User_page.php"><i class="fas fa-user-circle icon"></i><p>user_page</p></a>
@@ -85,7 +75,6 @@ session_start();
           <a href="register.php"><i class="fas fa-user-plus icon"></i><p>Sign Up</p></a>
         </div>
     <?php endif; ?>
->>>>>>> 06b5911cb5c9a9dbadc5e92d80542cfd362f79b3
     <div class="language-selector">
         <button id="translateBtn" class="translate-btn">🌐 Translate</button>
         <div class="language-dropdown">
