@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         migrateGuestData: (guest_session_id) => api.request('migrate_guest_data', { method: 'POST', body: { guest_session_id } }),
         saveHistory: (history_html) => api.request('save_history', { method: 'POST', body: { history_html } }),
         savePinnedMessages: (messages) => api.request('save_pinned_messages', { method: 'POST', body: { pinned_messages: messages } }),
+        saveFeedback: (feedbackData) => api.request('save_feedback', { method: 'POST', body: feedbackData }),
         saveQuizResult: (result) => api.request('save_quiz_result', { method: 'POST', body: result }),
         saveLearnedTopic: (topic) => api.request('save_learned_topic', { method: 'POST', body: topic }),
         saveMistake: (mistake) => api.request('save_mistake', { method: 'POST', body: mistake }),
@@ -1269,6 +1270,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const container = feedbackBtn.parentElement;
                     container.innerHTML = `<p class="feedback-thank-you">${uiStrings[currentLanguage].feedback.thank_you}</p>`;
                     api.saveHistory(chatWindow.innerHTML).catch(e => console.error(e));
+                    // ▼▼▼【修正】フィードバックをAPIに送信 ▼▼▼
+                    const messageId = container.dataset.messageId;
+                    api.saveFeedback({ message_id: messageId, feedback_type: feedback })
+                       .catch(err => console.error("Feedback submission failed:", err));
+                    // ▲▲▲ ここまで ▲▲▲
                     return; 
                 }
 

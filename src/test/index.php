@@ -91,7 +91,11 @@ session_start();
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="dropdown-content" id="dropdown-content">
+<<<<<<< HEAD
     
+=======
+        <?php if (isset($_SESSION['user_id'])): ?>
+>>>>>>> 7494ebf7a79fe8143d4ffbc1921e9807148dcfb3
             <a href="User_page.php" data-translate="my_page_link">user_page</a>
             <a href="logout.php">logout</a>
         <a href="#">Contact</a>
@@ -123,7 +127,7 @@ session_start();
     </div>
     <?php if (isset($_SESSION['user_id'])): ?>
         <div class="menu-item">
-            <a href="./chatBOT/my_page.php"><i class="fas fa-user-circle icon"></i><p>user_page</p></a>
+            <a href="User_page.php"><i class="fas fa-user-circle icon"></i><p>user_page</p></a>
         </div>
         <div class="menu-item">
             <a href="logout.php"><i class="fas fa-sign-out-alt icon"></i><p>logout</p></a>

@@ -149,7 +149,7 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                 if (!$userId || !isset($data['guest_session_id'])) throw new Exception('User and guest must be identified for migration.', 400);
                 $guestIdToMigrate = $data['guest_session_id'];
                 
-                // ★★★ 改善点: チャット履歴の統合処理 ★★★
+                // チャット履歴の統合処理
                 $guestHistoryStmt = $pdo->prepare("SELECT history_html FROM ChatHistories WHERE guest_session_id = ?");
                 $guestHistoryStmt->execute([$guestIdToMigrate]);
                 $guestHistory = $guestHistoryStmt->fetchColumn();
@@ -159,35 +159,32 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                     $userHistoryStmt->execute([$userId]);
                     $userHistory = $userHistoryStmt->fetchColumn();
                     
-                    // ユーザー履歴とゲスト履歴を結合
                     $separator = '<div style="text-align:center; color: #888; margin: 10px 0; font-size: 12px;">--- 以前のゲストセッションの履歴 ---</div>';
                     $mergedHistory = $userHistory . $separator . $guestHistory;
 
-                    // 結合した履歴でユーザーのレコードを更新（なければ新規作成）
                     $upsertStmt = $pdo->prepare(
                         "INSERT INTO ChatHistories (user_id, history_html) VALUES (?, ?)
                          ON DUPLICATE KEY UPDATE history_html = VALUES(history_html)"
                     );
                     $upsertStmt->execute([$userId, $mergedHistory]);
                     
-                    // 移行元のゲスト履歴を削除
                     $pdo->prepare("DELETE FROM ChatHistories WHERE guest_session_id = ?")->execute([$guestIdToMigrate]);
                 }
-                // ★★★ ここまで ★★★
 
                 // 他のデータは重複を避けつつ移行
                 migrateUniqueData($pdo, 'PinnedMessages', 'message_id', $userId, $guestIdToMigrate);
                 migrateUniqueData($pdo, 'LearnedTopics', 'topic_key', $userId, $guestIdToMigrate);
                 migrateUniqueData($pdo, 'MistakeNotes', 'question_hash', $userId, $guestIdToMigrate);
+                // ▼▼▼【追加】フィードバックも移行対象に ▼▼▼
+                migrateUniqueData($pdo, 'MessageFeedback', 'message_id', $userId, $guestIdToMigrate);
 
-                // クイズ結果はそのままユーザーIDに紐付ける
                 $pdo->prepare("UPDATE QuizResults SET user_id = ?, guest_session_id = NULL WHERE guest_session_id = ?")->execute([$userId, $guestIdToMigrate]);
                 
                 $response['message'] = 'Data migration successful.';
                 break;
 
             case 'clear_history':
-                $tablesToClear = ['ChatHistories', 'PinnedMessages'];
+                $tablesToClear = ['ChatHistories', 'PinnedMessages', 'MessageFeedback'];
                 foreach ($tablesToClear as $table) {
                     $stmt = $pdo->prepare("DELETE FROM {$table} WHERE {$clause['where_clause']}");
                     $stmt->execute($clause['params']);
@@ -209,6 +206,17 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                     }
                 }
                 break;
+            // ▼▼▼【追加】フィードバック保存アクション ▼▼▼
+            case 'save_feedback':
+                $message_id = $data['message_id'] ?? null;
+                $feedback_type = $data['feedback_type'] ?? null;
+                if ($message_id && in_array($feedback_type, ['helpful', 'unhelpful'])) {
+                    $sql = "INSERT INTO MessageFeedback (message_id, feedback_type, user_id, guest_session_id) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE feedback_type = VALUES(feedback_type)";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([$message_id, $feedback_type, $userId, $guestId]);
+                }
+                break;
+            // ▲▲▲ ここまで ▲▲▲
             case 'save_quiz_result':
                 if (!$userId) break;
                 $stmt = $pdo->prepare("INSERT INTO QuizResults (user_id, difficulty, score, total) VALUES (?, ?, ?, ?)");
@@ -239,7 +247,7 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                     $stmt = $pdo->prepare("DELETE FROM LearnedTopics WHERE user_id = ? AND topic_key = ?");
                     $stmt->execute([$userId, $data['topic_key']]);
                 } elseif ($action === 'reset_all_data') {
-                    $tables = ['QuizResults', 'LearnedTopics', 'MistakeNotes', 'UserAchievements', 'PinnedMessages', 'ChatHistories'];
+                    $tables = ['QuizResults', 'LearnedTopics', 'MistakeNotes', 'UserAchievements', 'PinnedMessages', 'ChatHistories', 'MessageFeedback'];
                     foreach($tables as $table) {
                        $stmt = $pdo->prepare("DELETE FROM {$table} WHERE user_id = ?");
                        $stmt->execute([$userId]);
@@ -275,7 +283,6 @@ function migrateUniqueData($pdo, $tableName, $uniqueColumn, $userId, $guestId) {
             $guestRow['user_id'] = $userId;
             $guestRow['guest_session_id'] = null;
             $columns = array_keys($guestRow);
-            // 'id' は自動採番なのでINSERT文から除外
             $id_index = array_search('id', $columns);
             if ($id_index !== false) {
                 unset($columns[$id_index]);

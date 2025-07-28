@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+<<<<<<< HEAD
 //エラー表示を有効にする
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -8,12 +9,27 @@ error_reporting(E_ALL);
 // データベース接続の設定を読み込む
 require __DIR__ . '/backend/config.php';
 // 変数を初期化
+=======
+// エラー表示を有効にする（開発時）
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// データベース設定ファイルを読み込む
+// ★★★ パスが環境によって異なる可能性があるため、'backend/config.php'を適切なパスに修正してください ★★★
+require_once __DIR__ . '/backend/config.php';
+
+>>>>>>> 7494ebf7a79fe8143d4ffbc1921e9807148dcfb3
 $error = '';
 $username = '';
 
+<<<<<<< HEAD
 // ユーザーが既にログインしている場合は、ユーザーページへリダイレクトします
+=======
+// ユーザーが既にログインしている場合
+>>>>>>> 7494ebf7a79fe8143d4ffbc1921e9807148dcfb3
 if (isset($_SESSION['user_id'])) {
-    header("Location: User_page.php");
+    // この時点では管理者かどうかわからないため、一旦ホームページへリダイレクトするのが安全
+    header("Location: home.php");
     exit();
 }
 
@@ -26,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "すべてのフィールドに入力してください。";
     } else {
         try {
+<<<<<<< HEAD
             $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE username = ? OR email = ?");
             $stmt->execute([$username, $username]);
             $user = $stmt->fetch();
@@ -35,13 +52,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['username'] = $user['username'];
                 session_regenerate_id(true);
                 header("Location: User_page.php");
+=======
+            // is_adminカラムも取得するようにSELECT文を修正
+            $stmt = $pdo->prepare("SELECT * FROM Accounts WHERE Name = ? OR Email = ?");
+            $stmt->execute([$login_identifier, $login_identifier]);
+            $user = $stmt->fetch();
+
+            if ($user && password_verify($password, $user['Password'])) {
+                // ログイン成功
+                session_regenerate_id(true); // セキュリティ強化
+                $_SESSION['user_id'] = $user['ID'];
+                $_SESSION['username'] = $user['Name'];
+
+                // ▼▼▼【変更点】管理者かどうかをチェックし、リダイレクト先を決定 ▼▼▼
+                if (!empty($user['is_admin']) && $user['is_admin'] == 1) {
+                    // 管理者の場合は管理者ダッシュボードへ
+                    header("Location: admin/dashboard.php");
+                } else {
+                    // 一般ユーザーの場合はホームページへ
+                    header("Location: index.php");
+                }
+>>>>>>> 7494ebf7a79fe8143d4ffbc1921e9807148dcfb3
                 exit();
+                // ▲▲▲ ここまで ▲▲▲
+
             } else {
                 $error = "ユーザー名またはパスワードは間違っています。";
             }
         } catch (PDOException $e) {
+<<<<<<< HEAD
             $error = "データベースエラーが発生しました。もう一度お試しください。";
             error_log($e->getMessage());
+=======
+            // 本番環境では、より一般的なエラーメッセージを表示することを推奨します
+            $error = "データベースエラーが発生しました: " . $e->getMessage();
+>>>>>>> 7494ebf7a79fe8143d4ffbc1921e9807148dcfb3
         }
     }
 }
