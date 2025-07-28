@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const likeCountSpan = actionDiv.querySelector('.like-count');
         const dislikeCountSpan = actionDiv.querySelector('.dislike-count');
 
-        fetch('/backend/like_dislike.php', {
+        fetch('http://localhost/Challengers/System-Dev-2/src/test/backend/like_dislike.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `target_id=${postId}&target_type=post&is_like=${isLike}`
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /** Met à jour les compteurs de likes et dislikes à partir du backend. */
     function updateCounts(postId, likeCountSpan, dislikeCountSpan) {
-        fetch(`/backend/like_dislike.php?target_id=${postId}&target_type=post`)
+        fetch(`http://localhost/Challengers/System-Dev-2/src/test/backend/like_dislike.php?target_id=${postId}&target_type=post`)
             .then(res => res.json())
             .then(data => {
                 likeCountSpan.textContent = data.likes ?? 0;

@@ -91,13 +91,8 @@ session_start();
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="dropdown-content" id="dropdown-content">
-<<<<<<< HEAD
     
             <a href="User_page.php" data-translate="my_page_link">user_page</a>
-=======
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="./chatBOT/my_page.php" data-translate="my_page_link">user_page</a>
->>>>>>> a22cb9aee86b9e39d01b4d9098f407ead3d5a734
             <a href="logout.php">logout</a>
         <a href="#">Contact</a>
         <a href="./explore.php">Blog</a>
