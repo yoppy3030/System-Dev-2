@@ -55,6 +55,11 @@ session_start();
     <div class="menu-item">
       <a href="travelers_homePage.php"><i class="fa-solid fa-person-walking-luggage" style="font-size:25px;"></i><p>Travellers</p></a>
     </div>
+
+    <div class="menu-item">
+      <a href="garbage_rules.php"><i class="fa-duotone fa-solid fa-recycle" style="font-size:26px"></i><p>Garbage_rules</p></a>
+
+    </div>
     <?php if (isset($_SESSION['user_id'])): ?>
         <div class="menu-item">
             <a href="User_page.php"><i class="fas fa-user-circle icon"></i><p>user_page</p></a>
