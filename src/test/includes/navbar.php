@@ -11,6 +11,7 @@
           <li><a href="culture.html">Japanese Culture</a></li>
           <li><a href="daily-life.html">Daily Life</a></li>
           <li><a href="visa_guide_japan.php">Visa Guide</a></li>
+          <li><a href="interview_guide.php">Interview Practice Guide</a></li>
           <li><a href="job_platforms.php">Job Search Platforms</a></li>
         </ul>
       </li>
