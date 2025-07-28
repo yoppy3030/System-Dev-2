@@ -496,6 +496,8 @@ function addComment(postId, parentCommentId, content, callback) {
             throw new Error('ネットワーク応答が正常ではありませんでした'); // Network response was not ok
         }
         return res.json();
+        
+        
     })
     .then(data => {
         if (data.success) {

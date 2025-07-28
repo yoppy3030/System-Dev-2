@@ -19,6 +19,8 @@ function get_flash_message() {
         return $message;
     }
     return null;
+    
+    
 }
 
 // Get user info

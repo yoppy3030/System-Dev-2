@@ -8,6 +8,8 @@ session_start();
 //セッションを開始する
 require __DIR__ . '/config.php';
 
+
+
 header('Content-Type: application/json'); //json形式でのレスポンスを設定
 
 $response = ['success' => false, 'message' => '']; // 統一されたレスポンス構造
