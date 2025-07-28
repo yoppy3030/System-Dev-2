@@ -5,44 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Professional Life in Japan</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="./css/professional.css">
+  <link rel="stylesheet" href="./css/unified.css">
 </head>
 <body>
   <!-- Navigation Bar -->
- <header class="site-header">
-  <div class="logo">JAPAN Life Manual</div>
-  <nav class="main-nav">
-    <ul>
-      <li><a href="index.php">Home</a></li>
-
-      <li class="dropdown">
-        <a href="#">Others ▾</a>
-        <ul class="dropdown-menu">
-          <li><a href="culture.html">Japanese Culture</a></li>
-          <li><a href="daily-life.html">Daily Life</a></li>
-          <li><a href="visa_guide_japan.php">Visa Guide</a></li>
-        </ul>
-      </li>
-
-      <li><a href="studenthome.php">Student</a></li>
-      <li><a href="travelers_homePage.php">Traveler</a></li>
-      <li><a href="about.html">About</a></li>
-
-      <li class="language-selector">
-        <button id="translateBtn" class="translate-btn">🌐 Translate</button>
-        <div class="language-dropdown">
-          <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
-          <button class="language-option" data-lang="en">🇺🇸 English</button>
-          <button class="language-option" data-lang="zh">🇨🇳 中文</button>
-        </div>
-      </li>
-    </ul>
-  </nav>
-</header>
+  <?php include 'includes/navbar.php'; ?>
 
   <!-- Hero Section -->
   <section class="hero" style="background-image: url('./img/japan_visa.jpg');">
-    <div class="hero-text">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
       <h1>Visa Guide for Working in Japan</h1>
       <p style="font-weight: bold; font-size: 20px">Everything you need to know to get legally employed in Japan</p>
     </div>
@@ -50,7 +22,7 @@
 
   <!-- Main Content -->
   <main class="main-content">
-    <section class="section">
+    <section class="info-block">
       <h2>📌 Common Work Visa Types</h2>
       <ul>
         <li><strong>Engineer/Specialist in Humanities/International Services:</strong> Most common visa for IT, engineers, translators, etc.</li>
@@ -61,7 +33,7 @@
       </ul>
     </section>
 
-    <section class="section">
+    <section class="info-block">
       <h2>📝 General Requirements</h2>
       <ul>
         <li>A valid job offer from a Japanese employer</li>
@@ -72,7 +44,7 @@
       </ul>
     </section>
 
-    <section class="section">
+    <section class="info-block">
       <h2>🔄 Application Process</h2>
       <ol>
         <li>Get a job offer from a Japanese company</li>
@@ -83,7 +55,7 @@
       </ol>
     </section>
 
-    <section class="section">
+    <section class="info-block">
       <h2>📂 Optional: Supporting Documents</h2>
       <ul>
         <li><a href="./docs/visa_application_sample.pdf" target="_blank">Sample Visa Application Form (PDF)</a></li>
@@ -113,6 +85,7 @@
       <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
     </div>
   </footer>
+
   <script src="./js/shared-nav.js"></script>
 </body>
 </html>
