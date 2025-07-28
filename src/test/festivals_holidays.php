@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Festivals & National Holidays | JAPAN Life Manual</title>
-  <link rel="stylesheet" href="./css/professional.css" />
+  <link rel="stylesheet" href="./css/unified.css" />
 </head>
 <body>
   <!-- Navigation Bar -->

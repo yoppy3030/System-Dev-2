@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Culture | JAPAN Life Manual</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-  <link rel="stylesheet" href="./css/professional.css" />
+  <link rel="stylesheet" href="./css/unified.css" />
 </head>
 <body>
   <!-- Navigation Bar -->
@@ -47,14 +47,14 @@
     <div class="card-style-section">
       <h2><i class="fas fa-handshake"></i> Cultural Etiquette in Japan</h2>
       <p>From bowing to footwear rules, etiquette in Japan reflects deep respect and tradition in daily life.</p>
-      <a href="cultural_etiquette_japan.html" class="details-btn">Read More</a>
+      <a href="cultural_etiquette_japan.php" class="details-btn">Read More</a>
     </div>
 
     <!-- Festivals & Holidays -->
     <div class="card-style-section">
       <h2><i class="fas fa-calendar-alt"></i> Festivals & National Holidays</h2>
       <p>Explore Japan's vibrant annual celebrations and how locals honor tradition through festivals and public holidays.</p>
-      <a href="festivals_holidays.html" class="details-btn">Read More</a>
+      <a href="festivals_holidays.php" class="details-btn">Read More</a>
     </div>
 
   </main>

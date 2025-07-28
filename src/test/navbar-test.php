@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Navbar Test | JAPAN Life Manual</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="./css/professional.css"/>
+  <link rel="stylesheet" href="./css/unified.css"/>
   <style>
     .test-info {
       background: #f0f0f0;
       padding: 20px;
       margin: 20px;
       border-radius: 8px;
-      border-left: 4px solid #b71c1c;
+      border-left: 4px solid #1e40af;
     }
     .test-info h3 {
-      color: #b71c1c;
+      color: #1e40af;
       margin-bottom: 10px;
     }
     .test-info ul {
@@ -40,9 +40,10 @@
         <ul>
           <li>Same navbar across all pages</li>
           <li>Working dropdown menus (from professional.php)</li>
-          <li>Consistent styling with professional.css</li>
+          <li>Consistent styling with unified.css</li>
           <li>PHP include approach (no JavaScript conflicts)</li>
           <li>All pages accessible through dropdowns</li>
+          <li>Better contrast and visibility</li>
         </ul>
       </div>
 
