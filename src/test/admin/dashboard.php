@@ -35,6 +35,7 @@ $username = $_SESSION['username'] ?? 'Admin';
     <title>管理者ダッシュボード</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="admin.css">
 </head>
 <body class="bg-gray-100">
@@ -57,6 +58,12 @@ $username = $_SESSION['username'] ?? 'Admin';
                     <i class="fas fa-edit fa-fw mr-3"></i>
                     コンテンツ管理
                 </a>
+                <!-- ▼▼▼【追加】お問い合わせ管理メニュー ▼▼▼ -->
+                <a href="#inquiry-management" class="nav-link flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <i class="fas fa-envelope fa-fw mr-3"></i>
+                    お問い合わせ管理
+                </a>
+                <!-- ▲▲▲ -->
             </nav>
             <div class="px-8 py-4 border-t border-gray-700">
                 <a href="../logout.php" class="flex items-center text-gray-300 hover:text-white">
@@ -91,12 +98,30 @@ $username = $_SESSION['username'] ?? 'Admin';
                             <p class="text-3xl font-bold text-gray-800 mt-2" id="unhelpful-feedback-count">--</p>
                         </div>
                     </div>
+                    <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-gray-600 mb-4">過去7日間の新規ユーザー登録数</h3>
+                        <div class="h-80">
+                            <canvas id="userRegistrationChart"></canvas>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- User Management Section -->
                 <section id="user-management" class="admin-section hidden mt-12">
                     <h2 class="text-2xl font-semibold text-gray-700 mb-6">ユーザー管理</h2>
                     <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <select id="user-filter-role" class="form-select w-auto">
+                                <option value="all">すべての権限</option>
+                                <option value="admin">管理者</option>
+                                <option value="general">一般ユーザー</option>
+                            </select>
+                            <div class="relative flex-1">
+                                <input type="text" id="user-filter-input" placeholder="名前 or Emailで検索..." class="form-input w-full">
+                                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                            <div id="user-count-display" class="text-sm text-gray-600 whitespace-nowrap"></div>
+                        </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
                                 <thead>
@@ -120,7 +145,6 @@ $username = $_SESSION['username'] ?? 'Admin';
                                 <i class="fas fa-plus mr-2"></i>新しいクイズを追加
                             </button>
                         </div>
-                        <!-- ▼▼▼【修正】絞り込み機能のレイアウト変更 ▼▼▼ -->
                         <div class="flex items-center gap-4 mb-4">
                             <select id="quiz-filter-difficulty" class="form-select w-auto">
                                 <option value="all">すべての難易度</option>
@@ -133,7 +157,6 @@ $username = $_SESSION['username'] ?? 'Admin';
                                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                             </div>
                         </div>
-                        <!-- ▲▲▲ ここまで ▲▲▲ -->
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
                                 <thead>
@@ -146,12 +169,36 @@ $username = $_SESSION['username'] ?? 'Admin';
                         </div>
                     </div>
                 </section>
+                
+                <!-- ▼▼▼【追加】Inquiry Management Section ▼▼▼ -->
+                <section id="inquiry-management" class="admin-section hidden mt-12">
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">お問い合わせ管理</h2>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="text-xs font-semibold tracking-wide text-gray-500 uppercase border-b bg-gray-50">
+                                        <th class="px-4 py-3">ID</th>
+                                        <th class="px-4 py-3">日時</th>
+                                        <th class="px-4 py-3">名前</th>
+                                        <th class="px-4 py-3">Email</th>
+                                        <th class="px-4 py-3">内容</th>
+                                        <th class="px-4 py-3">ステータス</th>
+                                        <th class="px-4 py-3">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y" id="inquiry-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <!-- ▲▲▲ -->
             </main>
         </div>
     </div>
 
     <!-- Modals -->
-    <!-- User Delete Modal -->
+    <!-- (省略: 既存のユーザー・クイズモーダルは変更なし) -->
     <div id="delete-confirm-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <h3 class="text-xl font-bold text-gray-800 mb-4">ユーザーの削除</h3>
@@ -166,7 +213,6 @@ $username = $_SESSION['username'] ?? 'Admin';
             </div>
         </div>
     </div>
-    <!-- User Edit Modal -->
     <div id="edit-user-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
             <form id="edit-user-form">
@@ -201,8 +247,6 @@ $username = $_SESSION['username'] ?? 'Admin';
             </form>
         </div>
     </div>
-    
-    <!-- Quiz Editor Modal -->
     <div id="quiz-editor-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
         <form id="quiz-editor-form" class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
             <div class="p-6 border-b">
@@ -281,8 +325,6 @@ $username = $_SESSION['username'] ?? 'Admin';
             </div>
         </form>
     </div>
-
-    <!-- Quiz Delete Modal -->
     <div id="delete-quiz-confirm-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <h3 class="text-xl font-bold text-gray-800 mb-4">クイズの削除</h3>
@@ -297,6 +339,43 @@ $username = $_SESSION['username'] ?? 'Admin';
             </div>
         </div>
     </div>
+    
+    <!-- ▼▼▼【追加】Inquiry Reply Modal ▼▼▼ -->
+    <div id="reply-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
+        <form id="reply-form" class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <input type="hidden" name="inquiry_id">
+            <input type="hidden" name="recipient_email">
+            <input type="hidden" name="recipient_name">
+            <div class="p-6 border-b">
+                <h3 class="text-xl font-bold text-gray-800">お問い合わせに返信</h3>
+            </div>
+            <div class="p-6 space-y-4 overflow-y-auto flex-1">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">宛先</label>
+                    <p id="reply-recipient" class="mt-1 text-gray-800"></p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">元のメッセージ</label>
+                    <div id="original-message" class="mt-1 p-3 bg-gray-100 border rounded-md text-gray-700 max-h-40 overflow-y-auto"></div>
+                </div>
+                <div>
+                    <label for="reply-subject" class="block text-sm font-medium text-gray-700">件名</label>
+                    <input type="text" id="reply-subject" name="subject" class="form-input mt-1" value="お問い合わせありがとうございます" required>
+                </div>
+                <div>
+                    <label for="reply-message" class="block text-sm font-medium text-gray-700">返信内容</label>
+                    <textarea id="reply-message" name="message" rows="8" class="form-input mt-1" required></textarea>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-6 py-4 flex justify-end gap-4 rounded-b-lg border-t">
+                <button type="button" id="back-reply-btn" class="bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition-colors">戻る</button>
+                <button type="submit" id="send-reply-btn" class="bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition-colors flex items-center gap-2">
+                    <i class="fas fa-paper-plane"></i>送信
+                </button>
+            </div>
+        </form>
+    </div>
+    <!-- ▲▲▲ -->
 
 
     <script>
