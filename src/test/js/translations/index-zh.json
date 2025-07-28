@@ -1,6 +1,5 @@
 {
     "translations": {
-        "Japan life Manual": "日本生活手册",
         "🌐 Translate": "🌐 翻译",
         "DISCOVER JAPAN": "探索日本",
         "Welcome to JAPAN Life Manual, your essential guide to navigating life in Japan with ease and peace of mind. Explore our resources for a smooth and enriching integration.": "欢迎来到日本生活手册，这是您在日本轻松安心生活的必备指南。探索我们的资源，实现顺利而充实的融入。",
@@ -18,14 +17,13 @@
         "Email:": "电子邮箱：",
         "Address:": "地址：",
         "Phone:": "电话：",
-        "Japan life Manual": "日本生活手册",
         "All rights reserved.": "版权所有。",
         "Menu": "菜单",
         "Contact": "联系方式",
-        "Blog": "博客",
         "HOME": "首页",
         "Student": "学生",
         "Professional": "专业人士",
+        "Admin Dashboard": "管理后台",
         "user_page": "我的页面",
         "login": "登录",
         "logout": "登出",
