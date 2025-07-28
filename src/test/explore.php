@@ -80,14 +80,14 @@ try {
             </div>
             <ul class="sidebar-menu">
                 <li><a href="User_page.php"><i class="fas fa-arrow-left"></i> Back to Profile</a></li>
-                <li><a href="#"><i class="fas fa-chart-line"></i> Popular</a></li>
-                <li><a href="#"><i class="fas fa-fire"></i> Trending</a></li>
-                <li><a href="#"><i class="fas fa-users"></i> Communities</a></li>
-                <li><a href="#"><i class="fas fa-calendar-alt"></i> Events</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Popular<span class="beta">in DEV</span></a></li>
+                <li><a href="#"><i class="fas fa-fire"></i> Trending<span class="beta">in DEV</span></a></li>
+                <li><a href="#"><i class="fas fa-users"></i> Communities<span class="beta">in DEV</span></a></li>
+                <li><a href="#"><i class="fas fa-calendar-alt"></i> Events<span class="beta">in DEV</span></a></li>
                 <li class="section-title">TOPICS</li>
-                <li><a href="#"><i class="fas fa-microchip"></i> Technology</a></li>
-                <li><a href="#"><i class="fas fa-star"></i> Pop Culture</a></li>
-                <li><a href="#"><i class="fas fa-film"></i> Films & TV</a></li>
+                <li><a href="#"><i class="fas fa-microchip"></i> Technology<span class="beta">in DEV</span></a></li>
+                <li><a href="#"><i class="fas fa-star"></i> Pop Culture<span class="beta">in DEV</span></a></li>
+                <li><a href="#"><i class="fas fa-film"></i> Films & TV<span class="beta">in DEV</span></a></li>
                 <li class="section-title">RESSOURCES</li>
                 <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
                 <li><a href="#"><i class="fas fa-flask"></i> More Settings <span class="beta">in DEV</span></a></li>

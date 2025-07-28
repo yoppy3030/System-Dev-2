@@ -26,13 +26,9 @@ session_start();
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="dropdown-content" id="dropdown-content">
-        <?php if (isset($_SESSION['user_id'])): ?>
+    
             <a href="User_page.php" data-translate="my_page_link">user_page</a>
             <a href="logout.php">logout</a>
-        <?php else: ?>
-            <a href="login.php">login</a>
-            <a href="register.php">Sign Up</a>
-        <?php endif; ?>
         <a href="#">Contact</a>
         <a href="./explore.php">Blog</a>
     </div>

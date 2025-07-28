@@ -27,16 +27,27 @@ $charset = 'utf8mb4';
 // データソース名 (DSN)
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
-// PDO接続オプション
 $options = [
-    // エラー発生時に例外をスローする
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    // 結果を連想配列として取得する
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    // プリペアドステートメントのエミュレーションを無効にする
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
+try {
+    $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (PDOException $e) {
+    throw new PDOException($e->getMessage(), (int)$e->getCode());
+}
+
+// PDO接続オプション
+// $options = [
+//     // エラー発生時に例外をスローする
+//     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+//     // 結果を連想配列として取得する
+//     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+//     // プリペアドステートメントのエミュレーションを無効にする
+//     PDO::ATTR_EMULATE_PREPARES   => false,
+// ];
 
 // 4. PDOインスタンスを作成します。
 // 接続に失敗した場合、PDOは自動的にPDOExceptionをスローします。
-$pdo = new PDO($dsn, $user, $pass, $options);
+//$pdo = new PDO($dsn, $user, $pass, $options);
