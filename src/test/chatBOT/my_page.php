@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// ★★★ 修正点: CSRFトークンを生成または取得 ★★★
+// CSRFトークンを生成または取得
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -25,12 +25,428 @@ $csrfToken = $_SESSION['csrf_token'];
     <title><?php echo htmlspecialchars($_SESSION['username'] ?? 'Guest'); ?>さんのマイページ - Japan Life Manual</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="./css/my_page.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* my_page.css */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #f3f4f6; /* gray-100 */
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #reset-progress-btn {
+            cursor: pointer;
+        }
+
+        .section-title {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 700; /* font-bold */
+            color: #1f2937; /* gray-800 */
+            padding-bottom: 0.5rem; /* pb-2 */
+            border-bottom: 2px solid #e5e7eb; /* border-b-2 border-gray-200 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+
+        .section-title.\!mb-0 {
+            margin-bottom: 0 !important;
+        }
+        .section-title.\!border-b-0 {
+            border-bottom: 0 !important;
+        }
+
+        .difficulty-card {
+            padding: 1rem; /* p-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            border-width: 1px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .difficulty-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        .flashcard {
+            background-color: transparent;
+            aspect-ratio: 3 / 2;
+            perspective: 1000px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .flashcard:hover {
+            transform: translateY(-5px);
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+            border-radius: 0.75rem; /* rounded-xl */
+        }
+
+        .flashcard.is-flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 0.75rem; /* rounded-xl */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .flashcard-front {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+        }
+
+        .flashcard-back {
+            background-color: #f3f4f6; /* gray-100 */
+            color: #1f2937;
+            transform: rotateY(180deg);
+            overflow-y: auto;
+            justify-content: flex-start;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .flashcard-back p {
+            width: 100%;
+        }
+
+        .delete-topic-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(200, 200, 200, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            line-height: 24px;
+            text-align: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
+            z-index: 10;
+        }
+
+        .flashcard:hover .delete-topic-btn {
+            opacity: 1;
+        }
+
+        .delete-topic-btn:hover {
+            background-color: #ef4444; /* red-500 */
+        }
+
+        /* 間違いノートのスタイル */
+        .mistake-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: #fef2f2; /* red-50 */
+            border: 1px solid #fecaca; /* red-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+        }
+
+        .mistake-item p {
+            color: #991b1b; /* red-800 */
+            font-weight: 500;
+        }
+
+        .mistake-challenge-btn {
+            background-color: #ef4444; /* red-500 */
+            color: white;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem; /* rounded-md */
+            transition: background-color 0.2s;
+        }
+
+        .mistake-challenge-btn:hover {
+            background-color: #dc2626; /* red-600 */
+        }
+
+        #mistake-modal-options .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+        }
+
+        #mistake-modal-options .option-btn:hover {
+            background-color: #f9fafb;
+            border-color: #3b82f6;
+        }
+
+        #mistake-modal-options .option-btn.correct {
+            background-color: #dcfce7; /* green-100 */
+            border-color: #4ade80; /* green-400 */
+            color: #166534; /* green-800 */
+        }
+
+        #mistake-modal-options .option-btn.incorrect {
+            background-color: #fee2e2; /* red-100 */
+            border-color: #f87171; /* red-400 */
+            color: #991b1b; /* red-800 */
+        }
+
+
+        /* アチーブメントシステムのスタイル */
+        #achievements-list .achievement-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb; /* gray-200 */
+            background-color: #f9fafb; /* gray-50 */
+            transition: all 0.3s ease;
+        }
+
+        #achievements-list .achievement-item.unlocked {
+            background-color: #fefce8; /* yellow-50 */
+            border-color: #fde047; /* yellow-400 */
+            transform: scale(1.02);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        #achievements-list .achievement-icon {
+            font-size: 2rem;
+            color: #d1d5db; /* gray-300 */
+            width: 40px;
+            text-align: center;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        #achievements-list .achievement-item.unlocked .achievement-icon {
+            color: #f59e0b; /* amber-500 */
+            transform: rotate(-10deg) scale(1.1);
+        }
+
+        #achievements-list .achievement-details {
+            flex-grow: 1;
+        }
+
+        #achievements-list .achievement-title {
+            font-weight: 600;
+            color: #9ca3af; /* gray-400 */
+        }
+
+        #achievements-list .achievement-item.unlocked .achievement-title {
+            color: #a16207; /* yellow-700 */
+        }
+
+        #achievements-list .achievement-description {
+            font-size: 0.875rem;
+            color: #d1d5db; /* gray-300 */
+        }
+
+        #achievements-list .achievement-item.unlocked .achievement-description {
+            color: #4b5563; /* gray-600 */
+        }
+
+        /* =========================================
+           ★★★ START: DARK MODE STYLES ★★★
+           ========================================= */
+
+        html.dark body {
+            background-color: #111827; /* gray-900 */
+            color: #d1d5db; /* gray-300 */
+        }
+        
+        html.dark header {
+            background-color: #1f2937; /* gray-800 */
+            border-bottom: 1px solid #374151; /* gray-700 */
+        }
+
+        html.dark header a, html.dark header span {
+            color: #d1d5db; /* gray-300 */
+        }
+        html.dark header a:hover {
+            color: #ffffff; /* white */
+        }
+        html.dark header .font-bold {
+            color: #f9fafb; /* gray-50 */
+        }
+
+        /* ▼▼▼【修正】メインコンテンツのタイトル色を修正 ▼▼▼ */
+        html.dark main h1 {
+            color: #f9fafb; /* gray-50 */
+        }
+        /* ▲▲▲ ここまで ▲▲▲ */
+
+        html.dark .section-title {
+            color: #f3f4f6; /* gray-100 */
+            border-bottom-color: #374151; /* gray-700 */
+        }
+        html.dark #language-switcher-mypage, html.dark #topic-sort-select {
+            background-color: #374151; /* gray-700 */
+            color: #d1d5db; /* gray-300 */
+            border-color: #4b5563; /* gray-600 */
+        }
+        html.dark section {
+            background-color: #1f2937; /* gray-800 */
+        }
+        html.dark #quiz-data-display .bg-sky-50 { background-color: #0c4a6e !important; }
+        html.dark #quiz-data-display .text-sky-800 { color: #bae6fd !important; }
+        html.dark #quiz-data-display .text-sky-900 { color: #e0f2fe !important; }
+        html.dark #quiz-data-display .bg-indigo-50 { background-color: #3730a3 !important; }
+        html.dark #quiz-data-display .text-indigo-800 { color: #c7d2fe !important; }
+        html.dark #quiz-data-display .text-indigo-900 { color: #e0e7ff !important; }
+        html.dark .h-80.bg-gray-50 { background-color: #374151 !important; }
+
+        html.dark .difficulty-card {
+            border-color: #4b5563; /* gray-600 */
+        }
+        html.dark .difficulty-card.bg-green-50 { background-color: #064e3b !important; }
+        html.dark .difficulty-card .text-green-800 { color: #a7f3d0 !important; }
+        html.dark .difficulty-card .text-green-600 { color: #6ee7b7 !important; }
+        html.dark .difficulty-card.bg-yellow-50 { background-color: #78350f !important; }
+        html.dark .difficulty-card .text-yellow-800 { color: #fde68a !important; }
+        html.dark .difficulty-card .text-yellow-600 { color: #fcd34d !important; }
+        html.dark .difficulty-card.bg-red-50 { background-color: #7f1d1d !important; }
+        html.dark .difficulty-card .text-red-800 { color: #fca5a5 !important; }
+        html.dark .difficulty-card .text-red-600 { color: #f87171 !important; }
+
+        html.dark .flashcard-front {
+            background-color: #374151; /* gray-700 */
+            border-color: #4b5563; /* gray-600 */
+        }
+        html.dark .flashcard-front .text-gray-800 {
+            color: #f3f4f6; /* gray-100 */
+        }
+        html.dark .flashcard-front .text-gray-400 {
+            color: #9ca3af; /* gray-400 */
+        }
+        html.dark .flashcard-back {
+            background-color: #4b5563; /* gray-600 */
+            color: #d1d5db; /* gray-300 */
+        }
+        html.dark .flashcard-back .border-gray-300 {
+            border-color: #6b7280; /* gray-500 */
+        }
+
+        html.dark .mistake-item {
+            background-color: #7f1d1d; /* red-800 */
+            border-color: #991b1b; /* red-900 */
+        }
+        html.dark .mistake-item p {
+            color: #fecaca; /* red-200 */
+        }
+        html.dark .mistake-challenge-btn {
+            background-color: #b91c1c; /* red-700 */
+        }
+        html.dark .mistake-challenge-btn:hover {
+            background-color: #991b1b; /* red-800 */
+        }
+        html.dark #mistake-retry-modal .bg-white {
+            background-color: #374151; /* gray-700 */
+        }
+        html.dark #mistake-retry-modal .bg-gray-50 {
+            background-color: #1f2937; /* gray-800 */
+        }
+        html.dark #mistake-modal-question {
+            color: #f3f4f6; /* gray-100 */
+        }
+        html.dark #mistake-modal-options .option-btn {
+            background-color: #4b5563; /* gray-600 */
+            border-color: #6b7280; /* gray-500 */
+            color: #d1d5db; /* gray-300 */
+        }
+        html.dark #mistake-modal-options .option-btn:hover {
+            border-color: #3b82f6; /* blue-500 */
+        }
+        html.dark #mistake-modal-feedback.text-green-600 { color: #6ee7b7 !important; }
+        html.dark #mistake-modal-feedback.text-red-600 { color: #f87171 !important; }
+        html.dark #mistake-modal-close-btn {
+            background-color: #4b5563; /* gray-600 */
+            color: #d1d5db; /* gray-300 */
+        }
+        html.dark #mistake-modal-close-btn:hover {
+            background-color: #6b7280; /* gray-500 */
+        }
+
+        html.dark #achievements-list .achievement-item {
+            background-color: #374151; /* gray-700 */
+            border-color: #4b5563; /* gray-600 */
+        }
+        html.dark #achievements-list .achievement-item.unlocked {
+            background-color: #78350f; /* amber-800 */
+            border-color: #f59e0b; /* amber-500 */
+        }
+        html.dark #achievements-list .achievement-icon {
+            color: #6b7280; /* gray-500 */
+        }
+        html.dark #achievements-list .achievement-item.unlocked .achievement-icon {
+            color: #f59e0b; /* amber-500 */
+        }
+        html.dark #achievements-list .achievement-title {
+            color: #9ca3af; /* gray-400 */
+        }
+        html.dark #achievements-list .achievement-item.unlocked .achievement-title {
+            color: #fde68a; /* yellow-200 */
+        }
+        html.dark #achievements-list .achievement-description {
+            color: #6b7280; /* gray-500 */
+        }
+        html.dark #achievements-list .achievement-item.unlocked .achievement-description {
+            color: #d1d5db; /* gray-300 */
+        }
+        html.dark #confirm-modal .bg-white {
+            background-color: #374151; /* gray-700 */
+        }
+        html.dark #confirm-modal h3, html.dark #confirm-modal p {
+            color: #f3f4f6; /* gray-100 */
+        }
+        html.dark #cancel-reset-btn {
+            background-color: #4b5563; /* gray-600 */
+            color: #d1d5db; /* gray-300 */
+        }
+        html.dark #cancel-reset-btn:hover {
+            background-color: #6b7280; /* gray-500 */
+        }
+        html.dark .text-gray-500 {
+            color: #9ca3af; /* gray-400 */
+        }
+        
+        /* Chart.js Dark Mode */
+        html.dark .chartjs-render-monitor {
+            color: #d1d5db;
+        }
+        html.dark .tick {
+            color: #9ca3af;
+        }
+        /* =========================================
+           ★★★ END: DARK MODE STYLES ★★★
+           ========================================= */
+    </style>
 </head>
 <body class="bg-gray-100">
 
-    <!-- ★★★ 修正点: CSRFトークンをJavaScriptに渡すためのscriptタグを追加 ★★★ -->
+    <!-- CSRFトークンをJavaScriptに渡すためのscriptタグ -->
     <script>
         const CSRF_TOKEN = '<?php echo $csrfToken; ?>';
     </script>
@@ -44,12 +460,16 @@ $csrfToken = $_SESSION['csrf_token'];
             <div class="flex items-center gap-4">
                 <a href="../index.php" class="text-gray-600 hover:text-sky-600" data-translate="back_to_home">ホームに戻る</a>
                  <div class="language-selector-mypage">
-                    <select id="language-switcher-mypage" class="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                    <select id="language-switcher-mypage" class="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white">
                         <option value="ja">日本語</option>
                         <option value="en">English</option>
                         <option value="zh">中文</option>
                     </select>
                 </div>
+                <!-- ダークモード切り替えボタン -->
+                <button id="dark-mode-toggle" class="p-2 rounded-full text-gray-600 hover:bg-gray-200 transition-colors focus:outline-none">
+                    <i class="fas fa-moon"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -194,5 +614,65 @@ $csrfToken = $_SESSION['csrf_token'];
 
     <script src="./js/knowledge.js"></script>
     <script src="./js/my_page.js"></script>
+    
+    <script>
+        /**
+         * dark-mode.js
+         * サイト全体のダークモードとライトモードの切り替えを管理します。
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleButton = document.getElementById('dark-mode-toggle');
+            const htmlElement = document.documentElement; 
+
+            if (!toggleButton) {
+                return;
+            }
+
+            const toggleIcon = toggleButton.querySelector('i');
+
+            /**
+             * テーマを適用し、状態をlocalStorageに保存します
+             * @param {string} theme - 'dark' または 'light'
+             */
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    htmlElement.classList.add('dark');
+                    if (toggleIcon) {
+                        toggleIcon.classList.remove('fa-moon');
+                        toggleIcon.classList.add('fa-sun');
+                    }
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    htmlElement.classList.remove('dark');
+                    if (toggleIcon) {
+                        toggleIcon.classList.remove('fa-sun');
+                        toggleIcon.classList.add('fa-moon');
+                    }
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+
+            // 切り替えボタンのクリックイベント
+            toggleButton.addEventListener('click', () => {
+                if (htmlElement.classList.contains('dark')) {
+                    applyTheme('light');
+                } else {
+                    applyTheme('dark');
+                }
+            });
+
+            // ページの読み込み時にテーマを決定
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme) {
+                applyTheme(savedTheme); // 保存された設定を優先
+            } else if (prefersDark) {
+                applyTheme('dark'); // OSの設定がダークモードの場合
+            } else {
+                applyTheme('light'); // デフォルト
+            }
+        });
+    </script>
 </body>
 </html>

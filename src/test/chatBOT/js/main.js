@@ -1384,9 +1384,7 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleChat(!isVisible);
         });
         
-        // ★★★★★ ここからが修正箇所 ★★★★★
         document.addEventListener('click', (e) => {
-            // --- 設定メニューを閉じるロジック ---
             if (settingsBtn && settingsContent && !settingsContent.classList.contains('hidden')) {
                 if (!settingsContent.contains(e.target) && !settingsBtn.contains(e.target)) {
                     settingsContent.classList.add('hidden');
@@ -1394,36 +1392,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         
-            // --- モーダルを閉じるロジック ---
-            // クリックがモーダル本体（背景）で行われた場合、そのモーダルを閉じる
             if (!pinnedModal.classList.contains('hidden') && e.target === pinnedModal) {
                 pinnedModal.classList.add('hidden');
-                return; // ★★★ 追加: これ以降の処理を中断
+                return;
             }
             if (!faqModal.classList.contains('hidden') && e.target === faqModal) {
                 faqModal.classList.add('hidden');
                 showWelcomeMenu();
-                return; // ★★★ 追加: これ以降の処理を中断
+                return;
             }
             if (!roleplayModal.classList.contains('hidden') && e.target === roleplayModal) {
                 roleplayModal.classList.add('hidden');
                 endRolePlay();
-                return; // ★★★ 追加: これ以降の処理を中断
+                return;
             }
         
-            // --- チャットボット本体を閉じるロジック ---
             if (chatModal.style.display !== 'flex') return;
         
-            // クリックがチャットボット本体の内側か、オープンボタンかを確認
             const isClickInsideChat = chatModal.contains(e.target);
             const isClickOnOpenButton = openButton.contains(e.target);
             
-            // モーダルが開いている場合は、このロジックはすでにreturnされているはず
-            // そのため、ここではチャットボットの外側がクリックされたかどうかだけを判定すれば良い
             if (!isClickInsideChat && !isClickOnOpenButton) {
                 toggleChat(false);
             }
         });
-        // ★★★★★ ここまでが修正箇所 ★★★★★
     }
 });
