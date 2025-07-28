@@ -1,9 +1,9 @@
 <?php
-// ★★★ 追加: セッションを開始して、ログイン状態を読み込めるようにします ★★★
+// セッションを開始して、ログイン状態を読み込めるようにします
 session_start();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,6 +18,71 @@ session_start();
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- ChatBOTのCSSを読み込み -->
   <link rel="stylesheet" href="./chatBOT/css/ChatBOT.css">
+
+  <!-- ★★★ 追加: ダークモード用のスタイルを直接埋め込み ★★★ -->
+  <style>
+    /* ダークモードの基本設定 */
+    html.dark body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+    html.dark header {
+        background-color: #1e1e1e;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        border-bottom: 1px solid #333;
+    }
+    html.dark .logo h3, html.dark .menu-item a, html.dark .dropdown-btn {
+        color: #d1d5db;
+    }
+    html.dark .dropdown-content {
+        background-color: #2a2a2e;
+        border: 1px solid #444;
+    }
+    html.dark .dropdown-content a {
+        color: #d1d5db;
+    }
+    html.dark .dropdown-content a:hover {
+        background-color: #3f3f44;
+    }
+    html.dark .language-dropdown {
+        background-color: #2a2a2e;
+        border: 1px solid #444;
+    }
+    html.dark .language-option {
+        color: #d1d5db;
+    }
+    html.dark .language-option:hover {
+        background-color: #3f3f44;
+    }
+    html.dark .hero-title h1, html.dark .about-section h3, html.dark .blog h3, html.dark .product-info h1 {
+        color: #e0e0e0;
+    }
+    html.dark .hero-description p, html.dark .blog-content p, html.dark .product-info .description {
+        color: #a0a0a0;
+    }
+    html.dark .about-section > div, html.dark .blog-post, html.dark .product-container {
+        background-color: #1e1e1e;
+        border: 1px solid #333;
+    }
+    html.dark .about-section p:last-child {
+        background-color: #2a2a2e;
+    }
+    /* ★★★ 変更点: 天気ウィジェットのダークモードスタイル ★★★ */
+    html.dark #weather-widget {
+        background-color: #1e1e1e;
+        border: 1px solid #444;
+    }
+    html.dark #weather-city, html.dark #weather-temp {
+        color: #e0e0e0;
+    }
+    html.dark footer {
+        background-color: #1e1e1e;
+        border-top: 1px solid #333;
+    }
+    html.dark .footer-content p, html.dark .footer-content a {
+        color: #a0a0a0;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -27,7 +92,7 @@ session_start();
     </button>
     <div class="dropdown-content" id="dropdown-content">
         <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="User_page.php" data-translate="my_page_link">user_page</a>
+            <a href="./chatBOT/my_page.php" data-translate="my_page_link">user_page</a>
             <a href="logout.php">logout</a>
         <?php else: ?>
             <a href="login.php">login</a>
@@ -62,7 +127,7 @@ session_start();
     </div>
     <?php if (isset($_SESSION['user_id'])): ?>
         <div class="menu-item">
-            <a href="User_page.php"><i class="fas fa-user-circle icon"></i><p>user_page</p></a>
+            <a href="./chatBOT/my_page.php"><i class="fas fa-user-circle icon"></i><p>user_page</p></a>
         </div>
         <div class="menu-item">
             <a href="logout.php"><i class="fas fa-sign-out-alt icon"></i><p>logout</p></a>
@@ -83,6 +148,9 @@ session_start();
             <button class="language-option" data-lang="zh">🇨🇳 中文</button>
         </div>
     </div>
+    <button id="dark-mode-toggle" class="ml-4 p-2 rounded-full text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors focus:outline-none">
+        <i class="fas fa-moon"></i>
+    </button>
   </header>
 <main>
     <div class="weather-main-display">
@@ -212,7 +280,6 @@ session_start();
                     <div class="border-t border-gray-200 my-1"></div>
 
                     <div class="py-2 px-4">
-                        <!-- ★★★ 修正点: pタグにIDを追加 ★★★ -->
                         <p id="theme-selection-label" class="text-gray-800 font-semibold" data-translate="theme_selection">テーマ選択</p>
                     </div>
                     <a class="cb-theme-option" data-theme="simple"><i class="fas fa-square fa-fw"></i> <span data-translate="theme_simple">シンプル</span></a>
@@ -224,7 +291,6 @@ session_start();
                     <div class="border-t border-gray-200 my-1"></div>
 
                     <div class="py-2 px-4">
-                        <!-- ★★★ 修正点: pタグにIDを追加 ★★★ -->
                         <p id="language-settings-label" class="text-gray-800 font-semibold" data-translate="language_settings">言語設定</p>
                     </div>
                     <div id="language-switcher">
@@ -248,9 +314,7 @@ session_start();
     
     <footer class="p-4 bg-white border-t border-gray-200 rounded-b-2xl mt-8">
         <div class="flex items-end space-x-3">
-            <!-- ▼▼▼【変更】inputをtextareaに変更し、自動高さ調整に対応 ▼▼▼ -->
             <textarea id="user-input" class="flex-1 p-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500 transition resize-none" placeholder="日本のマナーについて質問してください" rows="1" style="max-height: 120px;"></textarea>
-            <!-- ▲▲▲ ここまで ▲▲▲ -->
             
             <button id="image-upload-btn" class="mic-btn" title="画像をアップロード">
                 <i class="fas fa-paperclip"></i>
@@ -315,6 +379,54 @@ session_start();
 <script src="./js/index.js"></script>
 <script src="./chatBOT/js/knowledge.js"></script>
 <script src="./chatBOT/js/main.js"></script>
+<!-- ★★★ 変更点: ダークモード用のJSを埋め込み ★★★ -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggleButton = document.getElementById('dark-mode-toggle');
+        const htmlElement = document.documentElement;
+
+        if (!toggleButton) return;
+
+        const toggleIcon = toggleButton.querySelector('i');
+
+        const applyTheme = (theme) => {
+            if (theme === 'dark') {
+                htmlElement.classList.add('dark');
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-moon');
+                    toggleIcon.classList.add('fa-sun');
+                }
+                localStorage.setItem('theme', 'dark');
+            } else {
+                htmlElement.classList.remove('dark');
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-sun');
+                    toggleIcon.classList.add('fa-moon');
+                }
+                localStorage.setItem('theme', 'light');
+            }
+        };
+
+        toggleButton.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                applyTheme('light');
+            } else {
+                applyTheme('dark');
+            }
+        });
+
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme) {
+            applyTheme(savedTheme);
+        } else if (prefersDark) {
+            applyTheme('dark');
+        } else {
+            applyTheme('light');
+        }
+    });
+</script>
 
 </body>
 </html>
