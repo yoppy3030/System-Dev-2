@@ -1,19 +1,21 @@
 <?php
 session_start();
 
-// エラー表示を有効にする（問題がなければ、コメントアウトまたは削除を推奨）
+// エラー表示を有効にする（開発時）
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // データベース設定ファイルを読み込む
+// ★★★ パスが環境によって異なる可能性があるため、'backend/config.php'を適切なパスに修正してください ★★★
 require_once __DIR__ . '/backend/config.php';
 
 $error = '';
 $login_identifier = '';
 
-// ★★★ 重要: ユーザーが既にログインしている場合は、ユーザーページへリダイレクトします ★★★
+// ユーザーが既にログインしている場合
 if (isset($_SESSION['user_id'])) {
-    header("Location: User_page.php");
+    // この時点では管理者かどうかわからないため、一旦ホームページへリダイレクトするのが安全
+    header("Location: home.php");
     exit();
 }
 
@@ -26,24 +28,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "ユーザー名（またはEmail）とパスワードを入力してください。";
     } else {
         try {
-            // AccountsテーブルをName列またはEmail列で検索
+            // is_adminカラムも取得するようにSELECT文を修正
             $stmt = $pdo->prepare("SELECT * FROM Accounts WHERE Name = ? OR Email = ?");
             $stmt->execute([$login_identifier, $login_identifier]);
             $user = $stmt->fetch();
 
             if ($user && password_verify($password, $user['Password'])) {
                 // ログイン成功
+                session_regenerate_id(true); // セキュリティ強化
                 $_SESSION['user_id'] = $user['ID'];
                 $_SESSION['username'] = $user['Name'];
-                session_regenerate_id(true);
-                // ログイン成功後はindex.phpへ
-                header("Location: index.php");
+
+                // ▼▼▼【変更点】管理者かどうかをチェックし、リダイレクト先を決定 ▼▼▼
+                if (!empty($user['is_admin']) && $user['is_admin'] == 1) {
+                    // 管理者の場合は管理者ダッシュボードへ
+                    header("Location: admin/dashboard.php");
+                } else {
+                    // 一般ユーザーの場合はホームページへ
+                    header("Location: index.php");
+                }
                 exit();
+                // ▲▲▲ ここまで ▲▲▲
+
             } else {
                 $error = "ユーザー名（またはEmail）またはパスワードが間違っています。";
             }
         } catch (PDOException $e) {
-            $error = "データベースエラーが発生しました。";
+            // 本番環境では、より一般的なエラーメッセージを表示することを推奨します
+            $error = "データベースエラーが発生しました: " . $e->getMessage();
         }
     }
 }
