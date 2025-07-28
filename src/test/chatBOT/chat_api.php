@@ -105,6 +105,24 @@ function handleGetRequest($pdo, $userId, $guestId, $action) {
             $stmt->execute($clause['params']);
             $response['pinned_messages'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             break;
+        case 'get_quiz_questions':
+            $difficulty = $_GET['difficulty'] ?? '';
+            if (!in_array($difficulty, ['easy', 'normal', 'hard'])) {
+                throw new Exception('Invalid difficulty provided.', 400);
+            }
+            $stmt = $pdo->prepare("SELECT question, options, correct_answer_index, explanation FROM Quizzes WHERE difficulty = ?");
+            $stmt->execute([$difficulty]);
+            $quizzes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach($quizzes as &$quiz) {
+                $quiz['question'] = json_decode($quiz['question'], true);
+                $quiz['options'] = json_decode($quiz['options'], true);
+                $quiz['correct'] = (int)$quiz['correct_answer_index'];
+                unset($quiz['correct_answer_index']);
+                $quiz['explanation'] = json_decode($quiz['explanation'], true);
+            }
+            $response = $quizzes;
+            break;
         case 'get_my_page_data':
             if (!$userId) throw new Exception('Login required for My Page.', 403);
             $clause = getUserClause($userId, null);
@@ -149,7 +167,6 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                 if (!$userId || !isset($data['guest_session_id'])) throw new Exception('User and guest must be identified for migration.', 400);
                 $guestIdToMigrate = $data['guest_session_id'];
                 
-                // チャット履歴の統合処理
                 $guestHistoryStmt = $pdo->prepare("SELECT history_html FROM ChatHistories WHERE guest_session_id = ?");
                 $guestHistoryStmt->execute([$guestIdToMigrate]);
                 $guestHistory = $guestHistoryStmt->fetchColumn();
@@ -171,11 +188,9 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                     $pdo->prepare("DELETE FROM ChatHistories WHERE guest_session_id = ?")->execute([$guestIdToMigrate]);
                 }
 
-                // 他のデータは重複を避けつつ移行
                 migrateUniqueData($pdo, 'PinnedMessages', 'message_id', $userId, $guestIdToMigrate);
                 migrateUniqueData($pdo, 'LearnedTopics', 'topic_key', $userId, $guestIdToMigrate);
                 migrateUniqueData($pdo, 'MistakeNotes', 'question_hash', $userId, $guestIdToMigrate);
-                // ▼▼▼【追加】フィードバックも移行対象に ▼▼▼
                 migrateUniqueData($pdo, 'MessageFeedback', 'message_id', $userId, $guestIdToMigrate);
 
                 $pdo->prepare("UPDATE QuizResults SET user_id = ?, guest_session_id = NULL WHERE guest_session_id = ?")->execute([$userId, $guestIdToMigrate]);
@@ -206,7 +221,6 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                     }
                 }
                 break;
-            // ▼▼▼【追加】フィードバック保存アクション ▼▼▼
             case 'save_feedback':
                 $message_id = $data['message_id'] ?? null;
                 $feedback_type = $data['feedback_type'] ?? null;
@@ -216,13 +230,16 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                     $stmt->execute([$message_id, $feedback_type, $userId, $guestId]);
                 }
                 break;
-            // ▲▲▲ ここまで ▲▲▲
+            // ▼▼▼【修正】ゲストユーザーのクイズ結果も保存できるように変更 ▼▼▼
             case 'save_quiz_result':
-                if (!$userId) break;
-                $stmt = $pdo->prepare("INSERT INTO QuizResults (user_id, difficulty, score, total) VALUES (?, ?, ?, ?)");
-                $stmt->execute([$userId, $data['difficulty'], $data['score'], $data['total']]);
-                checkAndGrantAchievements($pdo, $userId);
+                $stmt = $pdo->prepare("INSERT INTO QuizResults ({$idField}, difficulty, score, total) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$idValue, $data['difficulty'], $data['score'], $data['total']]);
+                // アチーブメントはログインユーザーのみ
+                if ($userId) {
+                    checkAndGrantAchievements($pdo, $userId);
+                }
                 break;
+            // ▲▲▲ ここまで ▲▲▲
             case 'save_learned_topic':
                  $topic_key = $data['id'] ?? ($data['question'] ?? null);
                  if ($topic_key === null) break;

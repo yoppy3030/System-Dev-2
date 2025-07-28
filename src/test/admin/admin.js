@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalUsersCountEl = document.getElementById('total-users-count');
     const helpfulFeedbackCountEl = document.getElementById('helpful-feedback-count');
     const unhelpfulFeedbackCountEl = document.getElementById('unhelpful-feedback-count');
+    const userRegistrationChartEl = document.getElementById('userRegistrationChart');
     
-    // User Modals
+    // User Modals & Filters
     const deleteUserModal = document.getElementById('delete-confirm-modal');
     const backDeleteBtn = document.getElementById('back-delete-btn');
     const confirmDeleteUserBtn = document.getElementById('confirm-delete-btn');
@@ -15,6 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const editUserModal = document.getElementById('edit-user-modal');
     const editUserForm = document.getElementById('edit-user-form');
     const backEditBtn = document.getElementById('back-edit-btn');
+    const userFilterInput = document.getElementById('user-filter-input');
+    const userFilterRole = document.getElementById('user-filter-role');
+    const userCountDisplay = document.getElementById('user-count-display');
     
     // Quiz Modals & Form Elements
     const quizEditorModal = document.getElementById('quiz-editor-modal');
@@ -26,9 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteQuizQuestionEl = document.getElementById('delete-quiz-question');
     const backDeleteQuizBtn = document.getElementById('back-delete-quiz-btn');
     const confirmDeleteQuizBtn = document.getElementById('confirm-delete-quiz-btn');
-    // ▼▼▼【追加】絞り込み機能のDOM要素 ▼▼▼
     const quizFilterInput = document.getElementById('quiz-filter-input');
     const quizFilterDifficulty = document.getElementById('quiz-filter-difficulty');
+
+    // ▼▼▼【追加】Inquiry Elements ▼▼▼
+    const inquiryTableBody = document.getElementById('inquiry-table-body');
+    const replyModal = document.getElementById('reply-modal');
+    const replyForm = document.getElementById('reply-form');
+    const backReplyBtn = document.getElementById('back-reply-btn');
+    const sendReplyBtn = document.getElementById('send-reply-btn');
     // ▲▲▲
 
     // Navigation
@@ -47,8 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setupEventListeners();
         fetchDashboardStats();
         fetchAndRenderFeedbackStats();
-        fetchAndRenderUsers();
+        fetchAndRenderUserRegistrationChart();
+        fetchAndRenderUsers().then(filterUsers);
         fetchAndRenderQuizzes();
+        fetchAndRenderInquiries(); // ▼▼▼【追加】
         const initialHash = window.location.hash || '#dashboard';
         switchSection(initialHash);
     }
@@ -73,8 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
         editUserForm.addEventListener('submit', handleUserEditSubmit);
         backEditBtn.addEventListener('click', closeEditUserModal);
         editUserModal.addEventListener('click', (e) => e.target === editUserModal && closeEditUserModal());
+        userFilterInput.addEventListener('input', filterUsers);
+        userFilterRole.addEventListener('change', filterUsers);
 
-        // Quiz Management Event Listeners
+        // Quiz Management
         quizTableBody.addEventListener('click', handleQuizTableClick);
         addQuizBtn.addEventListener('click', openQuizEditorForAdd);
         quizEditorForm.addEventListener('submit', handleQuizFormSubmit);
@@ -83,10 +97,14 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmDeleteQuizBtn.addEventListener('click', executeQuizDelete);
         backDeleteQuizBtn.addEventListener('click', closeDeleteQuizModal);
         deleteQuizModal.addEventListener('click', (e) => e.target === deleteQuizModal && closeDeleteQuizModal());
-        
-        // ▼▼▼【追加】絞り込み機能のイベントリスナー ▼▼▼
         quizFilterInput.addEventListener('input', filterQuizzes);
         quizFilterDifficulty.addEventListener('change', filterQuizzes);
+
+        // ▼▼▼【追加】Inquiry Management ▼▼▼
+        inquiryTableBody.addEventListener('click', handleInquiryTableClick);
+        replyForm.addEventListener('submit', handleReplySubmit);
+        backReplyBtn.addEventListener('click', () => replyModal.classList.add('hidden'));
+        replyModal.addEventListener('click', (e) => e.target === replyModal && replyModal.classList.add('hidden'));
         // ▲▲▲
     }
     
@@ -109,9 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * APIリクエストを送信する汎用関数
-     * @param {string} url - APIのエンドポイント
-     * @param {object} options - fetchのオプション
-     * @returns {Promise<any>} - JSONレスポンス
      */
     async function apiRequest(url, options = {}) {
         try {
@@ -151,6 +166,46 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             if (helpfulFeedbackCountEl) helpfulFeedbackCountEl.textContent = 'エラー';
             if (unhelpfulFeedbackCountEl) unhelpfulFeedbackCountEl.textContent = 'エラー';
+        }
+    }
+
+    async function fetchAndRenderUserRegistrationChart() {
+        if (!userRegistrationChartEl) return;
+        try {
+            const chartData = await apiRequest('api.php?action=get_user_registration_stats');
+            new Chart(userRegistrationChartEl, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: '新規登録ユーザー数',
+                        data: chartData.data,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            userRegistrationChartEl.parentElement.innerHTML = '<p class="text-red-500 text-center">グラフデータの読み込みに失敗しました。</p>';
         }
     }
 
@@ -272,7 +327,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'delete_user', user_id: userIdToDelete })
             });
-            fetchAndRenderUsers();
+            await fetchAndRenderUsers();
+            filterUsers();
             fetchDashboardStats();
             closeDeleteUserModal();
         } catch (error) {
@@ -309,10 +365,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            fetchAndRenderUsers();
+            await fetchAndRenderUsers();
+            filterUsers();
             closeEditUserModal();
         } catch (error) {
             // Error is already alerted in apiRequest
+        }
+    }
+
+    function filterUsers() {
+        const filterText = userFilterInput.value.toLowerCase();
+        const filterRole = userFilterRole.value;
+        const rows = userTableBody.querySelectorAll('tr[data-user-id]');
+        let visibleRows = 0;
+
+        rows.forEach(row => {
+            const userData = JSON.parse(row.dataset.userData);
+            const name = userData.Name.toLowerCase();
+            const email = userData.Email.toLowerCase();
+            const isAdmin = userData.is_admin;
+
+            const textMatch = name.includes(filterText) || email.includes(filterText);
+            const roleMatch = (filterRole === 'all') ||
+                              (filterRole === 'admin' && isAdmin) ||
+                              (filterRole === 'general' && !isAdmin);
+
+            if (textMatch && roleMatch) {
+                row.style.display = '';
+                visibleRows++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        userCountDisplay.textContent = `${rows.length}人中 ${visibleRows}人 表示中`;
+
+        const noResultsRow = userTableBody.querySelector('.no-results-row');
+        if (noResultsRow) noResultsRow.remove();
+
+        if (visibleRows === 0 && rows.length > 0) {
+            const tr = document.createElement('tr');
+            tr.className = 'no-results-row';
+            tr.innerHTML = '<td colspan="7" class="text-center py-4">該当するユーザーが見つかりません。</td>';
+            userTableBody.appendChild(tr);
         }
     }
 
@@ -448,7 +543,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ▼▼▼【追加】クイズ絞り込み関数 ▼▼▼
     function filterQuizzes() {
         const filterText = quizFilterInput.value.toLowerCase();
         const filterDifficulty = quizFilterDifficulty.value;
@@ -479,6 +573,104 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.className = 'no-results-row';
             tr.innerHTML = '<td colspan="4" class="text-center py-4">該当するクイズが見つかりません。</td>';
             quizTableBody.appendChild(tr);
+        }
+    }
+
+    // ▼▼▼【追加】Inquiry Management Functions ▼▼▼
+    async function fetchAndRenderInquiries() {
+        try {
+            const inquiries = await apiRequest('api.php?action=get_inquiries');
+            inquiryTableBody.innerHTML = '';
+            if (inquiries.length === 0) {
+                inquiryTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">お問い合わせはありません。</td></tr>';
+                return;
+            }
+            inquiries.forEach(inquiry => {
+                const tr = document.createElement('tr');
+                tr.dataset.inquiryData = JSON.stringify(inquiry);
+                const receivedDate = new Date(inquiry.created_at).toLocaleString('ja-JP');
+                const shortMessage = inquiry.message.length > 50 ? inquiry.message.substring(0, 50) + '...' : inquiry.message;
+
+                tr.innerHTML = `
+                    <td class="px-4 py-3 text-sm">${inquiry.id}</td>
+                    <td class="px-4 py-3 text-sm">${receivedDate}</td>
+                    <td class="px-4 py-3 font-semibold">${escapeHTML(inquiry.name)}</td>
+                    <td class="px-4 py-3 text-sm">${escapeHTML(inquiry.email)}</td>
+                    <td class="px-4 py-3 text-sm">${escapeHTML(shortMessage)}</td>
+                    <td class="px-4 py-3 text-xs">
+                        <span class="status-${inquiry.replied ? 'replied' : 'pending'}">
+                            ${inquiry.replied ? '対応済み' : '未対応'}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        <button class="action-btn reply-btn" title="返信" ${inquiry.replied ? 'disabled' : ''}><i class="fas fa-reply"></i></button>
+                    </td>
+                `;
+                inquiryTableBody.appendChild(tr);
+            });
+        } catch (error) {
+            inquiryTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">お問い合わせの読み込みに失敗しました。</td></tr>`;
+        }
+    }
+
+    function handleInquiryTableClick(e) {
+        const replyBtn = e.target.closest('.reply-btn');
+        if (replyBtn) {
+            const tr = replyBtn.closest('tr');
+            const inquiryData = JSON.parse(tr.dataset.inquiryData);
+            openReplyModal(inquiryData);
+        }
+    }
+
+    function openReplyModal(inquiry) {
+        replyForm.reset();
+        replyForm.elements['inquiry_id'].value = inquiry.id;
+        replyForm.elements['recipient_email'].value = inquiry.email;
+        replyForm.elements['recipient_name'].value = inquiry.name;
+        
+        document.getElementById('reply-recipient').textContent = `${inquiry.name} <${inquiry.email}>`;
+        document.getElementById('original-message').textContent = inquiry.message;
+        
+        replyModal.classList.remove('hidden');
+    }
+
+    async function handleReplySubmit(e) {
+        e.preventDefault();
+        sendReplyBtn.disabled = true;
+        sendReplyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>送信中...';
+
+        const formData = new FormData(replyForm);
+        const data = {
+            action: 'send_reply',
+            inquiry_id: formData.get('inquiry_id'),
+            recipient_email: formData.get('recipient_email'),
+            recipient_name: formData.get('recipient_name'),
+            subject: formData.get('subject'),
+            message: formData.get('message')
+        };
+
+        try {
+            await apiRequest('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            await apiRequest('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'mark_inquiry_replied', inquiry_id: data.inquiry_id })
+            });
+
+            alert('返信を送信しました。');
+            replyModal.classList.add('hidden');
+            fetchAndRenderInquiries();
+
+        } catch (error) {
+            // エラーはapiRequestでalertされる
+        } finally {
+            sendReplyBtn.disabled = false;
+            sendReplyBtn.innerHTML = '<i class="fas fa-paper-plane"></i>送信';
         }
     }
     // ▲▲▲

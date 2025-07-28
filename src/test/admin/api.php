@@ -2,11 +2,19 @@
 header('Content-Type: application/json; charset=utf-8');
 session_start();
 require_once '../backend/config.php'; // データベース設定
+// ▼▼▼【追加】PHPMailerの読み込み ▼▼▼
+require_once '../chatBOT/vendor/autoload.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+// ▲▲▲
+
+// .envファイルを読み込む
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__) . '/chatBOT');
+$dotenv->load();
+
 
 /**
  * 現在のセッションのユーザーが管理者であるかを確認する
- * @param PDO $pdo データベース接続オブジェクト
- * @return bool 管理者であればtrue、そうでなければfalse
  */
 function check_admin($pdo) {
     if (!isset($_SESSION['user_id'])) {
@@ -18,7 +26,6 @@ function check_admin($pdo) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         return $user && $user['is_admin'];
     } catch (PDOException $e) {
-        // データベースエラーが発生した場合は権限なしとみなす
         error_log("Admin check failed: " . $e->getMessage());
         return false;
     }
@@ -26,43 +33,62 @@ function check_admin($pdo) {
 
 // --- メイン処理 ---
 try {
-    // 管理者でない場合は、いかなる操作も許可しない
     if (!check_admin($pdo)) {
-        http_response_code(403); // Forbidden
+        http_response_code(403);
         echo json_encode(['error' => '管理者権限がありません。']);
         exit;
     }
 
     $method = $_SERVER['REQUEST_METHOD'];
     
-    // GETリクエストの処理
     if ($method === 'GET') {
         $action = $_GET['action'] ?? '';
         switch ($action) {
             case 'get_dashboard_stats':
                 $stmt_users = $pdo->query("SELECT COUNT(*) as total_users FROM Accounts");
                 $total_users = $stmt_users->fetchColumn();
-                // 今後、他の統計情報もここに追加可能
                 echo json_encode(['total_users' => $total_users]);
                 break;
             
-            // ▼▼▼【追加】フィードバック統計取得アクション ▼▼▼
             case 'get_feedback_stats':
                 $stmt_helpful = $pdo->query("SELECT COUNT(*) FROM MessageFeedback WHERE feedback_type = 'helpful'");
                 $helpful_count = $stmt_helpful->fetchColumn();
                 $stmt_unhelpful = $pdo->query("SELECT COUNT(*) FROM MessageFeedback WHERE feedback_type = 'unhelpful'");
                 $unhelpful_count = $stmt_unhelpful->fetchColumn();
-                echo json_encode([
-                    'helpful' => $helpful_count,
-                    'unhelpful' => $unhelpful_count
-                ]);
+                echo json_encode(['helpful' => $helpful_count, 'unhelpful' => $unhelpful_count]);
                 break;
-            // ▲▲▲ ここまで ▲▲▲
+            
+            case 'get_user_registration_stats':
+                $stmt = $pdo->prepare("
+                    SELECT DATE(RegistrationDate) as registration_day, COUNT(ID) as user_count
+                    FROM Accounts
+                    WHERE RegistrationDate >= CURDATE() - INTERVAL 6 DAY
+                    GROUP BY DATE(RegistrationDate)
+                    ORDER BY registration_day
+                ");
+                $stmt->execute();
+                $results = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+                $labels = [];
+                $data = [];
+                for ($i = 6; $i >= 0; $i--) {
+                    $date = date('Y-m-d', strtotime("-$i days"));
+                    $labels[] = date('m/d', strtotime($date));
+                    $data[] = $results[$date] ?? 0;
+                }
+                echo json_encode(['labels' => $labels, 'data' => $data]);
+                break;
+            
+            // ▼▼▼【追加】お問い合わせ一覧取得アクション ▼▼▼
+            case 'get_inquiries':
+                $stmt = $pdo->query("SELECT id, name, email, message, replied, created_at FROM Inquiries ORDER BY created_at DESC");
+                $inquiries = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                echo json_encode($inquiries);
+                break;
+            // ▲▲▲
 
             case 'get_users':
                 $stmt = $pdo->query("SELECT ID, Name, Email, UserType, RegistrationDate, is_admin FROM Accounts ORDER BY RegistrationDate DESC");
                 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                // is_adminをPHPのブール値に変換してJSONでの表現を確実にする
                 foreach ($users as &$user) {
                     $user['is_admin'] = (bool)$user['is_admin'];
                 }
@@ -72,7 +98,6 @@ try {
             case 'get_quizzes':
                 $stmt = $pdo->query("SELECT id, difficulty, question, options, correct_answer_index, explanation FROM Quizzes ORDER BY id DESC");
                 $quizzes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                // DBにJSON文字列として保存されているデータをPHPの連想配列にデコード
                 foreach($quizzes as &$quiz) {
                     $quiz['question'] = json_decode($quiz['question'], true);
                     $quiz['options'] = json_decode($quiz['options'], true);
@@ -86,7 +111,6 @@ try {
                 echo json_encode(['error' => '無効なGETアクションです。']);
                 break;
         }
-    // POSTリクエストの処理
     } elseif ($method === 'POST') {
         $data = json_decode(file_get_contents('php://input'), true);
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -95,6 +119,52 @@ try {
         $action = $data['action'] ?? '';
 
         switch ($action) {
+            // ▼▼▼【追加】お問い合わせ返信アクション ▼▼▼
+            case 'send_reply':
+                $recipient_email = $data['recipient_email'] ?? '';
+                $recipient_name = $data['recipient_name'] ?? '';
+                $subject = $data['subject'] ?? '';
+                $message = $data['message'] ?? '';
+
+                if (empty($recipient_email) || !filter_var($recipient_email, FILTER_VALIDATE_EMAIL) || empty($subject) || empty($message)) {
+                    throw new Exception('入力データが無効です。', 400);
+                }
+
+                $mail = new PHPMailer(true);
+                try {
+                    $mail->isSMTP();
+                    $mail->Host       = 'smtp.gmail.com';
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = $_ENV['GMAIL_ADDRESS'];
+                    $mail->Password   = $_ENV['GMAIL_APP_PASSWORD'];
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                    $mail->Port       = 465;
+                    $mail->CharSet    = 'UTF-8';
+
+                    $mail->setFrom($_ENV['GMAIL_ADDRESS'], 'Japan Life Manual サポート');
+                    $mail->addAddress($recipient_email, $recipient_name);
+                    $mail->Subject = $subject;
+                    $mail->Body    = $message;
+
+                    $mail->send();
+                    echo json_encode(['success' => true, 'message' => '返信を送信しました。']);
+                } catch (Exception $e) {
+                    throw new Exception("メールの送信に失敗しました: {$mail->ErrorInfo}", 500);
+                }
+                break;
+            
+            case 'mark_inquiry_replied':
+                $inquiry_id = $data['inquiry_id'] ?? 0;
+                if ($inquiry_id > 0) {
+                    $stmt = $pdo->prepare("UPDATE Inquiries SET replied = 1 WHERE id = ?");
+                    $stmt->execute([$inquiry_id]);
+                    echo json_encode(['success' => true, 'message' => 'ステータスを更新しました。']);
+                } else {
+                    throw new Exception('無効なIDです。', 400);
+                }
+                break;
+            // ▲▲▲
+
             case 'toggle_admin':
                 $user_id = $data['user_id'] ?? 0;
                 if ($user_id == $_SESSION['user_id']) {
@@ -124,7 +194,7 @@ try {
                     echo json_encode(['success' => true, 'message' => 'ユーザーを完全に削除しました。']);
                 } catch (Exception $e) {
                     $pdo->rollBack();
-                    throw $e; // エラーを再スローして外側のcatchブロックで捕捉
+                    throw $e;
                 }
                 break;
             
@@ -149,7 +219,6 @@ try {
             case 'add_quiz':
             case 'update_quiz':
                 $difficulty = $data['difficulty'];
-                // ▼▼▼【修正】optionsが空でないことを確認 ▼▼▼
                 $options_array = $data['options']['ja'] ?? [];
                 if (count(array_filter($options_array)) < 2) {
                      throw new Exception('少なくとも2つの選択肢が必要です。', 400);
@@ -158,7 +227,6 @@ try {
                 if ($correct_index >= count($options_array) || empty($options_array[$correct_index])) {
                     throw new Exception('正解の選択肢が有効ではありません。', 400);
                 }
-                // ▲▲▲ ここまで ▲▲▲
                 $question = json_encode($data['question'], JSON_UNESCAPED_UNICODE);
                 $options = json_encode($data['options'], JSON_UNESCAPED_UNICODE);
                 $explanation = json_encode($data['explanation'], JSON_UNESCAPED_UNICODE);
