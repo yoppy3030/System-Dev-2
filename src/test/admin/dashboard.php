@@ -82,7 +82,6 @@ $username = $_SESSION['username'] ?? 'Admin';
                             <h3 class="text-lg font-semibold text-gray-600">総ユーザー数</h3>
                             <p class="text-3xl font-bold text-gray-800 mt-2" id="total-users-count">--</p>
                         </div>
-                        <!-- ▼▼▼【追加】フィードバック統計カード ▼▼▼ -->
                         <div class="bg-white p-6 rounded-lg shadow-md">
                             <h3 class="text-lg font-semibold text-gray-600 flex items-center gap-2"><i class="fas fa-thumbs-up text-green-500"></i>役に立った</h3>
                             <p class="text-3xl font-bold text-gray-800 mt-2" id="helpful-feedback-count">--</p>
@@ -91,7 +90,6 @@ $username = $_SESSION['username'] ?? 'Admin';
                             <h3 class="text-lg font-semibold text-gray-600 flex items-center gap-2"><i class="fas fa-thumbs-down text-red-500"></i>役に立たなかった</h3>
                             <p class="text-3xl font-bold text-gray-800 mt-2" id="unhelpful-feedback-count">--</p>
                         </div>
-                         <!-- ▲▲▲ ここまで ▲▲▲ -->
                     </div>
                 </section>
 
@@ -122,6 +120,20 @@ $username = $_SESSION['username'] ?? 'Admin';
                                 <i class="fas fa-plus mr-2"></i>新しいクイズを追加
                             </button>
                         </div>
+                        <!-- ▼▼▼【修正】絞り込み機能のレイアウト変更 ▼▼▼ -->
+                        <div class="flex items-center gap-4 mb-4">
+                            <select id="quiz-filter-difficulty" class="form-select w-auto">
+                                <option value="all">すべての難易度</option>
+                                <option value="easy">簡単</option>
+                                <option value="normal">普通</option>
+                                <option value="hard">難しい</option>
+                            </select>
+                            <div class="relative flex-1">
+                                <input type="text" id="quiz-filter-input" placeholder="問題文で検索..." class="form-input w-full">
+                                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <!-- ▲▲▲ ここまで ▲▲▲ -->
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
                                 <thead>

@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteQuizQuestionEl = document.getElementById('delete-quiz-question');
     const backDeleteQuizBtn = document.getElementById('back-delete-quiz-btn');
     const confirmDeleteQuizBtn = document.getElementById('confirm-delete-quiz-btn');
+    // ▼▼▼【追加】絞り込み機能のDOM要素 ▼▼▼
+    const quizFilterInput = document.getElementById('quiz-filter-input');
+    const quizFilterDifficulty = document.getElementById('quiz-filter-difficulty');
+    // ▲▲▲
 
     // Navigation
     const sidebarNav = document.getElementById('sidebar-nav');
@@ -79,6 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmDeleteQuizBtn.addEventListener('click', executeQuizDelete);
         backDeleteQuizBtn.addEventListener('click', closeDeleteQuizModal);
         deleteQuizModal.addEventListener('click', (e) => e.target === deleteQuizModal && closeDeleteQuizModal());
+        
+        // ▼▼▼【追加】絞り込み機能のイベントリスナー ▼▼▼
+        quizFilterInput.addEventListener('input', filterQuizzes);
+        quizFilterDifficulty.addEventListener('change', filterQuizzes);
+        // ▲▲▲
     }
     
     /**
@@ -107,11 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
     async function apiRequest(url, options = {}) {
         try {
             let requestUrl = url;
-            // ▼▼▼【修正】GETリクエストにキャッシュ無効化パラメータを追加 ▼▼▼
             if (!options.method || options.method.toUpperCase() === 'GET') {
                 requestUrl += (url.includes('?') ? '&' : '?') + '_=' + new Date().getTime();
             }
-            // ▲▲▲
             const response = await fetch(requestUrl, options);
             const result = await response.json();
             if (!response.ok) {
@@ -336,14 +343,12 @@ document.addEventListener('DOMContentLoaded', () => {
         quizEditorForm.reset();
         quizEditorTitle.textContent = 'クイズを編集';
         
-        // Populate form fields
         quizEditorForm.elements['id'].value = quiz.id;
         quizEditorForm.elements['difficulty'].value = quiz.difficulty;
         
         ['ja', 'en', 'zh'].forEach(lang => {
             quizEditorForm.elements[`question_${lang}`].value = quiz.question[lang] || '';
             quizEditorForm.elements[`explanation_${lang}`].value = quiz.explanation[lang] || '';
-            // Handle case where options might be less than 4
             for (let i = 0; i < 4; i++) {
                 quizEditorForm.elements[`option_${i}_${lang}`].value = quiz.options[lang][i] || '';
             }
@@ -382,11 +387,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // Collect only non-empty options
         const tempOptions = { ja: [], en: [], zh: [] };
         for (let i = 0; i < 4; i++) {
             const ja_opt = formData.get(`option_${i}_ja`);
-            // Only add option if the Japanese field is filled (as a baseline)
             if (ja_opt && ja_opt.trim() !== '') {
                 tempOptions.ja.push(ja_opt);
                 tempOptions.en.push(formData.get(`option_${i}_en`));
@@ -395,7 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         data.options = tempOptions;
 
-        // --- Validation ---
         if (data.options.ja.length < 2) {
             alert('少なくとも2つの選択肢を入力してください。');
             return;
@@ -421,7 +423,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function openDeleteQuizModal(quizId, question) {
         quizIdToDelete = quizId;
-        // 質問が長い場合があるので、短縮する
         const shortQuestion = question.length > 30 ? question.substring(0, 30) + '...' : question;
         deleteQuizQuestionEl.textContent = shortQuestion;
         deleteQuizModal.classList.remove('hidden');
@@ -446,6 +447,41 @@ document.addEventListener('DOMContentLoaded', () => {
             closeDeleteQuizModal();
         }
     }
+
+    // ▼▼▼【追加】クイズ絞り込み関数 ▼▼▼
+    function filterQuizzes() {
+        const filterText = quizFilterInput.value.toLowerCase();
+        const filterDifficulty = quizFilterDifficulty.value;
+        const rows = quizTableBody.querySelectorAll('tr[data-quiz-id]');
+        let visibleRows = 0;
+
+        rows.forEach(row => {
+            const quizData = JSON.parse(row.dataset.quizData);
+            const questionJa = quizData.question.ja.toLowerCase();
+            const difficulty = quizData.difficulty;
+
+            const textMatch = questionJa.includes(filterText);
+            const difficultyMatch = filterDifficulty === 'all' || difficulty === filterDifficulty;
+
+            if (textMatch && difficultyMatch) {
+                row.style.display = '';
+                visibleRows++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        const noResultsRow = quizTableBody.querySelector('.no-results-row');
+        if (noResultsRow) noResultsRow.remove();
+
+        if (visibleRows === 0 && (filterText || filterDifficulty !== 'all')) {
+            const tr = document.createElement('tr');
+            tr.className = 'no-results-row';
+            tr.innerHTML = '<td colspan="4" class="text-center py-4">該当するクイズが見つかりません。</td>';
+            quizTableBody.appendChild(tr);
+        }
+    }
+    // ▲▲▲
 
     /**
      * HTML特殊文字をエスケープする

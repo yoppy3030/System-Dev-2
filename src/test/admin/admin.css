@@ -120,6 +120,13 @@ input:checked + .slider:before {
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+/* ▼▼▼【修正】検索ボックスの左側に余白を追加 ▼▼▼ */
+#quiz-filter-input {
+    padding-left: 2.5rem; /* pl-10 */
+}
+/* ▲▲▲ ここまで ▲▲▲ */
+
+
 .form-input:focus, .form-select:focus {
     outline: none;
     border-color: #3b82f6; /* sky-500 */
