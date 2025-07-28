@@ -5,37 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Daily Life | JAPAN Life Manual</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="./css/culture.css"/>
+  <link rel="stylesheet" href="./css/unified.css"/>
 </head>
 <body>
   <!-- Navigation Bar -->
-  <header class="site-header">
-    <div class="logo">JAPAN Life Manual</div>
-    <nav class="main-nav">
-      <ul>
-        <li><a href="index.php">Home</a></li>
-        <li class="dropdown">
-          <a href="#">Others ▾</a>
-          <ul class="dropdown-menu">
-            <li><a href="culture.html">Japanese Culture</a></li>
-            <li><a href="daily-life.html">Daily Life</a></li>
-            <li><a href="visa_guide_japan.php">Visa Guide</a></li>
-          </ul>
-        </li>
-        <li><a href="studenthome.php">Student</a></li>
-        <li><a href="travelers_homePage.php">Traveler</a></li>
-        <li><a href="about.html">About</a></li>
-        <li class="language-selector">
-          <button id="translateBtn" class="translate-btn">🌐 Translate</button>
-          <div class="language-dropdown">
-            <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
-            <button class="language-option" data-lang="en">🇺🇸 English</button>
-            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
-          </div>
-        </li>
-      </ul>
-    </nav>
-  </header>
+  <?php include 'includes/navbar.php'; ?>
 
   <!-- Hero Section -->
   <section class="culture-hero" style="background-image: url('./img/Geisha.jpg');">
@@ -49,7 +23,7 @@
   <main class="culture-content">
     <section class="card-style-section">
       <h2><i class="fas fa-train"></i> Transportation</h2>
-      <p>Japan’s trains and buses are famous for punctuality and cleanliness. Trains arrive and leave on time—sometimes down to the second.</p>
+      <p>Japan's trains and buses are famous for punctuality and cleanliness. Trains arrive and leave on time—sometimes down to the second.</p>
       <ul>
         <li>Use IC cards like Suica or Pasmo</li>
         <li>Set phones to silent on trains (マナーモード)</li>
@@ -122,7 +96,7 @@
     </section>
 
     <div class="back-button-container">
-      <a href="culture.html" class="back-button">← Back to Culture</a>
+      <a href="culture.php" class="back-button">← Back to Culture</a>
     </div>
   </main>
 
@@ -143,6 +117,7 @@
       <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
     </div>
   </footer>
+  <script src="./js/shared-nav.js"></script>
   <script src="./js/daily-life.js"></script>
 </body>
 </html>

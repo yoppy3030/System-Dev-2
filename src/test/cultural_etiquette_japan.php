@@ -5,13 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cultural Etiquette in Japan | JAPAN Life Manual</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="./css/culture.css" />
+  <link rel="stylesheet" href="./css/unified.css" />
 </head>
 <body>
   <!-- Navigation Bar -->
-  <header class="site-header">
-    <!-- Navbar will be loaded here by JavaScript -->
-  </header>
+  <?php include 'includes/navbar.php'; ?>
 
   <!-- Hero Section -->
   <section class="culture-hero" style="background-image: url('./img/Japan\ has\ a\ reputation\ for\ obscure\ customs\ and….jpg');">
@@ -51,11 +49,11 @@
 
     <section class="card-style-section">
       <h2><i class="fas fa-utensils"></i> Table Manners</h2>
-      <p>Do not stick chopsticks upright in rice. Say "itadakimasu" before eating and "gochisousama deshita" after finishing. Don’t point or play with chopsticks.</p>
+      <p>Do not stick chopsticks upright in rice. Say "itadakimasu" before eating and "gochisousama deshita" after finishing. Don't point or play with chopsticks.</p>
     </section>
 
     <div class="back-button-container">
-      <a href="culture.html" class="back-button">← Back to Culture</a>
+      <a href="culture.php" class="back-button">← Back to Culture</a>
     </div>
   </main>
 
@@ -77,6 +75,6 @@
     </div>
   </footer>
 
-  <script src="./js/load-navbar-culture.js"></script>
+  <script src="./js/shared-nav.js"></script>
 </body>
 </html>

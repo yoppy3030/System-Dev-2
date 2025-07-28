@@ -4,40 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
    <title>Nomikai - JAPAN Life Manual</title>
-  <link rel="stylesheet" href="./css/culture.css"/>
+  <link rel="stylesheet" href="./css/unified.css"/>
 </head>
 <body>
-  <!-- Header -->
-  <header class="site-header">
-    <div class="logo">JAPAN Life Manual</div>
-    <nav class="main-nav">
-      <ul>
-        <li><a href="index.php">Home</a></li>
-        
-        <li class="dropdown">
-          <a href="#">Others ▾</a>
-          <ul class="dropdown-menu">
-            <li><a href="culture.html">Japanese Culture</a></li>
-            <li><a href="daily-life.html">Daily Life</a></li>
-            <li><a href="visa_guide_japan.php">Visa Guide</a></li>
-          </ul>
-        </li>
-        
-        <li><a href="studenthome.php">Student</a></li>
-        <li><a href="travelers_homePage.php">Traveler</a></li>
-        <li><a href="about.html">About</a></li>
-        
-        <li class="language-selector">
-          <button id="translateBtn" class="translate-btn">🌐 Translate</button>
-          <div class="language-dropdown">
-            <button class="language-option" data-lang="ja">🇯🇵 日本語</button>
-            <button class="language-option" data-lang="en">🇺🇸 English</button>
-            <button class="language-option" data-lang="zh">🇨🇳 中文</button>
-          </div>
-        </li>
-      </ul>
-    </nav>
-  </header>
+  <!-- Navigation Bar -->
+  <?php include 'includes/navbar.php'; ?>
+
   <!-- Hero Section -->
   <section class="culture-hero" style="background-image: url('./img/b4eb360b-e659-4913-a620-9fc908316cfd.jpg');">
     <div class="hero-overlay"></div>
@@ -82,15 +54,15 @@
       </p>
       <p>
         You can politely decline by saying:<br>
-        <em>“今日はお酒は控えています。”</em><br>
-        (“Kyō wa osake wa hikaeteimasu. — “I’m not drinking today.”)
+        <em>"今日はお酒は控えています。"</em><br>
+        ("Kyō wa osake wa hikaeteimasu. — "I'm not drinking today.")
       </p>
       <p>
         Respect for personal choice is valued, and no one should pressure you to drink.
       </p>
     </div>
     <div class="back-button-container">
-      <a href="culture.html" class="back-button">← Back to Culture</a>
+      <a href="culture.php" class="back-button">← Back to Culture</a>
     </div>
   </main>
 
@@ -111,6 +83,7 @@
       <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
     </div>
   </footer>
-<script src="./js/nomikai.js"></script>
+
+  <script src="./js/shared-nav.js"></script>
 </body>
 </html>

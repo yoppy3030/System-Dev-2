@@ -5,14 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About | JAPAN Life Manual</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-  <link rel="stylesheet" href="css/professional.css"/>
+  <link rel="stylesheet" href="css/unified.css"/>
 </head>
 <body>
   <!-- Navigation Bar -->
-  <header class="site-header">
-    <!-- Navbar will be loaded here by JavaScript -->
-  </header>
-
+  <?php include 'includes/navbar.php'; ?>
 
   <!-- Hero Section -->
   <section class="hero" style="background-image: url('./img/springs.jpg');">
@@ -56,7 +53,7 @@
       <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
     </div>
   </footer>
-  <script src="./js/load-navbar.js"></script>
+  <script src="./js/shared-nav.js"></script>
   <script src="./js/professional_comment_sec.js"></script>
 </body>
 </html>

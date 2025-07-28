@@ -4,13 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Festivals & National Holidays | JAPAN Life Manual</title>
-  <link rel="stylesheet" href="./css/culture.css" />
+  <link rel="stylesheet" href="./css/unified.css" />
 </head>
 <body>
   <!-- Navigation Bar -->
-  <header class="site-header">
-    <!-- Navbar will be loaded here by JavaScript -->
-  </header>
+  <?php include 'includes/navbar.php'; ?>
 
   <!-- Hero Section -->
   <section class="culture-hero" style="background-image: url('./img/fire_work.jpg');">
@@ -37,7 +35,7 @@
     <section class="card-style-section">
       <h2>Popular Festivals (Matsuri)</h2>
       <ul>
-        <li><strong>Gion Matsuri (Kyoto):</strong> Held in July, this is one of Japan’s most famous festivals featuring elaborate floats and parades.</li>
+        <li><strong>Gion Matsuri (Kyoto):</strong> Held in July, this is one of Japan's most famous festivals featuring elaborate floats and parades.</li>
         <li><strong>Awa Odori (Tokushima):</strong> A dance festival in August with colorful costumes and rhythmic music.</li>
         <li><strong>Nebuta Matsuri (Aomori):</strong> Held in early August, known for its giant illuminated floats.</li>
         <li><strong>Sapporo Snow Festival:</strong> February in Hokkaido, showcasing massive snow and ice sculptures.</li>
@@ -49,13 +47,13 @@
       <h2>Things to Know</h2>
       <ul>
         <li>Many festivals feature traditional clothing like yukata, local street food, fireworks, and games.</li>
-        <li>It’s polite to say "Itadakimasu" before eating and "Gochisousama deshita" after.</li>
+        <li>It's polite to say "Itadakimasu" before eating and "Gochisousama deshita" after.</li>
         <li>Check regional calendars—each area has its own special matsuri!</li>
       </ul>
     </section>
 
     <div class="back-button-container">
-      <a href="culture.html" class="back-button">← Back to Culture</a>
+      <a href="culture.php" class="back-button">← Back to Culture</a>
     </div>
   </main>
 
@@ -76,6 +74,6 @@
       <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
     </div>
   </footer>
-  <script src="./js/load-navbar-culture.js"></script>
+  <script src="./js/shared-nav.js"></script>
 </body>
 </html>

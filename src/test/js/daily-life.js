@@ -19,8 +19,6 @@ if (form && commentsContainer) {
     });
 }
 
-
-
 /* =========================================
    翻訳機能
    ========================================= */
@@ -29,42 +27,6 @@ let currentLanguage = 'en';
 let originalTexts = new Map();
 let translations = null;
 let translationsZh = null;
-
-// 翻訳ボタンとドロップダウンの制御
-const translateBtn = document.getElementById('translateBtn');
-const languageDropdown = document.querySelector('.language-dropdown');
-
-// 翻訳ボタンクリック時の処理
-translateBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    languageDropdown.classList.toggle('show');
-});
-
-// ドロップダウン外クリックで閉じる
-document.addEventListener('click', (e) => {
-    if (!languageDropdown.contains(e.target) && !translateBtn.contains(e.target)) {
-        languageDropdown.classList.remove('show');
-    }
-});
-
-// 言語選択オプションのイベントリスナー
-document.querySelectorAll('.language-option').forEach(option => {
-    option.addEventListener('click', () => {
-        const targetLang = option.dataset.lang;
-        document.querySelectorAll('.language-option').forEach(opt => {
-            opt.classList.remove('active');
-        });
-        option.classList.add('active');
-        languageDropdown.classList.remove('show');
-        translatePage(targetLang);
-    });
-});
-
-// テキストの正規化（余分な空白を削除）
-function normalizeText(text) {
-    // 特殊文字を削除してから正規化
-    return text.replace(/[▾]/g, '').replace(/\s+/g, ' ').trim();
-}
 
 // 翻訳データの読み込み
 Promise.all([
@@ -79,6 +41,12 @@ Promise.all([
 .catch(error => {
     console.error('翻訳データの読み込みに失敗しました:', error);
 });
+
+// テキストの正規化（余分な空白を削除）
+function normalizeText(text) {
+    // 特殊文字を削除してから正規化
+    return text.replace(/[▾]/g, '').replace(/\s+/g, ' ').trim();
+}
 
 // ページ翻訳の実行
 function translatePage(targetLang) {
@@ -135,28 +103,15 @@ function translatePage(targetLang) {
     document.querySelectorAll('.language-option').forEach(btn => {
         btn.classList.remove('active');
     });
-    document.querySelector('.language-option[data-lang="' + targetLang + '"]').classList.add('active');
+    const activeOption = document.querySelector('.language-option[data-lang="' + targetLang + '"]');
+    if (activeOption) {
+        activeOption.classList.add('active');
+    }
     
     currentLanguage = targetLang;
 }
-// ドロップダウンメニュー表示制御
-document.querySelectorAll('.main-nav ul li > a').forEach(anchor => {
-  anchor.addEventListener('click', e => {
-    const submenu = anchor.nextElementSibling;
-    if (submenu && submenu.classList.contains('dropdown-menu')) {
-      e.preventDefault();
-      submenu.classList.toggle('show');
-    }
-  });
-});
 
-// Optional: close dropdown on click outside
-document.addEventListener('click', e => {
-  document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-    if (!menu.parentElement.contains(e.target)) {
-      menu.classList.remove('show');
-    }
-  });
-});
+// Export translatePage function for use by shared-nav.js
+window.translatePage = translatePage;
 
  
