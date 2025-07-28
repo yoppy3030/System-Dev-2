@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dropdown Test | JAPAN Life Manual</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="./css/culture.css"/>
+  <style>
+    .test-info {
+      background: #f0f0f0;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #1e40af;
+    }
+    .test-info h3 {
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+    .test-info ul {
+      margin-left: 20px;
+    }
+    .test-info li {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header class="site-header">
+    <!-- Navbar will be loaded here by JavaScript -->
+  </header>
+
+  <!-- Test Content -->
+  <main class="culture-content">
+    <section class="card-style-section">
+      <h2><i class="fas fa-test-tube"></i> Dropdown Functionality Test</h2>
+      
+      <div class="test-info">
+        <h3>Test Instructions:</h3>
+        <ul>
+          <li>Click on the "Others ▾" dropdown in the navigation bar above</li>
+          <li>The dropdown should open and show menu items</li>
+          <li>Click outside the dropdown to close it</li>
+          <li>Press Escape key to close the dropdown</li>
+          <li>On desktop, hover over the dropdown to test hover functionality</li>
+        </ul>
+      </div>
+
+      <div class="test-info">
+        <h3>Expected Behavior:</h3>
+        <ul>
+          <li>✅ Dropdown opens when clicked</li>
+          <li>✅ Dropdown closes when clicking outside</li>
+          <li>✅ Dropdown closes when pressing Escape</li>
+          <li>✅ Smooth animation when opening/closing</li>
+          <li>✅ Hover effects on dropdown items</li>
+          <li>✅ Mobile-friendly responsive design</li>
+        </ul>
+      </div>
+
+      <div class="test-info">
+        <h3>Debug Information:</h3>
+        <p>Open the browser console (F12) to see detailed logs about the dropdown initialization and interactions.</p>
+        <p>Look for messages starting with <code>[load-navbar-culture.js]</code></p>
+      </div>
+    </section>
+
+    <section class="card-style-section">
+      <h2><i class="fas fa-code"></i> Technical Details</h2>
+      <p>This test page uses the enhanced <code>load-navbar-culture.js</code> with:</p>
+      <ul>
+        <li><strong>Retry Mechanism:</strong> Automatically retries dropdown initialization if elements aren't found</li>
+        <li><strong>Robust Event Handling:</strong> Prevents conflicts with other JavaScript</li>
+        <li><strong>Enhanced CSS:</strong> Better styling and animations</li>
+        <li><strong>Mobile Support:</strong> Responsive design for all screen sizes</li>
+        <li><strong>Debug Logging:</strong> Detailed console output for troubleshooting</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="./js/load-navbar-culture.js"></script>
+  
+  <script>
+    // Additional test script
+    setTimeout(() => {
+      console.log('=== DROPDOWN TEST RESULTS ===');
+      const dropdowns = document.querySelectorAll('.dropdown');
+      const dropdownMenus = document.querySelectorAll('.dropdown-menu');
+      const translateBtn = document.getElementById('translateBtn');
+      
+      console.log(`Found ${dropdowns.length} dropdown containers`);
+      console.log(`Found ${dropdownMenus.length} dropdown menus`);
+      console.log(`Translate button found: ${!!translateBtn}`);
+      
+      if (dropdowns.length > 0) {
+        console.log('✅ Dropdown elements found successfully');
+      } else {
+        console.log('❌ No dropdown elements found');
+      }
+    }, 2000);
+  </script>
+</body>
+</html> 
