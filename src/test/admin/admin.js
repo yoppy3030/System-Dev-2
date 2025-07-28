@@ -4,35 +4,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const userTableBody = document.getElementById('user-table-body');
     const quizTableBody = document.getElementById('quiz-table-body');
     const totalUsersCountEl = document.getElementById('total-users-count');
-    const deleteModal = document.getElementById('delete-confirm-modal');
-    const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-    const deleteUserNameEl = document.getElementById('delete-user-name');
-    const editModal = document.getElementById('edit-user-modal');
-    const editForm = document.getElementById('edit-user-form');
-    const cancelEditBtn = document.getElementById('cancel-edit-btn');
-    const quizEditorModal = document.getElementById('quiz-editor-modal');
-    const addQuizBtn = document.getElementById('add-quiz-btn');
+    const helpfulFeedbackCountEl = document.getElementById('helpful-feedback-count');
+    const unhelpfulFeedbackCountEl = document.getElementById('unhelpful-feedback-count');
     
+    // User Modals
+    const deleteUserModal = document.getElementById('delete-confirm-modal');
+    const backDeleteBtn = document.getElementById('back-delete-btn');
+    const confirmDeleteUserBtn = document.getElementById('confirm-delete-btn');
+    const deleteUserNameEl = document.getElementById('delete-user-name');
+    const editUserModal = document.getElementById('edit-user-modal');
+    const editUserForm = document.getElementById('edit-user-form');
+    const backEditBtn = document.getElementById('back-edit-btn');
+    
+    // Quiz Modals & Form Elements
+    const quizEditorModal = document.getElementById('quiz-editor-modal');
+    const quizEditorForm = document.getElementById('quiz-editor-form');
+    const quizEditorTitle = document.getElementById('quiz-editor-title');
+    const backQuizEditorBtn = document.getElementById('back-quiz-editor-btn');
+    const addQuizBtn = document.getElementById('add-quiz-btn');
+    const deleteQuizModal = document.getElementById('delete-quiz-confirm-modal');
+    const deleteQuizQuestionEl = document.getElementById('delete-quiz-question');
+    const backDeleteQuizBtn = document.getElementById('back-delete-quiz-btn');
+    const confirmDeleteQuizBtn = document.getElementById('confirm-delete-quiz-btn');
+
+    // Navigation
     const sidebarNav = document.getElementById('sidebar-nav');
     const navLinks = document.querySelectorAll('.nav-link');
     const adminSections = document.querySelectorAll('.admin-section');
 
+    // State variables
     let userIdToDelete = null;
-    let userToEdit = null;
+    let quizIdToDelete = null;
 
     /**
      * 初期化関数
      */
     function initialize() {
         setupEventListeners();
-        
-        // ▼▼▼【修正】ページ読み込み時に全てのデータを取得・描画する ▼▼▼
         fetchDashboardStats();
+        fetchAndRenderFeedbackStats();
         fetchAndRenderUsers();
         fetchAndRenderQuizzes();
-
-        // 初期表示セクションを決定
         const initialHash = window.location.hash || '#dashboard';
         switchSection(initialHash);
     }
@@ -41,97 +53,115 @@ document.addEventListener('DOMContentLoaded', () => {
      * イベントリスナーをまとめて設定
      */
     function setupEventListeners() {
-        // ▼▼▼【修正】ナビゲーションのクリック処理 ▼▼▼
+        // Navigation
         sidebarNav.addEventListener('click', (e) => {
             const navLink = e.target.closest('.nav-link');
             if (!navLink) return;
             e.preventDefault();
-            const targetHash = navLink.getAttribute('href');
-            switchSection(targetHash);
+            switchSection(navLink.getAttribute('href'));
         });
-        // ▲▲▲
 
+        // User Management
         userTableBody.addEventListener('click', handleUserTableClick);
-        confirmDeleteBtn.addEventListener('click', executeUserDelete);
-        cancelDeleteBtn.addEventListener('click', closeDeleteModal);
-        deleteModal.addEventListener('click', (e) => e.target === deleteModal && closeDeleteModal());
+        confirmDeleteUserBtn.addEventListener('click', executeUserDelete);
+        backDeleteBtn.addEventListener('click', closeDeleteUserModal);
+        deleteUserModal.addEventListener('click', (e) => e.target === deleteUserModal && closeDeleteUserModal());
+        editUserForm.addEventListener('submit', handleUserEditSubmit);
+        backEditBtn.addEventListener('click', closeEditUserModal);
+        editUserModal.addEventListener('click', (e) => e.target === editUserModal && closeEditUserModal());
 
-        editForm.addEventListener('submit', handleUserEditSubmit);
-        cancelEditBtn.addEventListener('click', closeEditModal);
-        editModal.addEventListener('click', (e) => e.target === editModal && closeEditModal());
-
-        addQuizBtn.addEventListener('click', () => {
-             // ここにクイズ追加モーダルを開く処理を後で追加
-             console.log("Add quiz button clicked");
-        });
+        // Quiz Management Event Listeners
+        quizTableBody.addEventListener('click', handleQuizTableClick);
+        addQuizBtn.addEventListener('click', openQuizEditorForAdd);
+        quizEditorForm.addEventListener('submit', handleQuizFormSubmit);
+        backQuizEditorBtn.addEventListener('click', closeQuizEditorModal);
+        quizEditorModal.addEventListener('click', (e) => e.target === quizEditorModal && closeQuizEditorModal());
+        confirmDeleteQuizBtn.addEventListener('click', executeQuizDelete);
+        backDeleteQuizBtn.addEventListener('click', closeDeleteQuizModal);
+        deleteQuizModal.addEventListener('click', (e) => e.target === deleteQuizModal && closeDeleteQuizModal());
     }
     
     /**
-     * 表示するセクションを切り替える関数
+     * 表示するセクションを切り替える
      */
     function switchSection(targetHash) {
         const targetId = targetHash.substring(1);
-
         navLinks.forEach(link => {
             const isActive = link.getAttribute('href') === targetHash;
             link.classList.toggle('bg-gray-700', isActive);
             link.classList.toggle('text-gray-100', isActive);
             link.classList.toggle('text-gray-300', !isActive);
         });
-
         adminSections.forEach(section => {
             section.classList.toggle('hidden', section.id !== targetId);
         });
-        
-        // URLのハッシュも更新（ページ内遷移のため）
         window.location.hash = targetId;
     }
 
-
     /**
-     * APIからダッシュボードの統計情報を取得して表示する
+     * APIリクエストを送信する汎用関数
+     * @param {string} url - APIのエンドポイント
+     * @param {object} options - fetchのオプション
+     * @returns {Promise<any>} - JSONレスポンス
      */
+    async function apiRequest(url, options = {}) {
+        try {
+            let requestUrl = url;
+            // ▼▼▼【修正】GETリクエストにキャッシュ無効化パラメータを追加 ▼▼▼
+            if (!options.method || options.method.toUpperCase() === 'GET') {
+                requestUrl += (url.includes('?') ? '&' : '?') + '_=' + new Date().getTime();
+            }
+            // ▲▲▲
+            const response = await fetch(requestUrl, options);
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.error || 'API request failed');
+            }
+            return result;
+        } catch (error) {
+            console.error('API Error:', error);
+            alert(`エラー: ${error.message}`);
+            throw error;
+        }
+    }
+
+    // --- Data Fetching & Rendering ---
+
     async function fetchDashboardStats() {
         try {
-            const response = await fetch('api.php?action=get_dashboard_stats');
-            const data = await response.json();
-            if (totalUsersCountEl) {
-                totalUsersCountEl.textContent = data.total_users || '0';
-            }
+            const data = await apiRequest('api.php?action=get_dashboard_stats');
+            if (totalUsersCountEl) totalUsersCountEl.textContent = data.total_users || '0';
         } catch (error) {
-            console.error('Error fetching dashboard stats:', error);
             if (totalUsersCountEl) totalUsersCountEl.textContent = 'エラー';
         }
     }
 
-    /**
-     * APIからユーザーリストを取得し、テーブルに描画する
-     */
+    async function fetchAndRenderFeedbackStats() {
+        try {
+            const data = await apiRequest('api.php?action=get_feedback_stats');
+            if (helpfulFeedbackCountEl) helpfulFeedbackCountEl.textContent = data.helpful || '0';
+            if (unhelpfulFeedbackCountEl) unhelpfulFeedbackCountEl.textContent = data.unhelpful || '0';
+        } catch (error) {
+            if (helpfulFeedbackCountEl) helpfulFeedbackCountEl.textContent = 'エラー';
+            if (unhelpfulFeedbackCountEl) unhelpfulFeedbackCountEl.textContent = 'エラー';
+        }
+    }
+
     async function fetchAndRenderUsers() {
         try {
-            const response = await fetch('api.php?action=get_users');
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'ユーザー情報の取得に失敗しました。');
-            }
-            const users = await response.json();
-            
-            userTableBody.innerHTML = ''; // テーブルをクリア
-
+            const users = await apiRequest('api.php?action=get_users');
+            userTableBody.innerHTML = '';
             if (users.length === 0) {
                 userTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">ユーザーが見つかりません。</td></tr>';
                 return;
             }
-
             users.forEach(user => {
                 const tr = document.createElement('tr');
                 tr.className = 'text-gray-700';
                 tr.dataset.userId = user.ID;
                 tr.dataset.userData = JSON.stringify(user);
-
                 const registrationDate = new Date(user.RegistrationDate).toLocaleDateString('ja-JP');
                 const isCurrentUser = user.ID == currentAdminId;
-
                 tr.innerHTML = `
                     <td class="px-4 py-3 text-sm">${user.ID}</td>
                     <td class="px-4 py-3 font-semibold">${escapeHTML(user.Name)}</td>
@@ -155,20 +185,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 userTableBody.appendChild(tr);
             });
-
         } catch (error) {
-            console.error('Error fetching users:', error);
-            userTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">エラー: ${error.message}</td></tr>`;
+            userTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">ユーザー情報の取得に失敗しました。</td></tr>`;
         }
     }
 
-    /**
-     * APIからクイズリストを取得し、テーブルに描画する
-     */
     async function fetchAndRenderQuizzes() {
         try {
-            const response = await fetch('api.php?action=get_quizzes');
-            const quizzes = await response.json();
+            const quizzes = await apiRequest('api.php?action=get_quizzes');
             quizTableBody.innerHTML = '';
             if (quizzes.length === 0) {
                 quizTableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">クイズが見つかりません。</td></tr>';
@@ -176,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             quizzes.forEach(quiz => {
                 const tr = document.createElement('tr');
+                tr.dataset.quizId = quiz.id;
                 tr.dataset.quizData = JSON.stringify(quiz);
                 tr.innerHTML = `
                     <td class="px-4 py-3 text-sm">${quiz.id}</td>
@@ -189,98 +214,81 @@ document.addEventListener('DOMContentLoaded', () => {
                 quizTableBody.appendChild(tr);
             });
         } catch (error) {
-            console.error('Error fetching quizzes:', error);
             quizTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">クイズの読み込みに失敗しました。</td></tr>`;
         }
     }
     
-    /**
-     * ユーザーテーブルでのクリックイベントを処理
-     */
+    // --- User Management Functions ---
+
     function handleUserTableClick(e) {
         const target = e.target;
         const tr = target.closest('tr');
         if (!tr) return;
-
         const userId = tr.dataset.userId;
-
         if (target.classList.contains('admin-toggle')) {
-            const newStatus = target.checked;
-            toggleAdminStatus(userId, newStatus, target);
+            toggleAdminStatus(userId, target.checked, target);
         } else if (target.closest('.edit-btn')) {
-            const userData = JSON.parse(tr.dataset.userData);
-            openEditModal(userData);
+            openEditUserModal(JSON.parse(tr.dataset.userData));
         } else if (target.closest('.delete-btn')) {
-            const userName = tr.querySelector('td:nth-child(2)').textContent;
-            openDeleteModal(userId, userName);
+            openDeleteUserModal(userId, tr.querySelector('td:nth-child(2)').textContent);
         }
     }
 
     async function toggleAdminStatus(userId, newStatus, checkboxElement) {
         try {
-            const response = await fetch('api.php', {
+            await apiRequest('api.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'toggle_admin', user_id: userId, is_admin: newStatus })
             });
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.error);
         } catch (error) {
-            alert(`エラー: ${error.message}`);
-            checkboxElement.checked = !newStatus;
+            checkboxElement.checked = !newStatus; // Revert on error
         }
     }
 
-    function openDeleteModal(userId, userName) {
+    function openDeleteUserModal(userId, userName) {
         userIdToDelete = userId;
         deleteUserNameEl.textContent = userName;
-        deleteModal.classList.remove('hidden');
+        deleteUserModal.classList.remove('hidden');
     }
 
-    function closeDeleteModal() {
+    function closeDeleteUserModal() {
         userIdToDelete = null;
-        deleteModal.classList.add('hidden');
+        deleteUserModal.classList.add('hidden');
     }
 
     async function executeUserDelete() {
         if (!userIdToDelete) return;
         try {
-            const response = await fetch('api.php', {
+            await apiRequest('api.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'delete_user', user_id: userIdToDelete })
             });
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.error);
-
-            const trToDelete = userTableBody.querySelector(`tr[data-user-id="${userIdToDelete}"]`);
-            if (trToDelete) trToDelete.remove();
-            
+            fetchAndRenderUsers();
             fetchDashboardStats();
-            closeDeleteModal();
+            closeDeleteUserModal();
         } catch (error) {
-            alert(`エラー: ${error.message}`);
-            closeDeleteModal();
+            closeDeleteUserModal();
         }
     }
     
-    function openEditModal(user) {
-        userToEdit = user;
-        editForm.elements['edit-user-id'].value = user.ID;
-        editForm.elements['edit-user-name'].value = user.Name;
-        editForm.elements['edit-user-email'].value = user.Email;
-        editForm.elements['edit-user-type'].value = user.UserType;
-        editModal.classList.remove('hidden');
+    function openEditUserModal(user) {
+        editUserForm.reset();
+        editUserForm.elements['user_id'].value = user.ID;
+        editUserForm.elements['name'].value = user.Name;
+        editUserForm.elements['email'].value = user.Email;
+        editUserForm.elements['user_type'].value = user.UserType;
+        editUserModal.classList.remove('hidden');
     }
 
-    function closeEditModal() {
-        userToEdit = null;
-        editModal.classList.add('hidden');
+    function closeEditUserModal() {
+        editUserModal.classList.add('hidden');
     }
 
     async function handleUserEditSubmit(e) {
         e.preventDefault();
-        const formData = new FormData(editForm);
+        const formData = new FormData(editUserForm);
         const data = {
             action: 'update_user',
             user_id: formData.get('user_id'),
@@ -288,23 +296,160 @@ document.addEventListener('DOMContentLoaded', () => {
             email: formData.get('email'),
             user_type: formData.get('user_type'),
         };
-
         try {
-            const response = await fetch('api.php', {
+            await apiRequest('api.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.error);
-            
             fetchAndRenderUsers();
-            closeEditModal();
+            closeEditUserModal();
         } catch (error) {
-            alert(`エラー: ${error.message}`);
+            // Error is already alerted in apiRequest
         }
     }
 
+    // --- Quiz Management Functions ---
+
+    function handleQuizTableClick(e) {
+        const target = e.target;
+        const tr = target.closest('tr');
+        if (!tr) return;
+        const quizId = tr.dataset.quizId;
+        const quizData = JSON.parse(tr.dataset.quizData);
+
+        if (target.closest('.edit-quiz-btn')) {
+            openQuizEditorForEdit(quizData);
+        } else if (target.closest('.delete-quiz-btn')) {
+            openDeleteQuizModal(quizId, quizData.question.ja);
+        }
+    }
+
+    function openQuizEditorForAdd() {
+        quizEditorForm.reset();
+        quizEditorTitle.textContent = '新しいクイズを追加';
+        quizEditorForm.elements['id'].value = '';
+        quizEditorModal.classList.remove('hidden');
+    }
+
+    function openQuizEditorForEdit(quiz) {
+        quizEditorForm.reset();
+        quizEditorTitle.textContent = 'クイズを編集';
+        
+        // Populate form fields
+        quizEditorForm.elements['id'].value = quiz.id;
+        quizEditorForm.elements['difficulty'].value = quiz.difficulty;
+        
+        ['ja', 'en', 'zh'].forEach(lang => {
+            quizEditorForm.elements[`question_${lang}`].value = quiz.question[lang] || '';
+            quizEditorForm.elements[`explanation_${lang}`].value = quiz.explanation[lang] || '';
+            // Handle case where options might be less than 4
+            for (let i = 0; i < 4; i++) {
+                quizEditorForm.elements[`option_${i}_${lang}`].value = quiz.options[lang][i] || '';
+            }
+        });
+
+        const correctRadio = quizEditorForm.querySelector(`input[name="correct_answer_index"][value="${quiz.correct_answer_index}"]`);
+        if (correctRadio) correctRadio.checked = true;
+
+        quizEditorModal.classList.remove('hidden');
+    }
+
+    function closeQuizEditorModal() {
+        quizEditorModal.classList.add('hidden');
+    }
+
+    async function handleQuizFormSubmit(e) {
+        e.preventDefault();
+        const formData = new FormData(quizEditorForm);
+        const id = formData.get('id');
+        
+        const data = {
+            action: id ? 'update_quiz' : 'add_quiz',
+            id: id || null,
+            difficulty: formData.get('difficulty'),
+            correct_answer_index: parseInt(formData.get('correct_answer_index'), 10),
+            question: {
+                ja: formData.get('question_ja'),
+                en: formData.get('question_en'),
+                zh: formData.get('question_zh')
+            },
+            options: { ja: [], en: [], zh: [] },
+            explanation: {
+                ja: formData.get('explanation_ja'),
+                en: formData.get('explanation_en'),
+                zh: formData.get('explanation_zh')
+            }
+        };
+
+        // Collect only non-empty options
+        const tempOptions = { ja: [], en: [], zh: [] };
+        for (let i = 0; i < 4; i++) {
+            const ja_opt = formData.get(`option_${i}_ja`);
+            // Only add option if the Japanese field is filled (as a baseline)
+            if (ja_opt && ja_opt.trim() !== '') {
+                tempOptions.ja.push(ja_opt);
+                tempOptions.en.push(formData.get(`option_${i}_en`));
+                tempOptions.zh.push(formData.get(`option_${i}_zh`));
+            }
+        }
+        data.options = tempOptions;
+
+        // --- Validation ---
+        if (data.options.ja.length < 2) {
+            alert('少なくとも2つの選択肢を入力してください。');
+            return;
+        }
+
+        if (data.correct_answer_index >= data.options.ja.length) {
+            alert('正解として指定された選択肢が入力されていません。');
+            return;
+        }
+
+        try {
+            await apiRequest('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            fetchAndRenderQuizzes();
+            closeQuizEditorModal();
+        } catch (error) {
+            // Error handling is in apiRequest
+        }
+    }
+
+    function openDeleteQuizModal(quizId, question) {
+        quizIdToDelete = quizId;
+        // 質問が長い場合があるので、短縮する
+        const shortQuestion = question.length > 30 ? question.substring(0, 30) + '...' : question;
+        deleteQuizQuestionEl.textContent = shortQuestion;
+        deleteQuizModal.classList.remove('hidden');
+    }
+
+    function closeDeleteQuizModal() {
+        quizIdToDelete = null;
+        deleteQuizModal.classList.add('hidden');
+    }
+
+    async function executeQuizDelete() {
+        if (!quizIdToDelete) return;
+        try {
+            await apiRequest('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete_quiz', id: quizIdToDelete })
+            });
+            fetchAndRenderQuizzes();
+            closeDeleteQuizModal();
+        } catch (error) {
+            closeDeleteQuizModal();
+        }
+    }
+
+    /**
+     * HTML特殊文字をエスケープする
+     */
     function escapeHTML(str) {
         if (str === null || str === undefined) return '';
         return str.toString()

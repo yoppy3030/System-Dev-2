@@ -82,6 +82,16 @@ $username = $_SESSION['username'] ?? 'Admin';
                             <h3 class="text-lg font-semibold text-gray-600">総ユーザー数</h3>
                             <p class="text-3xl font-bold text-gray-800 mt-2" id="total-users-count">--</p>
                         </div>
+                        <!-- ▼▼▼【追加】フィードバック統計カード ▼▼▼ -->
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-lg font-semibold text-gray-600 flex items-center gap-2"><i class="fas fa-thumbs-up text-green-500"></i>役に立った</h3>
+                            <p class="text-3xl font-bold text-gray-800 mt-2" id="helpful-feedback-count">--</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-lg font-semibold text-gray-600 flex items-center gap-2"><i class="fas fa-thumbs-down text-red-500"></i>役に立たなかった</h3>
+                            <p class="text-3xl font-bold text-gray-800 mt-2" id="unhelpful-feedback-count">--</p>
+                        </div>
+                         <!-- ▲▲▲ ここまで ▲▲▲ -->
                     </div>
                 </section>
 
@@ -129,16 +139,22 @@ $username = $_SESSION['username'] ?? 'Admin';
     </div>
 
     <!-- Modals -->
+    <!-- User Delete Modal -->
     <div id="delete-confirm-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <h3 class="text-xl font-bold text-gray-800 mb-4">ユーザーの削除</h3>
             <p class="text-gray-600 mb-6">本当にユーザー「<span id="delete-user-name" class="font-bold"></span>」を削除しますか？<br>この操作は元に戻すことができません。</p>
             <div class="flex justify-end gap-4">
-                <button id="cancel-delete-btn" class="bg-gray-200 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition-colors">キャンセル</button>
-                <button id="confirm-delete-btn" class="bg-red-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-600 transition-colors">削除</button>
+                <button id="back-delete-btn" class="bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition-colors flex items-center gap-2">
+                    <i class="fas fa-arrow-left fa-fw"></i>戻る
+                </button>
+                <button id="confirm-delete-btn" class="bg-red-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2">
+                    <i class="fas fa-trash-alt fa-fw"></i>削除
+                </button>
             </div>
         </div>
     </div>
+    <!-- User Edit Modal -->
     <div id="edit-user-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
             <form id="edit-user-form">
@@ -148,30 +164,128 @@ $username = $_SESSION['username'] ?? 'Admin';
                     <div class="space-y-4">
                         <div>
                             <label for="edit-user-name" class="block text-sm font-medium text-gray-700">名前</label>
-                            <input type="text" id="edit-user-name" name="name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500">
+                            <input type="text" id="edit-user-name" name="name" class="form-input">
                         </div>
                         <div>
                             <label for="edit-user-email" class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" id="edit-user-email" name="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500">
+                            <input type="email" id="edit-user-email" name="email" class="form-input">
                         </div>
                         <div>
                             <label for="edit-user-type" class="block text-sm font-medium text-gray-700">ユーザータイプ</label>
-                            <select id="edit-user-type" name="user_type" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500">
+                            <select id="edit-user-type" name="user_type" class="form-select">
                                 <option>Tourist</option><option>International Student</option><option>Professional</option><option>other</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 <div class="bg-gray-50 px-6 py-3 flex justify-end gap-4 rounded-b-lg">
-                    <button type="button" id="cancel-edit-btn" class="bg-gray-200 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition-colors">キャンセル</button>
-                    <button type="submit" class="bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition-colors">保存</button>
+                    <button type="button" id="back-edit-btn" class="bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition-colors flex items-center gap-2">
+                        <i class="fas fa-arrow-left fa-fw"></i>戻る
+                    </button>
+                    <button type="submit" class="bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition-colors flex items-center gap-2">
+                        <i class="fas fa-check fa-fw"></i>完了
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+    
+    <!-- Quiz Editor Modal -->
     <div id="quiz-editor-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
-        <!-- ... (クイズ編集モーダルの中身は変更なし) ... -->
+        <form id="quiz-editor-form" class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+            <div class="p-6 border-b">
+                <h3 id="quiz-editor-title" class="text-xl font-bold text-gray-800">クイズの編集</h3>
+            </div>
+            <div class="p-6 space-y-6 overflow-y-auto flex-1">
+                <input type="hidden" name="id">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">難易度</label>
+                    <select name="difficulty" class="form-select mt-1">
+                        <option value="easy">簡単</option>
+                        <option value="normal">普通</option>
+                        <option value="hard">難しい</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">問題文 (日本語)</label>
+                        <input type="text" name="question_ja" class="form-input mt-1" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">問題文 (English)</label>
+                        <input type="text" name="question_en" class="form-input mt-1" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">問題文 (中文)</label>
+                        <input type="text" name="question_zh" class="form-input mt-1" required>
+                    </div>
+                </div>
+                
+                <hr>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">選択肢と正解</label>
+                    <p class="text-xs text-gray-500 mb-2">少なくとも2つの選択肢を入力してください。正解の選択肢をラジオボタンで選んでください。</p>
+                    <div class="space-y-4">
+                        <?php for ($i = 0; $i < 4; $i++): ?>
+                        <div class="flex items-center gap-4 p-3 rounded-lg <?php echo $i === 0 ? 'bg-green-50' : 'bg-gray-50'; ?>">
+                            <input type="radio" name="correct_answer_index" value="<?php echo $i; ?>" class="h-5 w-5 text-sky-600 focus:ring-sky-500 border-gray-300" <?php echo $i === 0 ? 'checked' : ''; ?>>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 flex-1">
+                                <input type="text" name="option_<?php echo $i; ?>_ja" placeholder="選択肢 <?php echo $i+1; ?> (日本語)" class="form-input">
+                                <input type="text" name="option_<?php echo $i; ?>_en" placeholder="Option <?php echo $i+1; ?> (English)" class="form-input">
+                                <input type="text" name="option_<?php echo $i; ?>_zh" placeholder="选项 <?php echo $i+1; ?> (中文)" class="form-input">
+                            </div>
+                        </div>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+
+                <hr>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                     <div>
+                        <label class="block text-sm font-medium text-gray-700">解説 (日本語)</label>
+                        <textarea name="explanation_ja" rows="3" class="form-input mt-1" required></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Explanation (English)</label>
+                        <textarea name="explanation_en" rows="3" class="form-input mt-1" required></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">解释 (中文)</label>
+                        <textarea name="explanation_zh" rows="3" class="form-input mt-1" required></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-6 py-4 flex justify-end gap-4 rounded-b-lg border-t">
+                <button type="button" id="back-quiz-editor-btn" class="bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition-colors flex items-center gap-2">
+                    <i class="fas fa-arrow-left fa-fw"></i>戻る
+                </button>
+                <button type="submit" class="bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition-colors flex items-center gap-2">
+                    <i class="fas fa-check fa-fw"></i>完了
+                </button>
+            </div>
+        </form>
     </div>
+
+    <!-- Quiz Delete Modal -->
+    <div id="delete-quiz-confirm-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">クイズの削除</h3>
+            <p class="text-gray-600 mb-6">本当にクイズ「<span id="delete-quiz-question" class="font-bold"></span>」を削除しますか？<br>この操作は元に戻すことができません。</p>
+            <div class="flex justify-end gap-4">
+                <button id="back-delete-quiz-btn" class="bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition-colors flex items-center gap-2">
+                    <i class="fas fa-arrow-left fa-fw"></i>戻る
+                </button>
+                <button id="confirm-delete-quiz-btn" class="bg-red-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2">
+                    <i class="fas fa-trash-alt fa-fw"></i>削除
+                </button>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         const currentAdminId = <?php echo json_encode($_SESSION['user_id']); ?>;

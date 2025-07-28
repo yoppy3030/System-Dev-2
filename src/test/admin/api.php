@@ -45,6 +45,19 @@ try {
                 // 今後、他の統計情報もここに追加可能
                 echo json_encode(['total_users' => $total_users]);
                 break;
+            
+            // ▼▼▼【追加】フィードバック統計取得アクション ▼▼▼
+            case 'get_feedback_stats':
+                $stmt_helpful = $pdo->query("SELECT COUNT(*) FROM MessageFeedback WHERE feedback_type = 'helpful'");
+                $helpful_count = $stmt_helpful->fetchColumn();
+                $stmt_unhelpful = $pdo->query("SELECT COUNT(*) FROM MessageFeedback WHERE feedback_type = 'unhelpful'");
+                $unhelpful_count = $stmt_unhelpful->fetchColumn();
+                echo json_encode([
+                    'helpful' => $helpful_count,
+                    'unhelpful' => $unhelpful_count
+                ]);
+                break;
+            // ▲▲▲ ここまで ▲▲▲
 
             case 'get_users':
                 $stmt = $pdo->query("SELECT ID, Name, Email, UserType, RegistrationDate, is_admin FROM Accounts ORDER BY RegistrationDate DESC");
@@ -100,7 +113,7 @@ try {
                 }
                 $pdo->beginTransaction();
                 try {
-                    $related_tables = ['ChatHistories', 'PinnedMessages', 'QuizResults', 'LearnedTopics', 'MistakeNotes', 'UserAchievements'];
+                    $related_tables = ['ChatHistories', 'PinnedMessages', 'QuizResults', 'LearnedTopics', 'MistakeNotes', 'UserAchievements', 'MessageFeedback'];
                     foreach ($related_tables as $table) {
                         $stmt = $pdo->prepare("DELETE FROM {$table} WHERE user_id = ?");
                         $stmt->execute([$user_id]);
@@ -136,7 +149,16 @@ try {
             case 'add_quiz':
             case 'update_quiz':
                 $difficulty = $data['difficulty'];
+                // ▼▼▼【修正】optionsが空でないことを確認 ▼▼▼
+                $options_array = $data['options']['ja'] ?? [];
+                if (count(array_filter($options_array)) < 2) {
+                     throw new Exception('少なくとも2つの選択肢が必要です。', 400);
+                }
                 $correct_index = $data['correct_answer_index'];
+                if ($correct_index >= count($options_array) || empty($options_array[$correct_index])) {
+                    throw new Exception('正解の選択肢が有効ではありません。', 400);
+                }
+                // ▲▲▲ ここまで ▲▲▲
                 $question = json_encode($data['question'], JSON_UNESCAPED_UNICODE);
                 $options = json_encode($data['options'], JSON_UNESCAPED_UNICODE);
                 $explanation = json_encode($data['explanation'], JSON_UNESCAPED_UNICODE);
