@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Festivals & National Holidays | JAPAN Life Manual</title>
+  <link rel="stylesheet" href="./css/professional.css" />
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <?php include 'includes/navbar.php'; ?>
+
+  <!-- Hero Section -->
+  <section class="culture-hero" style="background-image: url('./img/fire_work.jpg');">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Festivals & National Holidays</h1>
+      <p>Experience Japan through its vibrant seasons and celebrations</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="culture-content">
+    <section class="card-style-section">
+      <h2>Major National Holidays</h2>
+      <ul>
+        <li><strong>New Year (お正月 - Oshōgatsu):</strong> January 1-3. Most important holiday; people visit shrines, eat osechi, and send cards.</li>
+        <li><strong>Golden Week:</strong> Late April to early May. A string of public holidays, including Showa Day, Constitution Memorial Day, Greenery Day, and Children's Day.</li>
+        <li><strong>Obon:</strong> Mid-August. A time to honor ancestors; people return to their hometowns and participate in bon-odori dances.</li>
+        <li><strong>Coming of Age Day (成人の日):</strong> Second Monday of January. Celebrates those who turn 20, marked by ceremonies and formal attire.</li>
+        <li><strong>Respect for the Aged Day (敬老の日):</strong> Third Monday of September, showing appreciation for elderly people.</li>
+      </ul>
+    </section>
+
+    <section class="card-style-section">
+      <h2>Popular Festivals (Matsuri)</h2>
+      <ul>
+        <li><strong>Gion Matsuri (Kyoto):</strong> Held in July, this is one of Japan's most famous festivals featuring elaborate floats and parades.</li>
+        <li><strong>Awa Odori (Tokushima):</strong> A dance festival in August with colorful costumes and rhythmic music.</li>
+        <li><strong>Nebuta Matsuri (Aomori):</strong> Held in early August, known for its giant illuminated floats.</li>
+        <li><strong>Sapporo Snow Festival:</strong> February in Hokkaido, showcasing massive snow and ice sculptures.</li>
+        <li><strong>Tanabata:</strong> Celebrated on July 7th. People write wishes on colored paper and hang them on bamboo branches.</li>
+      </ul>
+    </section>
+
+    <section class="card-style-section">
+      <h2>Things to Know</h2>
+      <ul>
+        <li>Many festivals feature traditional clothing like yukata, local street food, fireworks, and games.</li>
+        <li>It's polite to say "Itadakimasu" before eating and "Gochisousama deshita" after.</li>
+        <li>Check regional calendars—each area has its own special matsuri!</li>
+      </ul>
+    </section>
+
+    <div class="back-button-container">
+      <a href="culture.php" class="back-button">← Back to Culture</a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <h2>Contact Us</h2>
+      <p><a href="mailto:22200797@ecc.ac.jp">Email: 22200797@ecc.ac.jp</a></p>
+      <p>Address: 1-2-61 Koraku, Bunkyo City, Tokyo 123-0006, Japan</p>
+      <p>Phone: +81 3-1234-5678</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+      </div>
+      <h2>Japan Life Manual</h2>
+      <p>&copy; 2025 JAPAN Life Manual. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="./js/shared-nav.js"></script>
+</body>
+</html>
