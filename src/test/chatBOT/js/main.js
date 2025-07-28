@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isRecording = false;
     let isSummarizing = false;
     let csrfToken = '';
+    let quizPool = []; // ▼▼▼【変更】knowledge.jsの代わりにDBから取得したクイズを格納
 
     // ユーザー/ゲスト識別子
     let sessionIdentifier = { type: 'guest', id: null }; 
@@ -87,6 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return api.request(endpoint);
         },
+        // ▼▼▼【追加】クイズ取得用のAPIラッパー ▼▼▼
+        getQuizQuestions: (difficulty) => api.request(`get_quiz_questions&difficulty=${difficulty}`),
+        // ▲▲▲
         migrateGuestData: (guest_session_id) => api.request('migrate_guest_data', { method: 'POST', body: { guest_session_id } }),
         saveHistory: (history_html) => api.request('save_history', { method: 'POST', body: { history_html } }),
         savePinnedMessages: (messages) => api.request('save_pinned_messages', { method: 'POST', body: { pinned_messages: messages } }),
@@ -561,7 +565,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function askNextQuizQuestion() {
-        if (!quizData || !quizData[currentDifficulty] || quizData[currentDifficulty].length === 0) {
+        // ▼▼▼【変更】参照先を quizPool に変更 ▼▼▼
+        if (!quizPool || quizPool.length === 0) {
              displayBotMessage(uiStrings[currentLanguage].defaultReply); return;
         }
         if (askedQuizIndices.size >= quizLength) {
@@ -571,7 +576,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const allQuizzesInDifficulty = quizData[currentDifficulty];
+        const allQuizzesInDifficulty = quizPool;
+        // ▲▲▲
+
         if (!allQuizzesInDifficulty) {
             console.error("Invalid difficulty or quiz data is missing for:", currentDifficulty);
             displayBotMessage(uiStrings[currentLanguage].defaultReply); return;
@@ -930,6 +937,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentDifficulty = null;
         quizScore = 0;
         quizLength = 0;
+        quizPool = [];
     }
 
     function resetAllStates() {
@@ -1270,11 +1278,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const container = feedbackBtn.parentElement;
                     container.innerHTML = `<p class="feedback-thank-you">${uiStrings[currentLanguage].feedback.thank_you}</p>`;
                     api.saveHistory(chatWindow.innerHTML).catch(e => console.error(e));
-                    // ▼▼▼【修正】フィードバックをAPIに送信 ▼▼▼
                     const messageId = container.dataset.messageId;
                     api.saveFeedback({ message_id: messageId, feedback_type: feedback })
                        .catch(err => console.error("Feedback submission failed:", err));
-                    // ▲▲▲ ここまで ▲▲▲
                     return; 
                 }
 
@@ -1308,7 +1314,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     case 'select_difficulty':
                         const difficultyMap = { '簡単': 'easy', 'Easy': 'easy', '简单': 'easy', '普通': 'normal', 'Normal': 'normal', '困难': 'hard', '難しい': 'hard' };
                         currentDifficulty = difficultyMap[replyText];
-                        displayBotMessage(uiStrings[currentLanguage].quiz_question_count_prompt, { quickReplies: uiStrings[currentLanguage].quiz_question_counts, quizFlow: 'question_count' });
+                        // ▼▼▼【変更】難易度選択後にAPIでクイズを取得する ▼▼▼
+                        (async () => {
+                            displaySkeletonLoader();
+                            try {
+                                quizPool = await api.getQuizQuestions(currentDifficulty);
+                                const skeleton = document.querySelector('.skeleton-loader-container');
+                                if (skeleton) skeleton.remove();
+                                
+                                if (!quizPool || quizPool.length === 0) {
+                                    displayBotMessage("この難易度のクイズは現在利用できません。");
+                                    showWelcomeMenu();
+                                    return;
+                                }
+                    
+                                displayBotMessage(uiStrings[currentLanguage].quiz_question_count_prompt, { quickReplies: uiStrings[currentLanguage].quiz_question_counts, quizFlow: 'question_count' });
+                    
+                            } catch (error) {
+                                console.error("Failed to fetch quizzes:", error);
+                                const skeleton = document.querySelector('.skeleton-loader-container');
+                                if (skeleton) skeleton.remove();
+                                displayBotMessage(uiStrings[currentLanguage].defaultReply);
+                                showWelcomeMenu();
+                            }
+                        })();
+                        // ▲▲▲
                         break;
                     case 'select_question_count':
                         quizLength = parseInt(replyText) || 10;
