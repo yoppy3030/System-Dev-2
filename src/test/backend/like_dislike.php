@@ -1,88 +1,87 @@
 <?php
-// Active l'affichage des erreurs pour le débogage (à DÉSACTIVER en production !)
+//エラー表示を有効にする
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
-// Assurez-vous que ce chemin est correct et que $pdo est disponible
-// Exemple: si 'backend' est un dossier, et config.php est dedans
+//セッションを開始する
 require __DIR__ . '/config.php';
 
-header('Content-Type: application/json'); // Indique que la réponse est du JSON
+header('Content-Type: application/json'); //json形式でのレスポンスを設定
 
-$response = ['success' => false, 'message' => '']; // Structure de réponse unifiée
+$response = ['success' => false, 'message' => '']; // 統一されたレスポンス構造
 
 $user_id = $_SESSION['user_id'] ?? null;
 
-// target_id et target_type sont nécessaires pour TOUTES les requêtes (GET et POST)
-$target_id = $_REQUEST['target_id'] ?? null; // $_REQUEST pour récupérer de GET ou POST
+//ユーザーIDをセッションから取得
+$target_id = $_REQUEST['target_id'] ?? null; // $_REQUESTはGETまたはPOSTから取得するためのもの
 $target_type = $_REQUEST['target_type'] ?? null;
 
-// is_like n'est pertinent que pour les requêtes POST
+// is_likeはPOSTリクエストにのみ関連します
 $is_like = isset($_POST['is_like']) ? (int) $_POST['is_like'] : null;
 
-// Vérification essentielle des paramètres pour toute requête (GET ou POST)
+// GETまたはPOSTのリクエストに対する基本的なパラメータチェック
 if (!$target_id || !$target_type) {
-    http_response_code(400); // Bad Request
+    http_response_code(400); 
     $response['message'] = "Missing target_id or target_type.";
     echo json_encode($response);
     exit();
 }
 
 try {
-    // --- Logique de Like/Dislike (UNIQUEMENT pour les requêtes POST) ---
+    //like と dislike の処理
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$user_id) {
-            http_response_code(401); // Unauthorized
-            $response['message'] = "You must be logged in to like/dislike.";
+            http_response_code(401); 
+            $response['message'] = "like/dislike にはログインが必要です。";
             echo json_encode($response);
             exit();
         }
 
-        // Vérification de is_like pour POST
+        // is_likeの確認（POST用）
         if ($is_like === null || ($is_like !== 0 && $is_like !== 1)) {
-            http_response_code(400); // Bad Request
-            $response['message'] = "Invalid or missing 'is_like' parameter.";
+            http_response_code(400); 
+            $response['message'] = "'is_like'の値は0または1でなければなりません。";
             echo json_encode($response);
             exit();
         }
 
-        // Début de la transaction
+        // トランザクションの開始
         $pdo->beginTransaction();
 
-        // Vérifie si l'utilisateur a déjà réagi (like ou dislike) à cette cible
+        // ユーザーがすでにこのターゲットに対して反応（likeまたはdislike）しているか確認
         $stmt = $pdo->prepare("SELECT id, is_like FROM likes WHERE user_id = ? AND target_id = ? AND target_type = ?");
         $stmt->execute([$user_id, $target_id, $target_type]);
         $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($existing) {
-            // L'utilisateur a déjà une réaction
+            // ユーザーはすでにこのターゲットに対して反応しています
             if ((int)$existing['is_like'] === $is_like) {
-                // Si la nouvelle réaction est la même que l'existante, on la supprime (toggle off)
+                // 新しい反応が既存のものと同じ場合、削除します（トグルオフ）
                 $stmt = $pdo->prepare("DELETE FROM likes WHERE id = ?");
                 $stmt->execute([$existing['id']]);
-                $response['message'] = "Action removed.";
+                $response['message'] = "アクションが削除されました。";
             } else {
-                // Si la nouvelle réaction est différente, on la met à jour
+                // 新しい反応が既存のものと異なる場合、更新します
                 $stmt = $pdo->prepare("UPDATE likes SET is_like = ? WHERE id = ?");
                 $stmt->execute([$is_like, $existing['id']]);
-                $response['message'] = "Action updated.";
+                $response['message'] = "アクションが更新されました。";
             }
         } else {
-            // Pas de réaction existante, on l'insère
+            // 既存の反応がない場合、新規挿入
             $stmt = $pdo->prepare("INSERT INTO likes (user_id, target_id, target_type, is_like) VALUES (?, ?, ?, ?)");
             $stmt->execute([$user_id, $target_id, $target_type, $is_like]);
-            $response['message'] = "Action recorded.";
+            $response['message'] = "アクションが記録されました。";
         }
 
-        $pdo->commit(); // Valide la transaction si tout s'est bien passé
+        $pdo->commit(); // トランザクションをコミット
 
     }
 
-    // --- Récupération des NOUVEAUX comptes (pour les requêtes GET et POST) ---
-    // Cette partie est exécutée après toute action POST (pour renvoyer les nouveaux totaux),
-    // ou directement pour une requête GET (pour récupérer les totaux actuels).
+    // --- 新しいカウントの取得（GETおよびPOSTリクエスト用） ---
+    // この部分は、すべてのPOSTアクションの後に実行されます（新しい合計を返すため）、
+    // または直接GETリクエストのために（現在の合計を取得するため）。
     $stmt = $pdo->prepare("
         SELECT
             SUM(CASE WHEN is_like = 1 THEN 1 ELSE 0 END) AS likes,
@@ -93,40 +92,40 @@ try {
     $stmt->execute([$target_id, $target_type]);
     $counts = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Gérer le cas où il n'y a aucun like/dislike (SUM retourne null si aucune ligne n'est trouvée)
+    // いいね/よくないねがない場合の処理（SUMは行が見つからないとnullを返す）
     $likes = (int)($counts['likes'] ?? 0);
     $dislikes = (int)($counts['dislikes'] ?? 0);
 
     $response['success'] = true;
     $response['likes'] = $likes;
     $response['dislikes'] = $dislikes;
-    $response['target_id'] = $target_id; // Utile pour le débogage côté JS
+    $response['target_id'] = $target_id; // デバッグ用
 
     echo json_encode($response);
 
 } catch (PDOException $e) {
-    // En cas d'erreur PDO, annule la transaction si elle était active
+    // PDOエラーが発生した場合、トランザクションをロールバック
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
     error_log("Database error in like_dislike.php: " . $e->getMessage());
-    http_response_code(500); // Code d'erreur interne du serveur
+    http_response_code(500); // サーバー内部エラー
     $response['success'] = false;
-    $response['message'] = 'An internal server error occurred.';
-    // Pour le débogage seulement : $response['details'] = $e->getMessage();
+    $response['message'] = '内部サーバーエラーが発生しました。';
+    // デバッグ用 : $response['details'] = $e->getMessage();
     echo json_encode($response);
 } catch (Exception $e) {
-    // Pour toute autre erreur inattendue
+    // 予期しないエラーが発生した場合
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
     error_log("General error in like_dislike.php: " . $e->getMessage());
     http_response_code(500);
     $response['success'] = false;
-    $response['message'] = 'An unexpected error occurred.';
-    // Pour le débogage seulement : $response['details'] = $e->getMessage();
+    $response['message'] = '予期しないエラーが発生しました。';
+    // デバッグ用 : $response['details'] = $e->getMessage();
     echo json_encode($response);
 }
 
-exit(); // Toujours exit après avoir envoyé la réponse JSON
+exit(); // JSONレスポンスを送信した後は常にexit
 ?>

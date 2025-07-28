@@ -1,18 +1,18 @@
-console.log("Script chargé !");
+console.log("スクリプトがロードされました！"); // Script chargé !
 
 document.addEventListener('DOMContentLoaded', function () {
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
     const postsFeed = document.querySelector('.posts-feed');
     const noResultsMessage = document.getElementById('no-results');
-    const clearSearchBtn = document.querySelector('.clear-search-btn'); // Sélectionne le bouton "Clear"
+    const clearSearchBtn = document.querySelector('.clear-search-btn'); // セレクタ "Clear"
 
     /**
-     * Fonction utilitaire pour échapper les caractères HTML spéciaux.
-     * C'est crucial pour prévenir les attaques de type Cross-Site Scripting (XSS)
-     * lorsque vous insérez des données dynamiques dans le DOM.
-     * @param {string} str La chaîne de caractères à échapper.
-     * @returns {string} La chaîne échappée.
+     * ファンクション escapeHTMLは、HTML特殊文字をエスケープします。
+     * これは、動的なデータをDOMに挿入する際の重要なステップです。
+     * Cross-Site Scripting (XSS) 攻撃を防ぐために重要です。
+     * @param {string} str エスケープする文字列。
+     * @returns {string} エスケープされた文字列。
      */
     function escapeHTML(str) {
         if (typeof str !== 'string') return '';
@@ -22,14 +22,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Gère la soumission du formulaire de recherche via AJAX.
+     * 検索フォームの送信イベントを処理します。
+     * フォームが送信されると、入力された検索クエリを取得し、
+     * サーバーにリクエストを送信して、関連する投稿を取得します。
+     * 取得した投稿は、ページ上の投稿フィードに表示されます。
      */
     if (searchForm && searchInput && postsFeed) {
         searchForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const query = searchInput.value.trim();
 
-            postsFeed.innerHTML = '<p style="text-align: center; margin-top: 20px;">Chargement des publications...</p>';
+            postsFeed.innerHTML = '<p style="text-align: center; margin-top: 20px;">投稿を読み込み中...</p>'; // Chargement des publications...
             if (noResultsMessage) {
                 noResultsMessage.style.display = 'none';
             }
@@ -37,19 +40,19 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch(`search_posts.php?search=${encodeURIComponent(query)}`)
                 .then(res => {
                     if (!res.ok) {
-                        throw new Error(`Erreur HTTP ! Statut: ${res.status}`);
+                        throw new Error(`HTTPエラーが発生しました！ステータス: ${res.status}`); // Erreur HTTP ! Statut:
                     }
                     return res.json();
                 })
                 .then(posts => {
-                    postsFeed.innerHTML = ''; // Vide le feed avant d'ajouter de nouveaux posts
+                    postsFeed.innerHTML = ''; // 初期化：投稿フィードを空にする
 
                     if (posts.length === 0) {
                         if (noResultsMessage) {
                             noResultsMessage.style.display = 'block';
-                            noResultsMessage.textContent = `Aucun résultat trouvé pour "${escapeHTML(query)}".`;
+                            noResultsMessage.textContent = `"${escapeHTML(query)}"の検索結果は見つかりませんでした。`; // Aucun résultat trouvé pour "${escapeHTML(query)}".
                         } else {
-                            postsFeed.innerHTML = `<p style="text-align: center; margin-top: 20px; color: #888;">Aucun résultat trouvé pour "${escapeHTML(query)}".</p>`;
+                            postsFeed.innerHTML = `<p style="text-align: center; margin-top: 20px; color: #888;">"${escapeHTML(query)}"の検索結果は見つかりませんでした。</p>`; // Aucun résultat trouvé pour "${escapeHTML(query)}".
                         }
                     } else {
                         if (noResultsMessage) {
@@ -62,50 +65,53 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             postEl.innerHTML = `
                                 <div class="post-header">
-                                    <img src="${escapeHTML(post.avatar || '/uploads/default_avatar.jpg')}" class="post-avatar" alt="Avatar de l'utilisateur">
+                                    <img src="${escapeHTML(post.avatar || '/uploads/default_avatar.jpg')}" class="post-avatar" alt="ユーザーのアバター">
                                     <span class="post-author">${escapeHTML(post.username)}</span>
-                                    <span class="post-date">${new Date(post.created_at).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })}</span>
+                                    <span class="post-date">${new Date(post.created_at).toLocaleString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })}</span>
                                 </div>
                                 <div class="post-content">
                                     <p>${escapeHTML(post.content).replace(/\n/g, '<br>')}</p>
-                                    ${post.image ? `<img src="${escapeHTML(post.image)}" class="post-image" alt="Image du post">` : ''}
+                                    ${post.image ? `<img src="${escapeHTML(post.image)}" class="post-image" alt="投稿画像">` : ''}
                                 </div>
-                                <div class="post-interactions">
+                                <div class="post-footer">
                                     <div class="actions" data-post-id="${post.id}">
-                                        <button class="like-btn"><i class="fas fa-thumbs-up"></i> J'aime</button>
+                                        <button class="like-btn"><i class="fas fa-thumbs-up"></i> いいね！</button>
                                         <span class="like-count">${post.likes_count}</span>
-                                        <button class="dislike-btn"><i class="fas fa-thumbs-down"></i> Je n'aime pas</button>
+                                        <button class="dislike-btn"><i class="fas fa-thumbs-down"></i> よくないね！</button>
                                         <span class="dislike-count">${post.dislikes_count}</span>
                                         <span><i class="fas fa-comments"></i> <span class="comment-count">${post.comment_count}</span></span>
                                     </div>
                                     <button class="toggle-comments-btn">
-                                        <i class="fas fa-comments"></i> <span>Afficher les commentaires</span>
+                                        <i class="fas fa-comments"></i> <span>コメントを表示</span>
                                     </button>
                                 </div>
-                                <div class="add-comment" style="display: none; margin-top: 10px;">
-                                    <textarea id="comment-input-${post.id}" placeholder="Ajouter un commentaire..."></textarea>
-                                    <button class="add-comment-btn" data-post-id="${post.id}">Ajouter</button>
+                                <div class="comments-container">
+                                    <div class="add-comment" style="display: none; margin-top: 10px;">
+                                        <textarea id="comment-input-${post.id}" placeholder="コメントを追加..."></textarea>
+                                        <button class="add-comment-btn" data-post-id="${post.id}">追加</button>
+                                    </div>
+                                    <div id="comments-${post.id}" class="comments"></div>
                                 </div>
-                                <div id="comments-${post.id}" class="comments" style="display: none;"></div>
                             `;
                             postsFeed.appendChild(postEl);
                         });
-                        // IMPORTANT: Ré-attacher les écouteurs d'événements après avoir ajouté de nouveaux posts
+                        // 重要: 新しい投稿を追加した後にイベントリスナーを再度バインド
                         bindPostInteractions(postsFeed);
                     }
                 })
                 .catch(err => {
-                    console.error('Error while searching:', err);
+                    console.error('検索中にエラーが発生しました:', err); // Error while searching:
                     if (noResultsMessage) {
                         noResultsMessage.style.display = 'block';
-                        noResultsMessage.textContent = 'Une erreur est survenue lors de la recherche. Veuillez réessayer plus tard.';
+                        noResultsMessage.textContent = '検索中にエラーが発生しました。後でもう一度お試しください。'; // 検索中にエラーが発生しました。後でもう一度お試しください。
                     }
                     postsFeed.innerHTML = '';
                 });
         });
     }
 
-    // Permet de déclencher la recherche en appuyant sur Entrée dans le champ de recherche
+    // 検索入力フィールドでEnterキーを押したときの処理
+    // フォームのsubmitイベントをトリガーする
     searchInput?.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -113,65 +119,67 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Gère le bouton "Clear" de la recherche
+    // 検索のクリアボタンを処理
     clearSearchBtn?.addEventListener('click', function (e) {
         e.preventDefault();
-        searchInput.value = ''; // Vide le champ de recherche
-        searchForm.dispatchEvent(new Event('submit')); // Soumet le formulaire vide pour afficher tous les posts
+        searchInput.value = ''; // 検索フィールドを空にする
+        searchForm.dispatchEvent(new Event('submit')); // 空のフォームを送信してすべての投稿を表示
     });
 
-    // --- Fonctions globales pour les interactions des posts ---
+    // --- 投稿のインタラクションのためのグローバル関数 ---
 
     /**
-     * Lie tous les écouteurs d'événements nécessaires aux posts (likes, dislikes, commentaires).
-     * Cette fonction est appelée au chargement initial de la page et après chaque nouvelle recherche.
-     * @param {HTMLElement} container Le conteneur (ex: .posts-feed) à l'intérieur duquel chercher les posts.
+     * 投稿（いいね、よくないね、コメント）に必要なすべてのイベントリスナーをバインドします。
+     * この関数は、ページの初期読み込み時と新しい検索後に呼び出されます。
+     * @param {HTMLElement} container 投稿を検索するコンテナ（例：.posts-feed）
      */
     function bindPostInteractions(container) {
-        // Gère les likes/dislikes pour chaque post
+        // いいねとよくないねのボタンのイベントリスナーをバインド
+        // すべてのアクションボタンに対して、クリックイベントをバインドします。
+        // これにより、各投稿のいいねとよくないねのボタンが機能します。
         container.querySelectorAll('.actions').forEach(actionDiv => {
-            // Supprime les écouteurs existants pour éviter les doublons si la fonction est appelée plusieurs fois
-            // Note: C'est important si vous ré-attachez à des éléments existants,
-            // mais moins si vous reconstruisez entièrement le DOM du feed.
-            // Cependant, cela ne fait pas de mal pour la robustesse.
+            // 既存のリスナーを削除して、重複を避ける
+            // 注意: これは、既存の要素に再バインドする場合に重要ですが、
+            // フィードのDOMを完全に再構築する場合はそれほど重要ではありません。
+            // ただし、堅牢性のために無駄にはなりません。
             const likeBtn = actionDiv.querySelector('.like-btn');
             const dislikeBtn = actionDiv.querySelector('.dislike-btn');
             if (likeBtn) likeBtn.removeEventListener('click', handleLikeDislikeClick);
             if (dislikeBtn) dislikeBtn.removeEventListener('click', handleLikeDislikeClick);
 
-            // Attache les nouveaux écouteurs
+            // 新しいリスナーをアタッチ
             if (likeBtn) likeBtn.addEventListener('click', handleLikeDislikeClick);
             if (dislikeBtn) dislikeBtn.addEventListener('click', handleLikeDislikeClick);
 
-            // Met à jour les compteurs à l'initialisation du post
+            // 投稿の初期化時にカウンターを更新
             updateCounts(actionDiv.dataset.postId, actionDiv.querySelector('.like-count'), actionDiv.querySelector('.dislike-count'));
         });
 
-        // Gère l'affichage/masquage des commentaires et le chargement initial
+        // コメントの表示/非表示と初期ロードを処理
         container.querySelectorAll('.post').forEach(postEl => {
-            const commentsSection = postEl.querySelector('.comments');
+            const commentsContainer = postEl.querySelector('.comments-container'); // Changed to comments-container
             const addCommentSection = postEl.querySelector('.add-comment');
             const toggleBtn = postEl.querySelector('.toggle-comments-btn');
             const postId = postEl.dataset.postId;
 
-            if (!commentsSection || !addCommentSection || !toggleBtn || !postId) return;
+            if (!commentsContainer || !addCommentSection || !toggleBtn || !postId) return;
 
-            // Supprime les écouteurs existants pour éviter les doublons
+            // 既存のリスナーを削除して、重複を避ける
             toggleBtn.removeEventListener('click', handleToggleCommentsClick);
-            // Attache les nouveaux écouteurs
+            // 新しいリスナーをアタッチ
             toggleBtn.addEventListener('click', handleToggleCommentsClick);
         });
 
-        // Gère l'ajout d'un commentaire principal pour chaque post
+        // 各投稿のメインコメント追加を処理
         container.querySelectorAll('.add-comment-btn').forEach(btn => {
-            // Supprime les écouteurs existants pour éviter les doublons
+            // 既存のリスナーを削除して、重複を避ける
             btn.removeEventListener('click', handleAddCommentClick);
-            // Attache les nouveaux écouteurs
+            // 新しいリスナーをアタッチ
             btn.addEventListener('click', handleAddCommentClick);
         });
     }
 
-    /** Gestionnaire centralisé pour les likes et dislikes */
+    /** いいねとよくないねのアクションのための一元化されたハンドラ */
     function handleLikeDislikeClick() {
         const actionDiv = this.closest('.actions');
         const postId = actionDiv.dataset.postId;
@@ -185,10 +193,10 @@ document.addEventListener('DOMContentLoaded', function () {
             body: `target_id=${postId}&target_type=post&is_like=${isLike}`
         })
         .then(() => updateCounts(postId, likeCountSpan, dislikeCountSpan))
-        .catch(err => console.error("Erreur lors de l'action like/dislike:", err));
+        .catch(err => console.error("いいね/よくないねのアクション中にエラーが発生しました:", err)); // Erreur lors de l'action like/dislike:
     }
 
-    /** Met à jour les compteurs de likes et dislikes à partir du backend. */
+    /** バックエンドからいいねとよくないねのカウンターを更新します。 */
     function updateCounts(postId, likeCountSpan, dislikeCountSpan) {
         fetch(`http://localhost/Challengers/System-Dev-2/src/test/backend/like_dislike.php?target_id=${postId}&target_type=post`)
             .then(res => res.json())
@@ -196,36 +204,39 @@ document.addEventListener('DOMContentLoaded', function () {
                 likeCountSpan.textContent = data.likes ?? 0;
                 dislikeCountSpan.textContent = data.dislikes ?? 0;
             })
-            .catch(err => console.error("Erreur mise à jour des compteurs likes/dislikes:", err));
+            .catch(err => console.error("いいね/よくないねのカウンター更新中にエラーが発生しました:", err)); // Erreur mise à jour des compteurs likes/dislikes:
     }
 
-    /** Gestionnaire pour les clics sur le bouton 'Toggle Comments' */
+    /** 'コメントを表示/非表示'ボタンのクリックハンドラー */
     function handleToggleCommentsClick() {
         const postEl = this.closest('.post');
-        const commentsSection = postEl.querySelector('.comments');
+        const commentsContainer = postEl.querySelector('.comments-container'); // Use comments-container
         const addCommentSection = postEl.querySelector('.add-comment');
         const toggleBtn = this;
         const postId = postEl.dataset.postId;
 
-        const isVisible = commentsSection.style.display === 'block';
+        // Toggle the 'comments-visible' class on the container
+        commentsContainer.classList.toggle('comments-visible');
 
-        if (!isVisible) { // Si les commentaires vont être affichés
+        const isVisible = commentsContainer.classList.contains('comments-visible');
+
+        if (isVisible) { // If comments are about to be displayed
             loadComments(postId);
+            addCommentSection.style.display = 'flex'; // Show the add comment section
+        } else {
+            addCommentSection.style.display = 'none'; // Hide the add comment section
         }
-
-        commentsSection.style.display = isVisible ? 'none' : 'block';
-        addCommentSection.style.display = isVisible ? 'none' : 'flex';
 
         const icon = toggleBtn.querySelector('i');
         const text = toggleBtn.querySelector('span');
-        icon.className = isVisible ? 'fas fa-comments' : 'fas fa-chevron-up';
-        text.textContent = isVisible ? 'Afficher les commentaires' : 'Masquer les commentaires';
+        icon.className = isVisible ? 'fas fa-chevron-up' : 'fas fa-comments'; // Change icon based on visibility
+        text.textContent = isVisible ? 'コメントを非表示' : 'コメントを表示'; // Change text based on visibility
     }
 
-    /** Gestionnaire pour les clics sur le bouton 'Add Comment' (principal ou réponse) */
+    /** 'コメントを追加'ボタン（メインまたは返信）のクリックハンドラー */
     function handleAddCommentClick() {
         const postId = this.dataset.postId;
-        const parentCommentId = this.dataset.parentCommentId || null; // Sera null si ce n'est pas une réponse
+        const parentCommentId = this.dataset.parentCommentId || null; // Will be null if it's not a reply
         const inputId = parentCommentId ? `reply-input-${parentCommentId}` : `comment-input-${postId}`;
         const input = document.getElementById(inputId);
 
@@ -236,8 +247,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /**
-     * Appelle bindPostInteractions pour tous les posts initialement présents sur la page.
-     * Cette fonction est appelée une seule fois au chargement complet du DOM.
+     * ページに最初に存在するすべての投稿に対してbindPostInteractionsを呼び出します。
+     * この関数は、DOMが完全にロードされたときに一度だけ呼び出されます。
      */
     function initializePageInteractions() {
         const postsFeedContainer = document.querySelector('.posts-feed');
@@ -246,21 +257,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Lance l'initialisation après que tout le DOM est chargé
+    // すべてのDOMがロードされた後に初期化を開始
     initializePageInteractions();
 });
 
-// --- Fonctions globales (déplacées hors de DOMContentLoaded pour être accessibles partout) ---
+// --- グローバル関数 (どこからでもアクセスできるようにDOMContentLoadedの外に移動) ---
 
 /**
- * Charge les commentaires pour un post spécifique depuis le backend.
- * @param {string} postId L'ID du post dont on veut charger les commentaires.
+ * バックエンドから特定の投稿のコメントをロードします。
+ * @param {string} postId コメントをロードする投稿のID。
  */
 function loadComments(postId) {
     fetch(`/backend/get_comments.php?post_id=${postId}`)
         .then(res => {
             if (!res.ok) {
-                throw new Error(`Erreur HTTP ! Statut: ${res.status}`);
+                throw new Error(`HTTPエラーが発生しました！ステータス: ${res.status}`); // HTTPエラーが発生しました！ステータス:
             }
             return res.json();
         })
@@ -268,16 +279,16 @@ function loadComments(postId) {
             const commentsContainer = document.getElementById(`comments-${postId}`);
             if (!commentsContainer) return;
             commentsContainer.innerHTML = renderComments(data);
-            bindReplyButtons(); // Ré-attache les écouteurs aux nouveaux boutons de réponse et à leurs formulaires
+            bindReplyButtons(); // 新しい返信ボタンとそのフォームにリスナーを再アタッチ
         })
-        .catch(err => console.error("Erreur lors du chargement des commentaires:", err));
+        .catch(err => console.error("コメントのロード中にエラーが発生しました:", err)); // コメントのロード中にエラーが発生しました:
 }
 
 /**
- * Rend récursivement une liste de commentaires et leurs réponses imbriquées en HTML.
- * @param {Array} comments La liste complète de tous les commentaires (plats).
- * @param {string|null} parentId L'ID du commentaire parent (null pour les commentaires de premier niveau).
- * @returns {string} Le HTML généré pour les commentaires.
+ * コメントとそのネストされた返信のリストをHTMLで再帰的にレンダリングします。
+ * @param {Array} comments すべてのコメントの完全なリスト（フラット）。
+ * @param {string|null} parentId 親コメントのID（トップレベルコメントの場合はnull）。
+ * @returns {string} 生成されたコメントのHTML。
  */
 function renderComments(comments, parentId = null) {
     let html = '';
@@ -286,17 +297,24 @@ function renderComments(comments, parentId = null) {
     filteredComments.forEach(comment => {
         html += `
             <div class="comment" data-comment-id="${comment.id}">
-                <img src="${escapeHTML(comment.avatar ?? '/uploads/default_avatar.jpg')}" class="avatar-mini" alt="Avatar">
-                <div class="comment-details">
-                    <b>${escapeHTML(comment.username)}</b>: ${escapeHTML(comment.content).replace(/\n/g, '<br>')}
-                    <span class="comment-date">${new Date(comment.created_at).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })}</span>
+                <img src="${escapeHTML(comment.avatar ?? '/uploads/default_avatar.jpg')}" class="comment-avatar" alt="アバター">
+                <div class="comment-body">
+                    <div class="comment-author">
+                        ${escapeHTML(comment.username)}
+                    </div>
+                    <div class="comment-text">
+                        <p>${escapeHTML(comment.content).replace(/\n/g, '<br>')}</p>
+                    </div>
+                    <div class="comment-date">
+                        ${new Date(comment.created_at).toLocaleString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })}
+                    </div>
+                    <button class="reply-btn">返信</button>
+                    <div class="reply-form">
+                        <textarea id="reply-input-${comment.id}" placeholder="返信を書く..."></textarea>
+                        <button class="add-reply-btn" data-post-id="${comment.post_id}" data-parent-comment-id="${comment.id}">返信を追加</button>
+                    </div>
                 </div>
-                <button class="reply-btn">Répondre</button>
-                <div class="reply-form" style="display: none; flex-direction: column; gap: 0.5rem; margin-top: 10px;">
-                    <textarea id="reply-input-${comment.id}" placeholder="Répondre..."></textarea>
-                    <button class="add-reply-btn" data-post-id="${comment.post_id}" data-parent-comment-id="${comment.id}">Répondre</button>
-                </div>
-                <div class="replies" style="display: none; margin-left: 20px;">
+                <div class="replies">
                     ${renderComments(comments, comment.id)}
                 </div>
             </div>
@@ -306,38 +324,59 @@ function renderComments(comments, parentId = null) {
 }
 
 /**
- * Lie les écouteurs d'événements aux boutons "Répondre" et aux boutons "Ajouter réponse".
- * Cette fonction doit être appelée après chaque chargement ou ajout de commentaires.
+ * 「返信」ボタンと「返信を追加」ボタンにイベントリスナーをバインドします。
+ * この関数は、コメントがロードまたは追加された後に呼び出される必要があります。
  */
 function bindReplyButtons() {
-    // Collecte tous les boutons de réponse et d'ajout de réponse
+    // Collect all reply and add reply buttons
     const replyButtons = document.querySelectorAll('.reply-btn');
     const addReplyButtons = document.querySelectorAll('.add-reply-btn');
 
-    // Supprime tous les écouteurs existants avant d'en attacher de nouveaux pour éviter les doublons
+    // Remove any existing listeners before attaching new ones to prevent duplicates
     replyButtons.forEach(btn => btn.removeEventListener('click', handleReplyButtonClick));
     addReplyButtons.forEach(btn => btn.removeEventListener('click', handleAddReplyButtonClick));
 
-    // Attache les nouveaux écouteurs
+    // Attach new listeners
     replyButtons.forEach(btn => btn.addEventListener('click', handleReplyButtonClick));
     addReplyButtons.forEach(btn => btn.addEventListener('click', handleAddReplyButtonClick));
 }
 
-/** Gestionnaire pour les clics sur le bouton 'Reply' */
+/** '返信'ボタンのクリックハンドラー */
 function handleReplyButtonClick() {
     const commentDiv = this.closest('.comment');
     const replyForm = commentDiv.querySelector('.reply-form');
     const repliesDiv = commentDiv.querySelector('.replies');
 
-    // Bascule l'affichage du formulaire de réponse
-    replyForm.style.display = replyForm.style.display === 'flex' ? 'none' : 'flex';
-    // Bascule l'affichage des réponses imbriquées (si elles existent)
-    if (repliesDiv) { // Vérifie si l'élément repliesDiv existe
-        repliesDiv.style.display = repliesDiv.style.display === 'block' ? 'none' : 'block';
+    // Toggle the display of the reply form
+    // Check if the form is currently visible to apply the correct class for animation
+    const isReplyFormVisible = replyForm.style.display === 'flex';
+
+    if (isReplyFormVisible) {
+        replyForm.style.display = 'none';
+        // Remove 'reply-form-visible' class for CSS transition
+        replyForm.classList.remove('reply-form-visible');
+    } else {
+        replyForm.style.display = 'flex';
+        // Add 'reply-form-visible' class to trigger CSS transition
+        replyForm.classList.add('reply-form-visible');
+    }
+
+    // Toggle the display of nested replies (if they exist)
+    if (repliesDiv) { // Check if the repliesDiv element exists
+        const isRepliesVisible = repliesDiv.style.display === 'flex';
+
+        if (isRepliesVisible) {
+            repliesDiv.style.display = 'none';
+            repliesDiv.classList.remove('replies-visible');
+        } else {
+            repliesDiv.style.display = 'flex';
+            repliesDiv.classList.add('replies-visible');
+        }
     }
 }
 
-/** Gestionnaire pour les clics sur le bouton 'Add Reply' */
+
+/** '返信を追加'ボタンのクリックハンドラー */
 function handleAddReplyButtonClick() {
     const postId = this.dataset.postId;
     const parentCommentId = this.dataset.parentCommentId;
@@ -348,21 +387,21 @@ function handleAddReplyButtonClick() {
 }
 
 /**
- * Ajoute un nouveau commentaire ou une réponse à un post via AJAX.
- * @param {string} postId L'ID du post concerné.
- * @param {string|null} parentCommentId L'ID du commentaire parent (null si c'est un commentaire principal).
+ * AJAXを介して投稿に新しいコメントまたは返信を追加します。
+ * @param {string} postId 関連する投稿のID。
+ * @param {string|null} parentCommentId 親コメントのID（メインコメントの場合はnull）。
  */
 function addComment(postId, parentCommentId = null) {
     const inputId = parentCommentId ? `reply-input-${parentCommentId}` : `comment-input-${postId}`;
     const input = document.getElementById(inputId);
     if (!input) {
-        console.error(`L'élément d'entrée avec l'ID ${inputId} est introuvable.`);
+        console.error(`ID ${inputId} の入力要素が見つかりません。`); // The input element with ID ${inputId} is not found.
         return;
     }
 
     const content = input.value.trim();
     if (!content) {
-        alert("Le contenu du commentaire ne peut pas être vide.");
+        alert("コメントの内容は空にできません。"); // Le contenu du commentaire ne peut pas être vide.
         return;
     }
 
@@ -380,36 +419,37 @@ function addComment(postId, parentCommentId = null) {
     })
     .then(res => {
         if (!res.ok) {
-            throw new Error(`Erreur HTTP ! Statut: ${res.status}`);
+            throw new Error(`HTTPエラーが発生しました！ステータス: ${res.status}`); // HTTPエラーが発生しました！ステータス:
         }
         return res.json();
     })
     .then(data => {
         if (data.success) {
-            // Recharger les commentaires du post spécifique pour inclure le nouveau commentaire
+            // 新しいコメントを含めるために、特定の投稿のコメントをリロード
             loadComments(postId);
-            input.value = ''; // Vide le champ de saisie
+            input.value = ''; // 入力フィールドをクリア
 
-            // Met à jour le compteur de commentaires sur le post concerné
+            // 関連する投稿のコメントカウンターを更新
             const commentCountSpan = document.querySelector(`.post[data-post-id="${postId}"] .comment-count`);
             if (commentCountSpan) {
                 commentCountSpan.textContent = parseInt(commentCountSpan.textContent) + 1;
             }
 
-            // Si c'est une réponse, masquez le formulaire de réponse après l'envoi
+            // If it's a reply, hide the reply form after submission
             if (parentCommentId) {
                 const parentCommentDiv = document.querySelector(`.comment[data-comment-id="${parentCommentId}"]`);
                 if (parentCommentDiv) {
                     parentCommentDiv.querySelector('.reply-form').style.display = 'none';
+                    parentCommentDiv.querySelector('.reply-form').classList.remove('reply-form-visible');
                 }
             }
 
         } else {
-            alert('Échec de l\'ajout du commentaire : ' + (data.message || 'Erreur inconnue.'));
+            alert('コメントの追加に失敗しました: ' + (data.message || '不明なエラー。')); // Échec de l'ajout du commentaire : Erreur inconnue.
         }
     })
     .catch(err => {
-        console.error("Erreur lors de l'ajout du commentaire:", err);
-        alert('Une erreur est survenue lors de l\'ajout du commentaire.');
+        console.error("コメントの追加中にエラーが発生しました:", err); // コメントの追加中にエラーが発生しました:
+        alert('コメントの追加中にエラーが発生しました。'); // Une erreur est survenue lors de l'ajout du commentaire.
     });
 }
