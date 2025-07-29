@@ -2,11 +2,9 @@
 header('Content-Type: application/json; charset=utf-8');
 session_start();
 require_once '../backend/config.php'; // データベース設定
-// ▼▼▼【追加】PHPMailerの読み込み ▼▼▼
 require_once '../chatBOT/vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-// ▲▲▲
 
 // .envファイルを読み込む
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__) . '/chatBOT');
@@ -78,13 +76,74 @@ try {
                 echo json_encode(['labels' => $labels, 'data' => $data]);
                 break;
             
-            // ▼▼▼【追加】お問い合わせ一覧取得アクション ▼▼▼
             case 'get_inquiries':
                 $stmt = $pdo->query("SELECT id, name, email, message, replied, created_at FROM Inquiries ORDER BY created_at DESC");
                 $inquiries = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 echo json_encode($inquiries);
                 break;
-            // ▲▲▲
+            
+            case 'backup_inquiries':
+                header('Content-Type: text/csv; charset=utf-8');
+                header('Content-Disposition: attachment; filename="inquiries_backup_'.date('Y-m-d').'.csv"');
+                $output = fopen('php://output', 'w');
+                fputcsv($output, ['ID', 'Name', 'Email', 'Message', 'Replied', 'Received At']);
+                
+                $stmt = $pdo->query("SELECT id, name, email, message, replied, created_at FROM Inquiries ORDER BY id DESC");
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $row['replied'] = $row['replied'] ? 'Yes' : 'No';
+                    fputcsv($output, $row);
+                }
+                fclose($output);
+                exit;
+
+            case 'backup_users':
+                header('Content-Type: text/csv; charset=utf-8');
+                header('Content-Disposition: attachment; filename="users_backup_'.date('Y-m-d').'.csv"');
+                $output = fopen('php://output', 'w');
+                fputcsv($output, ['ID', 'Name', 'Email', 'UserType', 'RegistrationDate', 'is_admin']);
+                
+                $stmt = $pdo->query("SELECT ID, Name, Email, UserType, RegistrationDate, is_admin FROM Accounts ORDER BY ID DESC");
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $row['is_admin'] = $row['is_admin'] ? 'Yes' : 'No';
+                    fputcsv($output, $row);
+                }
+                fclose($output);
+                exit;
+
+            case 'backup_quizzes':
+                header('Content-Type: text/csv; charset=utf-8');
+                header('Content-Disposition: attachment; filename="quizzes_backup_'.date('Y-m-d').'.csv"');
+                $output = fopen('php://output', 'w');
+                fputcsv($output, [
+                    'id', 'difficulty', 'question_ja', 'question_en', 'question_zh',
+                    'option1_ja', 'option1_en', 'option1_zh',
+                    'option2_ja', 'option2_en', 'option2_zh',
+                    'option3_ja', 'option3_en', 'option3_zh',
+                    'option4_ja', 'option4_en', 'option4_zh',
+                    'correct_answer_index',
+                    'explanation_ja', 'explanation_en', 'explanation_zh'
+                ]);
+                
+                $stmt = $pdo->query("SELECT * FROM Quizzes ORDER BY id DESC");
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $question = json_decode($row['question'], true);
+                    $options = json_decode($row['options'], true);
+                    $explanation = json_decode($row['explanation'], true);
+
+                    $csvRow = [
+                        $row['id'], $row['difficulty'],
+                        $question['ja'] ?? '', $question['en'] ?? '', $question['zh'] ?? '',
+                        $options['ja'][0] ?? '', $options['en'][0] ?? '', $options['zh'][0] ?? '',
+                        $options['ja'][1] ?? '', $options['en'][1] ?? '', $options['zh'][1] ?? '',
+                        $options['ja'][2] ?? '', $options['en'][2] ?? '', $options['zh'][2] ?? '',
+                        $options['ja'][3] ?? '', $options['en'][3] ?? '', $options['zh'][3] ?? '',
+                        $row['correct_answer_index'],
+                        $explanation['ja'] ?? '', $explanation['en'] ?? '', $explanation['zh'] ?? ''
+                    ];
+                    fputcsv($output, $csvRow);
+                }
+                fclose($output);
+                exit;
 
             case 'get_users':
                 $stmt = $pdo->query("SELECT ID, Name, Email, UserType, RegistrationDate, is_admin FROM Accounts ORDER BY RegistrationDate DESC");
@@ -112,14 +171,161 @@ try {
                 break;
         }
     } elseif ($method === 'POST') {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception('無効なJSONデータです。', 400);
+        $input_data = json_decode(file_get_contents('php://input'), true);
+        if (!empty($_POST)) {
+            $data = $_POST;
+            $action = $data['action'] ?? '';
+        } else {
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                 throw new Exception('無効なJSONデータです。', 400);
+            }
+            $data = $input_data;
+            $action = $data['action'] ?? '';
         }
-        $action = $data['action'] ?? '';
 
         switch ($action) {
-            // ▼▼▼【追加】お問い合わせ返信アクション ▼▼▼
+            case 'import_inquiries':
+                if (!isset($_FILES['inquiry_csv']) || $_FILES['inquiry_csv']['error'] !== UPLOAD_ERR_OK) {
+                    throw new Exception('ファイルがアップロードされていないか、アップロード中にエラーが発生しました。', 400);
+                }
+            
+                $file_path = $_FILES['inquiry_csv']['tmp_name'];
+                $file_type = mime_content_type($file_path);
+            
+                if (!in_array($file_type, ['text/csv', 'application/vnd.ms-excel', 'text/plain'])) {
+                     throw new Exception('無効なファイル形式です。CSVファイルをアップロードしてください。', 400);
+                }
+            
+                $pdo->beginTransaction();
+                try {
+                    $file = fopen($file_path, 'r');
+                    fgetcsv($file); // ヘッダー行をスキップ
+            
+                    $imported_count = 0;
+                    $skipped_count = 0;
+            
+                    while (($row = fgetcsv($file)) !== FALSE) {
+                        if (count($row) < 6) { $skipped_count++; continue; }
+                        $id = $row[0];
+                        $name = $row[1];
+                        $email = $row[2];
+                        $message = $row[3];
+                        $replied = (strtolower($row[4]) === 'yes' || $row[4] === '1') ? 1 : 0;
+                        $created_at = $row[5];
+            
+                        if (empty($name) || empty($email) || empty($message) || empty($created_at)) {
+                            $skipped_count++;
+                            continue;
+                        }
+            
+                        $stmt_check = $pdo->prepare("SELECT COUNT(*) FROM Inquiries WHERE id = ?");
+                        $stmt_check->execute([$id]);
+                        if ($stmt_check->fetchColumn() > 0) {
+                            $skipped_count++;
+                            continue;
+                        }
+            
+                        $stmt = $pdo->prepare(
+                            "INSERT INTO Inquiries (id, name, email, message, replied, created_at) VALUES (?, ?, ?, ?, ?, ?)"
+                        );
+                        $stmt->execute([$id, $name, $email, $message, $replied, $created_at]);
+                        $imported_count++;
+                    }
+                    fclose($file);
+                    $pdo->commit();
+                    echo json_encode([
+                        'success' => true, 
+                        'message' => "インポートが完了しました。{$imported_count}件のデータを追加し、{$skipped_count}件のデータをスキップしました。"
+                    ]);
+            
+                } catch (Exception $e) {
+                    $pdo->rollBack();
+                    throw new Exception("インポート処理中にエラーが発生しました: " . $e->getMessage(), 500);
+                }
+                break;
+            case 'import_users':
+                if (!isset($_FILES['user_csv']) || $_FILES['user_csv']['error'] !== UPLOAD_ERR_OK) {
+                    throw new Exception('ファイルアップロードエラー', 400);
+                }
+                $file_path = $_FILES['user_csv']['tmp_name'];
+                $pdo->beginTransaction();
+                try {
+                    $file = fopen($file_path, 'r');
+                    fgetcsv($file); // Skip header
+                    $imported = 0; $skipped = 0;
+                    while (($row = fgetcsv($file)) !== FALSE) {
+                        if (count($row) < 6) { $skipped++; continue; }
+                        $email = $row[2];
+                        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                            $skipped++;
+                            continue;
+                        }
+                        $stmt_check = $pdo->prepare("SELECT COUNT(*) FROM Accounts WHERE Email = ?");
+                        $stmt_check->execute([$email]);
+                        if ($stmt_check->fetchColumn() > 0) {
+                            $skipped++;
+                            continue;
+                        }
+                        $stmt = $pdo->prepare("INSERT INTO Accounts (Name, Email, UserType, RegistrationDate, is_admin, Password, Country, Current_location) VALUES (?, ?, ?, ?, ?, ?, '', '')");
+                        $stmt->execute([
+                            $row[1], // Name
+                            $email,  // Email
+                            $row[3], // UserType
+                            $row[4], // RegistrationDate
+                            (strtolower($row[5]) === 'yes' ? 1 : 0), // is_admin
+                            password_hash(bin2hex(random_bytes(8)), PASSWORD_DEFAULT) // 仮パスワード
+                        ]);
+                        $imported++;
+                    }
+                    fclose($file);
+                    $pdo->commit();
+                    echo json_encode(['success' => true, 'message' => "ユーザーを{$imported}件インポートし、{$skipped}件スキップしました。"]);
+                } catch (Exception $e) {
+                    $pdo->rollBack();
+                    throw new Exception("ユーザーのインポートに失敗しました: " . $e->getMessage(), 500);
+                }
+                break;
+
+            case 'import_quizzes':
+                if (!isset($_FILES['quiz_csv']) || $_FILES['quiz_csv']['error'] !== UPLOAD_ERR_OK) {
+                    throw new Exception('ファイルアップロードエラー', 400);
+                }
+                $file_path = $_FILES['quiz_csv']['tmp_name'];
+                $pdo->beginTransaction();
+                try {
+                    $file = fopen($file_path, 'r');
+                    fgetcsv($file); // Skip header
+                    $imported = 0; $skipped = 0;
+                    while (($row = fgetcsv($file)) !== FALSE) {
+                        if (count($row) < 21) { $skipped++; continue; }
+                        $id = $row[0];
+                        if (empty($id)) { $skipped++; continue; }
+                        $stmt_check = $pdo->prepare("SELECT COUNT(*) FROM Quizzes WHERE id = ?");
+                        $stmt_check->execute([$id]);
+                        if ($stmt_check->fetchColumn() > 0) {
+                            $skipped++;
+                            continue;
+                        }
+                        $question = json_encode(['ja' => $row[2], 'en' => $row[3], 'zh' => $row[4]], JSON_UNESCAPED_UNICODE);
+                        $options = json_encode([
+                            'ja' => array_filter([$row[5], $row[8], $row[11], $row[14]]),
+                            'en' => array_filter([$row[6], $row[9], $row[12], $row[15]]),
+                            'zh' => array_filter([$row[7], $row[10], $row[13], $row[16]])
+                        ], JSON_UNESCAPED_UNICODE);
+                        $explanation = json_encode(['ja' => $row[18], 'en' => $row[19], 'zh' => $row[20]], JSON_UNESCAPED_UNICODE);
+                        
+                        $stmt = $pdo->prepare("INSERT INTO Quizzes (id, difficulty, question, options, correct_answer_index, explanation) VALUES (?, ?, ?, ?, ?, ?)");
+                        $stmt->execute([$id, $row[1], $question, $options, $row[17], $explanation]);
+                        $imported++;
+                    }
+                    fclose($file);
+                    $pdo->commit();
+                    echo json_encode(['success' => true, 'message' => "クイズを{$imported}件インポートし、{$skipped}件スキップしました。"]);
+                } catch (Exception $e) {
+                    $pdo->rollBack();
+                    throw new Exception("クイズのインポートに失敗しました: " . $e->getMessage(), 500);
+                }
+                break;
             case 'send_reply':
                 $recipient_email = $data['recipient_email'] ?? '';
                 $recipient_name = $data['recipient_name'] ?? '';
@@ -163,7 +369,17 @@ try {
                     throw new Exception('無効なIDです。', 400);
                 }
                 break;
-            // ▲▲▲
+            
+            case 'delete_inquiry':
+                $inquiry_id = $data['inquiry_id'] ?? 0;
+                if ($inquiry_id > 0) {
+                    $stmt = $pdo->prepare("DELETE FROM Inquiries WHERE id = ?");
+                    $stmt->execute([$inquiry_id]);
+                    echo json_encode(['success' => true, 'message' => 'お問い合わせを削除しました。']);
+                } else {
+                    throw new Exception('無効なIDです。', 400);
+                }
+                break;
 
             case 'toggle_admin':
                 $user_id = $data['user_id'] ?? 0;

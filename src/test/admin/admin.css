@@ -12,6 +12,39 @@ body {
     color: #f9fafb; /* text-gray-100 */
 }
 
+/* --- テーブル共通 --- */
+.sortable-header {
+    cursor: pointer;
+    position: relative;
+}
+
+/* ▼▼▼【修正】並び替えアイコンを画像ベースに変更 ▼▼▼ */
+.sortable-header::after {
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-left: 0.5em;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    vertical-align: middle;
+    /* デフォルトのアイコン（薄い上下矢印） */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3e%3cpath d='M5 0L10 4H0L5 0Z M5 10L0 6H10L5 10Z' fill='%239ca3af'/%3e%3c/svg%3e");
+}
+
+.sortable-header.asc::after {
+    /* 昇順のアイコン（濃い上矢印） */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3e%3cpath d='M5 0L10 10H0L5 0Z' fill='%231f2937'/%3e%3c/svg%3e");
+}
+
+.sortable-header.desc::after {
+    /* 降順のアイコン（濃い下矢印） */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3e%3cpath d='M5 10L0 0H10L5 10Z' fill='%231f2937'/%3e%3c/svg%3e");
+}
+/* ▲▲▲ */
+
+
 /* --- ユーザー管理テーブル --- */
 
 /* 管理者権限トグルスイッチ */
@@ -131,7 +164,7 @@ input:checked + .slider:before {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
 
-/* ▼▼▼【追加】お問い合わせステータスバッジ ▼▼▼ */
+/* お問い合わせステータスバッジ */
 .status-pending {
     padding: 0.25rem 0.75rem;
     font-weight: 600;
@@ -149,4 +182,3 @@ input:checked + .slider:before {
     background-color: #dcfce7; /* green-100 */
     border-radius: 9999px;
 }
-/* ▲▲▲ */

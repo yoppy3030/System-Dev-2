@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const userFilterInput = document.getElementById('user-filter-input');
     const userFilterRole = document.getElementById('user-filter-role');
     const userCountDisplay = document.getElementById('user-count-display');
+    const backupUsersBtn = document.getElementById('backup-users-btn');
+    const importUsersBtn = document.getElementById('import-users-btn');
+    const userImportInput = document.getElementById('user-import-input');
     
     // Quiz Modals & Form Elements
     const quizEditorModal = document.getElementById('quiz-editor-modal');
@@ -32,14 +35,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmDeleteQuizBtn = document.getElementById('confirm-delete-quiz-btn');
     const quizFilterInput = document.getElementById('quiz-filter-input');
     const quizFilterDifficulty = document.getElementById('quiz-filter-difficulty');
+    const backupQuizzesBtn = document.getElementById('backup-quizzes-btn');
+    const importQuizzesBtn = document.getElementById('import-quizzes-btn');
+    const quizImportInput = document.getElementById('quiz-import-input');
 
-    // ▼▼▼【追加】Inquiry Elements ▼▼▼
+    // Inquiry Elements
     const inquiryTableBody = document.getElementById('inquiry-table-body');
     const replyModal = document.getElementById('reply-modal');
     const replyForm = document.getElementById('reply-form');
     const backReplyBtn = document.getElementById('back-reply-btn');
     const sendReplyBtn = document.getElementById('send-reply-btn');
-    // ▲▲▲
+    const inquiryFilterStatus = document.getElementById('inquiry-filter-status');
+    const backupInquiriesBtn = document.getElementById('backup-inquiries-btn');
+    const importInquiriesBtn = document.getElementById('import-inquiries-btn');
+    const inquiryImportInput = document.getElementById('inquiry-import-input');
+    const deleteInquiryModal = document.getElementById('delete-inquiry-confirm-modal');
+    const backDeleteInquiryBtn = document.getElementById('back-delete-inquiry-btn');
+    const confirmDeleteInquiryBtn = document.getElementById('confirm-delete-inquiry-btn');
 
     // Navigation
     const sidebarNav = document.getElementById('sidebar-nav');
@@ -49,32 +61,50 @@ document.addEventListener('DOMContentLoaded', () => {
     // State variables
     let userIdToDelete = null;
     let quizIdToDelete = null;
+    let inquiryIdToDelete = null;
+    let allUsers = [], allQuizzes = [], allInquiries = [];
+    let sortState = {};
 
     /**
      * 初期化関数
      */
     function initialize() {
         setupEventListeners();
-        fetchDashboardStats();
-        fetchAndRenderFeedbackStats();
-        fetchAndRenderUserRegistrationChart();
-        fetchAndRenderUsers().then(filterUsers);
-        fetchAndRenderQuizzes();
-        fetchAndRenderInquiries(); // ▼▼▼【追加】
+        fetchAndRenderAllData();
         const initialHash = window.location.hash || '#dashboard';
         switchSection(initialHash);
+    }
+
+    /**
+     * 全てのデータを取得・描画する
+     */
+    async function fetchAndRenderAllData() {
+        await Promise.all([
+            fetchDashboardStats(),
+            fetchAndRenderFeedbackStats(),
+            fetchAndRenderUserRegistrationChart(),
+            fetchAndRenderUsers(),
+            fetchAndRenderQuizzes(),
+            fetchAndRenderInquiries()
+        ]);
+        filterUsers();
+        filterQuizzes();
+        filterInquiries();
     }
 
     /**
      * イベントリスナーをまとめて設定
      */
     function setupEventListeners() {
-        // Navigation
         sidebarNav.addEventListener('click', (e) => {
             const navLink = e.target.closest('.nav-link');
             if (!navLink) return;
             e.preventDefault();
             switchSection(navLink.getAttribute('href'));
+        });
+
+        document.querySelectorAll('thead').forEach(thead => {
+            thead.addEventListener('click', handleSortClick);
         });
 
         // User Management
@@ -87,6 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
         editUserModal.addEventListener('click', (e) => e.target === editUserModal && closeEditUserModal());
         userFilterInput.addEventListener('input', filterUsers);
         userFilterRole.addEventListener('change', filterUsers);
+        backupUsersBtn.addEventListener('click', () => { window.location.href = 'api.php?action=backup_users'; });
+        importUsersBtn.addEventListener('click', () => userImportInput.click());
+        userImportInput.addEventListener('change', handleUserImport);
 
         // Quiz Management
         quizTableBody.addEventListener('click', handleQuizTableClick);
@@ -99,18 +132,24 @@ document.addEventListener('DOMContentLoaded', () => {
         deleteQuizModal.addEventListener('click', (e) => e.target === deleteQuizModal && closeDeleteQuizModal());
         quizFilterInput.addEventListener('input', filterQuizzes);
         quizFilterDifficulty.addEventListener('change', filterQuizzes);
+        backupQuizzesBtn.addEventListener('click', () => { window.location.href = 'api.php?action=backup_quizzes'; });
+        importQuizzesBtn.addEventListener('click', () => quizImportInput.click());
+        quizImportInput.addEventListener('change', handleQuizImport);
 
-        // ▼▼▼【追加】Inquiry Management ▼▼▼
+        // Inquiry Management
         inquiryTableBody.addEventListener('click', handleInquiryTableClick);
         replyForm.addEventListener('submit', handleReplySubmit);
         backReplyBtn.addEventListener('click', () => replyModal.classList.add('hidden'));
         replyModal.addEventListener('click', (e) => e.target === replyModal && replyModal.classList.add('hidden'));
-        // ▲▲▲
+        inquiryFilterStatus.addEventListener('change', filterInquiries);
+        backupInquiriesBtn.addEventListener('click', () => { window.location.href = 'api.php?action=backup_inquiries'; });
+        importInquiriesBtn.addEventListener('click', () => inquiryImportInput.click());
+        inquiryImportInput.addEventListener('change', handleInquiryImport);
+        confirmDeleteInquiryBtn.addEventListener('click', executeInquiryDelete);
+        backDeleteInquiryBtn.addEventListener('click', closeDeleteInquiryModal);
+        deleteInquiryModal.addEventListener('click', (e) => e.target === deleteInquiryModal && closeDeleteInquiryModal());
     }
     
-    /**
-     * 表示するセクションを切り替える
-     */
     function switchSection(targetHash) {
         const targetId = targetHash.substring(1);
         navLinks.forEach(link => {
@@ -125,16 +164,27 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.hash = targetId;
     }
 
-    /**
-     * APIリクエストを送信する汎用関数
-     */
     async function apiRequest(url, options = {}) {
         try {
             let requestUrl = url;
+            let requestOptions = { ...options };
+    
             if (!options.method || options.method.toUpperCase() === 'GET') {
                 requestUrl += (url.includes('?') ? '&' : '?') + '_=' + new Date().getTime();
             }
-            const response = await fetch(requestUrl, options);
+    
+            // ▼▼▼【修正】FormDataの場合、Content-Typeヘッダーを削除してブラウザに任せる ▼▼▼
+            if (options.body instanceof FormData) {
+                // FormDataの場合、Content-Typeは設定しない
+            } else {
+                requestOptions.headers = { 'Content-Type': 'application/json', ...options.headers };
+                if (typeof options.body === 'object' && options.body !== null) {
+                    requestOptions.body = JSON.stringify(options.body);
+                }
+            }
+            // ▲▲▲
+    
+            const response = await fetch(requestUrl, requestOptions);
             const result = await response.json();
             if (!response.ok) {
                 throw new Error(result.error || 'API request failed');
@@ -189,19 +239,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    }
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                    plugins: { legend: { display: false } }
                 }
             });
         } catch (error) {
@@ -211,42 +250,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchAndRenderUsers() {
         try {
-            const users = await apiRequest('api.php?action=get_users');
-            userTableBody.innerHTML = '';
-            if (users.length === 0) {
-                userTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">ユーザーが見つかりません。</td></tr>';
-                return;
-            }
-            users.forEach(user => {
-                const tr = document.createElement('tr');
-                tr.className = 'text-gray-700';
-                tr.dataset.userId = user.ID;
-                tr.dataset.userData = JSON.stringify(user);
-                const registrationDate = new Date(user.RegistrationDate).toLocaleDateString('ja-JP');
-                const isCurrentUser = user.ID == currentAdminId;
-                tr.innerHTML = `
-                    <td class="px-4 py-3 text-sm">${user.ID}</td>
-                    <td class="px-4 py-3 font-semibold">${escapeHTML(user.Name)}</td>
-                    <td class="px-4 py-3 text-sm">${escapeHTML(user.Email)}</td>
-                    <td class="px-4 py-3 text-xs">
-                        <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">
-                            ${escapeHTML(user.UserType)}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 text-sm">${registrationDate}</td>
-                    <td class="px-4 py-3 text-sm">
-                        <label class="switch">
-                            <input type="checkbox" class="admin-toggle" ${user.is_admin ? 'checked' : ''} ${isCurrentUser ? 'disabled' : ''}>
-                            <span class="slider round"></span>
-                        </label>
-                    </td>
-                    <td class="px-4 py-3 text-sm">
-                        <button class="action-btn edit-btn" title="編集"><i class="fas fa-pencil-alt"></i></button>
-                        <button class="action-btn delete-btn" title="削除" ${isCurrentUser ? 'disabled' : ''}><i class="fas fa-trash-alt"></i></button>
-                    </td>
-                `;
-                userTableBody.appendChild(tr);
-            });
+            allUsers = await apiRequest('api.php?action=get_users');
+            renderUserTable(allUsers);
         } catch (error) {
             userTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">ユーザー情報の取得に失敗しました。</td></tr>`;
         }
@@ -254,34 +259,233 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchAndRenderQuizzes() {
         try {
-            const quizzes = await apiRequest('api.php?action=get_quizzes');
-            quizTableBody.innerHTML = '';
-            if (quizzes.length === 0) {
-                quizTableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">クイズが見つかりません。</td></tr>';
-                return;
-            }
-            quizzes.forEach(quiz => {
-                const tr = document.createElement('tr');
-                tr.dataset.quizId = quiz.id;
-                tr.dataset.quizData = JSON.stringify(quiz);
-                tr.innerHTML = `
-                    <td class="px-4 py-3 text-sm">${quiz.id}</td>
-                    <td class="px-4 py-3 text-sm">${quiz.difficulty}</td>
-                    <td class="px-4 py-3">${escapeHTML(quiz.question.ja)}</td>
-                    <td class="px-4 py-3 text-sm">
-                        <button class="action-btn edit-quiz-btn" title="編集"><i class="fas fa-pencil-alt"></i></button>
-                        <button class="action-btn delete-quiz-btn" title="削除"><i class="fas fa-trash-alt"></i></button>
-                    </td>
-                `;
-                quizTableBody.appendChild(tr);
-            });
+            allQuizzes = await apiRequest('api.php?action=get_quizzes');
+            renderQuizTable(allQuizzes);
         } catch (error) {
             quizTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">クイズの読み込みに失敗しました。</td></tr>`;
         }
     }
     
-    // --- User Management Functions ---
+    async function fetchAndRenderInquiries() {
+        try {
+            allInquiries = await apiRequest('api.php?action=get_inquiries');
+            renderInquiryTable(allInquiries);
+        } catch (error) {
+            inquiryTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">お問い合わせの読み込みに失敗しました。</td></tr>`;
+        }
+    }
 
+    // --- Table Rendering Functions ---
+    
+    function renderUserTable(users) {
+        userTableBody.innerHTML = '';
+        if (users.length === 0) return;
+        users.forEach(user => {
+            const tr = document.createElement('tr');
+            tr.className = 'text-gray-700';
+            tr.dataset.userId = user.ID;
+            tr.dataset.userData = JSON.stringify(user);
+            const registrationDate = new Date(user.RegistrationDate).toLocaleDateString('ja-JP');
+            const isCurrentUser = user.ID == currentAdminId;
+            tr.innerHTML = `
+                <td class="px-4 py-3 text-sm">${user.ID}</td>
+                <td class="px-4 py-3 font-semibold">${escapeHTML(user.Name)}</td>
+                <td class="px-4 py-3 text-sm">${escapeHTML(user.Email)}</td>
+                <td class="px-4 py-3 text-xs"><span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">${escapeHTML(user.UserType)}</span></td>
+                <td class="px-4 py-3 text-sm">${registrationDate}</td>
+                <td class="px-4 py-3 text-sm"><label class="switch"><input type="checkbox" class="admin-toggle" ${user.is_admin ? 'checked' : ''} ${isCurrentUser ? 'disabled' : ''}><span class="slider round"></span></label></td>
+                <td class="px-4 py-3 text-sm"><button class="action-btn edit-btn" title="編集"><i class="fas fa-pencil-alt"></i></button><button class="action-btn delete-btn" title="削除" ${isCurrentUser ? 'disabled' : ''}><i class="fas fa-trash-alt"></i></button></td>
+            `;
+            userTableBody.appendChild(tr);
+        });
+    }
+
+    function renderQuizTable(quizzes) {
+        quizTableBody.innerHTML = '';
+        if (quizzes.length === 0) return;
+        quizzes.forEach(quiz => {
+            const tr = document.createElement('tr');
+            tr.dataset.quizId = quiz.id;
+            tr.dataset.quizData = JSON.stringify(quiz);
+            tr.innerHTML = `
+                <td class="px-4 py-3 text-sm">${quiz.id}</td>
+                <td class="px-4 py-3 text-sm">${quiz.difficulty}</td>
+                <td class="px-4 py-3">${escapeHTML(quiz.question.ja)}</td>
+                <td class="px-4 py-3 text-sm"><button class="action-btn edit-quiz-btn" title="編集"><i class="fas fa-pencil-alt"></i></button><button class="action-btn delete-quiz-btn" title="削除"><i class="fas fa-trash-alt"></i></button></td>
+            `;
+            quizTableBody.appendChild(tr);
+        });
+    }
+
+    function renderInquiryTable(inquiries) {
+        inquiryTableBody.innerHTML = '';
+        if (inquiries.length === 0) {
+            inquiryTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">お問い合わせはありません。</td></tr>';
+            return;
+        }
+        inquiries.forEach(inquiry => {
+            const tr = document.createElement('tr');
+            tr.dataset.inquiryData = JSON.stringify(inquiry);
+            const receivedDate = new Date(inquiry.created_at).toLocaleString('ja-JP');
+            const shortMessage = inquiry.message.length > 50 ? inquiry.message.substring(0, 50) + '...' : inquiry.message;
+            tr.innerHTML = `
+                <td class="px-4 py-3 text-sm">${inquiry.id}</td>
+                <td class="px-4 py-3 text-sm">${receivedDate}</td>
+                <td class="px-4 py-3 font-semibold">${escapeHTML(inquiry.name)}</td>
+                <td class="px-4 py-3 text-sm">${escapeHTML(inquiry.email)}</td>
+                <td class="px-4 py-3 text-sm">${escapeHTML(shortMessage)}</td>
+                <td class="px-4 py-3 text-xs"><span class="status-${inquiry.replied ? 'replied' : 'pending'}">${inquiry.replied ? '対応済み' : '未対応'}</span></td>
+                <td class="px-4 py-3 text-sm">
+                    <button class="action-btn reply-btn" title="返信" ${inquiry.replied ? 'disabled' : ''}><i class="fas fa-reply"></i></button>
+                    <button class="action-btn delete-inquiry-btn" title="削除"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            `;
+            inquiryTableBody.appendChild(tr);
+        });
+    }
+
+    // --- Sorting Functions ---
+
+    function handleSortClick(e) {
+        const header = e.target.closest('.sortable-header');
+        if (!header) return;
+
+        const column = header.dataset.column;
+        const type = header.dataset.type;
+        const tableId = header.closest('table').querySelector('tbody').id;
+        
+        const currentSort = sortState[tableId] || {};
+        const newDirection = currentSort.column === column && currentSort.direction === 'asc' ? 'desc' : 'asc';
+        
+        sortState[tableId] = { column, direction: newDirection };
+        
+        updateSortIndicators(header.closest('thead'));
+        
+        let dataArray;
+        let filterFunction;
+
+        if (tableId === 'user-table-body') {
+            dataArray = allUsers;
+            filterFunction = filterUsers;
+        } else if (tableId === 'quiz-table-body') {
+            dataArray = allQuizzes;
+            filterFunction = filterQuizzes;
+        } else if (tableId === 'inquiry-table-body') {
+            dataArray = allInquiries;
+            filterFunction = filterInquiries;
+        }
+
+        sortData(dataArray, column, type, newDirection);
+        filterFunction();
+    }
+
+    function sortData(data, column, type, direction) {
+        data.sort((a, b) => {
+            const valA = column.split('.').reduce((o, i) => o[i], a);
+            const valB = column.split('.').reduce((o, i) => o[i], b);
+
+            let compare = 0;
+            switch (type) {
+                case 'number':
+                    compare = valA - valB;
+                    break;
+                case 'date':
+                    compare = new Date(valA) - new Date(valB);
+                    break;
+                case 'boolean':
+                    compare = (valA === valB) ? 0 : valA ? -1 : 1;
+                    break;
+                case 'string':
+                default:
+                    compare = String(valA).localeCompare(String(valB));
+                    break;
+            }
+            return direction === 'asc' ? compare : -compare;
+        });
+    }
+
+    function updateSortIndicators(thead) {
+        const tableId = thead.nextElementSibling.id;
+        const currentSort = sortState[tableId] || {};
+        
+        thead.querySelectorAll('.sortable-header').forEach(th => {
+            th.classList.remove('asc', 'desc');
+            if (th.dataset.column === currentSort.column) {
+                th.classList.add(currentSort.direction);
+            }
+        });
+    }
+
+    // --- Filtering Functions ---
+
+    function filterUsers() {
+        const filterText = userFilterInput.value.toLowerCase();
+        const filterRole = userFilterRole.value;
+        
+        const filteredUsers = allUsers.filter(user => {
+            const name = user.Name.toLowerCase();
+            const email = user.Email.toLowerCase();
+            const isAdmin = user.is_admin;
+
+            const textMatch = name.includes(filterText) || email.includes(filterText);
+            const roleMatch = (filterRole === 'all') ||
+                              (filterRole === 'admin' && isAdmin) ||
+                              (filterRole === 'general' && !isAdmin);
+            return textMatch && roleMatch;
+        });
+        
+        renderUserTable(filteredUsers);
+        userCountDisplay.textContent = `${allUsers.length}人中 ${filteredUsers.length}人 表示中`;
+
+        if (filteredUsers.length === 0 && allUsers.length > 0) {
+            const tr = document.createElement('tr');
+            tr.className = 'no-results-row';
+            tr.innerHTML = '<td colspan="7" class="text-center py-4">該当するユーザーが見つかりません。</td>';
+            userTableBody.appendChild(tr);
+        }
+    }
+
+    function filterQuizzes() {
+        const filterText = quizFilterInput.value.toLowerCase();
+        const filterDifficulty = quizFilterDifficulty.value;
+        
+        const filteredQuizzes = allQuizzes.filter(quiz => {
+            const questionJa = quiz.question.ja.toLowerCase();
+            const difficulty = quiz.difficulty;
+            const textMatch = questionJa.includes(filterText);
+            const difficultyMatch = filterDifficulty === 'all' || difficulty === filterDifficulty;
+            return textMatch && difficultyMatch;
+        });
+
+        renderQuizTable(filteredQuizzes);
+
+        if (filteredQuizzes.length === 0 && allQuizzes.length > 0) {
+            const tr = document.createElement('tr');
+            tr.className = 'no-results-row';
+            tr.innerHTML = '<td colspan="4" class="text-center py-4">該当するクイズが見つかりません。</td>';
+            quizTableBody.appendChild(tr);
+        }
+    }
+    
+    function filterInquiries() {
+        const filterStatus = inquiryFilterStatus.value;
+        const filteredInquiries = allInquiries.filter(inquiry => {
+            if (filterStatus === 'all') return true;
+            const status = inquiry.replied ? 'replied' : 'pending';
+            return status === filterStatus;
+        });
+        
+        renderInquiryTable(filteredInquiries);
+
+        if (filteredInquiries.length === 0 && allInquiries.length > 0) {
+            const tr = document.createElement('tr');
+            tr.className = 'no-results-row';
+            tr.innerHTML = '<td colspan="7" class="text-center py-4">該当するお問い合わせはありません。</td>';
+            inquiryTableBody.appendChild(tr);
+        }
+    }
+
+    // --- (省略: 既存のUser/Quiz Management Functionsは変更なし) ---
     function handleUserTableClick(e) {
         const target = e.target;
         const tr = target.closest('tr');
@@ -300,11 +504,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await apiRequest('api.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'toggle_admin', user_id: userId, is_admin: newStatus })
+                body: { action: 'toggle_admin', user_id: userId, is_admin: newStatus }
             });
         } catch (error) {
-            checkboxElement.checked = !newStatus; // Revert on error
+            checkboxElement.checked = !newStatus;
         }
     }
 
@@ -324,8 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await apiRequest('api.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'delete_user', user_id: userIdToDelete })
+                body: { action: 'delete_user', user_id: userIdToDelete }
             });
             await fetchAndRenderUsers();
             filterUsers();
@@ -362,57 +564,14 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await apiRequest('api.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: data
             });
             await fetchAndRenderUsers();
             filterUsers();
             closeEditUserModal();
-        } catch (error) {
-            // Error is already alerted in apiRequest
-        }
+        } catch (error) {}
     }
-
-    function filterUsers() {
-        const filterText = userFilterInput.value.toLowerCase();
-        const filterRole = userFilterRole.value;
-        const rows = userTableBody.querySelectorAll('tr[data-user-id]');
-        let visibleRows = 0;
-
-        rows.forEach(row => {
-            const userData = JSON.parse(row.dataset.userData);
-            const name = userData.Name.toLowerCase();
-            const email = userData.Email.toLowerCase();
-            const isAdmin = userData.is_admin;
-
-            const textMatch = name.includes(filterText) || email.includes(filterText);
-            const roleMatch = (filterRole === 'all') ||
-                              (filterRole === 'admin' && isAdmin) ||
-                              (filterRole === 'general' && !isAdmin);
-
-            if (textMatch && roleMatch) {
-                row.style.display = '';
-                visibleRows++;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        userCountDisplay.textContent = `${rows.length}人中 ${visibleRows}人 表示中`;
-
-        const noResultsRow = userTableBody.querySelector('.no-results-row');
-        if (noResultsRow) noResultsRow.remove();
-
-        if (visibleRows === 0 && rows.length > 0) {
-            const tr = document.createElement('tr');
-            tr.className = 'no-results-row';
-            tr.innerHTML = '<td colspan="7" class="text-center py-4">該当するユーザーが見つかりません。</td>';
-            userTableBody.appendChild(tr);
-        }
-    }
-
-    // --- Quiz Management Functions ---
-
+    
     function handleQuizTableClick(e) {
         const target = e.target;
         const tr = target.closest('tr');
@@ -506,14 +665,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await apiRequest('api.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: data
             });
-            fetchAndRenderQuizzes();
+            fetchAndRenderQuizzes().then(filterQuizzes);
             closeQuizEditorModal();
-        } catch (error) {
-            // Error handling is in apiRequest
-        }
+        } catch (error) {}
     }
 
     function openDeleteQuizModal(quizId, question) {
@@ -533,92 +689,26 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await apiRequest('api.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'delete_quiz', id: quizIdToDelete })
+                body: { action: 'delete_quiz', id: quizIdToDelete }
             });
-            fetchAndRenderQuizzes();
+            fetchAndRenderQuizzes().then(filterQuizzes);
             closeDeleteQuizModal();
         } catch (error) {
             closeDeleteQuizModal();
-        }
-    }
-
-    function filterQuizzes() {
-        const filterText = quizFilterInput.value.toLowerCase();
-        const filterDifficulty = quizFilterDifficulty.value;
-        const rows = quizTableBody.querySelectorAll('tr[data-quiz-id]');
-        let visibleRows = 0;
-
-        rows.forEach(row => {
-            const quizData = JSON.parse(row.dataset.quizData);
-            const questionJa = quizData.question.ja.toLowerCase();
-            const difficulty = quizData.difficulty;
-
-            const textMatch = questionJa.includes(filterText);
-            const difficultyMatch = filterDifficulty === 'all' || difficulty === filterDifficulty;
-
-            if (textMatch && difficultyMatch) {
-                row.style.display = '';
-                visibleRows++;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        const noResultsRow = quizTableBody.querySelector('.no-results-row');
-        if (noResultsRow) noResultsRow.remove();
-
-        if (visibleRows === 0 && (filterText || filterDifficulty !== 'all')) {
-            const tr = document.createElement('tr');
-            tr.className = 'no-results-row';
-            tr.innerHTML = '<td colspan="4" class="text-center py-4">該当するクイズが見つかりません。</td>';
-            quizTableBody.appendChild(tr);
-        }
-    }
-
-    // ▼▼▼【追加】Inquiry Management Functions ▼▼▼
-    async function fetchAndRenderInquiries() {
-        try {
-            const inquiries = await apiRequest('api.php?action=get_inquiries');
-            inquiryTableBody.innerHTML = '';
-            if (inquiries.length === 0) {
-                inquiryTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">お問い合わせはありません。</td></tr>';
-                return;
-            }
-            inquiries.forEach(inquiry => {
-                const tr = document.createElement('tr');
-                tr.dataset.inquiryData = JSON.stringify(inquiry);
-                const receivedDate = new Date(inquiry.created_at).toLocaleString('ja-JP');
-                const shortMessage = inquiry.message.length > 50 ? inquiry.message.substring(0, 50) + '...' : inquiry.message;
-
-                tr.innerHTML = `
-                    <td class="px-4 py-3 text-sm">${inquiry.id}</td>
-                    <td class="px-4 py-3 text-sm">${receivedDate}</td>
-                    <td class="px-4 py-3 font-semibold">${escapeHTML(inquiry.name)}</td>
-                    <td class="px-4 py-3 text-sm">${escapeHTML(inquiry.email)}</td>
-                    <td class="px-4 py-3 text-sm">${escapeHTML(shortMessage)}</td>
-                    <td class="px-4 py-3 text-xs">
-                        <span class="status-${inquiry.replied ? 'replied' : 'pending'}">
-                            ${inquiry.replied ? '対応済み' : '未対応'}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 text-sm">
-                        <button class="action-btn reply-btn" title="返信" ${inquiry.replied ? 'disabled' : ''}><i class="fas fa-reply"></i></button>
-                    </td>
-                `;
-                inquiryTableBody.appendChild(tr);
-            });
-        } catch (error) {
-            inquiryTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">お問い合わせの読み込みに失敗しました。</td></tr>`;
         }
     }
 
     function handleInquiryTableClick(e) {
-        const replyBtn = e.target.closest('.reply-btn');
-        if (replyBtn) {
-            const tr = replyBtn.closest('tr');
-            const inquiryData = JSON.parse(tr.dataset.inquiryData);
+        const btn = e.target.closest('.action-btn');
+        if (!btn) return;
+
+        const tr = btn.closest('tr');
+        const inquiryData = JSON.parse(tr.dataset.inquiryData);
+
+        if (btn.classList.contains('reply-btn')) {
             openReplyModal(inquiryData);
+        } else if (btn.classList.contains('delete-inquiry-btn')) {
+            openDeleteInquiryModal(inquiryData.id);
         }
     }
 
@@ -652,32 +742,110 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await apiRequest('api.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: data
             });
 
             await apiRequest('api.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'mark_inquiry_replied', inquiry_id: data.inquiry_id })
+                body: { action: 'mark_inquiry_replied', inquiry_id: data.inquiry_id }
             });
 
             alert('返信を送信しました。');
             replyModal.classList.add('hidden');
-            fetchAndRenderInquiries();
+            fetchAndRenderInquiries().then(filterInquiries);
 
         } catch (error) {
-            // エラーはapiRequestでalertされる
         } finally {
             sendReplyBtn.disabled = false;
             sendReplyBtn.innerHTML = '<i class="fas fa-paper-plane"></i>送信';
         }
     }
-    // ▲▲▲
 
-    /**
-     * HTML特殊文字をエスケープする
-     */
+    function openDeleteInquiryModal(inquiryId) {
+        inquiryIdToDelete = inquiryId;
+        deleteInquiryModal.classList.remove('hidden');
+    }
+
+    function closeDeleteInquiryModal() {
+        inquiryIdToDelete = null;
+        deleteInquiryModal.classList.add('hidden');
+    }
+
+    async function executeInquiryDelete() {
+        if (!inquiryIdToDelete) return;
+        try {
+            await apiRequest('api.php', {
+                method: 'POST',
+                body: { action: 'delete_inquiry', inquiry_id: inquiryIdToDelete }
+            });
+            closeDeleteInquiryModal();
+            fetchAndRenderInquiries().then(filterInquiries);
+        } catch (error) {
+            closeDeleteInquiryModal();
+        }
+    }
+    
+    async function handleInquiryImport(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!confirm(`ファイル「${file.name}」をインポートしますか？\n既存のIDと重複するデータはスキップされます。`)) {
+            e.target.value = ''; // Reset file input
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('inquiry_csv', file);
+        formData.append('action', 'import_inquiries');
+
+        try {
+            const result = await apiRequest('api.php', { method: 'POST', body: formData });
+            alert(result.message);
+            fetchAndRenderInquiries().then(filterInquiries);
+
+        } catch (error) {
+            // エラーはapiRequest内で処理
+        } finally {
+            e.target.value = ''; // Reset file input
+        }
+    }
+    
+    async function handleUserImport(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!confirm(`ユーザーデータをインポートしますか？\n既存のEmailと重複するデータはスキップされます。`)) {
+            e.target.value = '';
+            return;
+        }
+        const formData = new FormData();
+        formData.append('user_csv', file);
+        formData.append('action', 'import_users');
+        try {
+            const result = await apiRequest('api.php', { method: 'POST', body: formData });
+            alert(result.message);
+            fetchAndRenderUsers().then(filterUsers);
+        } catch (error) { /* エラーはapiRequest内で処理 */ } 
+        finally { e.target.value = ''; }
+    }
+
+    async function handleQuizImport(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!confirm(`クイズデータをインポートしますか？\n既存のIDと重複するデータはスキップされます。`)) {
+            e.target.value = '';
+            return;
+        }
+        const formData = new FormData();
+        formData.append('quiz_csv', file);
+        formData.append('action', 'import_quizzes');
+        try {
+            const result = await apiRequest('api.php', { method: 'POST', body: formData });
+            alert(result.message);
+            fetchAndRenderQuizzes().then(filterQuizzes);
+        } catch (error) { /* エラーはapiRequest内で処理 */ }
+        finally { e.target.value = ''; }
+    }
+
     function escapeHTML(str) {
         if (str === null || str === undefined) return '';
         return str.toString()

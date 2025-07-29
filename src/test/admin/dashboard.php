@@ -58,12 +58,10 @@ $username = $_SESSION['username'] ?? 'Admin';
                     <i class="fas fa-edit fa-fw mr-3"></i>
                     コンテンツ管理
                 </a>
-                <!-- ▼▼▼【追加】お問い合わせ管理メニュー ▼▼▼ -->
                 <a href="#inquiry-management" class="nav-link flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-envelope fa-fw mr-3"></i>
                     お問い合わせ管理
                 </a>
-                <!-- ▲▲▲ -->
             </nav>
             <div class="px-8 py-4 border-t border-gray-700">
                 <a href="../logout.php" class="flex items-center text-gray-300 hover:text-white">
@@ -108,7 +106,18 @@ $username = $_SESSION['username'] ?? 'Admin';
 
                 <!-- User Management Section -->
                 <section id="user-management" class="admin-section hidden mt-12">
-                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">ユーザー管理</h2>
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold text-gray-700">ユーザー管理</h2>
+                        <div class="flex gap-2">
+                             <button id="import-users-btn" class="bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                                <i class="fas fa-upload mr-2"></i>インポート
+                            </button>
+                            <input type="file" id="user-import-input" class="hidden" accept=".csv">
+                            <button id="backup-users-btn" class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-download mr-2"></i>バックアップ
+                            </button>
+                        </div>
+                    </div>
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <div class="flex items-center gap-4 mb-4">
                             <select id="user-filter-role" class="form-select w-auto">
@@ -124,9 +133,15 @@ $username = $_SESSION['username'] ?? 'Admin';
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
-                                <thead>
+                                <thead id="user-table-head">
                                     <tr class="text-xs font-semibold tracking-wide text-gray-500 uppercase border-b bg-gray-50">
-                                        <th class="px-4 py-3">ID</th><th class="px-4 py-3">名前</th><th class="px-4 py-3">Email</th><th class="px-4 py-3">ユーザータイプ</th><th class="px-4 py-3">登録日</th><th class="px-4 py-3">管理者</th><th class="px-4 py-3">操作</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="ID" data-type="number">ID</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="Name" data-type="string">名前</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="Email" data-type="string">Email</th>
+                                        <th class="px-4 py-3">ユーザータイプ</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="RegistrationDate" data-type="date">登録日</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="is_admin" data-type="boolean">管理者</th>
+                                        <th class="px-4 py-3">操作</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y" id="user-table-body"></tbody>
@@ -137,7 +152,18 @@ $username = $_SESSION['username'] ?? 'Admin';
 
                 <!-- Content Management Section -->
                 <section id="content-management" class="admin-section hidden mt-12">
-                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">コンテンツ管理</h2>
+                     <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold text-gray-700">コンテンツ管理</h2>
+                        <div class="flex gap-2">
+                            <button id="import-quizzes-btn" class="bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                                <i class="fas fa-upload mr-2"></i>インポート
+                            </button>
+                            <input type="file" id="quiz-import-input" class="hidden" accept=".csv">
+                            <button id="backup-quizzes-btn" class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-download mr-2"></i>バックアップ
+                            </button>
+                        </div>
+                    </div>
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-xl font-semibold text-gray-800">クイズ管理</h3>
@@ -159,9 +185,12 @@ $username = $_SESSION['username'] ?? 'Admin';
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
-                                <thead>
+                                <thead id="quiz-table-head">
                                     <tr class="text-xs font-semibold tracking-wide text-gray-500 uppercase border-b bg-gray-50">
-                                        <th class="px-4 py-3">ID</th><th class="px-4 py-3">難易度</th><th class="px-4 py-3">問題 (日本語)</th><th class="px-4 py-3">操作</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="id" data-type="number">ID</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="difficulty" data-type="string">難易度</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="question.ja" data-type="string">問題 (日本語)</th>
+                                        <th class="px-4 py-3">操作</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y" id="quiz-table-body"></tbody>
@@ -170,20 +199,38 @@ $username = $_SESSION['username'] ?? 'Admin';
                     </div>
                 </section>
                 
-                <!-- ▼▼▼【追加】Inquiry Management Section ▼▼▼ -->
+                <!-- Inquiry Management Section -->
                 <section id="inquiry-management" class="admin-section hidden mt-12">
-                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">お問い合わせ管理</h2>
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold text-gray-700">お問い合わせ管理</h2>
+                        <div class="flex gap-2">
+                            <button id="import-inquiries-btn" class="bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                                <i class="fas fa-upload mr-2"></i>インポート
+                            </button>
+                            <input type="file" id="inquiry-import-input" class="hidden" accept=".csv">
+                            <button id="backup-inquiries-btn" class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-download mr-2"></i>バックアップ
+                            </button>
+                        </div>
+                    </div>
                     <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <select id="inquiry-filter-status" class="form-select w-auto">
+                                <option value="all">すべてのステータス</option>
+                                <option value="pending">未対応</option>
+                                <option value="replied">対応済み</option>
+                            </select>
+                        </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
-                                <thead>
+                                <thead id="inquiry-table-head">
                                     <tr class="text-xs font-semibold tracking-wide text-gray-500 uppercase border-b bg-gray-50">
-                                        <th class="px-4 py-3">ID</th>
-                                        <th class="px-4 py-3">日時</th>
-                                        <th class="px-4 py-3">名前</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="id" data-type="number">ID</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="created_at" data-type="date">日時</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="name" data-type="string">名前</th>
                                         <th class="px-4 py-3">Email</th>
                                         <th class="px-4 py-3">内容</th>
-                                        <th class="px-4 py-3">ステータス</th>
+                                        <th class="px-4 py-3 sortable-header" data-column="replied" data-type="boolean">ステータス</th>
                                         <th class="px-4 py-3">操作</th>
                                     </tr>
                                 </thead>
@@ -192,13 +239,12 @@ $username = $_SESSION['username'] ?? 'Admin';
                         </div>
                     </div>
                 </section>
-                <!-- ▲▲▲ -->
             </main>
         </div>
     </div>
 
     <!-- Modals -->
-    <!-- (省略: 既存のユーザー・クイズモーダルは変更なし) -->
+    <!-- (省略: 既存のモーダルは変更なし) -->
     <div id="delete-confirm-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <h3 class="text-xl font-bold text-gray-800 mb-4">ユーザーの削除</h3>
@@ -339,8 +385,6 @@ $username = $_SESSION['username'] ?? 'Admin';
             </div>
         </div>
     </div>
-    
-    <!-- ▼▼▼【追加】Inquiry Reply Modal ▼▼▼ -->
     <div id="reply-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
         <form id="reply-form" class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
             <input type="hidden" name="inquiry_id">
@@ -375,7 +419,16 @@ $username = $_SESSION['username'] ?? 'Admin';
             </div>
         </form>
     </div>
-    <!-- ▲▲▲ -->
+    <div id="delete-inquiry-confirm-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">お問い合わせの削除</h3>
+            <p class="text-gray-600 mb-6">本当にお問い合わせを削除しますか？<br>この操作は元に戻すことができません。</p>
+            <div class="flex justify-end gap-4">
+                <button id="back-delete-inquiry-btn" class="bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition-colors">戻る</button>
+                <button id="confirm-delete-inquiry-btn" class="bg-red-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-600 transition-colors">削除</button>
+            </div>
+        </div>
+    </div>
 
 
     <script>
