@@ -5,6 +5,7 @@
     --light-bg: #F9F5EB;
     --dark-text: #333333;
     --light-text: #f8f8f8;
+    --border-color: #e0e0e0;
 }
 body {
     font-family: 'Noto Sans JP', sans-serif;
@@ -12,25 +13,43 @@ body {
     color: var(--dark-text);
     line-height: 1.6;
     margin: 0;
-    padding: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
 .form-container {
-    width: 400px;
-    margin: 50px auto;
-    padding: 30px;
+    width: 100%;
+    max-width: 420px;
+    margin: 20px auto;
+    padding: 40px;
     background-color: #fff;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    border-radius: 10px;
-    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 h1 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     font-family: 'Montserrat', sans-serif;
     color: var(--primary-color);
-    font-size: 1.8rem;
+    font-size: 2rem;
     position: relative;
 }
 
@@ -38,80 +57,186 @@ h1::after {
     content: '';
     display: block;
     width: 60px;
-    height: 3px;
+    height: 4px;
     background-color: var(--secondary-color);
-    margin: 0.5rem auto 0;
+    margin: 10px auto 0;
+    border-radius: 2px;
 }
 
 label {
     display: block;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     font-weight: 500;
     color: var(--primary-color);
+    text-align: left;
 }
 
 input, select {
     width: 100%;
-    padding: 12px;
-    margin-top: 5px;
+    padding: 14px;
+    margin-top: 8px;
     box-sizing: border-box;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
     font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1rem;
     transition: all 0.3s ease;
 }
 
 input:focus, select:focus {
     outline: none;
     border-color: var(--secondary-color);
-    box-shadow: 0 0 0 2px rgba(232, 192, 125, 0.3);
+    box-shadow: 0 0 0 3px rgba(232, 192, 125, 0.4);
 }
 
-button {
+button[type="submit"] {
     width: 100%;
-    padding: 14px;
+    padding: 15px;
     background-color: var(--primary-color);
     color: white;
-    font-size: 1rem;
-    font-weight: 500;
+    font-size: 1.1rem;
+    font-weight: 700;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 25px;
     transition: all 0.3s ease;
     font-family: 'Montserrat', sans-serif;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-button:hover {
+button[type="submit"]:hover {
     background-color: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
 }
 
-a {
+.form-container > a {
     color: var(--accent-color);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
-    display: inline-block;
-    margin-top: 15px;
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
 }
 
-a:hover {
+.form-container > a:hover {
     color: var(--primary-color);
     text-decoration: underline;
 }
 
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.password-wrapper input {
+    padding-right: 45px;
+}
+.password-toggle-icon {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s;
+}
+.password-toggle-icon:hover {
+    color: var(--dark-text);
+}
+
+/* プルダウン式言語スイッチャーのスタイル */
+.language-select-wrapper {
+    text-align: center;
+    margin-bottom: 25px;
+    position: relative;
+    width: 100%;
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.language-select-wrapper::after {
+    content: '▼';
+    font-size: 12px;
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    pointer-events: none;
+}
+
+.language-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    background-color: #fff;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.language-select:hover {
+    border-color: var(--secondary-color);
+}
+
+.language-select:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(232, 192, 125, 0.4);
+}
+
+
+/* メッセージ表示用のスタイル */
+.message-container {
+    margin-bottom: 1rem;
+    text-align: left;
+    font-size: 0.9rem;
+    animation: fadeIn 0.3s;
+}
+.success-message {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 0.75rem 1.25rem;
+    border-radius: .25rem;
+}
+.error-message {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 0.75rem 1.25rem;
+    border-radius: .25rem;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
     .form-container {
-        width: 90%;
-        padding: 20px;
+        width: 100%;
+        padding: 25px;
     }
     
     h1 {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
     }
+}
+
+/* ★★★ 追加: ホームに戻るボタン用のスタイル ★★★ */
+.back-link {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    margin-top: 10px;
 }
