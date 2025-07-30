@@ -3,177 +3,155 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DOM要素 ---
     const userTableBody = document.getElementById('user-table-body');
     const quizTableBody = document.getElementById('quiz-table-body');
+    const inquiryTableBody = document.getElementById('inquiry-table-body');
     const totalUsersCountEl = document.getElementById('total-users-count');
     const helpfulFeedbackCountEl = document.getElementById('helpful-feedback-count');
     const unhelpfulFeedbackCountEl = document.getElementById('unhelpful-feedback-count');
     const userRegistrationChartEl = document.getElementById('userRegistrationChart');
     
-    // User Modals & Filters
+    // User Elements
     const deleteUserModal = document.getElementById('delete-confirm-modal');
-    const backDeleteBtn = document.getElementById('back-delete-btn');
     const confirmDeleteUserBtn = document.getElementById('confirm-delete-btn');
     const deleteUserNameEl = document.getElementById('delete-user-name');
     const editUserModal = document.getElementById('edit-user-modal');
     const editUserForm = document.getElementById('edit-user-form');
+    const backDeleteBtn = document.getElementById('back-delete-btn');
     const backEditBtn = document.getElementById('back-edit-btn');
     const userFilterInput = document.getElementById('user-filter-input');
     const userFilterRole = document.getElementById('user-filter-role');
-    const userCountDisplay = document.getElementById('user-count-display');
-    const backupUsersBtn = document.getElementById('backup-users-btn');
     const importUsersBtn = document.getElementById('import-users-btn');
     const userImportInput = document.getElementById('user-import-input');
+    const backupUsersBtn = document.getElementById('backup-users-btn');
     
-    // Quiz Modals & Form Elements
+    // Quiz Elements
     const quizEditorModal = document.getElementById('quiz-editor-modal');
     const quizEditorForm = document.getElementById('quiz-editor-form');
     const quizEditorTitle = document.getElementById('quiz-editor-title');
-    const backQuizEditorBtn = document.getElementById('back-quiz-editor-btn');
     const addQuizBtn = document.getElementById('add-quiz-btn');
+    const backQuizEditorBtn = document.getElementById('back-quiz-editor-btn');
     const deleteQuizModal = document.getElementById('delete-quiz-confirm-modal');
     const deleteQuizQuestionEl = document.getElementById('delete-quiz-question');
     const backDeleteQuizBtn = document.getElementById('back-delete-quiz-btn');
     const confirmDeleteQuizBtn = document.getElementById('confirm-delete-quiz-btn');
     const quizFilterInput = document.getElementById('quiz-filter-input');
     const quizFilterDifficulty = document.getElementById('quiz-filter-difficulty');
-    const backupQuizzesBtn = document.getElementById('backup-quizzes-btn');
     const importQuizzesBtn = document.getElementById('import-quizzes-btn');
     const quizImportInput = document.getElementById('quiz-import-input');
+    const backupQuizzesBtn = document.getElementById('backup-quizzes-btn');
 
     // Inquiry Elements
-    const inquiryTableBody = document.getElementById('inquiry-table-body');
     const replyModal = document.getElementById('reply-modal');
     const replyForm = document.getElementById('reply-form');
     const backReplyBtn = document.getElementById('back-reply-btn');
     const sendReplyBtn = document.getElementById('send-reply-btn');
     const inquiryFilterStatus = document.getElementById('inquiry-filter-status');
-    const backupInquiriesBtn = document.getElementById('backup-inquiries-btn');
     const importInquiriesBtn = document.getElementById('import-inquiries-btn');
     const inquiryImportInput = document.getElementById('inquiry-import-input');
+    const backupInquiriesBtn = document.getElementById('backup-inquiries-btn');
     const deleteInquiryModal = document.getElementById('delete-inquiry-confirm-modal');
     const backDeleteInquiryBtn = document.getElementById('back-delete-inquiry-btn');
     const confirmDeleteInquiryBtn = document.getElementById('confirm-delete-inquiry-btn');
 
-    // Navigation
-    const sidebarNav = document.getElementById('sidebar-nav');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const adminSections = document.querySelectorAll('.admin-section');
-
-    // State variables
-    let userIdToDelete = null;
-    let quizIdToDelete = null;
-    let inquiryIdToDelete = null;
-    let allUsers = [], allQuizzes = [], allInquiries = [];
+    // --- State variables ---
+    let userIdToDelete = null, quizIdToDelete = null, inquiryIdToDelete = null;
     let sortState = {};
+    let paginationState = {
+        users: { currentPage: 1, limit: 10, total: 0 },
+        quizzes: { currentPage: 1, limit: 10, total: 0 },
+        inquiries: { currentPage: 1, limit: 10, total: 0 }
+    };
 
     /**
      * 初期化関数
      */
     function initialize() {
         setupEventListeners();
-        fetchAndRenderAllData();
+        fetchDashboardStats();
+        fetchAndRenderFeedbackStats();
+        fetchAndRenderUserRegistrationChart();
         const initialHash = window.location.hash || '#dashboard';
         switchSection(initialHash);
-    }
-
-    /**
-     * 全てのデータを取得・描画する
-     */
-    async function fetchAndRenderAllData() {
-        await Promise.all([
-            fetchDashboardStats(),
-            fetchAndRenderFeedbackStats(),
-            fetchAndRenderUserRegistrationChart(),
-            fetchAndRenderUsers(),
-            fetchAndRenderQuizzes(),
-            fetchAndRenderInquiries()
-        ]);
-        filterUsers();
-        filterQuizzes();
-        filterInquiries();
     }
 
     /**
      * イベントリスナーをまとめて設定
      */
     function setupEventListeners() {
-        sidebarNav.addEventListener('click', (e) => {
+        document.getElementById('sidebar-nav').addEventListener('click', (e) => {
             const navLink = e.target.closest('.nav-link');
-            if (!navLink) return;
-            e.preventDefault();
-            switchSection(navLink.getAttribute('href'));
+            if (navLink) {
+                e.preventDefault();
+                switchSection(navLink.getAttribute('href'));
+            }
         });
 
-        document.querySelectorAll('thead').forEach(thead => {
-            thead.addEventListener('click', handleSortClick);
-        });
-
-        // User Management
+        document.querySelectorAll('thead').forEach(thead => thead.addEventListener('click', handleSortClick));
+        
+        // User Listeners
         userTableBody.addEventListener('click', handleUserTableClick);
         confirmDeleteUserBtn.addEventListener('click', executeUserDelete);
-        backDeleteBtn.addEventListener('click', closeDeleteUserModal);
-        deleteUserModal.addEventListener('click', (e) => e.target === deleteUserModal && closeDeleteUserModal());
+        backDeleteBtn.addEventListener('click', () => deleteUserModal.classList.add('hidden'));
         editUserForm.addEventListener('submit', handleUserEditSubmit);
-        backEditBtn.addEventListener('click', closeEditUserModal);
-        editUserModal.addEventListener('click', (e) => e.target === editUserModal && closeEditUserModal());
-        userFilterInput.addEventListener('input', filterUsers);
-        userFilterRole.addEventListener('change', filterUsers);
-        backupUsersBtn.addEventListener('click', () => { window.location.href = 'api.php?action=backup_users'; });
+        backEditBtn.addEventListener('click', () => editUserModal.classList.add('hidden'));
+        userFilterInput.addEventListener('input', () => { paginationState.users.currentPage = 1; fetchAndRenderUsers(); });
+        userFilterRole.addEventListener('change', () => { paginationState.users.currentPage = 1; fetchAndRenderUsers(); });
+        backupUsersBtn.addEventListener('click', () => window.location.href = 'api.php?action=backup_users');
         importUsersBtn.addEventListener('click', () => userImportInput.click());
         userImportInput.addEventListener('change', handleUserImport);
 
-        // Quiz Management
+        // Quiz Listeners
         quizTableBody.addEventListener('click', handleQuizTableClick);
         addQuizBtn.addEventListener('click', openQuizEditorForAdd);
         quizEditorForm.addEventListener('submit', handleQuizFormSubmit);
-        backQuizEditorBtn.addEventListener('click', closeQuizEditorModal);
-        quizEditorModal.addEventListener('click', (e) => e.target === quizEditorModal && closeQuizEditorModal());
+        backQuizEditorBtn.addEventListener('click', () => quizEditorModal.classList.add('hidden'));
         confirmDeleteQuizBtn.addEventListener('click', executeQuizDelete);
-        backDeleteQuizBtn.addEventListener('click', closeDeleteQuizModal);
-        deleteQuizModal.addEventListener('click', (e) => e.target === deleteQuizModal && closeDeleteQuizModal());
-        quizFilterInput.addEventListener('input', filterQuizzes);
-        quizFilterDifficulty.addEventListener('change', filterQuizzes);
-        backupQuizzesBtn.addEventListener('click', () => { window.location.href = 'api.php?action=backup_quizzes'; });
+        backDeleteQuizBtn.addEventListener('click', () => deleteQuizModal.classList.add('hidden'));
+        quizFilterInput.addEventListener('input', () => { paginationState.quizzes.currentPage = 1; fetchAndRenderQuizzes(); });
+        quizFilterDifficulty.addEventListener('change', () => { paginationState.quizzes.currentPage = 1; fetchAndRenderQuizzes(); });
+        backupQuizzesBtn.addEventListener('click', () => window.location.href = 'api.php?action=backup_quizzes');
         importQuizzesBtn.addEventListener('click', () => quizImportInput.click());
         quizImportInput.addEventListener('change', handleQuizImport);
 
-        // Inquiry Management
+        // Inquiry Listeners
         inquiryTableBody.addEventListener('click', handleInquiryTableClick);
         replyForm.addEventListener('submit', handleReplySubmit);
         backReplyBtn.addEventListener('click', () => replyModal.classList.add('hidden'));
-        replyModal.addEventListener('click', (e) => e.target === replyModal && replyModal.classList.add('hidden'));
-        inquiryFilterStatus.addEventListener('change', filterInquiries);
-        backupInquiriesBtn.addEventListener('click', () => { window.location.href = 'api.php?action=backup_inquiries'; });
+        inquiryFilterStatus.addEventListener('change', () => { paginationState.inquiries.currentPage = 1; fetchAndRenderInquiries(); });
+        backupInquiriesBtn.addEventListener('click', () => window.location.href = 'api.php?action=backup_inquiries');
         importInquiriesBtn.addEventListener('click', () => inquiryImportInput.click());
         inquiryImportInput.addEventListener('change', handleInquiryImport);
         confirmDeleteInquiryBtn.addEventListener('click', executeInquiryDelete);
-        backDeleteInquiryBtn.addEventListener('click', closeDeleteInquiryModal);
-        deleteInquiryModal.addEventListener('click', (e) => e.target === deleteInquiryModal && closeDeleteInquiryModal());
+        backDeleteInquiryBtn.addEventListener('click', () => deleteInquiryModal.classList.add('hidden'));
     }
     
     function switchSection(targetHash) {
         const targetId = targetHash.substring(1);
-        navLinks.forEach(link => {
+        document.querySelectorAll('.nav-link').forEach(link => {
             const isActive = link.getAttribute('href') === targetHash;
             link.classList.toggle('bg-gray-700', isActive);
             link.classList.toggle('text-gray-100', isActive);
-            link.classList.toggle('text-gray-300', !isActive);
         });
-        adminSections.forEach(section => {
+        document.querySelectorAll('.admin-section').forEach(section => {
             section.classList.toggle('hidden', section.id !== targetId);
         });
         window.location.hash = targetId;
+
+        switch (targetId) {
+            case 'user-management': fetchAndRenderUsers(); break;
+            case 'content-management': fetchAndRenderQuizzes(); break;
+            case 'inquiry-management': fetchAndRenderInquiries(); break;
+        }
     }
 
     async function apiRequest(url, options = {}) {
         try {
             let requestUrl = url;
-            let requestOptions = { ...options };
-    
-            if (!options.method || options.method.toUpperCase() === 'GET') {
-                requestUrl += (url.includes('?') ? '&' : '?') + '_=' + new Date().getTime();
+            if (options.params) {
+                const queryParams = new URLSearchParams(options.params).toString();
+                requestUrl += (url.includes('?') ? '&' : '?') + queryParams;
             }
-    
-            // ▼▼▼【修正】FormDataの場合、Content-Typeヘッダーを削除してブラウザに任せる ▼▼▼
+            
+            let requestOptions = { ...options };
             if (options.body instanceof FormData) {
                 // FormDataの場合、Content-Typeは設定しない
             } else {
@@ -182,8 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     requestOptions.body = JSON.stringify(options.body);
                 }
             }
-            // ▲▲▲
-    
             const response = await fetch(requestUrl, requestOptions);
             const result = await response.json();
             if (!response.ok) {
@@ -198,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Data Fetching & Rendering ---
-
+    
     async function fetchDashboardStats() {
         try {
             const data = await apiRequest('api.php?action=get_dashboard_stats');
@@ -207,7 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (totalUsersCountEl) totalUsersCountEl.textContent = 'エラー';
         }
     }
-
     async function fetchAndRenderFeedbackStats() {
         try {
             const data = await apiRequest('api.php?action=get_feedback_stats');
@@ -218,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (unhelpfulFeedbackCountEl) unhelpfulFeedbackCountEl.textContent = 'エラー';
         }
     }
-
     async function fetchAndRenderUserRegistrationChart() {
         if (!userRegistrationChartEl) return;
         try {
@@ -250,8 +224,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchAndRenderUsers() {
         try {
-            allUsers = await apiRequest('api.php?action=get_users');
-            renderUserTable(allUsers);
+            const state = paginationState.users;
+            const params = {
+                page: state.currentPage,
+                limit: state.limit,
+                search: userFilterInput.value,
+                role: userFilterRole.value,
+                sort_column: sortState['user-table-body']?.column,
+                sort_direction: sortState['user-table-body']?.direction
+            };
+            const result = await apiRequest('api.php?action=get_users', { params });
+            state.total = result.total_count;
+            renderUserTable(result.data);
+            renderPagination('users', document.getElementById('user-pagination-controls'), document.getElementById('user-pagination-info'));
         } catch (error) {
             userTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">ユーザー情報の取得に失敗しました。</td></tr>`;
         }
@@ -259,8 +244,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchAndRenderQuizzes() {
         try {
-            allQuizzes = await apiRequest('api.php?action=get_quizzes');
-            renderQuizTable(allQuizzes);
+            const state = paginationState.quizzes;
+            const params = {
+                page: state.currentPage,
+                limit: state.limit,
+                search: quizFilterInput.value,
+                difficulty: quizFilterDifficulty.value,
+                sort_column: sortState['quiz-table-body']?.column,
+                sort_direction: sortState['quiz-table-body']?.direction
+            };
+            const result = await apiRequest('api.php?action=get_quizzes', { params });
+            state.total = result.total_count;
+            renderQuizTable(result.data);
+            renderPagination('quizzes', document.getElementById('quiz-pagination-controls'), document.getElementById('quiz-pagination-info'));
         } catch (error) {
             quizTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">クイズの読み込みに失敗しました。</td></tr>`;
         }
@@ -268,18 +264,30 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function fetchAndRenderInquiries() {
         try {
-            allInquiries = await apiRequest('api.php?action=get_inquiries');
-            renderInquiryTable(allInquiries);
+            const state = paginationState.inquiries;
+            const params = {
+                page: state.currentPage,
+                limit: state.limit,
+                status: inquiryFilterStatus.value,
+                sort_column: sortState['inquiry-table-body']?.column,
+                sort_direction: sortState['inquiry-table-body']?.direction
+            };
+            const result = await apiRequest('api.php?action=get_inquiries', { params });
+            state.total = result.total_count;
+            renderInquiryTable(result.data);
+            renderPagination('inquiries', document.getElementById('inquiry-pagination-controls'), document.getElementById('inquiry-pagination-info'));
         } catch (error) {
             inquiryTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">お問い合わせの読み込みに失敗しました。</td></tr>`;
         }
     }
 
     // --- Table Rendering Functions ---
-    
     function renderUserTable(users) {
         userTableBody.innerHTML = '';
-        if (users.length === 0) return;
+        if (users.length === 0) {
+            userTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">該当するユーザーが見つかりません。</td></tr>';
+            return;
+        };
         users.forEach(user => {
             const tr = document.createElement('tr');
             tr.className = 'text-gray-700';
@@ -299,10 +307,12 @@ document.addEventListener('DOMContentLoaded', () => {
             userTableBody.appendChild(tr);
         });
     }
-
     function renderQuizTable(quizzes) {
         quizTableBody.innerHTML = '';
-        if (quizzes.length === 0) return;
+        if (quizzes.length === 0) {
+            quizTableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">該当するクイズが見つかりません。</td></tr>';
+            return;
+        }
         quizzes.forEach(quiz => {
             const tr = document.createElement('tr');
             tr.dataset.quizId = quiz.id;
@@ -316,11 +326,10 @@ document.addEventListener('DOMContentLoaded', () => {
             quizTableBody.appendChild(tr);
         });
     }
-
     function renderInquiryTable(inquiries) {
         inquiryTableBody.innerHTML = '';
         if (inquiries.length === 0) {
-            inquiryTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">お問い合わせはありません。</td></tr>';
+            inquiryTableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">該当するお問い合わせはありません。</td></tr>';
             return;
         }
         inquiries.forEach(inquiry => {
@@ -344,14 +353,55 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Sorting Functions ---
+    function renderPagination(type, controlsContainer, infoContainer) {
+        const state = paginationState[type];
+        controlsContainer.innerHTML = '';
+        infoContainer.innerHTML = '';
 
+        if (state.total === 0) return;
+
+        const totalPages = Math.ceil(state.total / state.limit);
+        const startItem = (state.currentPage - 1) * state.limit + 1;
+        const endItem = Math.min(startItem + state.limit - 1, state.total);
+        infoContainer.textContent = `${state.total}件中 ${startItem}〜${endItem}件を表示`;
+
+        const createButton = (text, page, isDisabled = false, isActive = false) => {
+            const button = document.createElement('button');
+            button.innerHTML = text;
+            button.disabled = isDisabled;
+            button.className = `px-3 py-1 rounded-md transition-colors ${isActive ? 'bg-sky-600 text-white' : 'bg-white hover:bg-gray-100'} ${isDisabled ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700'}`;
+            button.addEventListener('click', () => {
+                state.currentPage = page;
+                if (type === 'users') fetchAndRenderUsers();
+                else if (type === 'quizzes') fetchAndRenderQuizzes();
+                else if (type === 'inquiries') fetchAndRenderInquiries();
+            });
+            return button;
+        };
+
+        controlsContainer.appendChild(createButton('<i class="fas fa-chevron-left"></i>', state.currentPage - 1, state.currentPage === 1));
+
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= state.currentPage - 1 && i <= state.currentPage + 1)) {
+                controlsContainer.appendChild(createButton(i, i, false, i === state.currentPage));
+            } else if (i === state.currentPage - 2 || i === state.currentPage + 2) {
+                const dots = document.createElement('span');
+                dots.textContent = '...';
+                dots.className = 'px-3 py-1';
+                controlsContainer.appendChild(dots);
+            }
+        }
+        
+        controlsContainer.appendChild(createButton('<i class="fas fa-chevron-right"></i>', state.currentPage + 1, state.currentPage === totalPages));
+    }
+
+
+    // --- Sorting Functions ---
     function handleSortClick(e) {
         const header = e.target.closest('.sortable-header');
         if (!header) return;
 
         const column = header.dataset.column;
-        const type = header.dataset.type;
         const tableId = header.closest('table').querySelector('tbody').id;
         
         const currentSort = sortState[tableId] || {};
@@ -361,49 +411,17 @@ document.addEventListener('DOMContentLoaded', () => {
         
         updateSortIndicators(header.closest('thead'));
         
-        let dataArray;
-        let filterFunction;
-
         if (tableId === 'user-table-body') {
-            dataArray = allUsers;
-            filterFunction = filterUsers;
+            paginationState.users.currentPage = 1;
+            fetchAndRenderUsers();
         } else if (tableId === 'quiz-table-body') {
-            dataArray = allQuizzes;
-            filterFunction = filterQuizzes;
+            paginationState.quizzes.currentPage = 1;
+            fetchAndRenderQuizzes();
         } else if (tableId === 'inquiry-table-body') {
-            dataArray = allInquiries;
-            filterFunction = filterInquiries;
+            paginationState.inquiries.currentPage = 1;
+            fetchAndRenderInquiries();
         }
-
-        sortData(dataArray, column, type, newDirection);
-        filterFunction();
     }
-
-    function sortData(data, column, type, direction) {
-        data.sort((a, b) => {
-            const valA = column.split('.').reduce((o, i) => o[i], a);
-            const valB = column.split('.').reduce((o, i) => o[i], b);
-
-            let compare = 0;
-            switch (type) {
-                case 'number':
-                    compare = valA - valB;
-                    break;
-                case 'date':
-                    compare = new Date(valA) - new Date(valB);
-                    break;
-                case 'boolean':
-                    compare = (valA === valB) ? 0 : valA ? -1 : 1;
-                    break;
-                case 'string':
-                default:
-                    compare = String(valA).localeCompare(String(valB));
-                    break;
-            }
-            return direction === 'asc' ? compare : -compare;
-        });
-    }
-
     function updateSortIndicators(thead) {
         const tableId = thead.nextElementSibling.id;
         const currentSort = sortState[tableId] || {};
@@ -416,76 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Filtering Functions ---
-
-    function filterUsers() {
-        const filterText = userFilterInput.value.toLowerCase();
-        const filterRole = userFilterRole.value;
-        
-        const filteredUsers = allUsers.filter(user => {
-            const name = user.Name.toLowerCase();
-            const email = user.Email.toLowerCase();
-            const isAdmin = user.is_admin;
-
-            const textMatch = name.includes(filterText) || email.includes(filterText);
-            const roleMatch = (filterRole === 'all') ||
-                              (filterRole === 'admin' && isAdmin) ||
-                              (filterRole === 'general' && !isAdmin);
-            return textMatch && roleMatch;
-        });
-        
-        renderUserTable(filteredUsers);
-        userCountDisplay.textContent = `${allUsers.length}人中 ${filteredUsers.length}人 表示中`;
-
-        if (filteredUsers.length === 0 && allUsers.length > 0) {
-            const tr = document.createElement('tr');
-            tr.className = 'no-results-row';
-            tr.innerHTML = '<td colspan="7" class="text-center py-4">該当するユーザーが見つかりません。</td>';
-            userTableBody.appendChild(tr);
-        }
-    }
-
-    function filterQuizzes() {
-        const filterText = quizFilterInput.value.toLowerCase();
-        const filterDifficulty = quizFilterDifficulty.value;
-        
-        const filteredQuizzes = allQuizzes.filter(quiz => {
-            const questionJa = quiz.question.ja.toLowerCase();
-            const difficulty = quiz.difficulty;
-            const textMatch = questionJa.includes(filterText);
-            const difficultyMatch = filterDifficulty === 'all' || difficulty === filterDifficulty;
-            return textMatch && difficultyMatch;
-        });
-
-        renderQuizTable(filteredQuizzes);
-
-        if (filteredQuizzes.length === 0 && allQuizzes.length > 0) {
-            const tr = document.createElement('tr');
-            tr.className = 'no-results-row';
-            tr.innerHTML = '<td colspan="4" class="text-center py-4">該当するクイズが見つかりません。</td>';
-            quizTableBody.appendChild(tr);
-        }
-    }
-    
-    function filterInquiries() {
-        const filterStatus = inquiryFilterStatus.value;
-        const filteredInquiries = allInquiries.filter(inquiry => {
-            if (filterStatus === 'all') return true;
-            const status = inquiry.replied ? 'replied' : 'pending';
-            return status === filterStatus;
-        });
-        
-        renderInquiryTable(filteredInquiries);
-
-        if (filteredInquiries.length === 0 && allInquiries.length > 0) {
-            const tr = document.createElement('tr');
-            tr.className = 'no-results-row';
-            tr.innerHTML = '<td colspan="7" class="text-center py-4">該当するお問い合わせはありません。</td>';
-            inquiryTableBody.appendChild(tr);
-        }
-    }
-
-    // --- (省略: 既存のUser/Quiz Management Functionsは変更なし) ---
+    // --- User Management Functions ---
     function handleUserTableClick(e) {
         const target = e.target;
         const tr = target.closest('tr');
@@ -499,29 +448,22 @@ document.addEventListener('DOMContentLoaded', () => {
             openDeleteUserModal(userId, tr.querySelector('td:nth-child(2)').textContent);
         }
     }
-
     async function toggleAdminStatus(userId, newStatus, checkboxElement) {
         try {
             await apiRequest('api.php', {
                 method: 'POST',
                 body: { action: 'toggle_admin', user_id: userId, is_admin: newStatus }
             });
+            fetchAndRenderUsers();
         } catch (error) {
             checkboxElement.checked = !newStatus;
         }
     }
-
     function openDeleteUserModal(userId, userName) {
         userIdToDelete = userId;
         deleteUserNameEl.textContent = userName;
         deleteUserModal.classList.remove('hidden');
     }
-
-    function closeDeleteUserModal() {
-        userIdToDelete = null;
-        deleteUserModal.classList.add('hidden');
-    }
-
     async function executeUserDelete() {
         if (!userIdToDelete) return;
         try {
@@ -529,15 +471,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 body: { action: 'delete_user', user_id: userIdToDelete }
             });
+            paginationState.users.currentPage = 1;
             await fetchAndRenderUsers();
-            filterUsers();
             fetchDashboardStats();
-            closeDeleteUserModal();
+            deleteUserModal.classList.add('hidden');
         } catch (error) {
-            closeDeleteUserModal();
+            deleteUserModal.classList.add('hidden');
         }
     }
-    
     function openEditUserModal(user) {
         editUserForm.reset();
         editUserForm.elements['user_id'].value = user.ID;
@@ -546,11 +487,6 @@ document.addEventListener('DOMContentLoaded', () => {
         editUserForm.elements['user_type'].value = user.UserType;
         editUserModal.classList.remove('hidden');
     }
-
-    function closeEditUserModal() {
-        editUserModal.classList.add('hidden');
-    }
-
     async function handleUserEditSubmit(e) {
         e.preventDefault();
         const formData = new FormData(editUserForm);
@@ -562,44 +498,31 @@ document.addEventListener('DOMContentLoaded', () => {
             user_type: formData.get('user_type'),
         };
         try {
-            await apiRequest('api.php', {
-                method: 'POST',
-                body: data
-            });
+            await apiRequest('api.php', { method: 'POST', body: data });
             await fetchAndRenderUsers();
-            filterUsers();
-            closeEditUserModal();
+            editUserModal.classList.add('hidden');
         } catch (error) {}
     }
-    
+
+    // --- Quiz Management Functions ---
     function handleQuizTableClick(e) {
-        const target = e.target;
-        const tr = target.closest('tr');
+        const tr = e.target.closest('tr');
         if (!tr) return;
-        const quizId = tr.dataset.quizId;
         const quizData = JSON.parse(tr.dataset.quizData);
-
-        if (target.closest('.edit-quiz-btn')) {
-            openQuizEditorForEdit(quizData);
-        } else if (target.closest('.delete-quiz-btn')) {
-            openDeleteQuizModal(quizId, quizData.question.ja);
-        }
+        if (e.target.closest('.edit-quiz-btn')) openQuizEditorForEdit(quizData);
+        else if (e.target.closest('.delete-quiz-btn')) openDeleteQuizModal(quizData.id, quizData.question.ja);
     }
-
     function openQuizEditorForAdd() {
         quizEditorForm.reset();
         quizEditorTitle.textContent = '新しいクイズを追加';
         quizEditorForm.elements['id'].value = '';
         quizEditorModal.classList.remove('hidden');
     }
-
     function openQuizEditorForEdit(quiz) {
         quizEditorForm.reset();
         quizEditorTitle.textContent = 'クイズを編集';
-        
         quizEditorForm.elements['id'].value = quiz.id;
         quizEditorForm.elements['difficulty'].value = quiz.difficulty;
-        
         ['ja', 'en', 'zh'].forEach(lang => {
             quizEditorForm.elements[`question_${lang}`].value = quiz.question[lang] || '';
             quizEditorForm.elements[`explanation_${lang}`].value = quiz.explanation[lang] || '';
@@ -607,128 +530,78 @@ document.addEventListener('DOMContentLoaded', () => {
                 quizEditorForm.elements[`option_${i}_${lang}`].value = quiz.options[lang][i] || '';
             }
         });
-
         const correctRadio = quizEditorForm.querySelector(`input[name="correct_answer_index"][value="${quiz.correct_answer_index}"]`);
         if (correctRadio) correctRadio.checked = true;
-
         quizEditorModal.classList.remove('hidden');
     }
-
-    function closeQuizEditorModal() {
-        quizEditorModal.classList.add('hidden');
-    }
-
     async function handleQuizFormSubmit(e) {
         e.preventDefault();
         const formData = new FormData(quizEditorForm);
         const id = formData.get('id');
-        
         const data = {
             action: id ? 'update_quiz' : 'add_quiz',
             id: id || null,
             difficulty: formData.get('difficulty'),
             correct_answer_index: parseInt(formData.get('correct_answer_index'), 10),
-            question: {
-                ja: formData.get('question_ja'),
-                en: formData.get('question_en'),
-                zh: formData.get('question_zh')
-            },
+            question: { ja: formData.get('question_ja'), en: formData.get('question_en'), zh: formData.get('question_zh') },
             options: { ja: [], en: [], zh: [] },
-            explanation: {
-                ja: formData.get('explanation_ja'),
-                en: formData.get('explanation_en'),
-                zh: formData.get('explanation_zh')
-            }
+            explanation: { ja: formData.get('explanation_ja'), en: formData.get('explanation_en'), zh: formData.get('explanation_zh') }
         };
-
-        const tempOptions = { ja: [], en: [], zh: [] };
         for (let i = 0; i < 4; i++) {
             const ja_opt = formData.get(`option_${i}_ja`);
             if (ja_opt && ja_opt.trim() !== '') {
-                tempOptions.ja.push(ja_opt);
-                tempOptions.en.push(formData.get(`option_${i}_en`));
-                tempOptions.zh.push(formData.get(`option_${i}_zh`));
+                data.options.ja.push(ja_opt);
+                data.options.en.push(formData.get(`option_${i}_en`));
+                data.options.zh.push(formData.get(`option_${i}_zh`));
             }
         }
-        data.options = tempOptions;
-
-        if (data.options.ja.length < 2) {
-            alert('少なくとも2つの選択肢を入力してください。');
-            return;
+        if (data.options.ja.length < 2 || data.correct_answer_index >= data.options.ja.length) {
+            alert('選択肢と正解の設定が正しくありません。'); return;
         }
-
-        if (data.correct_answer_index >= data.options.ja.length) {
-            alert('正解として指定された選択肢が入力されていません。');
-            return;
-        }
-
         try {
-            await apiRequest('api.php', {
-                method: 'POST',
-                body: data
-            });
-            fetchAndRenderQuizzes().then(filterQuizzes);
-            closeQuizEditorModal();
+            await apiRequest('api.php', { method: 'POST', body: data });
+            fetchAndRenderQuizzes();
+            quizEditorModal.classList.add('hidden');
         } catch (error) {}
     }
-
     function openDeleteQuizModal(quizId, question) {
         quizIdToDelete = quizId;
-        const shortQuestion = question.length > 30 ? question.substring(0, 30) + '...' : question;
-        deleteQuizQuestionEl.textContent = shortQuestion;
+        deleteQuizQuestionEl.textContent = question.length > 30 ? question.substring(0, 30) + '...' : question;
         deleteQuizModal.classList.remove('hidden');
     }
-
-    function closeDeleteQuizModal() {
-        quizIdToDelete = null;
-        deleteQuizModal.classList.add('hidden');
-    }
-
     async function executeQuizDelete() {
         if (!quizIdToDelete) return;
         try {
-            await apiRequest('api.php', {
-                method: 'POST',
-                body: { action: 'delete_quiz', id: quizIdToDelete }
-            });
-            fetchAndRenderQuizzes().then(filterQuizzes);
-            closeDeleteQuizModal();
+            await apiRequest('api.php', { method: 'POST', body: { action: 'delete_quiz', id: quizIdToDelete } });
+            paginationState.quizzes.currentPage = 1;
+            fetchAndRenderQuizzes();
+            deleteQuizModal.classList.add('hidden');
         } catch (error) {
-            closeDeleteQuizModal();
+            deleteQuizModal.classList.add('hidden');
         }
     }
 
+    // --- Inquiry Management Functions ---
     function handleInquiryTableClick(e) {
         const btn = e.target.closest('.action-btn');
         if (!btn) return;
-
-        const tr = btn.closest('tr');
-        const inquiryData = JSON.parse(tr.dataset.inquiryData);
-
-        if (btn.classList.contains('reply-btn')) {
-            openReplyModal(inquiryData);
-        } else if (btn.classList.contains('delete-inquiry-btn')) {
-            openDeleteInquiryModal(inquiryData.id);
-        }
+        const inquiryData = JSON.parse(btn.closest('tr').dataset.inquiryData);
+        if (btn.classList.contains('reply-btn')) openReplyModal(inquiryData);
+        else if (btn.classList.contains('delete-inquiry-btn')) openDeleteInquiryModal(inquiryData.id);
     }
-
     function openReplyModal(inquiry) {
         replyForm.reset();
         replyForm.elements['inquiry_id'].value = inquiry.id;
         replyForm.elements['recipient_email'].value = inquiry.email;
         replyForm.elements['recipient_name'].value = inquiry.name;
-        
         document.getElementById('reply-recipient').textContent = `${inquiry.name} <${inquiry.email}>`;
         document.getElementById('original-message').textContent = inquiry.message;
-        
         replyModal.classList.remove('hidden');
     }
-
     async function handleReplySubmit(e) {
         e.preventDefault();
         sendReplyBtn.disabled = true;
         sendReplyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>送信中...';
-
         const formData = new FormData(replyForm);
         const data = {
             action: 'send_reply',
@@ -738,78 +611,35 @@ document.addEventListener('DOMContentLoaded', () => {
             subject: formData.get('subject'),
             message: formData.get('message')
         };
-
         try {
-            await apiRequest('api.php', {
-                method: 'POST',
-                body: data
-            });
-
-            await apiRequest('api.php', {
-                method: 'POST',
-                body: { action: 'mark_inquiry_replied', inquiry_id: data.inquiry_id }
-            });
-
+            await apiRequest('api.php', { method: 'POST', body: data });
+            await apiRequest('api.php', { method: 'POST', body: { action: 'mark_inquiry_replied', inquiry_id: data.inquiry_id } });
             alert('返信を送信しました。');
             replyModal.classList.add('hidden');
-            fetchAndRenderInquiries().then(filterInquiries);
-
-        } catch (error) {
-        } finally {
+            fetchAndRenderInquiries();
+        } catch (error) {} 
+        finally {
             sendReplyBtn.disabled = false;
             sendReplyBtn.innerHTML = '<i class="fas fa-paper-plane"></i>送信';
         }
     }
-
     function openDeleteInquiryModal(inquiryId) {
         inquiryIdToDelete = inquiryId;
         deleteInquiryModal.classList.remove('hidden');
     }
-
-    function closeDeleteInquiryModal() {
-        inquiryIdToDelete = null;
-        deleteInquiryModal.classList.add('hidden');
-    }
-
     async function executeInquiryDelete() {
         if (!inquiryIdToDelete) return;
         try {
-            await apiRequest('api.php', {
-                method: 'POST',
-                body: { action: 'delete_inquiry', inquiry_id: inquiryIdToDelete }
-            });
-            closeDeleteInquiryModal();
-            fetchAndRenderInquiries().then(filterInquiries);
+            await apiRequest('api.php', { method: 'POST', body: { action: 'delete_inquiry', inquiry_id: inquiryIdToDelete } });
+            paginationState.inquiries.currentPage = 1;
+            fetchAndRenderInquiries();
+            deleteInquiryModal.classList.add('hidden');
         } catch (error) {
-            closeDeleteInquiryModal();
+            deleteInquiryModal.classList.add('hidden');
         }
     }
     
-    async function handleInquiryImport(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (!confirm(`ファイル「${file.name}」をインポートしますか？\n既存のIDと重複するデータはスキップされます。`)) {
-            e.target.value = ''; // Reset file input
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('inquiry_csv', file);
-        formData.append('action', 'import_inquiries');
-
-        try {
-            const result = await apiRequest('api.php', { method: 'POST', body: formData });
-            alert(result.message);
-            fetchAndRenderInquiries().then(filterInquiries);
-
-        } catch (error) {
-            // エラーはapiRequest内で処理
-        } finally {
-            e.target.value = ''; // Reset file input
-        }
-    }
-    
+    // --- Import Functions ---
     async function handleUserImport(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -823,11 +653,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const result = await apiRequest('api.php', { method: 'POST', body: formData });
             alert(result.message);
-            fetchAndRenderUsers().then(filterUsers);
-        } catch (error) { /* エラーはapiRequest内で処理 */ } 
+            fetchAndRenderUsers();
+        } catch (error) {} 
         finally { e.target.value = ''; }
     }
-
     async function handleQuizImport(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -841,11 +670,29 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const result = await apiRequest('api.php', { method: 'POST', body: formData });
             alert(result.message);
-            fetchAndRenderQuizzes().then(filterQuizzes);
-        } catch (error) { /* エラーはapiRequest内で処理 */ }
+            fetchAndRenderQuizzes();
+        } catch (error) {}
+        finally { e.target.value = ''; }
+    }
+    async function handleInquiryImport(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!confirm(`ファイル「${file.name}」をインポートしますか？\n既存のIDと重複するデータはスキップされます。`)) {
+            e.target.value = '';
+            return;
+        }
+        const formData = new FormData();
+        formData.append('inquiry_csv', file);
+        formData.append('action', 'import_inquiries');
+        try {
+            const result = await apiRequest('api.php', { method: 'POST', body: formData });
+            alert(result.message);
+            fetchAndRenderInquiries();
+        } catch (error) {}
         finally { e.target.value = ''; }
     }
 
+    // --- Utility Functions ---
     function escapeHTML(str) {
         if (str === null || str === undefined) return '';
         return str.toString()

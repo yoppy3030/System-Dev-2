@@ -42,6 +42,7 @@ try {
     if ($method === 'GET') {
         $action = $_GET['action'] ?? '';
         switch ($action) {
+            // (省略: get_dashboard_stats, get_feedback_stats, get_user_registration_stats は変更なし)
             case 'get_dashboard_stats':
                 $stmt_users = $pdo->query("SELECT COUNT(*) as total_users FROM Accounts");
                 $total_users = $stmt_users->fetchColumn();
@@ -75,13 +76,100 @@ try {
                 }
                 echo json_encode(['labels' => $labels, 'data' => $data]);
                 break;
-            
+
+            // ★★★ 修正点: ページネーション対応 ★★★
+            case 'get_users':
+            case 'get_quizzes':
             case 'get_inquiries':
-                $stmt = $pdo->query("SELECT id, name, email, message, replied, created_at FROM Inquiries ORDER BY created_at DESC");
-                $inquiries = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                echo json_encode($inquiries);
+                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+                $offset = ($page - 1) * $limit;
+
+                $search = $_GET['search'] ?? '';
+                $sort_column = $_GET['sort_column'] ?? null;
+                $sort_direction = $_GET['sort_direction'] ?? 'asc';
+
+                $where_clauses = [];
+                $params = [];
+
+                if ($action === 'get_users') {
+                    $table = 'Accounts';
+                    $columns = 'ID, Name, Email, UserType, RegistrationDate, is_admin';
+                    $default_sort = 'RegistrationDate DESC';
+                    if (!empty($search)) {
+                        $where_clauses[] = '(Name LIKE ? OR Email LIKE ?)';
+                        $params[] = "%$search%";
+                        $params[] = "%$search%";
+                    }
+                    if (isset($_GET['role']) && $_GET['role'] !== 'all') {
+                        $where_clauses[] = 'is_admin = ?';
+                        $params[] = ($_GET['role'] === 'admin') ? 1 : 0;
+                    }
+                } elseif ($action === 'get_quizzes') {
+                    $table = 'Quizzes';
+                    $columns = 'id, difficulty, question, options, correct_answer_index, explanation';
+                    $default_sort = 'id DESC';
+                     if (!empty($search)) {
+                        $where_clauses[] = 'JSON_UNQUOTE(JSON_EXTRACT(question, "$.ja")) LIKE ?';
+                        $params[] = "%$search%";
+                    }
+                    if (isset($_GET['difficulty']) && $_GET['difficulty'] !== 'all') {
+                        $where_clauses[] = 'difficulty = ?';
+                        $params[] = $_GET['difficulty'];
+                    }
+                } else { // get_inquiries
+                    $table = 'Inquiries';
+                    $columns = 'id, name, email, message, replied, created_at';
+                    $default_sort = 'created_at DESC';
+                    if (isset($_GET['status']) && $_GET['status'] !== 'all') {
+                        $where_clauses[] = 'replied = ?';
+                        $params[] = ($_GET['status'] === 'replied') ? 1 : 0;
+                    }
+                }
+
+                $where_sql = count($where_clauses) > 0 ? ' WHERE ' . implode(' AND ', $where_clauses) : '';
+
+                // 総件数を取得
+                $count_stmt = $pdo->prepare("SELECT COUNT(*) FROM {$table}" . $where_sql);
+                $count_stmt->execute($params);
+                $total_count = $count_stmt->fetchColumn();
+                
+                // データを取得
+                $order_by_sql = $default_sort;
+                if ($sort_column) {
+                    // SQLインジェクションを防ぐため、許可されたカラム名か確認
+                    $allowed_columns = explode(', ', str_replace('`', '', $columns));
+                    if (in_array($sort_column, $allowed_columns) || strpos($sort_column, '.') !== false) {
+                        $direction = strtoupper($sort_direction) === 'DESC' ? 'DESC' : 'ASC';
+                        $order_by_sql = "{$sort_column} {$direction}";
+                    }
+                }
+
+                $data_stmt = $pdo->prepare("SELECT {$columns} FROM {$table}" . $where_sql . " ORDER BY " . $order_by_sql . " LIMIT ? OFFSET ?");
+                $data_params = array_merge($params, [$limit, $offset]);
+                foreach ($data_params as $key => $val) {
+                    $data_stmt->bindValue($key + 1, $val, is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR);
+                }
+                $data_stmt->execute();
+                $data = $data_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                if ($action === 'get_quizzes') {
+                     foreach($data as &$quiz) {
+                        $quiz['question'] = json_decode($quiz['question'], true);
+                        $quiz['options'] = json_decode($quiz['options'], true);
+                        $quiz['explanation'] = json_decode($quiz['explanation'], true);
+                    }
+                }
+                if ($action === 'get_users') {
+                    foreach ($data as &$user) {
+                        $user['is_admin'] = (bool)$user['is_admin'];
+                    }
+                }
+
+                echo json_encode(['data' => $data, 'total_count' => $total_count]);
                 break;
-            
+
+            // (省略: backup_* 系のGETアクションは変更なし)
             case 'backup_inquiries':
                 header('Content-Type: text/csv; charset=utf-8');
                 header('Content-Disposition: attachment; filename="inquiries_backup_'.date('Y-m-d').'.csv"');
@@ -144,33 +232,13 @@ try {
                 }
                 fclose($output);
                 exit;
-
-            case 'get_users':
-                $stmt = $pdo->query("SELECT ID, Name, Email, UserType, RegistrationDate, is_admin FROM Accounts ORDER BY RegistrationDate DESC");
-                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($users as &$user) {
-                    $user['is_admin'] = (bool)$user['is_admin'];
-                }
-                echo json_encode($users);
-                break;
-
-            case 'get_quizzes':
-                $stmt = $pdo->query("SELECT id, difficulty, question, options, correct_answer_index, explanation FROM Quizzes ORDER BY id DESC");
-                $quizzes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                foreach($quizzes as &$quiz) {
-                    $quiz['question'] = json_decode($quiz['question'], true);
-                    $quiz['options'] = json_decode($quiz['options'], true);
-                    $quiz['explanation'] = json_decode($quiz['explanation'], true);
-                }
-                echo json_encode($quizzes);
-                break;
-
             default:
                 http_response_code(400);
                 echo json_encode(['error' => '無効なGETアクションです。']);
                 break;
         }
     } elseif ($method === 'POST') {
+        // (省略: POST処理は変更なし)
         $input_data = json_decode(file_get_contents('php://input'), true);
         if (!empty($_POST)) {
             $data = $_POST;

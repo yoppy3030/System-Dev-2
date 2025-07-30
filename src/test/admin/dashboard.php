@@ -129,7 +129,6 @@ $username = $_SESSION['username'] ?? 'Admin';
                                 <input type="text" id="user-filter-input" placeholder="名前 or Emailで検索..." class="form-input w-full">
                                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                             </div>
-                            <div id="user-count-display" class="text-sm text-gray-600 whitespace-nowrap"></div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
@@ -146,6 +145,11 @@ $username = $_SESSION['username'] ?? 'Admin';
                                 </thead>
                                 <tbody class="bg-white divide-y" id="user-table-body"></tbody>
                             </table>
+                        </div>
+                        <!-- ★★★ 追加: ページネーションコントロール ★★★ -->
+                        <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+                            <span id="user-pagination-info"></span>
+                            <div id="user-pagination-controls" class="flex items-center space-x-1"></div>
                         </div>
                     </div>
                 </section>
@@ -196,6 +200,11 @@ $username = $_SESSION['username'] ?? 'Admin';
                                 <tbody class="bg-white divide-y" id="quiz-table-body"></tbody>
                             </table>
                         </div>
+                        <!-- ★★★ 追加: ページネーションコントロール ★★★ -->
+                        <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+                            <span id="quiz-pagination-info"></span>
+                            <div id="quiz-pagination-controls" class="flex items-center space-x-1"></div>
+                        </div>
                     </div>
                 </section>
                 
@@ -237,6 +246,11 @@ $username = $_SESSION['username'] ?? 'Admin';
                                 <tbody class="bg-white divide-y" id="inquiry-table-body"></tbody>
                             </table>
                         </div>
+                        <!-- ★★★ 追加: ページネーションコントロール ★★★ -->
+                        <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+                            <span id="inquiry-pagination-info"></span>
+                            <div id="inquiry-pagination-controls" class="flex items-center space-x-1"></div>
+                        </div>
                     </div>
                 </section>
             </main>
@@ -244,7 +258,7 @@ $username = $_SESSION['username'] ?? 'Admin';
     </div>
 
     <!-- Modals -->
-    <!-- (省略: 既存のモーダルは変更なし) -->
+    <!-- (省略: モーダル部分は変更なし) -->
     <div id="delete-confirm-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center hidden px-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <h3 class="text-xl font-bold text-gray-800 mb-4">ユーザーの削除</h3>
