@@ -199,7 +199,8 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                 break;
 
             case 'clear_history':
-                $tablesToClear = ['ChatHistories', 'PinnedMessages', 'MessageFeedback'];
+                // ★★★ 修正点: MessageFeedbackを削除対象から除外 ★★★
+                $tablesToClear = ['ChatHistories', 'PinnedMessages'];
                 foreach ($tablesToClear as $table) {
                     $stmt = $pdo->prepare("DELETE FROM {$table} WHERE {$clause['where_clause']}");
                     $stmt->execute($clause['params']);
@@ -230,16 +231,13 @@ function handlePostRequest($pdo, $userId, $guestId, $action, $data) {
                     $stmt->execute([$message_id, $feedback_type, $userId, $guestId]);
                 }
                 break;
-            // ▼▼▼【修正】ゲストユーザーのクイズ結果も保存できるように変更 ▼▼▼
             case 'save_quiz_result':
                 $stmt = $pdo->prepare("INSERT INTO QuizResults ({$idField}, difficulty, score, total) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$idValue, $data['difficulty'], $data['score'], $data['total']]);
-                // アチーブメントはログインユーザーのみ
                 if ($userId) {
                     checkAndGrantAchievements($pdo, $userId);
                 }
                 break;
-            // ▲▲▲ ここまで ▲▲▲
             case 'save_learned_topic':
                  $topic_key = $data['id'] ?? ($data['question'] ?? null);
                  if ($topic_key === null) break;
