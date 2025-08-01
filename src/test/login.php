@@ -64,34 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 入力が空でないかチェック
     if (empty($login_identifier) || empty($password)) {
-<<<<<<< HEAD
-        $error = "ユーザー名（またはEmail）とパスワードを入力してください。";
-    } else {
-        try {
-            // AccountsテーブルをName列またはEmail列で検索
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
-            $stmt->execute([$login_identifier, $login_identifier]);
-            $user = $stmt->fetch();
-
-            if ($user && password_verify($password, $user['Password'])) {
-                // ログイン成功
-                $_SESSION['user_id'] = $user['ID'];
-                $_SESSION['username'] = $user['username'];
-                session_regenerate_id(true);
-                // ログイン成功後はindex.phpへ
-                header("Location: index.php");
-                exit();
-            } else {
-                $error = "ユーザー名（またはEmail）またはパスワードが間違っています。";
-            }
-        } catch (PDOException $e) {
-            $error = "データベースエラーが発生しました。";
-        }
-=======
         http_response_code(400);
         echo json_encode(['error' => $translations[$lang]['input_required']]);
         exit;
->>>>>>> fffde14733eefc6fd93130eaabdd42a72236f1b7
     }
 
     try {
