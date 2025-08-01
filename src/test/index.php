@@ -1,6 +1,26 @@
 <?php
 // セッションを開始して、ログイン状態を読み込めるようにします
 session_start();
+// データベース設定ファイルを読み込みます
+require_once 'backend/config.php';
+
+// 管理者フラグを初期化します
+$is_admin = false;
+
+// ユーザーがログインしているか確認し、管理者であればフラグをtrueに設定します
+if (isset($_SESSION['user_id'])) {
+    try {
+        $stmt = $pdo->prepare("SELECT is_admin FROM Accounts WHERE ID = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $user = $stmt->fetch();
+        if ($user && $user['is_admin']) {
+            $is_admin = true;
+        }
+    } catch (PDOException $e) {
+        // データベースエラーが発生した場合はログに記録しますが、ページの表示は続行します
+        error_log("Admin check failed on index.php: " . $e->getMessage());
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -92,7 +112,7 @@ session_start();
     </button>
     <div class="dropdown-content" id="dropdown-content">
         <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="./chatBOT/my_page.php" data-translate="my_page_link">user_page</a>
+            <a href="User_page.php" data-translate="my_page_link">user_page</a>
             <a href="logout.php">logout</a>
         <?php else: ?>
             <a href="login.php">login</a>
@@ -126,8 +146,13 @@ session_start();
 
     </div>
     <?php if (isset($_SESSION['user_id'])): ?>
+        <?php if ($is_admin): ?>
+            <div class="menu-item">
+                <a href="admin/dashboard.php"><i class="fas fa-user-shield icon"></i><p>Admin Dashboard</p></a>
+            </div>
+        <?php endif; ?>
         <div class="menu-item">
-            <a href="./chatBOT/my_page.php"><i class="fas fa-user-circle icon"></i><p>user_page</p></a>
+            <a href="User_page.php"><i class="fas fa-user-circle icon"></i><p>user_page</p></a>
         </div>
         <div class="menu-item">
             <a href="logout.php"><i class="fas fa-sign-out-alt icon"></i><p>logout</p></a>

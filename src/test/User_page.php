@@ -19,13 +19,16 @@ function get_flash_message() {
         return $message;
     }
     return null;
+    
+    
 }
 
 // Get user info
 $user_id = $_SESSION['user_id'];
 // ★★★ 修正点: 'users'テーブルを'Accounts'に、'id'を'ID'に修正 ★★★
 // ★★★ 修正点: 存在しないカラム(avatar, bio, location)の代わりに存在するカラムを取得 ★★★
-$stmt = $pdo->prepare("SELECT ID, Name, Email, Country, Current_location, UserType FROM Accounts WHERE ID = ?");
+$user_id = $_SESSION['user_id'];
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -37,14 +40,15 @@ if (!$user) {
 
 // Set user data
 // ★★★ 修正点: 正しいカラム名からデータをセットする ★★★
-$user_avatar = 'images/default-avatar.png'; // avatarカラムは存在しないため、デフォルト値を設定
-$user_username = $user['Name'];
-$user_bio = ''; // bioカラムは存在しないため、空に設定
-$user_location = $user['Current_location'];
-$user_country = $user['Country'];
-$user_activity = $user['UserType'];
+// Set user data
+$user_avatar = $user['avatar'] ?? 'images/default-avatar.png';
+$user_username = $user['username'];
+$user_bio = $user['bio'] ?? '';
+$user_location = $user['location'] ?? '';
+$user_country = $user['country'] ?? '';
+$user_activity = $user['activity'] ?? '';
 
-// If user has no activity, set a default value
+// ユーザーのアクティビティが空の場合はデフォルト値を設定
 if (empty($user_activity)) {
     $user_activity = 'Unknown';
 }
@@ -62,35 +66,22 @@ try {
 }
 
 
-// Get posts with user info
-// ★★★ 修正点: JOINするテーブルを'users'から'Accounts'に、カラム名を修正 ★★★
-try {
-    $stmt_posts = $pdo->prepare("
-        SELECT posts.*, Accounts.Name as username
-        FROM posts 
-        JOIN Accounts ON posts.user_id = Accounts.ID
-        WHERE posts.user_id = ?
-        ORDER BY posts.created_at DESC
-    ");
-    $stmt_posts->execute([$user_id]);
-    $posts = $stmt_posts->fetchAll(PDO::FETCH_ASSOC);
-
-    // 各投稿にアバターパスを追加
-    foreach ($posts as &$post) {
-        $post['avatar'] = 'images/default-avatar.png'; // デフォルトアバターを設定
-    }
-    unset($post); // ループ後の参照を解除
-
-} catch (PDOException $e) {
-    // postsテーブルが存在しない場合のエラーをハンドル
-    $posts = [];
-    // error_log("Posts table error: " . $e->getMessage());
-}
-
+// ★★★ 修正点: ユーザーの投稿を取得するためのSQLクエリを修正 ★★★
+// ★★★ Correction: JOIN table from 'users' to 'Accounts', correct column names ★★★
+// Fetch user posts
+$stmt = $pdo->prepare("
+    SELECT posts.*, users.username, users.avatar 
+    FROM posts 
+    JOIN users ON posts.user_id = users.id
+    WHERE posts.user_id = ?
+    ORDER BY posts.created_at DESC
+");
+$stmt->execute([$user_id]);
+$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $flash_message = get_flash_message();
 
-// Function to render comments recursively
+// ファンクション　コメントを再帰的にレンダリング
 function renderComments($comments_array) {
     foreach ($comments_array as $comment) {
         $comment_avatar_path = $comment['avatar'] ? $comment['avatar'] : 'images/default-avatar.png';
@@ -116,21 +107,21 @@ function renderComments($comments_array) {
         echo '</div></div>';
     }
 }
-// Ajouter les likes, dislikes et commentaires pour CHAQUE post de l'utilisateur
+// ユーザーの投稿に対するいいね、よくないね、コメントを追加
 foreach ($posts as &$post) {
     $post_id = $post['id'];
 
-    // Nombre de commentaires
+    // コメント数
     $stmt_comment_count = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE post_id = ?");
     $stmt_comment_count->execute([$post_id]);
     $post['comment_count'] = $stmt_comment_count->fetchColumn() ?? 0;
 
-    // Likes
+    // likes数
     $stmt_likes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 1");
     $stmt_likes->execute([$post_id]);
     $post['likes_count'] = $stmt_likes->fetchColumn() ?? 0;
 
-    // Dislikes
+    // dislikes数
     $stmt_dislikes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 0");
     $stmt_dislikes->execute([$post_id]);
     $post['dislikes_count'] = $stmt_dislikes->fetchColumn() ?? 0;
@@ -172,7 +163,36 @@ foreach ($posts as &$post) {
 // } catch (PDOException $e) {
 //     error_log("Error fetching posts: " . $e->getMessage());
 //     $posts = [];
+// // }
+// $flash_message = get_flash_message();
+
+// // Function to render comments recursively (This function is fine)
+// // (Duplicate declaration removed)
+
+// // Ajouter les likes, dislikes et commentaires pour CHAQUE post de l'utilisateur
+// // This block is correct and should be kept. Make sure it processes the $posts array
+// // that was correctly filtered by user_id from the first fetching block.
+// foreach ($posts as &$post) {
+//     $post_id = $post['id'];
+
+//     // Nombre de commentaires
+//     $stmt_comment_count = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE post_id = ?");
+//     $stmt_comment_count->execute([$post_id]);
+//     $post['comment_count'] = $stmt_comment_count->fetchColumn() ?? 0;
+
+//     // Likes
+//     $stmt_likes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 1");
+//     $stmt_likes->execute([$post_id]);
+//     $post['likes_count'] = $stmt_likes->fetchColumn() ?? 0;
+
+//     // Dislikes
+//     $stmt_dislikes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 0");
+//     $stmt_dislikes->execute([$post_id]);
+//     $post['dislikes_count'] = $stmt_dislikes->fetchColumn() ?? 0;
 // }
+// // Unset reference after loop
+// unset($post);
+
 ?>
 
 <!DOCTYPE html>
@@ -258,7 +278,7 @@ foreach ($posts as &$post) {
                     
                     <?php if (!empty($social_links)) : ?>
                         <div class="social-icons-container">
-                            <div class="social-icons"> <!-- ✅ Ajout de la classe manquante ici -->
+                            <div class="social-icons"> <!-- ソーシャルリンクのアイコンを表示 -->
                                 <?php foreach ($social_links as $social) : 
                                     $platform = strtolower($social['platform']);
                                     $icons = [
@@ -311,7 +331,7 @@ foreach ($posts as &$post) {
                     <h3>My Posts</h3>
                     <?php foreach ($posts as $post): ?>
                             <div class="post" data-post-id="<?= $post['id'] ?>">
-                                <a href=""><i class="fa-solid fa-trash"></i></a>
+                                <a href="backend/delete_post.php" class="delete-post-btn" data-post-id="<?= $post['id'] ?>"><i class="fa-solid fa-trash"></i></a>
                             <div class="post-header">
                                 <img src="<?= htmlspecialchars($post['avatar'] ?? '/uploads/default_avatar.jpg') ?>" class="post-avatar">
                                 <span class="post-author"><?= htmlspecialchars($post['username']) ?></span>
@@ -399,304 +419,6 @@ foreach ($posts as &$post) {
         </div>
     </div>
     </main>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Image preview functionality
-        const postImageInput = document.getElementById('post-image');
-        const imagePreviewContainer = document.getElementById('image-preview-container');
-        const imagePreview = document.getElementById('image-preview');
-        const removeImageBtn = document.getElementById('remove-image-btn');
-
-        if (postImageInput && imagePreviewContainer && imagePreview && removeImageBtn) {
-            // Initially hide the preview container
-            imagePreviewContainer.style.display = 'none' ;
-
-            postImageInput.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result;
-                        imagePreviewContainer.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            removeImageBtn.addEventListener('click', function() {
-                postImageInput.value = '';
-                imagePreview.src = '#';
-                imagePreviewContainer.style.display = 'none';
-            });
-        }
-
-        // Dropdown menu functionality
-        const dropdownBtn = document.getElementById('dropdown-btn');
-        const dropdownContent = document.getElementById('dropdown-content');
-        if (dropdownBtn && dropdownContent) {
-            dropdownBtn.addEventListener('click', function() {
-                dropdownContent.classList.toggle('show');
-            });
-        }
-
-        // Close dropdown when clicking outside
-        window.addEventListener('click', function(event) {
-            if (!event.target.matches('.dropdown-btn') && !event.target.matches('.dropdown-btn *')) {
-                if (dropdownContent && dropdownContent.classList.contains('show')) {
-                    dropdownContent.classList.remove('show');
-                }
-            }
-        });
-
-        // Toggle comments visibility
-        document.querySelectorAll('.toggle-comments-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const commentsContainer = this.nextElementSibling;
-                commentsContainer.classList.toggle('comments-visible');
-                
-                // Change the button text and icon
-                const icon = this.querySelector('i');
-                icon.classList.toggle('fa-chevron-down');
-                icon.classList.toggle('fa-chevron-up');
-                
-                const text = this.querySelector('span');
-                text.textContent = commentsContainer.classList.contains('comments-visible') ? 'Hide Comments' : 'Show Comments';
-            });
-        });
-    });
-
-// Gestion des commentaires
-document.querySelectorAll('.toggle-comments-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const container = this.nextElementSibling;
-        container.classList.toggle('comments-visible');
-        
-        // Changer l'icône et le texte
-        const icon = this.querySelector('i');
-        icon.classList.toggle('fa-chevron-down');
-        icon.classList.toggle('fa-chevron-up');
-        
-        const text = this.querySelector('span');
-        text.textContent = container.classList.contains('comments-visible') ? 'Hide Comments' : 'Show Comments';
-    });
-});
-
-// Gestion des réponses
-document.querySelectorAll('.reply-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const form = this.nextElementSibling;
-        form.classList.toggle('visible');
-    });
-});
-
-// Comment functions
-function renderComments(comments, parentId = null) {
-    let html = '';
-    comments.filter(c => c.parent_comment_id == parentId).forEach(comment => {
-        html += `
-            <div class="comment" data-comment-id="${comment.id}">
-                <img src="${comment.avatar || 'images/default-avatar.png'}" class="comment-avatar">
-                <div class="comment-content">
-                    <strong>${comment.username}</strong>
-                    <p>${comment.content.replace(/\n/g, '<br>')}</p>
-                        <button class="toggle-reply-btn" onclick="toggleReplyForm(${comment.id})">Reply</button>
-                        <div class="reply-form" id="reply-form-${comment.id}" style="display:none;">
-                            <textarea id="reply-input-${comment.id}" placeholder="Write a reply..."></textarea>
-                            <button onclick="addComment(${comment.post_id}, ${comment.id})">Post Reply</button>
-                        </div>
-                        ${renderComments(comments, comment.id)}
-                    </div>
-                </div>
-            `;
-        });
-        return html;
-    }
-
-    function loadComments(postId) {
-        fetch(`backend/get_comments.php?post_id=${postId}`)
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById(`comments-${postId}`).innerHTML = renderComments(data);
-            })
-            .catch(error => console.error('Error loading comments:', error));
-    }
-
-    function addComment(postId, parentCommentId = null) {
-        const inputId = parentCommentId ? `reply-input-${parentCommentId}` : `comment-input-${postId}`;
-        const content = document.getElementById(inputId).value.trim();
-        if (!content) return;
-
-        const formData = new URLSearchParams();
-        formData.append('post_id', postId);
-        formData.append('content', content);
-        if (parentCommentId) formData.append('parent_comment_id', parentCommentId);
-
-        fetch('backend/add_comment.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData.toString()
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
-        })
-        .then(() => {
-            loadComments(postId);
-            document.getElementById(inputId).value = '';
-            if (parentCommentId) {
-                document.getElementById(`reply-form-${parentCommentId}`).style.display = 'none';
-            }
-        })
-        .catch(error => console.error('Error adding comment:', error));
-    }
-
-    function toggleReplyForm(commentId) {
-        const form = document.getElementById(`reply-form-${commentId}`);
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
-    }
-
-    // Load comments for all posts when page loads
-    window.addEventListener('load', () => {
-        document.querySelectorAll('.post').forEach(postElement => {
-            const postId = postElement.dataset.postId;
-            loadComments(postId);
-        });
-    });
-    document.addEventListener('DOMContentLoaded', () => {
-    // Toggle comments container visibility
-    document.querySelectorAll('.toggle-comments-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const postInteractions = btn.parentElement;
-            const commentsContainer = postInteractions.querySelector('.comments-container');
-            if (!commentsContainer) return;
-
-            if (commentsContainer.style.display === 'none' || commentsContainer.style.display === '') {
-                commentsContainer.style.display = 'block';
-                btn.querySelector('span').textContent = 'Hide Comments';
-                btn.querySelector('i').classList.remove('fa-chevron-down');
-                btn.querySelector('i').classList.add('fa-chevron-up');
-
-                // Load comments via AJAX when shown
-                const postId = btn.closest('.post').dataset.postId;
-                loadComments(postId);
-            } else {
-                commentsContainer.style.display = 'none';
-                btn.querySelector('span').textContent = 'Show Comments';
-                btn.querySelector('i').classList.remove('fa-chevron-up');
-                btn.querySelector('i').classList.add('fa-chevron-down');
-            }
-        });
-    });
-
-    // Handle post comment button clicks
-    document.querySelectorAll('.post-comment-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const postId = btn.dataset.postId;
-            const textarea = document.getElementById(`comment-input-${postId}`);
-            const content = textarea.value.trim();
-            if (!content) return alert("Please write a comment.");
-
-            addComment(postId, null, content, () => {
-                textarea.value = '';
-                loadComments(postId);
-            });
-        });
-    });
-
-    // Delegate reply button and reply form toggle and submit using event delegation
-    document.body.addEventListener('click', event => {
-        // Reply button toggle form
-        if (event.target.classList.contains('reply-btn')) {
-            const replyForm = event.target.nextElementSibling;
-            if (replyForm) {
-                replyForm.style.display = replyForm.style.display === 'block' ? 'none' : 'block';
-            }
-        }
-
-        // Reply form post button
-        if (event.target.classList.contains('post-reply-btn')) {
-            const commentId = event.target.dataset.commentId;
-            const postId = event.target.dataset.postId;
-            const textarea = document.getElementById(`reply-input-${commentId}`);
-            const content = textarea.value.trim();
-            if (!content) return alert("Please write a reply.");
-
-            addComment(postId, commentId, content, () => {
-                textarea.value = '';
-                // Optionally hide the reply form
-                const form = document.getElementById(`reply-form-${commentId}`);
-                if (form) form.style.display = 'none';
-
-                loadComments(postId);
-            });
-        }
-    });
-});
-
-// AJAX function to load comments and render them
-function loadComments(postId) {
-    fetch(`backend/get_comments.php?post_id=${postId}`)
-        .then(res => res.json())
-        .then(data => {
-            const container = document.getElementById(`comments-${postId}`);
-            container.innerHTML = renderComments(data);
-        })
-        .catch(err => console.error('Error loading comments:', err));
-}
-
-// Render comments recursively as HTML string
-function renderComments(comments, parentId = null) {
-    let html = '';
-    comments.filter(c => c.parent_comment_id == parentId).forEach(comment => {
-        html += `
-            <div class="comment" data-comment-id="${comment.id}">
-                <img src="${comment.avatar || 'images/default-avatar.png'}" class="comment-avatar">
-                <div class="comment-content">
-                    <strong>${comment.username}</strong>
-                    <p>${comment.content.replace(/\n/g, '<br>')}</p>
-                    <button class="reply-btn">Reply</button>
-                    <div class="reply-form" id="reply-form-${comment.id}" style="display:none; margin-top: 10px;">
-                        <textarea id="reply-input-${comment.id}" placeholder="Write a reply..."></textarea>
-                        <button class="post-reply-btn" data-comment-id="${comment.id}" data-post-id="${comment.post_id}">Post Reply</button>
-                    </div>
-                    ${renderComments(comments, comment.id)}
-                </div>
-            </div>
-        `;
-    });
-    return html;
-}
-
-// AJAX function to add a comment or reply
-function addComment(postId, parentCommentId, content, callback) {
-    const formData = new URLSearchParams();
-    formData.append('post_id', postId);
-    formData.append('content', content);
-    if (parentCommentId) formData.append('parent_comment_id', parentCommentId);
-
-    fetch('backend/add_comment.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: formData.toString()
-    })
-    .then(res => {
-        if (!res.ok) throw new Error('Network response was not ok');
-        return res.json();
-    })
-    .then(data => {
-        if (data.success) {
-            if (callback) callback();
-        } else {
-            alert('Failed to post comment.');
-        }
-    })
-    .catch(err => {
-        console.error('Error adding comment:', err);
-        alert('Error adding comment. See console.');
-    });
-}
-
-    </script>
+    <script src="http://localhost/Challengers/System-Dev-2/src/test/js/User_page.js"></script>
 </body>
 </html> 

@@ -1,8 +1,10 @@
 <?php
-// send_inquiry.php (セキュリティ対策版)
+// send_inquiry.php (セキュリティ対策・DB保存機能追加版)
 
 // Composerのオートローダーとphpdotenvを読み込む
 require 'vendor/autoload.php';
+// ▼▼▼【追加】データベース設定を読み込む ▼▼▼
+require_once dirname(__DIR__) . '/backend/config.php'; 
 
 // .envファイルから環境変数を読み込む
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -41,6 +43,17 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
      exit;
 }
 
+// ▼▼▼【追加】データベースへの保存処理 ▼▼▼
+try {
+    $stmt = $pdo->prepare("INSERT INTO Inquiries (name, email, message, lang) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$name, $email, $message, $lang]);
+} catch (PDOException $e) {
+    error_log("Inquiry DB insert failed: " . $e->getMessage());
+    echo json_encode(['success' => false, 'error' => 'An error occurred while saving the inquiry.']);
+    exit;
+}
+// ▲▲▲ ここまで ▲▲▲
+
 $mail = new PHPMailer(true);
 
 try {
@@ -51,18 +64,16 @@ try {
     $mail->Port       = 465;
     $mail->CharSet    = 'UTF-8';
 
-    // ★★★ 変更点: .envファイルからメール情報を読み込む ★★★
-    // .envファイルに GMAIL_ADDRESS="your.email@gmail.com" のように設定してください
     $mail->Username   = $_ENV['GMAIL_ADDRESS']; 
     $mail->Password   = $_ENV['GMAIL_APP_PASSWORD'];
 
     // --- サイト管理者へのメール送信処理 ---
-    $mail->setFrom($mail->Username, 'マナー学習ボット'); 
+    $mail->setFrom($mail->Username, 'Japan life Manual サポート'); 
     $mail->addAddress($_ENV['GMAIL_ADDRESS'], 'サイト管理者'); 
     
     $mail->addReplyTo($email, $name); 
     $mail->isHTML(false); 
-    $mail->Subject = '【マナー学習サイト】チャットボットからのお問い合わせ';
+    $mail->Subject = '【Japan life Manual サポート】チャットボットからのお問い合わせ';
     $body_admin = "チャットボット経由でお問い合わせがありました。\n\n"
                 . "================================\n"
                 . "お名前: " . $name . "\n"

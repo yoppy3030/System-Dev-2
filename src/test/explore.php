@@ -10,38 +10,49 @@ $search_query = $_GET['search'] ?? '';
 $posts = [];
 
 try {
-    $sql_posts = "SELECT p.*, u.username, u.avatar 
-                  FROM posts p 
-                  JOIN users u ON p.user_id = u.id";
+    $sql_posts = "
+        SELECT 
+            p.*, 
+            u.username, 
+            u.avatar,
+            (SELECT COUNT(*) FROM likes WHERE target_id = p.id AND target_type = 'post' AND is_like = 1) AS likes_count,
+            (SELECT COUNT(*) FROM likes WHERE target_id = p.id AND target_type = 'post' AND is_like = 0) AS dislikes_count,
+            (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comment_count
+        FROM 
+            posts p 
+        JOIN 
+            users u ON p.user_id = u.id
+    ";
+    
+    $conditions = [];
     $params = [];
 
     if (!empty($search_query)) {
-        $sql_posts .= " WHERE p.content LIKE ? OR p.title LIKE ?";
-        $params[] = '%' . $search_query . '%';
-        $params[] = '%' . $search_query . '%';
+        $words = explode(' ', $search_query);
+        foreach ($words as $word) {
+            $word = trim($word);
+            if ($word !== '') {
+                $conditions[] = "(p.content LIKE ? OR p.title LIKE ? OR u.username LIKE ?)";
+                $params[] = '%' . $word . '%';
+                $params[] = '%' . $word . '%';
+                $params[] = '%' . $word . '%';
+            }
+        }
+    }
+
+    if (!empty($conditions)) {
+        $sql_posts .= " WHERE " . implode(" AND ", $conditions);
     }
 
     $sql_posts .= " ORDER BY p.created_at DESC";
+
+    // You can add LIMIT here if you want to paginate or restrict results
+    // $sql_posts .= " LIMIT 50"; // For example, show only 50 posts by default
 
     $stmt_posts = $pdo->prepare($sql_posts);
     $stmt_posts->execute($params);
     $posts = $stmt_posts->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($posts as &$post) {
-        $post_id = $post['id'];
-
-        $stmt_comment_count = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE post_id = ?");
-        $stmt_comment_count->execute([$post_id]);
-        $post['comment_count'] = $stmt_comment_count->fetchColumn() ?? 0;
-
-        $stmt_likes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 1");
-        $stmt_likes->execute([$post_id]);
-        $post['likes_count'] = $stmt_likes->fetchColumn() ?? 0;
-
-        $stmt_dislikes = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE target_id = ? AND target_type = 'post' AND is_like = 0");
-        $stmt_dislikes->execute([$post_id]);
-        $post['dislikes_count'] = $stmt_dislikes->fetchColumn() ?? 0;
-    }
 } catch (PDOException $e) {
     error_log("Error fetching posts: " . $e->getMessage());
     $posts = [];
@@ -52,67 +63,64 @@ try {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Explore Posts - Japan Life Manual</title>
     <link rel="stylesheet" href="css/explorer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-<header>
-    <a href="User_page.php" class="back-button"><i class="fas fa-arrow-left"></i>Go back to profile</a>
-</header>
+    <header>
+        </header>
 
-<main>
-       <div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <img src="images/logo.png" alt="Japan Life Manual Logo" class="logo">
-        <h1>Japan Life Manual</h1>
-    </div>
-    <ul class="sidebar-menu">
-        <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="#"><i class="fas fa-chart-line"></i> Popular</a></li>
-        <li><a href="#"><i class="fas fa-question-circle"></i> Answers <span class="beta">BETA</span></a></li>
-        <li class="section-title">TOPICS</li>
-        <li><a href="#"><i class="fas fa-globe"></i> Internet Culture</a></li>
-        <li><a href="#"><i class="fas fa-gamepad"></i> Games</a></li>
-        <li><a href="#"><i class="fas fa-comments"></i> Q&As</a></li>
-        <li><a href="#"><i class="fas fa-microchip"></i> Technology</a></li>
-        <li><a href="#"><i class="fas fa-star"></i> Pop Culture</a></li>
-        <li><a href="#"><i class="fas fa-film"></i> Movies & TV</a></li>
-        <li class="section-title">RESOURCES</li>
-        <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
-        <li><a href="#"><i class="fas fa-bullhorn"></i> Advertise</a></li>
-        <li><a href="#"><i class="fas fa-flask"></i> More Settings <span class="beta">BETA</span></a></li>
-    </ul>
-</div>
+    <main>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="images/logo.png" alt="Japan Life Manual Logo" class="logo">
+                <h1>Japan Life Manual</h1>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="User_page.php"><i class="fas fa-arrow-left"></i> Back to Profile</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Popular<span class="beta">in DEV</span></a></li>
+                <li><a href="#"><i class="fas fa-fire"></i> Trending<span class="beta">in DEV</span></a></li>
+                <li><a href="#"><i class="fas fa-users"></i> Communities<span class="beta">in DEV</span></a></li>
+                <li><a href="#"><i class="fas fa-calendar-alt"></i> Events<span class="beta">in DEV</span></a></li>
+                <li class="section-title">TOPICS</li>
+                <li><a href="#"><i class="fas fa-microchip"></i> Technology<span class="beta">in DEV</span></a></li>
+                <li><a href="#"><i class="fas fa-star"></i> Pop Culture<span class="beta">in DEV</span></a></li>
+                <li><a href="#"><i class="fas fa-film"></i> Films & TV<span class="beta">in DEV</span></a></li>
+                <li class="section-title">RESSOURCES</li>
+                <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="#"><i class="fas fa-flask"></i> More Settings <span class="beta">in DEV</span></a></li>
+            </ul>
+        </div>
 
-    <div class="blog-feed-container">
         <section class="posts-section">
-            <h2><?php echo !empty($search_query) ? 'Search Results' : 'Explore Posts'; ?></h2>
+            <h2>
+                <?php echo !empty($search_query) ? 'Résultats de recherche' : 'Explorer les publications'; ?>
+            </h2>
 
             <div class="search-container">
-                <form action="explorer.php" method="GET">
-                    <input type="text" name="search" placeholder="Search posts..." value="<?php echo htmlspecialchars($search_query); ?>">
-                    <button type="submit"><i class="fas fa-search"></i> Search</button>
+                <form id="search-form" action="explore.php" method="GET">
+                    <input type="text" id="search-input" name="search" placeholder="Search..." value="<?php echo htmlspecialchars($search_query); ?>">
+                    <button type="submit" id="search-btn"><i class="fas fa-search"></i> Search</button>
                 </form>
-                <?php if (!empty($search_query)): ?>
-                    <a href="explorer.php" class="clear-search-btn"><i class="fas fa-times"></i> Clear</a>
-                <?php endif; ?>
+                <a href="explore.php" class="clear-search-btn"><i class="fas fa-times"></i> Clear</a>
             </div>
 
-            <?php if (!empty($search_query) && empty($posts)): ?>
-                <p>No results for "<?php echo htmlspecialchars($search_query); ?>".</p>
-            <?php elseif (!empty($search_query)): ?>
-                <p>Results for "<?php echo htmlspecialchars($search_query); ?>":</p>
-            <?php endif; ?>
+            <p id="no-results" style="display: none; text-align: center; margin-top: 20px; color: #888;">
+                No results found.
+            </p>
 
             <div class="posts-feed">
                 <?php if (empty($posts)): ?>
-                    <p>No posts available.</p>
+                    <p style="text-align: center; margin-top: 20px; color: #888;">
+                        No posts available at the moment.
+                    </p>
                 <?php else: ?>
                     <?php foreach ($posts as $post): ?>
-                        <div class="post">
+                        <div class="post" data-post-id="<?php echo htmlspecialchars($post['id']); ?>">
                             <div class="post-header">
-                                <img src="<?php echo htmlspecialchars($post['avatar'] ?? 'uploads/default_avatar.jpg'); ?>" class="post-avatar">
+                                <img src="<?php echo htmlspecialchars($post['avatar'] ?? 'uploads/default_avatar.jpg'); ?>" class="post-avatar" alt="Avatar de <?php echo htmlspecialchars($post['username']); ?>">
                                 <span class="post-author"><?php echo htmlspecialchars($post['username']); ?></span>
                                 <span class="post-date"><?php echo date('F j, Y, g:i a', strtotime($post['created_at'])); ?></span>
                             </div>
@@ -120,32 +128,37 @@ try {
                             <div class="post-content">
                                 <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
                                 <?php if ($post['image']): ?>
-                                    <img src="<?php echo htmlspecialchars($post['image']); ?>" class="post-image">
+                                    <img src="<?php echo htmlspecialchars($post['image']); ?>" class="post-image" alt="Image du post">
                                 <?php endif; ?>
                             </div>
 
                             <div class="post-interactions">
-                                <div class="actions" data-post-id="<?php echo $post['id']; ?>">
+                                <div class="actions" data-post-id="<?php echo htmlspecialchars($post['id']); ?>">
                                     <button class="like-btn"><i class="fas fa-thumbs-up"></i> Like</button>
-                                    <span class="like-count"><?php echo $post['likes_count']; ?></span>
+                                    <span class="like-count"><?php echo htmlspecialchars($post['likes_count']); ?></span>
                                     <button class="dislike-btn"><i class="fas fa-thumbs-down"></i> Dislike</button>
-                                    <span class="dislike-count"><?php echo $post['dislikes_count']; ?></span>
-                                    <span><i class="fas fa-comments"></i> <?php echo $post['comment_count']; ?></span>
+                                    <span class="dislike-count"><?php echo htmlspecialchars($post['dislikes_count']); ?></span>
+                                    <span><i class="fas fa-comments"></i> <span class="comment-count"><?php echo htmlspecialchars($post['comment_count']); ?></span></span>
                                 </div>
-                            </div> 
-
-                            <div class="add-comment">
-                                <textarea id="comment-input-<?php echo $post['id']; ?>" placeholder="Add a comment..."></textarea>
-                                <button onclick="addComment(<?php echo $post['id']; ?>)">Add comment</button>
+                                <button class="toggle-comments-btn">
+                                    <i class="fas fa-comments"></i> <span>Show Comments</span>
+                                </button>
                             </div>
 
-                            <div id="comments-<?php echo $post['id']; ?>" class="comments"></div>
+                            <div class="add-comment" style="display: none; margin-top: 10px;">
+                                <textarea id="comment-input-<?php echo htmlspecialchars($post['id']); ?>" placeholder="Add a comment..."></textarea>
+                                <button class="add-comment-btn" data-post-id="<?php echo htmlspecialchars($post['id']); ?>">Add</button>
+                            </div>
+
+                            <div id="comments-<?php echo htmlspecialchars($post['id']); ?>" class="comments" style="display: none;">
+                                </div>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
         </section>
-    </div>
+    </main>
+
     <script src="js/explorer.js"></script>
 </body>
 </html>
