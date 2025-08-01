@@ -27,14 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             // AccountsテーブルをName列またはEmail列で検索
-            $stmt = $pdo->prepare("SELECT * FROM Accounts WHERE Name = ? OR Email = ?");
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
             $stmt->execute([$login_identifier, $login_identifier]);
             $user = $stmt->fetch();
 
             if ($user && password_verify($password, $user['Password'])) {
                 // ログイン成功
                 $_SESSION['user_id'] = $user['ID'];
-                $_SESSION['username'] = $user['Name'];
+                $_SESSION['username'] = $user['username'];
                 session_regenerate_id(true);
                 // ログイン成功後はindex.phpへ
                 header("Location: index.php");
